@@ -1,5 +1,14 @@
 *.iml
 .gradle
+#Java class
+*.class
+
+#Genarated files
+bin/
+gen/
+out/
+.DS_Store
+
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -7,7 +16,7 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
-.DS_Store
+*.log
 /build
 /captures
 .externalNativeBuild
