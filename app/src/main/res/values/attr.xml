@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="castclePrimaryColor" format="reference" />
+    <attr name="castclePrimaryTextColor" format="reference" />
+    <attr name="castclePrimarySelectedColor" format="reference" />
+    <attr name="castcleSecondaryTextColor" format="reference" />
+</resources>

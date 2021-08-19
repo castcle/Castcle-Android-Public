@@ -1,0 +1,10 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/black" />
+    <item
+        android:drawable="@drawable/ic_castcle_logo"
+        android:gravity="center"
+        android:top="@dimen/_120sdp"
+        android:bottom="@dimen/_120sdp"
+        android:left="@dimen/_55sdp"
+        android:right="@dimen/_55sdp"/>
+</layer-list>

@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "825985676502",
+    "project_id": "castcle",
+    "storage_bucket": "castcle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825985676502:android:94580162268800363f8577",
+        "android_client_info": {
+          "package_name": "com.castcle.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnEVX8_k8YRyIl3qYeuQDhXkAvqTuMrQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "825985676502-8g9lng1bgk1ag9jmqjtahfvctvkgk37c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.castcle.ios.prod"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825985676502:android:94580162268800363f8577",
+        "android_client_info": {
+          "package_name": "com.castcle.android.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnEVX8_k8YRyIl3qYeuQDhXkAvqTuMrQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "825985676502-8g9lng1bgk1ag9jmqjtahfvctvkgk37c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.castcle.ios.prod"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825985676502:android:94580162268800363f8577",
+        "android_client_info": {
+          "package_name": "com.castcle.android.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnEVX8_k8YRyIl3qYeuQDhXkAvqTuMrQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "825985676502-8g9lng1bgk1ag9jmqjtahfvctvkgk37c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.castcle.ios.prod"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
