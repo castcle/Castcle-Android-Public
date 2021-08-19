@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.14427083333333332" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14652777777777778" />
         <entry key="app/src/main/res/drawable/bg_onboard_greeting.xml" value="0.21851851851851853" />
         <entry key="app/src/main/res/drawable/ic_castcle_logo.xml" value="0.21851851851851853" />
@@ -28,7 +29,11 @@
         <entry key="components-android/src/main/res/drawable/bg_google.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/bg_telegram.xml" value="0.21851851851851853" />
         <entry key="components-android/src/main/res/drawable/bg_twitter.xml" value="0.1638888888888889" />
+        <entry key="components-android/src/main/res/drawable/ic_create_content.xml" value="0.108984375" />
         <entry key="components-android/src/main/res/drawable/ic_facebook.xml" value="0.1638888888888889" />
+        <entry key="components-android/src/main/res/drawable/ic_feed.xml" value="0.15486111111111112" />
+        <entry key="components-android/src/main/res/drawable/ic_feed_selected.xml" value="0.15208333333333332" />
+        <entry key="components-android/src/main/res/drawable/ic_feed_selector.xml" value="0.15208333333333332" />
       </map>
     </option>
   </component>

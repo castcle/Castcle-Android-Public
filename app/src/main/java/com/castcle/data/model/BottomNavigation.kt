@@ -1,13 +1,4 @@
-package com.castcle.di.modules.onboard.greeting
-
-import androidx.lifecycle.ViewModel
-import com.castcle.di.ViewModelKey
-import com.castcle.ui.onboard.greeting.OnBoardGreetingViewModel
-import com.castcle.ui.onboard.greeting.OnBoardGreetingViewModelImpl
-import com.castcle.di.scope.FragmentScope
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+package com.castcle.data.model
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -31,14 +22,10 @@ import dagger.multibindings.IntoMap
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 14:50.
+//  Created by sklim on 19/8/2021 AD at 12:57.
 
-@Module
-interface OnBoardGreetingViewModelModule {
-
-    @FragmentScope
-    @Binds
-    @IntoMap
-    @ViewModelKey(OnBoardGreetingViewModel::class)
-    fun onBoardViewModel(viewModel: OnBoardGreetingViewModelImpl): ViewModel
-}
+data class BottomNavigation(
+    val title: Int,
+    val icon: Int,
+    var navGraph: Int
+)

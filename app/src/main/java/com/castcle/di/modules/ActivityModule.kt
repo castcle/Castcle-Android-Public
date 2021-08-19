@@ -1,10 +1,11 @@
 package com.castcle.di.modules
 
 import com.castcle.di.modules.onboard.OnBoardActivityModule
+import com.castcle.di.modules.onboard.OnBoardFragmentModule
 import com.castcle.di.modules.splashscreen.SplashScreenActivityModule
+import com.castcle.di.scope.ActivityScope
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.splashscreen.SplashScreenActivity
-import com.castcle.di.scope.ActivityScope
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -14,7 +15,8 @@ interface ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(
         modules = [
-            OnBoardActivityModule::class
+            OnBoardActivityModule::class,
+            OnBoardFragmentModule::class
         ]
     )
     fun onBoardActivity(): OnBoardActivity

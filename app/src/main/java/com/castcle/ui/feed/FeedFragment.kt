@@ -1,24 +1,47 @@
 package com.castcle.ui.feed
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.castcle.android.R
+import androidx.lifecycle.ViewModelProvider
+import com.castcle.android.databinding.FragmentFeedBinding
+import com.castcle.android.databinding.ToolbarCastcleCommonBinding
+import com.castcle.ui.base.*
 
-class FeedFragment : Fragment() {
+class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
+    BaseFragmentCallbacks,
+    ViewBindingInflater<FragmentFeedBinding>,
+    ToolbarBindingInflater<ToolbarCastcleCommonBinding> {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override val toolbarBindingInflater:
+            (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleCommonBinding
+        get() = { inflater, container, attachToRoot ->
+            ToolbarCastcleCommonBinding.inflate(inflater, container, attachToRoot)
+        }
+
+    override val toolbarBinding: ToolbarCastcleCommonBinding
+        get() = toolbarViewBinding as ToolbarCastcleCommonBinding
+
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentFeedBinding
+        get() = { inflater, container, attachToRoot ->
+            FragmentFeedBinding.inflate(inflater, container, attachToRoot)
+        }
+
+    override val binding: FragmentFeedBinding
+        get() = viewBinding as FragmentFeedBinding
+
+    override fun viewModel(): FeedFragmentViewModel =
+        ViewModelProvider(this, viewModelFactory)
+            .get(FeedFragmentViewModel::class.java)
+
+    override fun initViewModel() {
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feed, container, false)
+    override fun setupView() {
     }
 
+    override fun bindViewEvents() {
+    }
+
+    override fun bindViewModel() {
+    }
 }

@@ -1,6 +1,8 @@
 package com.castcle.extensions
 
 import android.content.Context
+import android.util.TypedValue
+import androidx.annotation.AttrRes
 import androidx.annotation.IdRes
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -29,3 +31,9 @@ import androidx.annotation.IdRes
 
 fun Context.getResourceName(@IdRes resId: Int?): String? =
     resId?.let { resources.getResourceName(resId) }
+
+fun Context.getDrawableAttribute(@AttrRes attribute: Int): Int {
+    return TypedValue().let {
+        theme.resolveAttribute(attribute, it, true); it.resourceId
+    }
+}

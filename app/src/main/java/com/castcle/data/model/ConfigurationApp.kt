@@ -1,4 +1,4 @@
-package com.castcle.ui.onboard.navigation
+package com.castcle.data.model
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,7 +22,8 @@ package com.castcle.ui.onboard.navigation
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 16:21.
+//  Created by sklim on 19/8/2021 AD at 12:56.
 
-interface OnBoardNavigatior {
-}
+data class ConfigurationApp(
+    val bottomNavigateionList: List<BottomNavigation>
+)

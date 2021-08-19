@@ -2,6 +2,7 @@ package com.castcle.ui.splashscreen
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
+import android.content.Intent
 import android.os.*
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.databinding.ActivitySplashScreenBinding
@@ -23,9 +24,8 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
     }
 
     private fun startMainActivity() {
-        intent.component = ComponentName(this, OnBoardActivity::class.java)
+        val intent = Intent(this,OnBoardActivity::class.java)
         startActivity(intent)
-        finish()
     }
 
     override val layoutResource: Int = 0

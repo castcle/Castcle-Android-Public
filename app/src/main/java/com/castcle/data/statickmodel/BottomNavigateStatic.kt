@@ -1,13 +1,7 @@
-package com.castcle.di.modules.onboard.greeting
+package com.castcle.data.statickmodel
 
-import androidx.lifecycle.ViewModel
-import com.castcle.di.ViewModelKey
-import com.castcle.ui.onboard.greeting.OnBoardGreetingViewModel
-import com.castcle.ui.onboard.greeting.OnBoardGreetingViewModelImpl
-import com.castcle.di.scope.FragmentScope
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+import com.castcle.android.R
+import com.castcle.data.model.BottomNavigation
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -31,14 +25,24 @@ import dagger.multibindings.IntoMap
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 14:50.
+//  Created by sklim on 19/8/2021 AD at 13:03.
 
-@Module
-interface OnBoardGreetingViewModelModule {
-
-    @FragmentScope
-    @Binds
-    @IntoMap
-    @ViewModelKey(OnBoardGreetingViewModel::class)
-    fun onBoardViewModel(viewModel: OnBoardGreetingViewModelImpl): ViewModel
+object BottomNavigateStatic {
+    val bottomMenu = mutableListOf(
+        BottomNavigation(
+            R.string.bottom_menu_feed,
+            R.drawable.ic_feed_selector,
+            R.id.onboard_nav_graph
+        ),
+        BottomNavigation(
+            R.string.bottom_menu_create,
+            R.drawable.ic_create_content,
+            R.id.bloc_nav_graph
+        ),
+        BottomNavigation(
+            R.string.bottom_menu_search,
+            R.drawable.ic_search,
+            R.id.search_nav_graph
+        )
+    )
 }

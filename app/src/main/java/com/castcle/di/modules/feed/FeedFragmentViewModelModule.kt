@@ -1,10 +1,10 @@
-package com.castcle.di.modules.onboard.greeting
+package com.castcle.di.modules.feed
 
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
-import com.castcle.ui.onboard.greeting.OnBoardGreetingViewModel
-import com.castcle.ui.onboard.greeting.OnBoardGreetingViewModelImpl
 import com.castcle.di.scope.FragmentScope
+import com.castcle.ui.feed.FeedFragmentViewModel
+import com.castcle.ui.feed.FeedFragmentViewModelImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -31,14 +31,13 @@ import dagger.multibindings.IntoMap
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 14:50.
-
+//  Created by sklim on 19/8/2021 AD at 11:35.
 @Module
-interface OnBoardGreetingViewModelModule {
+interface FeedFragmentViewModelModule {
 
     @FragmentScope
     @Binds
     @IntoMap
-    @ViewModelKey(OnBoardGreetingViewModel::class)
-    fun onBoardViewModel(viewModel: OnBoardGreetingViewModelImpl): ViewModel
+    @ViewModelKey(FeedFragmentViewModel::class)
+    fun feedViewModel(viewModel: FeedFragmentViewModelImpl): ViewModel
 }

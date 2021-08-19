@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class OnBoardNavigatorImpl @Inject constructor(
     private val activity: FragmentActivity
-) : BaseNavigatorImpl(activity), OnBoardNavigatior {
+) : BaseNavigatorImpl(activity), OnBoardNavigator {
 
     override fun findNavController(): NavController {
         return activity.findNavController(R.id.navHostContainer)

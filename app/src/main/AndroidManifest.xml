@@ -29,11 +29,6 @@
         android:theme="@style/Theme.Castcle">
 
         <activity
-            android:name="com.castcle.ui.onboard.OnBoardActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Castcle.NoActionBar" />
-
-        <activity
             android:name="com.castcle.ui.splashscreen.SplashScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.Castcle.SplashScreen">
@@ -43,6 +38,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.castcle.ui.onboard.OnBoardActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Castcle.NoActionBar" />
+
     </application>
 
 </manifest>

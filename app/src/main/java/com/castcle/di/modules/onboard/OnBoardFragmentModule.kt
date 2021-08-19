@@ -1,8 +1,10 @@
 package com.castcle.di.modules.onboard
 
+import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.onboard.greeting.OnBoardGreetingViewModelModule
-import com.castcle.ui.onboard.greeting.OnboardGreetingFragment
 import com.castcle.di.scope.FragmentScope
+import com.castcle.ui.feed.FeedFragment
+import com.castcle.ui.onboard.greeting.OnboardGreetingFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -35,5 +37,9 @@ interface OnBoardFragmentModule {
 
     @FragmentScope
     @ContributesAndroidInjector(modules = [OnBoardGreetingViewModelModule::class])
-    fun onBoardGreetingFragment():OnboardGreetingFragment
+    fun onBoardGreetingFragment(): OnboardGreetingFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [FeedFragmentViewModelModule::class])
+    fun feedFragment(): FeedFragment
 }
