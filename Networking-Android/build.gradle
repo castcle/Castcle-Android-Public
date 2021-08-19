@@ -1,0 +1,104 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk android_app_compile_sdk_version
+
+    defaultConfig {
+        minSdk android_app_min_sdk_version
+        targetSdk android_app_target_sdk_version
+        versionCode android_app_version_code
+        versionName android_app_version_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "stage"
+    productFlavors {
+        production {
+        }
+        stg {
+        }
+        dev {
+        }
+    }
+
+    sourceSets {
+        dev {
+            java.srcDirs += 'src/dev'
+        }
+        stg {
+            java.srcDirs += 'src/stg'
+        }
+        production {
+            java.srcDirs += 'src/production'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation(
+            fileTree(dir: 'libs', include: ['*.jar']),
+            project(':common-rx'),
+            project(':Authen-Android'),
+            project(':session-memory'),
+    )
+
+    implementation platform("com.google.firebase:firebase-bom:$firebase_version")
+
+    implementation(
+            "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+            "org.jetbrains.kotlin:kotlin-android-extensions-runtime:$kotlin_version",
+            "androidx.core:core-ktx:$jetpack_ktx_version",
+
+            "com.google.firebase:firebase-crashlytics",
+            "com.google.dagger:dagger:$dagger_version",
+            "com.google.dagger:dagger-android:$dagger_version",
+            "com.google.dagger:dagger-android-support:$dagger_version",
+    )
+
+    api(
+            "com.squareup.retrofit2:retrofit:$retrofit_version",
+            "com.squareup.retrofit2:converter-moshi:$retrofit_version",
+            "com.squareup.retrofit2:converter-gson:$retrofit_version",
+            "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version",
+            "com.google.code.gson:gson:$gson_version",
+            "com.squareup.okhttp3:okhttp:$okhttp_version",
+            "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    )
+
+    testImplementation(
+            "junit:junit:$junit_version",
+            "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version",
+            "org.mockito:mockito-inline:$mockito_version",
+            "org.amshove.kluent:kluent-android:$kluent_version",
+            "androidx.test:core:$androidx_test_core_version",
+            "androidx.arch.core:core-testing:$jetpack_core_testing_version",
+            "androidx.room:room-testing:$room_version",
+            "androidx.test.ext:junit-ktx:$androidx_junit_version",
+            "org.robolectric:robolectric:$robolectric_version"
+    )
+}

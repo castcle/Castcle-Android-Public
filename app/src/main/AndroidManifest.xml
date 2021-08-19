@@ -1,17 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.castcle.CastcleAndroid">
+    package="com.castcle.android">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
 
     <application
+        android:name="com.castcle.CastcleApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Castcle">
+
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name="com.castcle.ui.onboard.OnBoardActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Castcle.NoActionBar" />
+
+        <activity
+            android:name="com.castcle.ui.splashscreen.SplashScreenActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Castcle.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

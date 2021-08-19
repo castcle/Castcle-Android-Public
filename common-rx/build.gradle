@@ -1,0 +1,54 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+def globalConfig = rootProject.extensions.getByName("ext")
+
+android {
+    compileSdkVersion android_app_compile_sdk_version
+
+    defaultConfig {
+        minSdkVersion android_app_min_sdk_version
+        targetSdkVersion android_app_target_sdk_version
+        versionCode android_app_version_code
+        versionName android_app_version_name
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation(
+        fileTree(dir: 'libs', include: ['*.jar']),
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+        "androidx.core:core-ktx:$jetpack_ktx_version",
+        "com.google.code.gson:gson:$gson_version"
+    )
+
+    api(
+        "io.reactivex.rxjava2:rxjava:$rxjava_version",
+        "io.reactivex.rxjava2:rxandroid:$rxandroid_version",
+        "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version",
+        "com.jakewharton.rxbinding3:rxbinding:$rxbinding_version",
+        "com.jakewharton.rxbinding3:rxbinding-core:$rxbinding_version"
+    )
+
+    testImplementation (
+        "junit:junit:$junit_version"
+    )
+}

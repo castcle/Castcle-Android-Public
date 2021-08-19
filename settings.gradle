@@ -1,10 +1,12 @@
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "Castcle"
-include ':app'
+include ':app', ':common-rx',':networking-android'
+include ':Authen-Android'
+include ':session-memory'
+include ':components-android'

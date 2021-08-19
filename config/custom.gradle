@@ -1,0 +1,24 @@
+task beforePR(dependsOn: ['detekt', 'lintUatDebug', 'jacocoTestReport']) {
+    group 'Custom'
+    description '[THE 1] detekt + lint + unittest'
+    doLast {
+        printOutputFile("uat", "debug")
+    }
+}
+
+task unittest(dependsOn: ['detekt', 'jacocoTestReport']) {
+    group 'Custom'
+    description '[THE 1] detekt + unittest'
+    doLast {
+        printOutputFile("uat", "debug")
+    }
+}
+
+def printOutputFile(env, mode) {
+    def envCapitalize = env.capitalize()
+    def modeCapitalize = mode.capitalize()
+    println "APK: $buildDir/outputs/apk/${env}/${mode}/"
+    println "Lint: $buildDir/reports/lint-results-${env}${modeCapitalize}.html"
+    println "Test result: $buildDir/reports/tests/test${envCapitalize}${modeCapitalize}UnitTest/index.html"
+    println "Test coverage: $buildDir/reports/jacoco/index.html"
+}

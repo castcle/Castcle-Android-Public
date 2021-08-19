@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="action_bar_height">@dimen/_45sdp</dimen>
+    <dimen name="footer_action_bar_height">@dimen/_65sdp</dimen>
+</resources>
