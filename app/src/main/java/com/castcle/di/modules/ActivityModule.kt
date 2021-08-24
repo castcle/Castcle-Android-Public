@@ -1,5 +1,6 @@
 package com.castcle.di.modules
 
+import com.castcle.di.modules.common.SessionEnvironmentModule
 import com.castcle.di.modules.onboard.OnBoardActivityModule
 import com.castcle.di.modules.onboard.OnBoardFragmentModule
 import com.castcle.di.modules.splashscreen.SplashScreenActivityModule
@@ -16,7 +17,8 @@ interface ActivityModule {
     @ContributesAndroidInjector(
         modules = [
             OnBoardActivityModule::class,
-            OnBoardFragmentModule::class
+            OnBoardFragmentModule::class,
+            SessionEnvironmentModule::class,
         ]
     )
     fun onBoardActivity(): OnBoardActivity
@@ -24,7 +26,8 @@ interface ActivityModule {
     @ActivityScope
     @ContributesAndroidInjector(
         modules = [
-            SplashScreenActivityModule::class
+            SplashScreenActivityModule::class,
+            SessionEnvironmentModule::class
         ]
     )
     fun SplashScreenActivity(): SplashScreenActivity

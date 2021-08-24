@@ -26,5 +26,4 @@ import javax.inject.Inject
 //
 //  Created by sklim on 19/8/2021 AD at 11:34.
 
-class FeedFragmentViewModelImpl @Inject constructor() : FeedFragmentViewModel() {
-}
+class FeedFragmentViewModelImpl @Inject constructor() : FeedFragmentViewModel()

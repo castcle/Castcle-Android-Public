@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Castcle</string>
     <string name="bottom_menu_feed" translatable="false">Feed</string>
     <string name="bottom_menu_create" translatable="false">Create</string>
     <string name="bottom_menu_search" translatable="false">Search</string>
     <string name="error_generic">Something went wrong. Please try again later.</string>
+    <string name="feed_title_toolbar">For you</string>
+    <string name="dialog_login_title">Create an Account to continue</string>
+    <string name="dialog_login_sub_title">By continuing, you agree to our</string>
+    <string name="dialog_login_user_agreement">User Agreement</string>
+    <string name="dialog_login_and">and</string>
+    <string name="dialog_login_privacy_policy">Privacy Policy</string>
+    <string name="dialog_login_with_telegram">Continue with Telegram</string>
+    <string name="dialog_login_with_facebook">Continue with facebook</string>
+    <string name="dialog_login_with_twitter">Continue with twitter</string>
+    <string name="dialog_login_with_google">Continue with google</string>
+    <string name="dialog_login_with_email">Continue with Email</string>
+    <string name="dialog_login_footer_join_us">Join Us</string>
+    <string name="dialog_login_footer_menifesto">Manifesto</string>
+    <string name="dialog_login_footer_whitepaper">Whitepaper</string>
+    <string name="dialog_login_footer_title">Already have a Castcle account ?</string>
+    <string name="dialog_login">Login</string>
 </resources>

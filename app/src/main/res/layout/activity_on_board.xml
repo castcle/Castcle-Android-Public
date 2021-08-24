@@ -23,8 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/action_bar_height"
                 android:background="?attr/castclePrimaryColor"
-                app:contentInsetEnd="0dp"
-                app:contentInsetStart="0dp" />
+                app:contentInsetStart="0dp"
+                app:contentInsetEnd="0dp"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.fragment.app.FragmentContainerView
@@ -42,9 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height"
         android:layout_gravity="bottom"
-        android:background="?attr/colorPrimaryVariant"
-        app:itemTextAppearanceActive="@style/AppTextKanit.Active"
-        app:itemTextAppearanceInactive="@style/AppTextKanit.InActive"
-        app:labelVisibilityMode="labeled"
+        android:background="@color/black_night"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

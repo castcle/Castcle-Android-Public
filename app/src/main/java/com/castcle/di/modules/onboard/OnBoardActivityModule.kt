@@ -5,6 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
+import com.castcle.networking.NetworkModule
+import com.castcle.networking.api.auth.AuthenticationDataSourceModule
+import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.ui.base.BaseNavigator
 import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.onboard.*
@@ -38,7 +41,13 @@ import dagger.multibindings.IntoMap
 //
 //  Created by sklim on 18/8/2021 AD at 14:41.
 
-@Module
+@Module(
+    includes = [
+        NetworkModule::class,
+        NonAuthenticationDataSourceModule::class,
+        AuthenticationDataSourceModule::class
+    ]
+)
 interface OnBoardActivityModule {
 
     @Binds

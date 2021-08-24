@@ -27,4 +27,6 @@ import com.castcle.ui.base.BaseNavigator
 //  Created by sklim on 18/8/2021 AD at 16:21.
 
 interface OnBoardNavigator : BaseNavigator {
+
+    fun navigateToNotiflyLoginDialogFragment()
 }

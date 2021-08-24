@@ -31,18 +31,21 @@ object BottomNavigateStatic {
     val bottomMenu = mutableListOf(
         BottomNavigation(
             R.string.bottom_menu_feed,
-            R.drawable.ic_feed_selector,
-            R.id.onboard_nav_graph
+            R.attr.bmBottomNavFeed,
+            R.id.onboard_nav_graph,
+            R.dimen._12sdp
         ),
         BottomNavigation(
             R.string.bottom_menu_create,
-            R.drawable.ic_create_content,
-            R.id.bloc_nav_graph
+            R.attr.bmBottomNavCreate,
+            R.id.bloc_nav_graph,
+            R.dimen._30sdp
         ),
         BottomNavigation(
             R.string.bottom_menu_search,
-            R.drawable.ic_search,
-            R.id.search_nav_graph
+            R.attr.bmBottomNavSearch,
+            R.id.search_nav_graph,
+            R.dimen._12sdp
         )
     )
 }

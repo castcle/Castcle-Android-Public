@@ -26,12 +26,15 @@ package com.castcle.session_memory.model
 
 data class SessionEnvironment(
     val sessionToken: SessionToken? = null,
+    val sessionRefreshToken: SessionRefreshToken? = null,
     val languageCode: String? = DEFAULT_LANGUAGE_CODE
 ) {
     data class SessionToken(
         val token: String,
-        val tokenType: String,
-        val refreshToken: String
+    )
+
+    data class SessionRefreshToken(
+        val refreshToken: String,
     )
 }
 

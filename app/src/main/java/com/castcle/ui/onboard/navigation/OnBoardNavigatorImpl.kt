@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.castcle.android.R
 import com.castcle.ui.base.BaseNavigatorImpl
+import com.castcle.ui.feed.FeedFragmentDirections.Companion.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -35,16 +36,25 @@ class OnBoardNavigatorImpl @Inject constructor(
     private val activity: FragmentActivity
 ) : BaseNavigatorImpl(activity), OnBoardNavigator {
 
+    override fun navigateToNotiflyLoginDialogFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.feedFragment) {
+                    navController.navigate(
+                        actionFeedFragmentToNotiflyLoginDialoginDialogFragment()
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
     override fun findNavController(): NavController {
         return activity.findNavController(R.id.navHostContainer)
     }
-
-    override fun requestNavController(): NavController? {
-        TODO("Not yet implemented")
-    }
-
-    override fun navigateBack() {
-        TODO("Not yet implemented")
-    }
-
 }

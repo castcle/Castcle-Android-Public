@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
 }
+apply from: '../config/detekt.gradle'
 
 android {
     compileSdk android_app_compile_sdk_version
@@ -90,6 +91,11 @@ dependencies {
             "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     )
 
+    kapt(
+            "com.google.dagger:dagger-compiler:$dagger_version",
+            "com.google.dagger:dagger-android-processor:$dagger_version"
+    )
+
     testImplementation(
             "junit:junit:$junit_version",
             "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version",
@@ -101,4 +107,13 @@ dependencies {
             "androidx.test.ext:junit-ktx:$androidx_junit_version",
             "org.robolectric:robolectric:$robolectric_version"
     )
+
+    debugImplementation("com.facebook.flipper:flipper:$flipper_version") {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.facebook.fbjni'
+    }
+
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:$flipper_version"){
+        exclude group: 'com.facebook.fbjni'
+    }
 }

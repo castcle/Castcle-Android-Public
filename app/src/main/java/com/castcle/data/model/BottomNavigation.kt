@@ -27,5 +27,6 @@ package com.castcle.data.model
 data class BottomNavigation(
     val title: Int,
     val icon: Int,
-    var navGraph: Int
+    var navGraph: Int,
+    var sizeIcon: Int
 )

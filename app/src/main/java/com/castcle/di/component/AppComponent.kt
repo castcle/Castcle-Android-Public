@@ -5,6 +5,7 @@ import com.castcle.CastcleApplication
 import com.castcle.authen_android.di.components.AuthenticateComponent
 import com.castcle.di.modules.ActivityModule
 import com.castcle.di.modules.AppModule
+import com.castcle.di.modules.analytics.AppCenterAnalyticModule
 import com.castcle.di.scope.ApplicationScope
 import com.castcle.session_memory.SessionManagerModule
 import dagger.BindsInstance
@@ -41,7 +42,8 @@ import dagger.android.AndroidInjector
         AndroidInjectionModule::class,
         AppModule::class,
         ActivityModule::class,
-        SessionManagerModule::class
+        SessionManagerModule::class,
+        AppCenterAnalyticModule::class
     ],
     dependencies = [
         AuthenticateComponent::class,

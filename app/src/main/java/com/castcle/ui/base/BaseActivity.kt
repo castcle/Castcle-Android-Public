@@ -13,6 +13,8 @@ import com.castcle.ui.util.Toaster
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.addTo
 import javax.inject.Inject
 
 abstract class BaseActivity<VM : BaseViewModel> : DaggerAppCompatActivity(), Injectable {
@@ -60,6 +62,8 @@ abstract class BaseActivity<VM : BaseViewModel> : DaggerAppCompatActivity(), Inj
             setSupportActionBar(it)
         }
     }
+
+    protected fun Disposable.addToDisposables() = addTo(disposables)
 
     override fun androidInjector(): AndroidInjector<Any> {
         realInjector = super.androidInjector()

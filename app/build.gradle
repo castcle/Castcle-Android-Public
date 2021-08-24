@@ -77,8 +77,16 @@ android {
     }
 
     packagingOptions {
-        doNotStrip '*/mips/*.so'
-        doNotStrip '*/mips64/*.so'
+        pickFirst '**/libjsc.so'
+        pickFirst '**/libc++_shared.so'
+        exclude 'lib/armeabi/*.so'
+        exclude 'lib/x86_64/*.so'
+        exclude 'lib/mips/*.so'
+        exclude 'lib/mips64/*.so'
+        exclude 'org/mozilla/javascript/resources/*.*'
+        exclude '**/module-info.class'
+        exclude 'org/eclipse/paho/**'
+
     }
 
     buildFeatures {
@@ -98,7 +106,7 @@ dependencies {
             project(':components-android'),
     )
 
-    implementation platform("com.google.firebase:firebase-bom:$firebase_version")
+    implementation platform("com.google.firebase:firebase-bom:$firebase_bom")
 
     implementation(
             "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
@@ -144,6 +152,7 @@ dependencies {
             "com.google.firebase:firebase-database-ktx",
             "com.google.firebase:firebase-auth-ktx",
             "com.google.firebase:firebase-crashlytics-ktx",
+            "com.google.firebase:firebase-analytics-ktx",
             "com.google.firebase:firebase-bom:$firebase_bom",
             "com.jakewharton.timber:timber:$timber_version",
 
@@ -168,7 +177,10 @@ dependencies {
 
             "androidx.biometric:biometric:$biometric_version",
 
-            "com.facebook.shimmer:shimmer:$facebook_shimmer_lib"
+            "com.facebook.shimmer:shimmer:$facebook_shimmer_lib",
+
+            "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion",
+            "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
 
     )
 

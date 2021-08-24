@@ -5,8 +5,15 @@
     android:id="@+id/onboard_nav_graph"
     app:startDestination="@id/feedFragment">
 
+    <include app:graph="@navigation/dialog_login_nav_graph" />
+
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.castcle.ui.feed.FeedFragment"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed">
+
+        <action
+            android:id="@+id/actionFeedFragmentToNotiflyLoginDialoginDialogFragment"
+            app:destination="@id/dialog_login_nav_graph" />
+    </fragment>
 </navigation>
