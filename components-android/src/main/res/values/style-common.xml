@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTextKanit">
+        <item name="fontFamily">@font/kanit_regular</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="AppTextKanit.Headline">
+        <item name="android:textSize">@dimen/_18ssp</item>
+    </style>
+
+    <style name="AppTextKanit.Medium">
+        <item name="android:textSize">@dimen/_16ssp</item>
+    </style>
+
+    <style name="AppTextKanit.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="AppTextKanit.Small">
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+    <style name="AppTextKanit.xSmall">
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
+
+    <style name="AppTextKanit.Default">
+        <item name="android:textSize">@dimen/_10ssp</item>
+    </style>
+
+    <style name="AppTextKanit.xxSmall">
+        <item name="android:textSize">@dimen/_9ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold">
+        <item name="fontFamily">@font/kanit_bold</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="AppTextKanitBold.Headline">
+        <item name="android:textSize">@dimen/_18ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold.Medium">
+        <item name="android:textSize">@dimen/_16ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold.Small">
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold.xSmall">
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold.Default">
+        <item name="android:textSize">@dimen/_10ssp</item>
+    </style>
+
+    <style name="AppTextKanitBold.xxSmall">
+        <item name="android:textSize">@dimen/_9ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight">
+        <item name="fontFamily">@font/kanit_light</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+    </style>
+
+    <style name="AppTextKanitLight.Headline">
+        <item name="android:textSize">@dimen/_18ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight.Medium">
+        <item name="android:textSize">@dimen/_16ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight.Small">
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight.xSmall">
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight.Default">
+        <item name="android:textSize">@dimen/_10ssp</item>
+    </style>
+
+    <style name="AppTextKanitLight.xxSmall">
+        <item name="android:textSize">@dimen/_9ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight">
+        <item name="fontFamily">@font/kanit_extralight</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+    </style>
+
+    <style name="AppTextKanitExLight.Headline">
+        <item name="android:textSize">@dimen/_18ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight.Medium">
+        <item name="android:textSize">@dimen/_16ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight.Small">
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight.xSmall">
+        <item name="android:textSize">@dimen/_11ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight.Default">
+        <item name="android:textSize">@dimen/_10ssp</item>
+    </style>
+
+    <style name="AppTextKanitExLight.xxSmall">
+        <item name="android:textSize">@dimen/_9ssp</item>
+    </style>
+
+    <style name="AppTextKanit.Active">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="AppTextKanit.InActive">
+        <item name="android:textColor">@color/blue</item>
+    </style>
+</resources>

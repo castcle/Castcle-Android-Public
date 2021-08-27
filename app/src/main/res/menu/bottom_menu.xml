@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_graph_feed"
-        android:icon="@drawable/ic_feed_selector"
-        android:title="@string/bottom_menu_feed" />
-    <item
-        android:id="@+id/nav_graph_create"
-        android:icon="@drawable/ic_create_content"
-        android:title="@string/bottom_menu_create" />
-    <item
-        android:id="@+id/nav_graph_search"
-        android:icon="@drawable/ic_search"
-        android:title="@string/bottom_menu_search" />
+<!--    <item-->
+<!--        android:id="@+id/feedFragment"-->
+<!--        android:icon="@drawable/ic_feed_selector"-->
+<!--        android:title="@string/bottom_menu_feed" />-->
+<!--    <item-->
+<!--        android:id="@+id/createBlogFragment"-->
+<!--        android:icon="@drawable/ic_create_content"-->
+<!--        android:title="@string/bottom_menu_create" />-->
+<!--    <item-->
+<!--        android:id="@+id/searchFragment"-->
+<!--        android:icon="@drawable/ic_search"-->
+<!--        android:title="@string/bottom_menu_search" />-->
 </menu>

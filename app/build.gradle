@@ -9,6 +9,7 @@ apply from: '../config/detekt.gradle'
 
 android {
     compileSdk android_app_compile_sdk_version
+    buildToolsVersion android_app_build_tools_version
 
     defaultConfig {
         applicationId 'com.castcle.android'
@@ -19,6 +20,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        renderscriptSupportModeEnabled true
     }
 
     flavorDimensions "stage"
@@ -104,6 +106,7 @@ dependencies {
             project(':Authen-Android'),
             project(':networking-android'),
             project(':components-android'),
+            project(':common-model'),
     )
 
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom")
@@ -180,8 +183,10 @@ dependencies {
             "com.facebook.shimmer:shimmer:$facebook_shimmer_lib",
 
             "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion",
-            "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
-
+            "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion",
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:$corotines_version",
+            "jp.wasabeef:blurry:$blurry_image_version",
+            "com.github.mikaelzero.mojito:mojito:$mojito_version",
     )
 
     implementation("com.github.bumptech.glide:glide:4.12.0") {

@@ -3,9 +3,9 @@
     <style name="Theme.Castcle" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:windowActivityTransitions">true</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/black_night</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/dark_gray</item>
         <item name="colorSecondaryVariant">@color/dark_gray</item>

@@ -6,7 +6,6 @@ import com.castcle.networking.service.authenticator.ApplicationRequestAuthentica
 import com.castcle.networking.service.authenticator.TokenRefresher
 import com.castcle.networking.service.common.secrets.ApiEndPointUrl
 import com.castcle.networking.service.interceptor.ApplicationRequestInterceptor
-import com.castcle.networking.service.interceptor.FlipperInitializer
 import com.castcle.networking.service.providers.ConverterFactoryProvider.getGsonConverterFactory
 import com.castcle.networking.service.providers.OkHttpClientProvider.getOkHttpClientBuilder
 import com.castcle.session_memory.SessionManagerRepository

@@ -1,5 +1,7 @@
 package com.castcle.ui.feed
 
+import androidx.lifecycle.LiveData
+import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.ui.base.BaseViewModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -26,4 +28,9 @@ import com.castcle.ui.base.BaseViewModel
 //
 //  Created by sklim on 19/8/2021 AD at 11:33.
 
-abstract class FeedFragmentViewModel : BaseViewModel()
+abstract class FeedFragmentViewModel : BaseViewModel() {
+
+    abstract val feedMockUiModel: LiveData<ContentFeedUiModel>
+
+    abstract fun getMockFeed()
+}

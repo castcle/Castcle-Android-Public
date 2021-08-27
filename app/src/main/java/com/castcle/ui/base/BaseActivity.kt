@@ -36,7 +36,7 @@ abstract class BaseActivity<VM : BaseViewModel> : DaggerAppCompatActivity(), Inj
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_Castcle)
+        setTheme(R.style.CastcleTheme)
         beforeLayoutInflated()
 
         when (this) {

@@ -5,7 +5,7 @@ buildscript {
         android_app_version_name = "1.0.0"
         android_app_target_sdk_version = 30
         android_app_compile_sdk_version = 30
-        android_app_build_tools_version = "1.0.0"
+        android_app_build_tools_version = "30.0.3"
         android_app_min_sdk_version = 21
         android_app_renderscript_target_api = 22
 
@@ -30,7 +30,7 @@ buildscript {
         androidx_junit_version = '1.1.3'
 
         kluent_version = '1.68'
-        kotlin_version = '1.5.21'
+        kotlin_version = '1.4.31'
 
         lottie_version = "3.3.1"
 
@@ -115,6 +115,12 @@ buildscript {
         glide_version = '4.12.0'
         glide_transformation = "4.0.0"
         appCenterSdkVersion = "4.1.0"
+        corotines_version = "1.3.9"
+        mojito_version = "1.8.1"
+        jsoup_version = "1.14.2"
+        circle_image_version = "4.3.0"
+        blurry_image_version = "4.0.0"
+        time_ago_version = "4.0.3"
     }
 
     repositories {
@@ -125,7 +131,7 @@ buildscript {
         maven { url '../ijrrepo_aar' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.1"
+        classpath 'com.android.tools.build:gradle:7.0.1'
         classpath 'com.google.firebase:perf-plugin:1.4.0'
         classpath 'com.google.gms:google-services:4.3.10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

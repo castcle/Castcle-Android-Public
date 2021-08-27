@@ -4,15 +4,19 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.14427083333333332" />
+        <entry key="app/src/main/res/drawable-night/ic_close.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14652777777777778" />
         <entry key="app/src/main/res/drawable/bg_onboard_greeting.xml" value="0.21851851851851853" />
         <entry key="app/src/main/res/drawable/bg_splash_screen.xml" value="0.15833333333333333" />
+        <entry key="app/src/main/res/drawable/ic_arrow_left_big.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/drawable/ic_castcle_logo.xml" value="0.21851851851851853" />
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.21851851851851853" />
+        <entry key="app/src/main/res/drawable/ic_more.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/drawable/ic_tool_bar.xml" value="0.21851851851851853" />
         <entry key="app/src/main/res/drawable/splash_screen.xml" value="0.21851851851851853" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16041666666666668" />
-        <entry key="app/src/main/res/layout/activity_on_board.xml" value="0.2289156626506024" />
+        <entry key="app/src/main/res/layout/activity_on_board.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.20153985507246377" />
         <entry key="app/src/main/res/layout/bottom_create_bloc.xml" value="0.1260245901639344" />
         <entry key="app/src/main/res/layout/content_on_board.xml" value="0.16041666666666668" />
@@ -20,28 +24,47 @@
         <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.10941086457536343" />
         <entry key="app/src/main/res/layout/fragment_onboard_greeting.xml" value="0.31311442428590397" />
         <entry key="app/src/main/res/layout/fragment_onboard_greeting_fragment.xml" value="0.19701086956521738" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_webview.xml" value="0.13900273224043716" />
         <entry key="app/src/main/res/layout/layout_bottom_menu_custom.xml" value="0.1260245901639344" />
         <entry key="app/src/main/res/layout/layout_login.xml" value="0.36923076923076925" />
         <entry key="app/src/main/res/layout/splash_screen.xml" value="0.20606884057971014" />
         <entry key="app/src/main/res/layout/toolbar_castcle_common.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toolbar_castcle_greeting.xml" value="0.19701086956521738" />
+        <entry key="app/src/main/res/layout/toolbar_castcle_webview.xml" value="0.25" />
         <entry key="app/src/main/res/menu/bottom_menu.xml" value="0.2234375" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.14652777777777778" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.14652777777777778" />
         <entry key="component-android/src/main/res/drawable/splash_screen.xml" value="0.2212962962962963" />
+        <entry key="components-android/src/main/res/drawable/bg_cover.xml" value="0.235546875" />
+        <entry key="components-android/src/main/res/drawable/bg_cover_under.xml" value="0.17291666666666666" />
         <entry key="components-android/src/main/res/drawable/bg_email.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/bg_facebook.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/bg_google.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/bg_telegram.xml" value="0.21851851851851853" />
         <entry key="components-android/src/main/res/drawable/bg_twitter.xml" value="0.1638888888888889" />
+        <entry key="components-android/src/main/res/drawable/ic_avatar_placeholder.xml" value="0.18680555555555556" />
+        <entry key="components-android/src/main/res/drawable/ic_bagde_follow.xml" value="0.17291666666666666" />
         <entry key="components-android/src/main/res/drawable/ic_create_content.xml" value="0.108984375" />
         <entry key="components-android/src/main/res/drawable/ic_facebook.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/ic_feed.xml" value="0.15486111111111112" />
         <entry key="components-android/src/main/res/drawable/ic_feed_selected.xml" value="0.11" />
         <entry key="components-android/src/main/res/drawable/ic_feed_selector.xml" value="0.15208333333333332" />
+        <entry key="components-android/src/main/res/drawable/ic_img_placeholder.xml" value="0.18333333333333332" />
         <entry key="components-android/src/main/res/drawable/ic_search.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selected.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selector.xml" value="0.14930555555555555" />
+        <entry key="components-android/src/main/res/layout/latout_feed_template_bloc.xml" value="0.13524590163934427" />
+        <entry key="components-android/src/main/res/layout/latout_feed_template_blog.xml" value="0.335" />
+        <entry key="components-android/src/main/res/layout/latout_feed_template_f01.xml" value="0.30875787429552826" />
+        <entry key="components-android/src/main/res/layout/latout_feed_template_image.xml" value="0.13524590163934427" />
+        <entry key="components-android/src/main/res/layout/latout_feed_template_short.xml" value="0.75" />
+        <entry key="components-android/src/main/res/layout/layout_feed.xml" value="0.13524590163934427" />
+        <entry key="components-android/src/main/res/layout/layout_feed_template_blog.xml" value="0.25" />
+        <entry key="components-android/src/main/res/layout/layout_feed_template_image.xml" value="0.21388888888888888" />
+        <entry key="components-android/src/main/res/layout/layout_feed_template_short.xml" value="0.25" />
+        <entry key="components-android/src/main/res/layout/layout_user_bar_template.xml" value="0.2621359223300971" />
+        <entry key="components-android/src/main/res/layout/layout_user_footer_template.xml" value="0.335" />
       </map>
     </option>
   </component>

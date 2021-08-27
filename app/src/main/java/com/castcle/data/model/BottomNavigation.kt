@@ -28,5 +28,6 @@ data class BottomNavigation(
     val title: Int,
     val icon: Int,
     var navGraph: Int,
+    var navGraphId: Int,
     var sizeIcon: Int
 )

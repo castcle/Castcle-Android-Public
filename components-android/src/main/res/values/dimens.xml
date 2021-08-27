@@ -2,4 +2,5 @@
 <resources>
     <dimen name="action_bar_height">@dimen/_45sdp</dimen>
     <dimen name="footer_action_bar_height">@dimen/_65sdp</dimen>
+    <dimen name="default_round_radius">@dimen/_8sdp</dimen>
 </resources>

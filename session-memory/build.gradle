@@ -8,6 +8,7 @@ apply from: '../config/detekt.gradle'
 
 android {
     compileSdk android_app_compile_sdk_version
+    buildToolsVersion android_app_build_tools_version
 
     defaultConfig {
         minSdk android_app_min_sdk_version

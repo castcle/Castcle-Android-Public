@@ -1,6 +1,6 @@
 package com.castcle.ui.common.dialog
 
-import android.content.res.Resources
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,8 +8,11 @@ import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.DialogFragmentNotiflyLoginBinding
+import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.extensions.openUri
 import com.castcle.ui.base.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import jp.wasabeef.blurry.Blurry
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -75,7 +78,22 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
     }
 
     override fun bindViewEvents() {
+        with(binding) {
+            tvActionLinkUserAgreement.subscribeOnClick {
+                openWebView(STATIC_LINK_USER_AGREEMENT)
+            }
+            tvActionLinkPrivacy.subscribeOnClick {
+                openWebView(STATIC_LINK_PRIVACY_POLICY)
+            }
+        }
     }
 
-    private fun getScreenHeight(): Int = Resources.getSystem().displayMetrics.heightPixels
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
+    }
 }
+
+private const val STATIC_LINK_USER_AGREEMENT =
+    "https://castcle-public.s3.amazonaws.com/documents/terms-of-service.html"
+private const val STATIC_LINK_PRIVACY_POLICY =
+    "https://castcle-public.s3.amazonaws.com/documents/privacy-policy.html"

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimaryVariant">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.xxSmall"
+        android:id="@+id/tvLiked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:drawableLeft="@drawable/ic_like"
+        android:drawablePadding="@dimen/_4sdp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="3k" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.xxSmall"
+        android:id="@+id/tvCommented"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_comment"
+        android:drawablePadding="@dimen/_4sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/tvReCasted"
+        app:layout_constraintStart_toEndOf="@id/tvLiked"
+        app:layout_constraintTop_toTopOf="@id/tvLiked"
+        tools:text="12" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.xxSmall"
+        android:id="@+id/tvReCasted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_24sdp"
+        android:drawableLeft="@drawable/ic_recast"
+        android:drawablePadding="@dimen/_4sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvLiked"
+        tools:text="11" />
+</androidx.constraintlayout.widget.ConstraintLayout>

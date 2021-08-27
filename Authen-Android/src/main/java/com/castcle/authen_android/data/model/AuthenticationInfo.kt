@@ -13,7 +13,7 @@ data class AuthenticationInfo(
             fun from(value: String?): Method {
                 return try {
                     valueOf(
-                        value.orEmpty().uppercase(Locale.ROOT)
+                        value.orEmpty().toUpperCase(Locale.ROOT)
                     )
                 } catch (ex: IllegalArgumentException) {
                     OTP

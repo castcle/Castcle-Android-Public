@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import com.castcle.android.R
 import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.feed.FeedFragmentDirections.Companion.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
+import com.castcle.ui.webview.WebViewFragmentArgs
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -52,6 +53,14 @@ class OnBoardNavigatorImpl @Inject constructor(
                 unsupportedNavigation()
             }
         }
+    }
+
+    override fun navigateToWebView(url: String) {
+        val navController = findNavController()
+        navController.navigate(
+            R.id.webviewFragment,
+            WebViewFragmentArgs(url).toBundle()
+        )
     }
 
     override fun findNavController(): NavController {

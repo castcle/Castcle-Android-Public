@@ -18,7 +18,6 @@ package com.castcle.extensions
 
 import android.content.Intent
 import android.util.SparseArray
-import android.view.MenuItem
 import androidx.core.util.forEach
 import androidx.core.util.set
 import androidx.fragment.app.FragmentManager
@@ -29,20 +28,12 @@ import androidx.navigation.fragment.NavHostFragment
 import com.castcle.android.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-/**
- * Manages the various graphs needed for a [BottomNavigationView].
- *
- * This sample is a workaround until the Navigation Component supports multiple back stacks.
- */
 fun BottomNavigationView.setupWithNavController(
     navGraphIds: List<Int>,
     fragmentManager: FragmentManager,
     containerId: Int,
     intent: Intent,
     onDestinationChangedListener: NavController.OnDestinationChangedListener,
-    onBottomNavigationItemSelected: (MenuItem) -> Unit,
-    onBottomNavigationItemReselected: (MenuItem) -> Unit,
-    onBottomNavigationItemFirstTimeSelected: (graphId: Int) -> Unit
 ): LiveData<NavController> {
     // Map of tags
     val graphIdToTagMap = SparseArray<String>()
@@ -75,9 +66,6 @@ fun BottomNavigationView.setupWithNavController(
 
             if (index == 0) {
                 firstFragmentGraphId = graphId
-                postDelayed({
-                    onBottomNavigationItemFirstTimeSelected.invoke(firstFragmentGraphId)
-                }, ADOBE_ANALYTIC_DELAY_IN_MILLISECONDS)
             }
 
             // Save to the map
@@ -99,7 +87,7 @@ fun BottomNavigationView.setupWithNavController(
     var isOnFirstFragment = selectedItemTag == firstFragmentTag
 
     // When a navigation item is selected
-    setOnNavigationItemSelectedListener { item ->
+    setOnItemSelectedListener { item ->
         // Don't do anything if the state is state has already been saved.
         if (fragmentManager.isStateSaved) {
             false
@@ -149,9 +137,6 @@ fun BottomNavigationView.setupWithNavController(
                 isOnFirstFragment = selectedItemTag == firstFragmentTag
                 selectedNavController.value = selectedFragment.navController
                 // This is a workaround, allow nav_graph a minimal amount of time to attach fragment
-                postDelayed({
-                    onBottomNavigationItemSelected.invoke(item)
-                }, BOTTOM_NAVIGATION_DELAY_IN_MILLISECONDS)
                 true
             } else {
                 false
@@ -160,7 +145,7 @@ fun BottomNavigationView.setupWithNavController(
     }
 
     // Optional: on item reselected, pop back stack to the destination of the graph
-    setupItemReselected(graphIdToTagMap, fragmentManager, onBottomNavigationItemReselected)
+    setupItemReselected(graphIdToTagMap, fragmentManager)
 
     // Handle deep link
     setupDeepLinks(navGraphIds, fragmentManager, containerId, intent)
@@ -211,8 +196,7 @@ private fun BottomNavigationView.setupDeepLinks(
 
 private fun BottomNavigationView.setupItemReselected(
     graphIdToTagMap: SparseArray<String>,
-    fragmentManager: FragmentManager,
-    onBottomNavigationItemReselected: (MenuItem) -> Unit
+    fragmentManager: FragmentManager
 ) {
     setOnItemReselectedListener { item ->
         val newlySelectedItemTag = graphIdToTagMap[item.itemId]
@@ -223,11 +207,6 @@ private fun BottomNavigationView.setupItemReselected(
         navController.popBackStack(
             navController.graph.startDestination, false
         )
-
-        // This is a workaround, allow nav_graph a minimal amount of time to attach fragment
-        postDelayed({
-            onBottomNavigationItemReselected.invoke(item)
-        }, BOTTOM_NAVIGATION_DELAY_IN_MILLISECONDS)
     }
 }
 

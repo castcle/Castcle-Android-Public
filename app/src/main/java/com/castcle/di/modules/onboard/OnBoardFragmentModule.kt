@@ -2,9 +2,11 @@ package com.castcle.di.modules.onboard
 
 import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
+import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
 import com.castcle.ui.feed.FeedFragment
+import com.castcle.ui.webview.WebViewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -42,4 +44,8 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [NotiflyLoginDialogFragmentModule::class])
     fun notiflyLoginDialogFragment(): NotiflyLoginDialogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [WebViewFragmentViewModelModule::class])
+    fun webViewFragment(): WebViewFragment
 }

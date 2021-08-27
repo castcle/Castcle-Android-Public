@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="CastcleTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/black_night</item>
+        <item name="colorPrimaryVariant">@color/black_night</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/dark_gray</item>
+        <item name="colorSecondaryVariant">@color/dark_gray</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="castclePrimaryColor">@color/black</item>
+        <item name="castclePrimaryTextColor">@color/black</item>
+        <item name="castcleSecondaryTextColor">@color/black</item>
+        <item name="castclePrimarySelectedColor">@color/blue</item>
+        <item name="bmBottomNavFeed">@drawable/ic_feed_selector</item>
+        <item name="bmBottomNavCreate">@drawable/ic_create_content</item>
+        <item name="bmBottomNavSearch">@drawable/ic_search_selector</item>
+    </style>
+</resources>

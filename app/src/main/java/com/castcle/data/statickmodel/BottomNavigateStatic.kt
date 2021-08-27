@@ -32,18 +32,21 @@ object BottomNavigateStatic {
         BottomNavigation(
             R.string.bottom_menu_feed,
             R.attr.bmBottomNavFeed,
+            R.navigation.onboard_nav_graph,
             R.id.onboard_nav_graph,
             R.dimen._12sdp
         ),
         BottomNavigation(
             R.string.bottom_menu_create,
             R.attr.bmBottomNavCreate,
+            R.navigation.bloc_nav_graph,
             R.id.bloc_nav_graph,
             R.dimen._30sdp
         ),
         BottomNavigation(
             R.string.bottom_menu_search,
             R.attr.bmBottomNavSearch,
+            R.navigation.search_nav_graph,
             R.id.search_nav_graph,
             R.dimen._12sdp
         )

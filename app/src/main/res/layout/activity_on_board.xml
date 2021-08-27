@@ -5,12 +5,13 @@
     android:id="@+id/clOnBoardActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:filterTouchesWhenObscured="true"
     tools:context="com.castcle.ui.onboard.OnBoardActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -23,8 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/action_bar_height"
                 android:background="?attr/castclePrimaryColor"
-                app:contentInsetStart="0dp"
-                app:contentInsetEnd="0dp"/>
+                app:contentInsetEnd="0dp"
+                app:contentInsetStart="0dp" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.fragment.app.FragmentContainerView
@@ -32,17 +33,18 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:navGraph="@navigation/onboard_nav_graph" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:alpha="@integer/material_motion_duration_long_2"
+            android:background="@color/black_night_tranparent_80"
+            app:labelVisibilityMode="unlabeled"
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/action_bar_height"
-        android:layout_gravity="bottom"
-        android:background="@color/black_night"
-        app:labelVisibilityMode="unlabeled"
-        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

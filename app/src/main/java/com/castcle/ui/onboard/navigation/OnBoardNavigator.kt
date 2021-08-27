@@ -29,4 +29,6 @@ import com.castcle.ui.base.BaseNavigator
 interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToNotiflyLoginDialogFragment()
+
+    fun navigateToWebView(url: String)
 }

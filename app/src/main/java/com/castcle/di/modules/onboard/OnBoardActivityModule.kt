@@ -7,6 +7,7 @@ import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
 import com.castcle.networking.NetworkModule
 import com.castcle.networking.api.auth.AuthenticationDataSourceModule
+import com.castcle.networking.api.feed.FeedNonAuthenticationDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.ui.base.BaseNavigator
 import com.castcle.ui.base.BaseNavigatorImpl
@@ -45,7 +46,8 @@ import dagger.multibindings.IntoMap
     includes = [
         NetworkModule::class,
         NonAuthenticationDataSourceModule::class,
-        AuthenticationDataSourceModule::class
+        AuthenticationDataSourceModule::class,
+        FeedNonAuthenticationDataSourceModule::class
     ]
 )
 interface OnBoardActivityModule {

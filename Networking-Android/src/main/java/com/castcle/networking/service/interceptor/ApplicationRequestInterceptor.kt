@@ -61,6 +61,7 @@ internal class ApplicationRequestInterceptor(
             sessionManagerRepository?.getLanguageCode() ?: Locale.getDefault().language
         return request
             .newBuilder()
+            .addHeader(ACCEPT_VERSION, DEFAULT_ACCEPT_VERSION)
             .addHeader(CONTENT_TYPE_HEADER, HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON)
             .addHeader(ACCEPT_LANGUAGE_HEADER, languageCode)
             .addHeader(DEVICE_PLATFORM, ANDROID.plus(" ").plus(VERSION.RELEASE))
@@ -77,6 +78,8 @@ internal class ApplicationRequestInterceptor(
 }
 
 private const val ACCEPT_LANGUAGE_HEADER = "Accept-Language"
+private const val ACCEPT_VERSION = "Accept-Version"
+private const val DEFAULT_ACCEPT_VERSION = "1"
 private const val DEVICE_PLATFORM = "Platform"
 private const val DEVICE_MODEL = "Device"
 private const val X_DEVICE_ID = "X-Device-Id"

@@ -7,6 +7,8 @@ internal const val ACCEPT_LANGUAGE_HEADER = "Accept-Language"
 
 internal const val PAGE_NUMBER = "pageNumber"
 internal const val PAGE_SIZE = "pageSize"
+internal const val EXCLUDE = "exclude"
+internal const val MODE = "mode"
 
 internal const val FILTER_TYPE = "filterType"
 internal const val FILTER_TYPE_SIMILAR = "similar"

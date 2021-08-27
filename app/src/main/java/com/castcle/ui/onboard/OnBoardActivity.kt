@@ -3,13 +3,15 @@ package com.castcle.ui.onboard
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu.NONE
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.ui.AppBarConfiguration
-import com.castcle.android.R.id
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import com.castcle.android.R
 import com.castcle.android.databinding.ActivityOnBoardBinding
 import com.castcle.android.databinding.LayoutBottomMenuCustomBinding
 import com.castcle.data.statickmodel.BottomNavigateStatic
-import com.castcle.extensions.getDrawableAttribute
+import com.castcle.extensions.*
 import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -19,10 +21,14 @@ import javax.inject.Inject
 
 class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private var currentMenuItem = id.onboard_nav_graph
-
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    private var currentMenuItem = R.id.onboard_nav_graph
+    private var currentNavController: LiveData<NavController>? = null
+
+    private val isOnBoardScreen: Boolean
+        get() = onBoardNavigator.findNavController().currentDestination?.id ==
+            R.id.feedFragment
 
     override val binding by lazy { ActivityOnBoardBinding.inflate(layoutInflater) }
 
@@ -35,11 +41,32 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
         super.onCreate(savedInstanceState)
 
         initBottomNavigation()
+
+        if (savedInstanceState == null) {
+            setupBottomNavigationBar()
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        setupBottomNavigationBar()
     }
 
     override fun viewModel(): OnBoardViewModel =
         ViewModelProvider(this, viewModelFactory)
             .get(OnBoardViewModel::class.java)
+
+    override fun onSupportNavigateUp(): Boolean {
+        return currentNavController?.value?.navigateUp() ?: false
+    }
+
+    override fun onBackPressed() {
+        if (isOnBoardScreen) {
+            // Disable the Back button
+            return
+        }
+        super.onBackPressed()
+    }
 
     private fun initBottomNavigation() {
         with(binding.bottomNavView) {
@@ -47,7 +74,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
             BottomNavigateStatic.bottomMenu.forEachIndexed { index, item ->
                 val menuItem = menu.add(
                     NONE,
-                    item.navGraph,
+                    item.navGraphId,
                     index,
                     ""
                 )
@@ -62,6 +89,38 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
                 }
             }
             customBottomMenu(1)
+        }
+    }
+
+    private fun setupBottomNavigationBar() {
+        with(binding.bottomNavView) {
+            itemIconTintList = null
+            val navGraphList = BottomNavigateStatic.bottomMenu.map { it.navGraph }
+            val controller = setupWithNavController(
+                navGraphList,
+                supportFragmentManager,
+                R.id.navHostContainer,
+                intent = intent,
+                onDestinationChangedListener = { _, destination, _ ->
+                    setBottomNavVisibility(destination)
+                }
+            )
+            currentNavController = controller
+            itemIconTintList = null
+            setOnApplyWindowInsetsListener(null)
+        }
+    }
+
+    private fun setBottomNavVisibility(destination: NavDestination) {
+        with(binding) {
+            when (destination.id) {
+                R.id.webviewFragment -> {
+                    bottomNavView.gone()
+                }
+                else -> {
+                    bottomNavView.visible()
+                }
+            }
         }
     }
 
