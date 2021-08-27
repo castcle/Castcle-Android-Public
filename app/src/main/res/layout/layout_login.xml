@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/transparent">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clLoginWithTelegram"
@@ -24,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_16sdp"
             android:textColor="@color/white"
+            android:text="@string/dialog_login_with_telegram"
             app:layout_constraintBottom_toBottomOf="@+id/imvLoginWithTelegram"
             app:layout_constraintStart_toEndOf="@id/imvLoginWithTelegram"
             app:layout_constraintTop_toTopOf="@id/imvLoginWithTelegram"
@@ -63,6 +63,7 @@
             android:layout_marginStart="@dimen/_16sdp"
             android:drawablePadding="@dimen/_8sdp"
             android:textColor="@color/white"
+            android:text="@string/dialog_login_with_facebook"
             app:layout_constraintBottom_toBottomOf="@+id/imvLoginWithFackbook"
             app:layout_constraintStart_toEndOf="@id/imvLoginWithFackbook"
             app:layout_constraintTop_toTopOf="@id/imvLoginWithFackbook"
@@ -101,6 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
             android:textColor="@color/white"
+            android:text="@string/dialog_login_with_twitter"
             app:layout_constraintBottom_toBottomOf="@+id/imvLoginWithTwitter"
             app:layout_constraintStart_toEndOf="@id/imvLoginWithTwitter"
             app:layout_constraintTop_toTopOf="@id/imvLoginWithTwitter"
@@ -138,6 +140,7 @@
             android:id="@+id/tvLoginWithGoogle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@string/dialog_login_with_google"
             android:layout_marginStart="@dimen/_12sdp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/imvLoginWithGoogle"
@@ -179,6 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
             android:textColor="@color/white"
+            android:text="@string/dialog_login_with_email"
             app:layout_constraintBottom_toBottomOf="@+id/imvLoginWithEmail"
             app:layout_constraintStart_toEndOf="@id/imvLoginWithEmail"
             app:layout_constraintTop_toTopOf="@id/imvLoginWithEmail"

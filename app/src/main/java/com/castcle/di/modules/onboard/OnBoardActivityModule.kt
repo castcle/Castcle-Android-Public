@@ -1,10 +1,18 @@
 package com.castcle.di.modules.onboard
 
 import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
+import com.castcle.networking.NetworkModule
+import com.castcle.networking.api.auth.AuthenticationDataSourceModule
+import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
+import com.castcle.ui.base.BaseNavigator
+import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.onboard.*
+import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.ui.onboard.navigation.OnBoardNavigatorImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -33,12 +41,30 @@ import dagger.multibindings.IntoMap
 //
 //  Created by sklim on 18/8/2021 AD at 14:41.
 
-@Module
+@Module(
+    includes = [
+        NetworkModule::class,
+        NonAuthenticationDataSourceModule::class,
+        AuthenticationDataSourceModule::class
+    ]
+)
 interface OnBoardActivityModule {
 
     @Binds
     @ActivityScope
     fun onBoardActivity(onBoardActivity: OnBoardActivity): Activity
+
+    @Binds
+    @ActivityScope
+    fun fragmentActivity(onBoardActivity: OnBoardActivity): FragmentActivity
+
+    @Binds
+    @ActivityScope
+    fun onBoardNaivgator(onBoardNavigatorImpl: OnBoardNavigatorImpl): OnBoardNavigator
+
+    @Binds
+    @ActivityScope
+    fun baseNavigateor(baseNavigatorImpl: BaseNavigatorImpl): BaseNavigator
 
     @Binds
     @IntoMap

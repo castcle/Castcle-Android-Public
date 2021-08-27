@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.castcle.android">
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -26,12 +27,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Castcle">
-
-        <activity
-            android:name="com.castcle.ui.onboard.OnBoardActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Castcle.NoActionBar" />
+        android:theme="@style/Theme.Castcle"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        tools:replace="android:theme,android:label,android:icon,android:roundIcon,android:allowBackup">
 
         <activity
             android:name="com.castcle.ui.splashscreen.SplashScreenActivity"
@@ -43,6 +41,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.castcle.ui.onboard.OnBoardActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustNothing"/>
+
     </application>
 
 </manifest>

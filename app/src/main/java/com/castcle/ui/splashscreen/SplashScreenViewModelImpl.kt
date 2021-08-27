@@ -2,6 +2,7 @@ package com.castcle.ui.splashscreen
 
 import android.annotation.SuppressLint
 import com.castcle.data.storage.AppPreferences
+import com.castcle.usecase.GuestLoginCompletableUseCase
 import io.reactivex.Completable
 import javax.inject.Inject
 
@@ -31,9 +32,11 @@ import javax.inject.Inject
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenViewModelImpl @Inject constructor(
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase
 ) : SplashScreenViewModel() {
+
     override fun requestGuestLogin(): Completable {
-        return Completable.complete()
+        return guestLoginCompletableUseCase.execute(Unit)
     }
 }

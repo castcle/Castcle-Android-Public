@@ -26,5 +26,4 @@ import com.castcle.ui.base.BaseViewModel
 //
 //  Created by sklim on 19/8/2021 AD at 11:01.
 
-abstract class OnBoardViewModel : BaseViewModel() {
-}
+abstract class OnBoardViewModel : BaseViewModel()

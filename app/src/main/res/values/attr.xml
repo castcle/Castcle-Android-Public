@@ -4,4 +4,7 @@
     <attr name="castclePrimaryTextColor" format="reference" />
     <attr name="castclePrimarySelectedColor" format="reference" />
     <attr name="castcleSecondaryTextColor" format="reference" />
+    <attr name="bmBottomNavFeed" format="reference" />
+    <attr name="bmBottomNavCreate" format="reference" />
+    <attr name="bmBottomNavSearch" format="reference" />
 </resources>

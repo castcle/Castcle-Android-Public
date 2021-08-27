@@ -55,6 +55,31 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
         (this as? BaseFragmentCallbacks)?.let { initViewModel() }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        bindActionbar(inflater, container)
+        return if (this is ViewBindingInflater<*>) {
+            bindingInflater.invoke(inflater, container, false)
+                .apply { viewBinding = this }
+                .root
+        } else {
+            inflater.inflate(getLayoutResInflate(), container, false)
+        }
+    }
+
+    private fun bindActionbar(inflater: LayoutInflater, container: ViewGroup?) {
+        if (this is ToolbarBindingInflater<*>) {
+            toolbarBindingInflater.invoke(inflater, container, false)
+                .apply { toolbarViewBinding = this }
+                .run(::setupActionBar)
+        } else {
+            setupActionBar()
+        }
+    }
+
     private fun getLayoutResInflate(): Int {
         return if (this is HasLayoutRes) {
             getFragmentLayoutRes()

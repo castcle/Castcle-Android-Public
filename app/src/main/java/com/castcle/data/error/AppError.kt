@@ -3,7 +3,7 @@ package com.castcle.data.error
 import android.content.Context
 import androidx.annotation.StringRes
 import com.castcle.android.R
-import com.castcle.networking_android.service.exception.ApiException
+import com.castcle.networking.service.exception.ApiException
 
 open class AppError(
     cause: Throwable?,

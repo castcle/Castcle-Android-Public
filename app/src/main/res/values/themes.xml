@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Castcle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowActivityTransitions">true</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black_night</item>
         <item name="colorPrimaryVariant">@color/black_night</item>
@@ -16,11 +17,9 @@
         <item name="castclePrimaryTextColor">@color/black</item>
         <item name="castcleSecondaryTextColor">@color/black</item>
         <item name="castclePrimarySelectedColor">@color/blue</item>
-    </style>
-
-    <style name="Theme.Castcle.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="bmBottomNavFeed">@drawable/ic_feed_selector</item>
+        <item name="bmBottomNavCreate">@drawable/ic_create_content</item>
+        <item name="bmBottomNavSearch">@drawable/ic_search_selector</item>
     </style>
 
     <style name="Theme.Castcle.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -29,6 +28,21 @@
 
     <style name="Theme.Castcle.SplashScreen" parent="Theme.Castcle">
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="bottomSheetStyle">@style/BottomSheetDialogModal</item>
+    </style>
+
+    <style name="BottomSheetDialogModal" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_onboard_greeting</item>
     </style>
 
     <style name="CastcleToolBar">

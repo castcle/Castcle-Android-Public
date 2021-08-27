@@ -1,13 +1,14 @@
 package com.castcle.ui.splashscreen
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
+import android.content.Intent
 import android.os.*
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.databinding.ActivitySplashScreenBinding
 import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.OnBoardActivity
+import io.reactivex.rxkotlin.subscribeBy
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingContract {
@@ -17,15 +18,20 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            startMainActivity()
-        }, DEPLAYED_SCREEN)
+        requestLogin()
     }
 
-    private fun startMainActivity() {
-        intent.component = ComponentName(this, OnBoardActivity::class.java)
-        startActivity(intent)
-        finish()
+    private fun requestLogin() {
+        viewModel.requestGuestLogin()
+            .subscribeBy(
+                onComplete = {
+                    startMainActivity()
+                },
+                onError = {
+                    displayError(it)
+                }
+            )
+            .addToDisposables()
     }
 
     override val layoutResource: Int = 0
@@ -36,6 +42,13 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
     override fun viewModel(): SplashScreenViewModel =
         ViewModelProvider(this, viewModelFactory)
             .get(SplashScreenViewModel::class.java)
+
+    private fun startMainActivity() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, OnBoardActivity::class.java)
+            startActivity(intent)
+        }, DEPLAYED_SCREEN)
+    }
 }
 
 private const val DEPLAYED_SCREEN: Long = 3000

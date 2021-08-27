@@ -1,8 +1,10 @@
 package com.castcle.di.modules.onboard
 
-import com.castcle.di.modules.onboard.greeting.OnBoardGreetingViewModelModule
-import com.castcle.ui.onboard.greeting.OnboardGreetingFragment
+import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
+import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
+import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
+import com.castcle.ui.feed.FeedFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -34,6 +36,10 @@ import dagger.android.ContributesAndroidInjector
 interface OnBoardFragmentModule {
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = [OnBoardGreetingViewModelModule::class])
-    fun onBoardGreetingFragment():OnboardGreetingFragment
+    @ContributesAndroidInjector(modules = [FeedFragmentViewModelModule::class])
+    fun feedFragment(): FeedFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [NotiflyLoginDialogFragmentModule::class])
+    fun notiflyLoginDialogFragment(): NotiflyLoginDialogFragment
 }

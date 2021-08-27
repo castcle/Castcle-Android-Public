@@ -1,5 +1,6 @@
 package com.castcle
 
+import com.castcle.analytics.appcenter.AppCenterAnalytics
 import com.castcle.authen_android.di.components.DaggerAuthenticateComponent
 import com.castcle.di.component.DaggerAppComponent
 import com.castcle.di.component.DaggerStorageComponent
@@ -10,11 +11,16 @@ import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketException
+import javax.inject.Inject
 
 class CastcleApplication : DaggerApplication() {
 
+    @Inject lateinit var appCenterAnalytics: AppCenterAnalytics
+
     override fun onCreate() {
         super.onCreate()
+
+        appCenterAnalytics.start()
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

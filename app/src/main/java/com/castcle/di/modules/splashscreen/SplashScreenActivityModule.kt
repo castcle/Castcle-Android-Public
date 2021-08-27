@@ -5,6 +5,8 @@ import android.app.Activity
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
+import com.castcle.networking.NetworkModule
+import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.ui.splashscreen.*
 import dagger.Binds
 import dagger.Module
@@ -35,7 +37,12 @@ import dagger.multibindings.IntoMap
 //  Created by sklim on 18/8/2021 AD at 18:36.
 
 @SuppressLint("CustomSplashScreen")
-@Module
+@Module(
+    includes = [
+        NetworkModule::class,
+        NonAuthenticationDataSourceModule::class,
+    ]
+)
 interface SplashScreenActivityModule {
 
     @Binds

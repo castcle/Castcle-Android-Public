@@ -103,10 +103,10 @@
     </style>
 
     <style name="AppTextKanit.Active">
-        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="AppTextKanit.InActive">
-        <item name="android:textColor">?attr/castclePrimarySelectedColor</item>
+        <item name="android:textColor">@color/blue</item>
     </style>
 </resources>

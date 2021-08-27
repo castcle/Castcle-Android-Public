@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_night"
+    android:background="@drawable/bg_launch_screen"
     tools:context="com.castcle.ui.splashscreen.SplashScreenActivity">
 
     <androidx.appcompat.widget.AppCompatImageView

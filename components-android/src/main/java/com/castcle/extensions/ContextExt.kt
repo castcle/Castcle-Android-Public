@@ -1,7 +1,10 @@
 package com.castcle.extensions
 
 import android.content.Context
-import androidx.annotation.IdRes
+import android.graphics.drawable.Drawable
+import android.util.TypedValue
+import androidx.annotation.*
+import androidx.core.content.ContextCompat
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -29,3 +32,17 @@ import androidx.annotation.IdRes
 
 fun Context.getResourceName(@IdRes resId: Int?): String? =
     resId?.let { resources.getResourceName(resId) }
+
+fun Context.getDrawableAttribute(@AttrRes attribute: Int): Int {
+    return TypedValue().let {
+        theme.resolveAttribute(attribute, it, true); it.resourceId
+    }
+}
+
+fun Context.getDrawableRes(@DrawableRes drawable: Int): Drawable? {
+    return ContextCompat.getDrawable(this, drawable)
+}
+
+fun Context.getColorResource(@ColorRes colorRes: Int): Int {
+    return ContextCompat.getColor(this, colorRes)
+}

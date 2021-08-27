@@ -26,5 +26,4 @@ import javax.inject.Inject
 //
 //  Created by sklim on 19/8/2021 AD at 11:02.
 
-class OnBoardViewModelImpl @Inject constructor() : OnBoardViewModel() {
-}
+class OnBoardViewModelImpl @Inject constructor() : OnBoardViewModel()
