@@ -22,3 +22,4 @@ out/
 .externalNativeBuild
 .cxx
 local.properties
+/app/dev/release/

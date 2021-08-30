@@ -138,8 +138,6 @@ internal object RetrofitServiceProviders {
             authenticator?.let { authenticator(it) }
         }
 
-//        FlipperInitializer.initFlipperPlugins(context, okHttpBuilder)
-
         return okHttpBuilder
             .build()
             .apply {
