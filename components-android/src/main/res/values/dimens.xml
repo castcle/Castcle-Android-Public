@@ -3,4 +3,7 @@
     <dimen name="action_bar_height">@dimen/_45sdp</dimen>
     <dimen name="footer_action_bar_height">@dimen/_65sdp</dimen>
     <dimen name="default_round_radius">@dimen/_8sdp</dimen>
+    <dimen name="image_round_radius">@dimen/_12sdp</dimen>
+    <dimen name="default_item_space">@dimen/_6sdp</dimen>
+    <dimen name="default_padding_margin_medium">@dimen/_13sdp</dimen>
 </resources>

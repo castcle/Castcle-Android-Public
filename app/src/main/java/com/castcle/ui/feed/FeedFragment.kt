@@ -9,6 +9,8 @@ import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.toContentFeedUiModel
+import com.castcle.data.statickmodel.FeedFilterMock.feedFilter
+import com.castcle.extensions.setupHorizontalSnapCarousel
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -24,6 +26,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
     private var adapterCommon: CommonMockAdapter? = null
+
+    private var adapterFilterAdapter = FeedFilterAdapter()
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleCommonBinding
@@ -52,9 +56,16 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     override fun setupView() {
         setupToolbar()
-        with(binding.rvFeedContent) {
-            adapter = CommonMockAdapter().also {
+        with(binding) {
+            rvFeedContent.adapter = CommonMockAdapter().also {
                 adapterCommon = it
+            }
+
+            with(rcFeedFillter) {
+                adapter = adapterFilterAdapter
+                setupHorizontalSnapCarousel(
+                    spacing = R.dimen._6sdp
+                )
             }
         }
     }
@@ -73,8 +84,17 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
-        adapterCommon?.uiModels =
-            getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
+        val mock = getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
+
+        adapterCommon?.uiModels = mock
+        binding.wtWhatYouMind.bindUiModel(mock.first())
+
+        adapterFilterAdapter.items = feedFilter
+        adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
+    }
+
+    private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
+        adapterFilterAdapter.selectedFilter(itemFilter)
     }
 
     private fun getFeedResponse(): FeedResponse {

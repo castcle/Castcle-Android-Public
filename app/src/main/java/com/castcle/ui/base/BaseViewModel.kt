@@ -27,10 +27,11 @@ abstract class BaseViewModel : ViewModel() {
                 progressLiveEvent.value = true
             try {
                 val result = execute()
-                if (result.isSuccessful)
+                if (result.isSuccessful) {
                     onSuccess(result.body()!!)
-                else
+                } else {
                     errorMessage.value = result.message()
+                }
             } catch (ex: Exception) {
                 errorMessage.value = ex.message
             } finally {

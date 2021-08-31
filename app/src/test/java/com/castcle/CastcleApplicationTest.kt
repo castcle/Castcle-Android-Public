@@ -1,9 +1,7 @@
-package com.castcle.data.statickmodel
+package com.castcle
 
-import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.google.gson.Gson
-import org.json.JSONObject
-import java.io.InputStream
+import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -27,8 +25,12 @@ import java.io.InputStream
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 19:25.
+//  Created by sklim on 30/8/2021 AD at 22:36.
 
-object FeedMockData {
-    val feedData = ""
+class CastcleApplicationTest : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        AndroidThreeTen.init(this)
+    }
 }

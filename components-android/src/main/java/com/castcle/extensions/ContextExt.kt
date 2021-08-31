@@ -1,7 +1,9 @@
 package com.castcle.extensions
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
@@ -38,6 +40,11 @@ fun Context.getDrawableAttribute(@AttrRes attribute: Int): Int {
         theme.resolveAttribute(attribute, it, true); it.resourceId
     }
 }
+
+val Context.screenWidth: Int
+    get() = DisplayMetrics().also {
+        (this as? Activity)?.windowManager?.defaultDisplay?.getMetrics(it)
+    }.widthPixels
 
 fun Context.getDrawableRes(@DrawableRes drawable: Int): Drawable? {
     return ContextCompat.getDrawable(this, drawable)

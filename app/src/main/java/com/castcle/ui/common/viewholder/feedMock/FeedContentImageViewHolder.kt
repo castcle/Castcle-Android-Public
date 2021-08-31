@@ -43,6 +43,7 @@ class FeedContentImageMockViewHolder(
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentFeed
+                icImageContent.bindImageContent(uiModel)
                 ftFooter.bindUiModel(uiModel)
             }
         }

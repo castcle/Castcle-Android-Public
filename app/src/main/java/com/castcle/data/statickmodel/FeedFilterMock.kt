@@ -1,16 +1,6 @@
-package com.castcle.di.modules.splashscreen
+package com.castcle.data.statickmodel
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import androidx.lifecycle.ViewModel
-import com.castcle.di.ViewModelKey
-import com.castcle.di.scope.ActivityScope
-import com.castcle.networking.NetworkModule
-import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
-import com.castcle.ui.splashscreen.*
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+import com.castcle.ui.feed.FilterUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,24 +24,24 @@ import dagger.multibindings.IntoMap
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 18:36.
+//  Created by sklim on 30/8/2021 AD at 21:00.
 
-@SuppressLint("CustomSplashScreen")
-@Module(
-    includes = [
-        NetworkModule::class,
-        NonAuthenticationDataSourceModule::class,
-    ]
-)
-interface SplashScreenActivityModule {
-
-    @Binds
-    @ActivityScope
-    fun splashScreenActivity(splashScreenActivity: SplashScreenActivity): Activity
-
-    @Binds
-    @IntoMap
-    @ActivityScope
-    @ViewModelKey(SplashScreenViewModel::class)
-    fun splashScreenViewModel(viewModel: SplashScreenViewModelImpl): ViewModel
+object FeedFilterMock {
+    val feedFilter = listOf(
+        FilterUiModel.FeedFilterUiModel(
+            "X01", "#Dogecoin"
+        ),
+        FilterUiModel.FeedFilterUiModel(
+            "X01", "#BNB"
+        ),
+        FilterUiModel.FeedFilterUiModel(
+            "X01", "#bsc"
+        ),
+        FilterUiModel.FeedFilterUiModel(
+            "X01", "#Coin"
+        ),
+        FilterUiModel.FeedFilterUiModel(
+            "X01", "#ABNBA"
+        )
+    )
 }

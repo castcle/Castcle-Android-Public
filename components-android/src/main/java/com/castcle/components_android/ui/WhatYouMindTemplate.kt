@@ -1,16 +1,13 @@
-package com.castcle.di.modules.splashscreen
+package com.castcle.components_android.ui
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import androidx.lifecycle.ViewModel
-import com.castcle.di.ViewModelKey
-import com.castcle.di.scope.ActivityScope
-import com.castcle.networking.NetworkModule
-import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
-import com.castcle.ui.splashscreen.*
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.castcle.android.components_android.R
+import com.castcle.android.components_android.databinding.LayoutWhatYouMindBinding
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.extensions.loadCircleImage
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,24 +31,26 @@ import dagger.multibindings.IntoMap
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 18:36.
+//  Created by sklim on 30/8/2021 AD at 18:01.
 
-@SuppressLint("CustomSplashScreen")
-@Module(
-    includes = [
-        NetworkModule::class,
-        NonAuthenticationDataSourceModule::class,
-    ]
-)
-interface SplashScreenActivityModule {
+class WhatYouMindTemplate(
+    context: Context,
+    attrs: AttributeSet
+) : ConstraintLayout(context, attrs) {
 
-    @Binds
-    @ActivityScope
-    fun splashScreenActivity(splashScreenActivity: SplashScreenActivity): Activity
 
-    @Binds
-    @IntoMap
-    @ActivityScope
-    @ViewModelKey(SplashScreenViewModel::class)
-    fun splashScreenViewModel(viewModel: SplashScreenViewModelImpl): ViewModel
+    private val binding: LayoutWhatYouMindBinding by lazy {
+        LayoutWhatYouMindBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
+    }
+
+    fun bindUiModel(itemUiModel: ContentUiModel) {
+        with(binding) {
+            with(itemUiModel.payLoadUiModel) {
+                tvWathYouMind.text = context.getString(R.string.feed_what_you_mind_bar)
+                ivAvatar.loadCircleImage(author.avatar)
+            }
+        }
+    }
 }

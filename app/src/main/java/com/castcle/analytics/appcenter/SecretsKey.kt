@@ -25,4 +25,3 @@ package com.castcle.analytics.appcenter
 //  Created by sklim on 20/8/2021 AD at 09:16.
 
 internal val APP_CENTER_ENVIRONMENT_KEY: String = AppCenterEnvironmentKeyImpl().keyValue
-
