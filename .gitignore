@@ -9,13 +9,17 @@ gen/
 out/
 .DS_Store
 
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+proguard/
+
+# Intellij
+*.iml
+.idea
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries
+
 *.log
 /build
 /captures

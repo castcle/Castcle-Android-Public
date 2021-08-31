@@ -1,10 +1,14 @@
 package com.castcle.ui.splashscreen
 
-import android.annotation.SuppressLint
-import com.castcle.data.storage.AppPreferences
+import com.castcle.session_memory.SessionManagerRepository
+import com.castcle.ui.base.BaseViewModelTest
 import com.castcle.usecase.GuestLoginCompletableUseCase
+import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
-import javax.inject.Inject
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -28,14 +32,33 @@ import javax.inject.Inject
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 18:17.
+//  Created by sklim on 30/8/2021 AD at 22:33.
+@RunWith(MockitoJUnitRunner::class)
+class SplashScreenViewModelImplTest : BaseViewModelTest() {
 
-@SuppressLint("CustomSplashScreen")
-class SplashScreenViewModelImpl @Inject constructor(
-    private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase
-) : SplashScreenViewModel() {
+    private lateinit var splashScreenViewModel: SplashScreenViewModel
 
-    override fun requestGuestLogin(): Completable {
-        return guestLoginCompletableUseCase.execute(Unit)
+    @Mock
+    private lateinit var getLoginGuestUseCase: GuestLoginCompletableUseCase
+
+    @Mock
+    private lateinit var sessionManagerRepository: SessionManagerRepository
+
+    override fun setUpTest() {
+        splashScreenViewModel = SplashScreenViewModelImpl(getLoginGuestUseCase)
     }
+
+    @Test
+    fun `get Login Guest,session memoy can get Token`() {
+        whenever(getLoginGuestUseCase.execute(any()))
+            .thenReturn(Completable.complete())
+
+        val testObserver = splashScreenViewModel.requestGuestLogin().test()
+
+        testObserver
+            .assertNoErrors()
+            .hasSubscription()
+        verify(getLoginGuestUseCase).execute(any())
+    }
+
 }

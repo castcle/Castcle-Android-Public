@@ -1,20 +1,14 @@
 package com.castcle.ui.feed
 
-import android.content.Context
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.api.response.FeedContentResponse
-import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.castcle.common_model.model.feed.toContentFeedUiModel
-import com.castcle.data.statickmodel.FeedMockData
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
-import org.json.JSONObject
-import java.io.InputStream
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -63,7 +57,5 @@ class FeedFragmentViewModelImpl @Inject constructor(
 
     override fun getMockFeed() {
         val gson = Gson()
-        val feedMockJson = gson.toJson(FeedMockData.feedData)
-//        val data = Gson().fromJson(feedMockJson, FeedResponse::class.java)
     }
 }

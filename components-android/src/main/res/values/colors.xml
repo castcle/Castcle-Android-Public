@@ -7,6 +7,7 @@
     <color name="black_night_tranparent_80">#F223262B</color>
     <color name="black_tranparent">#80000000</color>
     <color name="black_nero">#1C1F24</color>
+    <color name="black_corner">#1e2021</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#707070</color>
     <color name="gray_light">#9E9E9E</color>

@@ -6,17 +6,52 @@
     android:background="@color/black"
     tools:context="com.castcle.ui.feed.FeedFragment">
 
+    <com.castcle.components_android.ui.WhatYouMindTemplate
+        android:id="@+id/wtWhatYouMind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcFeedFillter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toStartOf="@id/ivFilter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wtWhatYouMind" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivFilter"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        app:layout_constraintBottom_toBottomOf="@id/rcFeedFillter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rcFeedFillter"
+        app:layout_constraintTop_toTopOf="@id/rcFeedFillter"
+        app:srcCompat="@drawable/ic_filter" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFeedContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingBottom="60dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rcFeedFillter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

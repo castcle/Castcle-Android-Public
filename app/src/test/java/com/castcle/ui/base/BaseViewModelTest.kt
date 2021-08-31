@@ -1,16 +1,7 @@
-package com.castcle.di.modules.splashscreen
+package com.castcle.ui.base
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import androidx.lifecycle.ViewModel
-import com.castcle.di.ViewModelKey
-import com.castcle.di.scope.ActivityScope
-import com.castcle.networking.NetworkModule
-import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
-import com.castcle.ui.splashscreen.*
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import org.junit.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,24 +25,23 @@ import dagger.multibindings.IntoMap
 //  or have any questions.
 //
 //
-//  Created by sklim on 18/8/2021 AD at 18:36.
+//  Created by sklim on 30/8/2021 AD at 22:38.
 
-@SuppressLint("CustomSplashScreen")
-@Module(
-    includes = [
-        NetworkModule::class,
-        NonAuthenticationDataSourceModule::class,
-    ]
-)
-interface SplashScreenActivityModule {
+abstract class BaseViewModelTest {
 
-    @Binds
-    @ActivityScope
-    fun splashScreenActivity(splashScreenActivity: SplashScreenActivity): Activity
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Binds
-    @IntoMap
-    @ActivityScope
-    @ViewModelKey(SplashScreenViewModel::class)
-    fun splashScreenViewModel(viewModel: SplashScreenViewModelImpl): ViewModel
+    companion object {
+        @ClassRule
+        @JvmField
+        val schedulers = RxImmediateSchedulerRule()
+    }
+
+    @Before
+    fun setUp() {
+        setUpTest()
+    }
+
+    protected abstract fun setUpTest()
 }

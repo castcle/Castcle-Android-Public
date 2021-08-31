@@ -66,8 +66,33 @@ fun ImageView.loadGranularRoundedCornersImage(
                 CenterCrop(), GranularRoundedCorners(
                     topLeft,
                     topRight,
-                    bottomLeft,
-                    bottomRight
+                    bottomRight,
+                    bottomLeft
+                )
+            )
+        )
+        .into(this)
+}
+
+fun ImageView.loadGranularRoundedCornersContentImage(
+    url: String,
+    topLeft: Float = 0f,
+    topRight: Float = 0f,
+    bottomLeft: Float = 0f,
+    bottomRight: Float = 0f,
+    @Px roundRadius: Int = context.resources.getDimensionPixelSize(R.dimen.default_round_radius)
+) {
+    Glide.with(context)
+        .load(url)
+        .circleCrop()
+        .error(R.drawable.ic_img_placeholder)
+        .apply(
+            RequestOptions().transform(
+                CenterCrop(), GranularRoundedCorners(
+                    topLeft,
+                    topRight,
+                    bottomRight,
+                    bottomLeft
                 )
             )
         )

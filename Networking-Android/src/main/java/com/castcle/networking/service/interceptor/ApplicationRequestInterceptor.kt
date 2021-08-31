@@ -79,7 +79,7 @@ internal class ApplicationRequestInterceptor(
 
 private const val ACCEPT_LANGUAGE_HEADER = "Accept-Language"
 private const val ACCEPT_VERSION = "Accept-Version"
-private const val DEFAULT_ACCEPT_VERSION = "1"
+private const val DEFAULT_ACCEPT_VERSION = "1.0"
 private const val DEVICE_PLATFORM = "Platform"
 private const val DEVICE_MODEL = "Device"
 private const val X_DEVICE_ID = "X-Device-Id"

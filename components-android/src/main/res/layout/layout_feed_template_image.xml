@@ -20,16 +20,24 @@
         android:id="@+id/tvFeedContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="3"
         android:paddingStart="@dimen/_12sdp"
         android:paddingTop="@dimen/_4sdp"
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_12sdp"
-        android:maxLines="3"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@id/ubUser"
         app:layout_constraintStart_toStartOf="@id/ubUser"
         app:layout_constraintTop_toBottomOf="@id/ubUser"
         tools:text="Win a legendary DappRadar x\b\n@MOBOX_Official #NFT.\b\nDon't miss your chance and register now:" />
+
+    <com.castcle.components_android.ui.ImageContentTemplate
+        android:id="@+id/icImageContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent" />
 
     <com.castcle.components_android.ui.FeedFooterTemplate
         android:id="@+id/ftFooter"
@@ -39,6 +47,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        app:layout_constraintTop_toBottomOf="@id/icImageContent"
         tools:text="3k" />
 </androidx.constraintlayout.widget.ConstraintLayout>
