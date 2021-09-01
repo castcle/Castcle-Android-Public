@@ -30,6 +30,8 @@ import com.castcle.ui.base.BaseViewModel
 
 abstract class FeedFragmentViewModel : BaseViewModel() {
 
+    abstract val isGuestMode: Boolean
+
     abstract val feedMockUiModel: LiveData<ContentFeedUiModel>
 
     abstract fun getMockFeed()

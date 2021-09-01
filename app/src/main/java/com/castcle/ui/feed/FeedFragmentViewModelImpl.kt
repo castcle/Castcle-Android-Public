@@ -7,6 +7,7 @@ import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.Cont
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -36,14 +37,18 @@ import javax.inject.Inject
 //  Created by sklim on 19/8/2021 AD at 11:34.
 
 class FeedFragmentViewModelImpl @Inject constructor(
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val feedNonAuthRepository: FeedRepository
 ) : FeedFragmentViewModel() {
 
     private lateinit var _feedUiMode: Flow<PagingData<FeedContentResponse>>
 
+    private var _feedMockUiModel = MutableLiveData<ContentFeedUiModel>()
     override val feedMockUiModel: LiveData<ContentFeedUiModel>
         get() = _feedMockUiModel
-    private var _feedMockUiModel = MutableLiveData<ContentFeedUiModel>()
+
+    override val isGuestMode: Boolean
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     private fun getAllCharacters() = launchPagingAsync({
         val feedRequestHeader = FeedRequestHeader(

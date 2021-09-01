@@ -31,4 +31,8 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToNotiflyLoginDialogFragment()
 
     fun navigateToWebView(url: String)
+
+    fun navigateToLoginFragment()
+
+    fun nvaigateToFeedFragment()
 }

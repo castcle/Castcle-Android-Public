@@ -8,6 +8,8 @@ interface SessionManager {
 
     fun setSessionToken(token: SessionEnvironment.SessionToken)
 
+    fun setSessionRefreshToken(token: SessionEnvironment.SessionRefreshToken)
+
     fun setSessionEnvironment(environment: SessionEnvironment)
 
     fun clearSession()

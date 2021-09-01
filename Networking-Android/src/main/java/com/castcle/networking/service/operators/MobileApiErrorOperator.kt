@@ -58,7 +58,8 @@ internal constructor() : FlowableOperator<T, Response<T>> {
                     ApiException(
                         message = apiError?.message,
                         code = apiError?.code ?: GENERIC_ERROR,
-                        type = apiError?.type
+                        statusCode = apiError?.statusCode,
+                        error = apiError?.error
                     )
                 )
             } else {
@@ -128,11 +129,13 @@ internal constructor() : FlowableOperator<T, Response<T>> {
                 val jsonObject = it.asJsonObject
                 val code = jsonObject.get(CODE)?.asString ?: GENERIC_ERROR
                 val message = jsonObject.get(MESSAGE)?.asString
-                val type = jsonObject.get(TYPE)?.toString()
+                val statusCode = jsonObject.get(STATUS_CODE)?.asInt
+                val error = jsonObject.get(ERROR)?.toString()
                 return ApiErrorResponse(
                     code = code,
                     message = message,
-                    type = type
+                    statusCode = statusCode,
+                    error = error
                 )
             }
             return null
@@ -143,7 +146,8 @@ internal constructor() : FlowableOperator<T, Response<T>> {
 const val GENERIC_ERROR = "generic error"
 const val CODE = "code"
 const val MESSAGE = "message"
-const val TYPE = "type"
+const val STATUS_CODE = "statusCode"
+const val ERROR = "error"
 
 const val CRASHLYTICS_NAME_TRACE_ID = "log-api-x-trace-id"
 const val CRASHLYTICS_NAME_URL = "log-api-x-url"

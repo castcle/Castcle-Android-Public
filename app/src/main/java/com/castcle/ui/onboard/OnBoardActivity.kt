@@ -114,7 +114,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
     private fun setBottomNavVisibility(destination: NavDestination) {
         with(binding) {
             when (destination.id) {
-                R.id.webviewFragment -> {
+                R.id.webviewFragment,
+                R.id.loginFragment-> {
                     bottomNavView.gone()
                 }
                 else -> {

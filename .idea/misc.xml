@@ -22,6 +22,7 @@
         <entry key="app/src/main/res/layout/content_on_board.xml" value="0.16041666666666668" />
         <entry key="app/src/main/res/layout/dialog_fragment_notifly_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_onboard_greeting.xml" value="0.31311442428590397" />
         <entry key="app/src/main/res/layout/fragment_onboard_greeting_fragment.xml" value="0.19701086956521738" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
@@ -42,6 +43,8 @@
         <entry key="components-android/src/main/res/drawable/bg_facebook.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/bg_google.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/bg_round_corner.xml" value="0.16597222222222222" />
+        <entry key="components-android/src/main/res/drawable/bg_round_corner_input.xml" value="0.1" />
+        <entry key="components-android/src/main/res/drawable/bg_round_corner_input_error.xml" value="0.1" />
         <entry key="components-android/src/main/res/drawable/bg_telegram.xml" value="0.21851851851851853" />
         <entry key="components-android/src/main/res/drawable/bg_twitter.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/ic_avatar_placeholder.xml" value="0.18680555555555556" />
@@ -56,6 +59,8 @@
         <entry key="components-android/src/main/res/drawable/ic_search.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selected.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selector.xml" value="0.14930555555555555" />
+        <entry key="components-android/src/main/res/drawable/nobel_selector.xml" value="0.14722222222222223" />
+        <entry key="components-android/src/main/res/layout/input_edit_text.xml" value="0.15881147540983606" />
         <entry key="components-android/src/main/res/layout/item_feed_fillter.xml" value="0.17349726775956284" />
         <entry key="components-android/src/main/res/layout/item_feed_filter.xml" value="0.45" />
         <entry key="components-android/src/main/res/layout/item_image_content.xml" value="0.1837431693989071" />

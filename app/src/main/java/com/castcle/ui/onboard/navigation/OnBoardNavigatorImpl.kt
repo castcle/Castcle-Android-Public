@@ -63,6 +63,42 @@ class OnBoardNavigatorImpl @Inject constructor(
         )
     }
 
+    override fun navigateToLoginFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.dialogLoginFragment) {
+                    navController.navigate(
+                        R.id.actionDialogLoginFragmentToLoginFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun nvaigateToFeedFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.loginFragment) {
+                    navController.navigate(
+                        R.id.actionLoginFragmentToFeedFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
     override fun findNavController(): NavController {
         return activity.findNavController(R.id.navHostContainer)
     }

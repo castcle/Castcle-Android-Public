@@ -20,5 +20,36 @@
         <item name="bmBottomNavFeed">@drawable/ic_feed_selector</item>
         <item name="bmBottomNavCreate">@drawable/ic_create_content</item>
         <item name="bmBottomNavSearch">@drawable/ic_search_selector</item>
+        <item name="castcleInputBackground">@drawable/bg_round_corner_input</item>
     </style>
+
+    <style name="TextInput" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+    </style>
+
+    <style name="TextInput.Text" parent="AppTextKanit.Default">
+        <item name="android:textColorHint">@color/white_nobel</item>
+        <item name="android:textCursorDrawable">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/_14sdp</item>
+    </style>
+
+    <style name="TextInput.TextLayout">
+        <item name="hintTextAppearance">@style/TextInput.HolderText</item>
+        <item name="hintTextColor">@color/dark_gray</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/gray_light</item>
+    </style>
+
+    <style name="TextInput.HolderText" parent="AppTextKanit.xxSmall">
+        <item name="android:textColor">@color/nobel_selector</item>
+    </style>
+
+    <style name="TextInput.TextError" parent="AppTextKanit.xSmall">
+        <item name="android:textColor">@color/red_primary</item>
+    </style>
+
 </resources>

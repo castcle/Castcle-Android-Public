@@ -8,5 +8,11 @@
     <dialog
         android:id="@+id/dialogLoginFragment"
         android:name="com.castcle.ui.common.dialog.NotiflyLoginDialogFragment"
-        tools:layout="@layout/dialog_fragment_notifly_login" />
+        tools:layout="@layout/dialog_fragment_notifly_login">
+
+        <action
+            android:id="@+id/actionDialogLoginFragmentToLoginFragment"
+            app:destination="@id/loginFragment" />
+    </dialog>
+
 </navigation>

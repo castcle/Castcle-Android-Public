@@ -40,3 +40,9 @@ fun Int.toCount(): String {
         this.toDouble() / 1000.0.pow(exp.toDouble())
     ) + suffixChars[exp - 1]
 }
+
+fun String.isEmail() = this.matches(EMAIL_PATTERN.toRegex())
+
+private const val EMAIL_PATTERN = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+    "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\." +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25})+"

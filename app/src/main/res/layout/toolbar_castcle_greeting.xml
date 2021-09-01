@@ -19,17 +19,18 @@
         app:srcCompat="@drawable/ic_arrow_left" />
 
     <TextView
-        style="@style/CastcleToolBar"
+        style="@style/AppTextKanit.Medium"
         android:id="@+id/tvToolbarTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="textStart"
+        android:textColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Page Title"/>
+        tools:text="Page Title" />
 
     <TextView
         style="@style/CastcleToolBar"
@@ -39,8 +40,8 @@
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Skip"/>
+        tools:text="Skip" />
 </androidx.constraintlayout.widget.ConstraintLayout>

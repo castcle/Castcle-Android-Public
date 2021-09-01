@@ -198,7 +198,8 @@ dependencies {
             "com.github.bumptech.glide:compiler:4.12.0",
             "com.google.dagger:dagger-compiler:$dagger_version",
             "com.google.dagger:dagger-android-processor:$dagger_version",
-            "androidx.room:room-compiler:$room_version"
+            "androidx.room:room-compiler:$room_version",
+            "org.xerial:sqlite-jdbc:3.34.0"
     )
 
     testImplementation(

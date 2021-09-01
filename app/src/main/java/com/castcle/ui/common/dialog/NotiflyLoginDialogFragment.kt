@@ -11,8 +11,9 @@ import com.castcle.android.databinding.DialogFragmentNotiflyLoginBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.extensions.openUri
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import jp.wasabeef.blurry.Blurry
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -40,6 +41,8 @@ import jp.wasabeef.blurry.Blurry
 
 class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDialogViewModel>(),
     BaseFragmentCallbacks, ViewBindingInflater<DialogFragmentNotiflyLoginBinding> {
+
+    @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> DialogFragmentNotiflyLoginBinding
@@ -85,7 +88,25 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
             tvActionLinkPrivacy.subscribeOnClick {
                 openWebView(STATIC_LINK_PRIVACY_POLICY)
             }
+            tvjoinUs.subscribeOnClick {
+                openWebView(STATIC_LINK_JOIN_US)
+            }
+            tvManifesto.subscribeOnClick {
+                openWebView(STATIC_LINK_MENIFESTO)
+            }
+            tvWhitepaper.subscribeOnClick {
+                openWebView(STATIC_LINK_WHITEPAPER)
+            }
+            with(layoutLogin) {
+                clLoginWithEmail.subscribeOnClick {
+                    navigateToLoginFragment()
+                }
+            }
         }
+    }
+
+    private fun navigateToLoginFragment() {
+        onBoardNavigator.navigateToLoginFragment()
     }
 
     private fun openWebView(url: String) {
@@ -97,3 +118,9 @@ private const val STATIC_LINK_USER_AGREEMENT =
     "https://castcle-public.s3.amazonaws.com/documents/terms-of-service.html"
 private const val STATIC_LINK_PRIVACY_POLICY =
     "https://castcle-public.s3.amazonaws.com/documents/privacy-policy.html"
+private const val STATIC_LINK_JOIN_US =
+    "https://castcle-public.s3.amazonaws.com/documents/join-us.html"
+private const val STATIC_LINK_MENIFESTO =
+    "https://castcle.gitbook.io/document/"
+private const val STATIC_LINK_WHITEPAPER =
+    "https://castcle-public.s3.amazonaws.com/documents/castcle-whitepaper-v1_2.pdf"
