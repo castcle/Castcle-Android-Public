@@ -1,6 +1,7 @@
 package com.castcle.extensions
 
 import java.text.DecimalFormat
+import java.util.regex.*
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -43,6 +44,17 @@ fun Int.toCount(): String {
 
 fun String.isEmail() = this.matches(EMAIL_PATTERN.toRegex())
 
+fun String.isPasswordPatten() = this.matches(PASSWORD_PATTERN.toRegex())
+
 private const val EMAIL_PATTERN = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
     "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\." +
     "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25})+"
+
+private val PASSWORD_PATTERN: Pattern = Pattern.compile(
+    "^" +
+        "(?=.*[@#$%^&+=])" +  // at least 1 special character
+        "(?=\\S+$)" +  // no white spaces
+        ".{6,}" +  // at least c characters
+        "$"
+)
+

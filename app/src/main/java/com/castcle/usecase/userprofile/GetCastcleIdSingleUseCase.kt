@@ -41,7 +41,9 @@ class GetCastcleIdSingleUseCase @Inject constructor(
 ) {
     override fun create(input: Unit): Single<Boolean> {
         return Single.just(
-            appPreferences.castcleId?.isNotBlank()
-        )
+            appPreferences.castcleId ?: ""
+        ).map { castcleId ->
+            castcleId.isBlank()
+        }
     }
 }

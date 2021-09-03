@@ -2,6 +2,9 @@ package com.castcle.networking.api.auth
 
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.signin.*
+import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.*
+import com.castcle.common_model.model.signin.reuquest.*
 import com.castcle.networking.api.auth.network.AuthenticationApi
 import com.castcle.networking.api.response.toOAuthResponse
 import com.castcle.networking.service.operators.ApiOperators
@@ -9,6 +12,7 @@ import com.castcle.networking.service.response.OAuthResponse
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.session_memory.model.SessionEnvironment
 import io.reactivex.Completable
+import io.reactivex.Single
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -36,6 +40,14 @@ import javax.inject.Inject
 //  Created by sklim on 31/8/2021 AD at 14:37.
 interface AuthenticationsRepository {
     fun authLoginWithEmail(loginRequest: LoginRequest): Completable
+
+    fun authCheckEmailExsit(emailRequest: EmailRequest): Single<EmailVerifyUiModel>
+
+    fun authCheckDisplayNameExsit(displayNameRequest: DisplayNameRequest):
+        Single<DisplayNameVerifyUiModel>
+
+    fun authCheckCastcleExsit(castcleIdRequest: CastcleIdRequest):
+        Single<CastcleIdVerifyUiModel>
 }
 
 class AuthenticationsRepositoryImpl @Inject constructor(
@@ -53,6 +65,32 @@ class AuthenticationsRepositoryImpl @Inject constructor(
                 updateAccessToken(it.toOAuthResponse())
             }
             .ignoreElement()
+    }
+
+    override fun authCheckEmailExsit(emailRequest: EmailRequest): Single<EmailVerifyUiModel> {
+        return authenticationApi
+            .checkEmailExists(emailRequest)
+            .lift(ApiOperators.mobileApiError())
+            .map { it.toEmailVerifyUiModel() }
+            .firstOrError()
+    }
+
+    override fun authCheckDisplayNameExsit(displayNameRequest: DisplayNameRequest):
+        Single<DisplayNameVerifyUiModel> {
+        return authenticationApi
+            .checkDisplayName(displayNameRequest)
+            .lift(ApiOperators.mobileApiError())
+            .map { it.toDisplayNameUiModel() }
+            .firstOrError()
+    }
+
+    override fun authCheckCastcleExsit(castcleIdRequest: CastcleIdRequest):
+        Single<CastcleIdVerifyUiModel> {
+        return authenticationApi
+            .checkCastcleIdExists(castcleIdRequest)
+            .lift(ApiOperators.mobileApiError())
+            .map { it.toCastcleIdVerifyUiModel() }
+            .firstOrError()
     }
 
     private fun updateAccessToken(oAuthResponse: OAuthResponse) {

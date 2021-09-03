@@ -7,7 +7,7 @@ data class AuthenticationInfo(
     val authenticationMethod: Method
 ) {
     enum class Method {
-        PIN, PASSWORD, OTP;
+        PIN, PASSWORD, OTP, EMAIL;
 
         companion object {
             fun from(value: String?): Method {

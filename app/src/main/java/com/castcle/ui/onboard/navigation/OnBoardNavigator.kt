@@ -1,5 +1,6 @@
 package com.castcle.ui.onboard.navigation
 
+import com.castcle.common_model.model.login.AuthBundle
 import com.castcle.ui.base.BaseNavigator
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -35,4 +36,18 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToLoginFragment()
 
     fun nvaigateToFeedFragment()
+
+    fun navigateToGreetingFragment()
+
+    fun navigateToEmailFragment()
+
+    fun navigateToPassword(authBundle: AuthBundle)
+
+    fun navigetToDisplayNameFragment(authBundle: AuthBundle)
+
+    fun naivgetToProfileChooseImageFragment(authBundle: AuthBundle)
+
+    fun naivgetToProfileVerifyEmailFragment(authBundle: AuthBundle)
+
+    fun navigateToAboutYouFragment()
 }

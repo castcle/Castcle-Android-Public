@@ -13,10 +13,12 @@
         android:layout_height="match_parent"
         android:paddingStart="@dimen/_16sdp"
         android:paddingEnd="@dimen/_16sdp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_left" />
+        app:srcCompat="@drawable/ic_arrow_left"
+        android:focusable="true" />
 
     <TextView
         style="@style/AppTextKanit.Medium"
@@ -30,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Page Title" />
+        tools:text="Page Title"/>
 
     <TextView
         style="@style/CastcleToolBar"

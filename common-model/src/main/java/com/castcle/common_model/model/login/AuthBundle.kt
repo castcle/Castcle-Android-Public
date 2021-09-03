@@ -1,6 +1,9 @@
 package com.castcle.common_model.model.login
 
+import android.os.Parcelable
 import com.castcle.authen_android.data.model.AuthenticationInfo
+import com.castcle.common_model.model.login.AuthBundle.LoginAuthBundle.EmailAuthBundle
+import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -25,17 +28,27 @@ import com.castcle.authen_android.data.model.AuthenticationInfo
 //
 //
 //  Created by sklim on 31/8/2021 AD at 12:09.
+@Parcelize
+open class AuthBundle : Parcelable {
 
-sealed class AuthUiModel {
-
-    sealed class LoginAuthUiModel(
+    sealed class LoginAuthBundle(
         open val authenticationMethod: AuthenticationInfo.Method,
-    ) : AuthUiModel() {
+    ) : AuthBundle() {
 
-        class EmailAuthUiModel(
+        @Parcelize
+        class EmailAuthBundle(
             val email: String,
-            val password: String,
+            val password: String = "",
             override val authenticationMethod: AuthenticationInfo.Method,
-        ) : LoginAuthUiModel(authenticationMethod)
+        ) : LoginAuthBundle(authenticationMethod)
+    }
+}
+
+fun AuthBundle.toEmailAuthBundle(): LoginBundle {
+    return when (this) {
+        is EmailAuthBundle -> LoginBundle.LoginWithEmail(
+            email = email
+        )
+        else -> throw  UnsupportedOperationException()
     }
 }

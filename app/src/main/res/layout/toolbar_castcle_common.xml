@@ -30,12 +30,14 @@
         app:layout_constraintEnd_toStartOf="@+id/ivToolbarProfileButton"
         app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Page Title"/>
+        tools:text="Page Title" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivToolbarProfileButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
         android:paddingStart="@dimen/_16sdp"
         android:paddingEnd="@dimen/_16sdp"
         app:layout_constraintBottom_toBottomOf="parent"

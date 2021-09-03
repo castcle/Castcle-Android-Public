@@ -1,13 +1,18 @@
 package com.castcle.extensions
 
 import android.os.Build
+import android.os.Parcelable
 import android.text.*
 import android.text.method.LinkMovementMethod
+import android.text.method.PasswordTransformationMethod
 import android.text.style.ClickableSpan
+import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
+import androidx.core.view.children
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -120,4 +125,22 @@ fun View.setTopPaddingRes(@DimenRes dimenRes: Int) {
 
 fun View.setTopPadding(padding: Int) {
     setPadding(paddingLeft, padding, paddingRight, paddingBottom)
+}
+
+fun ViewGroup.saveChildViewStates(): SparseArray<Parcelable> {
+    val childViewStates = SparseArray<Parcelable>()
+    children.forEach { child -> child.saveHierarchyState(childViewStates) }
+    return childViewStates
+}
+
+fun ViewGroup.restoreChildViewStates(childViewStates: SparseArray<Parcelable>) {
+    children.forEach { child -> child.restoreHierarchyState(childViewStates) }
+}
+
+fun TextView.setTransformationPassword(visible: Boolean) {
+    transformationMethod = if (visible) {
+        PasswordTransformationMethod()
+    } else {
+        null
+    }
 }

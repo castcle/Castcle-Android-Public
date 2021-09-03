@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_light">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.xxHeadline"
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_18sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:text="@string/about_you_title"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Regular"
+        android:id="@+id/tvOverView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:text="@string/about_you_overview"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/itOverView"
+        app:layout_constraintBottom_toTopOf="@id/itOverView" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itOverView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_48sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/login_password"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Regular"
+        android:id="@+id/tvBirthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:text="@string/about_you_birthday"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/itBirthday"
+        app:layout_constraintBottom_toTopOf="@id/itBirthday" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itBirthday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/about_you_birthday"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itOverView" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Regular"
+        android:id="@+id/tvLinks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_6sdp"
+        android:text="@string/about_you_link"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/itLinkFacebook"
+        app:layout_constraintBottom_toTopOf="@id/itLinkFacebook" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itLinkFacebook"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/about_you_field_facebook"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itBirthday" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itLinkTwitter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/about_you_field_twitter"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itLinkFacebook" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itLinkYouTube"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/about_you_field_youtube"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itLinkTwitter" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itLinkMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/about_you_field_medium"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itLinkYouTube" />
+
+    <com.castcle.components_android.ui.custom.InputEditText
+        android:id="@+id/itLinkWebSite"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:textColorHint="@color/gray_light"
+        app:hintText="@string/about_you_field_website"
+        app:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itLinkMedium" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/AppTextKanitLight.Medium"
+        android:id="@+id/btLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_24sdp"
+        android:background="@drawable/bg_bottom"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/about_you_buttom_done"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

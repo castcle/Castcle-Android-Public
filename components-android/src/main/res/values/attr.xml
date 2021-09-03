@@ -26,6 +26,7 @@
         <attr name="drawableStart" format="reference" />
         <attr name="drawableEnd" format="reference" />
         <attr name="editable" format="boolean" />
+        <attr name="errorShow" format="boolean" />
         <attr name="background" />
 
         <!-- Additional features you can enable in an IME associated with an editor

@@ -97,12 +97,16 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
             itemIconTintList = null
             val navGraphList = BottomNavigateStatic.bottomMenu.map { it.navGraph }
             val controller = setupWithNavController(
+                viewModel.isGuestMode,
                 navGraphList,
                 supportFragmentManager,
                 R.id.navHostContainer,
                 intent = intent,
                 onDestinationChangedListener = { _, destination, _ ->
                     setBottomNavVisibility(destination)
+                },
+                onNavigateNotiflyLogin = {
+                    onBoardNavigator.navigateToNotiflyLoginDialogFragment()
                 }
             )
             currentNavController = controller
@@ -115,7 +119,13 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
         with(binding) {
             when (destination.id) {
                 R.id.webviewFragment,
-                R.id.loginFragment-> {
+                R.id.emailFragment,
+                R.id.passwordFragment,
+                R.id.greetingFragment,
+                R.id.verifyEmailFragment,
+                R.id.createDisplayProfileFragment,
+                R.id.profileChooseFragment,
+                R.id.loginFragment -> {
                     bottomNavView.gone()
                 }
                 else -> {

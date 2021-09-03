@@ -82,6 +82,9 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
 
     override fun bindViewEvents() {
         with(binding) {
+            tvHaveAccountLogin.subscribeOnClick {
+                navigateToLoginFragment()
+            }
             tvActionLinkUserAgreement.subscribeOnClick {
                 openWebView(STATIC_LINK_USER_AGREEMENT)
             }

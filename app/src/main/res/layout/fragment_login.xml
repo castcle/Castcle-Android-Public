@@ -35,7 +35,7 @@
             app:srcCompat="@drawable/ic_castcle_logo" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanit.Medium"
+            style="@style/AppTextKanit.Headline"
             android:id="@+id/tvWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,12 +95,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@drawable/bg_login"
+            android:clickable="true"
             android:text="@string/login_title"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@id/etPassword"
             app:layout_constraintStart_toStartOf="@id/etPassword"
-            app:layout_constraintTop_toBottomOf="@id/tvForgetPass" />
+            app:layout_constraintTop_toBottomOf="@id/tvForgetPass"
+            android:focusable="true" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/AppTextKanit.Regular"

@@ -2,8 +2,11 @@ package com.castcle.components_android.ui.custom
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.os.Bundle
+import android.os.Parcelable
 import android.text.*
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
@@ -11,6 +14,7 @@ import androidx.core.view.isVisible
 import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.InputEditTextBinding
 import com.castcle.extensions.*
+import com.google.android.material.textfield.TextInputLayout.END_ICON_PASSWORD_TOGGLE
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -61,6 +65,7 @@ class InputEditText(
     var onDrawableEndClickListener: ((String) -> Unit)? = null
     var onEditorActionListener: ((actionId: Int, event: KeyEvent?) -> Boolean)? = null
     private var inputType: Int = android.text.InputType.TYPE_CLASS_TEXT
+    private var endableTransform = false
 
     private fun init(context: Context, attrs: AttributeSet?) {
 
@@ -81,6 +86,9 @@ class InputEditText(
                         R.styleable.TextInput_inputType, 0
                     )
                 ).get()
+                if (inputType == InputType.TEXT_PASSWORD.get()) {
+                    tilTextInputLayout.endIconMode = END_ICON_PASSWORD_TOGGLE
+                }
                 etTextInputPrimary.inputType = inputType
                 etTextInputPrimary.filters = arrayOf<InputFilter>(
                     InputFilter.LengthFilter(
@@ -94,59 +102,86 @@ class InputEditText(
                     R.styleable.TextInput_imeOptions, 0
                 )
                 setupDrawableEnd(styles)
-
-                etTextInputPrimary.apply {
-                    setTextStyle(R.style.TextInput_Text)
-                    movePrimaryTextUp()
-
-                    setOnFocusChangeListener { _, hasFocus ->
-                        binding.root.isActivated = hasFocus
-                        when {
-                            hasFocus -> {
-                                movePrimaryTextDown()
-                                context.showSoftKeyboard(this)
-                            }
-                            text.toString().isEmpty() -> movePrimaryTextUp()
-                        }
-                    }
-                    textWatcher = object : TextWatcher {
-                        override fun beforeTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            count: Int,
-                            after: Int
-                        ) = Unit
-
-                        override fun onTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            before: Int,
-                            count: Int
-                        ) = Unit
-
-                        override fun afterTextChanged(s: Editable?) {
-                            when {
-                                s.toString().isNotEmpty() -> movePrimaryTextDown()
-                                !hasFocus() -> movePrimaryTextUp()
-                            }
-
-                            onTextChanged?.invoke(s.toString())
-                        }
-                    }
-                    addTextChangedListener(textWatcher)
-
-                    setOnEditorActionListener { view, actionId, keyEvent ->
-                        onEditorActionListener?.invoke(actionId, keyEvent) ?: false
-                    }
-
-                    setOnLongClickListener {
-                        requestFocus()
-                        false
-                    }
-                }
             }
         } finally {
             styles.recycle()
+        }
+        with(binding) {
+            etTextInputPrimary.apply {
+                setTextStyle(R.style.TextInput_Text)
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    binding.root.isActivated = hasFocus
+                    when {
+                        hasFocus -> {
+                            context.showSoftKeyboard(this)
+                        }
+                    }
+                }
+                textWatcher = object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) = Unit
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) = Unit
+
+                    override fun afterTextChanged(s: Editable?) {
+                        onTextChanged?.invoke(s.toString())
+                    }
+                }
+                addTextChangedListener(textWatcher)
+
+                setOnEditorActionListener { view, actionId, keyEvent ->
+                    onEditorActionListener?.invoke(actionId, keyEvent) ?: false
+                }
+
+                setOnLongClickListener {
+                    requestFocus()
+                    false
+                }
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        return Bundle().apply {
+            putParcelable(TEXT_INPUT_SUPER_STATE_KEY, super.onSaveInstanceState())
+            putSparseParcelableArray(TEXT_INPUT_SPARSE_STATE_KEY, saveChildViewStates())
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        var newState = state
+        if (newState is Bundle) {
+            val childrenState =
+                newState.getSparseParcelableArray<Parcelable>(TEXT_INPUT_SPARSE_STATE_KEY)
+            childrenState?.let { restoreChildViewStates(it) }
+            newState = newState.getParcelable(TEXT_INPUT_SUPER_STATE_KEY)
+        }
+        super.onRestoreInstanceState(newState)
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
+        dispatchThawSelfOnly(container)
+    }
+
+    fun showLoading(show: Boolean = false) {
+        if (show) {
+            binding.ibTextInputLoading.visible()
+        } else {
+            binding.ibTextInputLoading.gone()
         }
     }
 
@@ -182,12 +217,83 @@ class InputEditText(
 
     private fun movePrimaryTextDown() {
         binding.etTextInputPrimary.setBottomPaddingRes(R.dimen._3sdp)
-        binding.tilTextInputLayout.setTopPaddingRes(R.dimen._6sdp)
+        binding.tilTextInputLayout.setTopPaddingRes(R.dimen._4sdp)
     }
 
     private fun movePrimaryTextUp() {
-        binding.etTextInputPrimary.setBottomPaddingRes(R.dimen._12sdp)
+        binding.etTextInputPrimary.setBottomPaddingRes(R.dimen._9sdp)
         binding.tilTextInputLayout.setTopPadding(0)
+    }
+
+    fun clearDrawableEnd() {
+        binding.ibTextInputDrawableEnd.gone()
+    }
+
+    fun clearOnPasswordDrawableEnd() {
+        if (binding.ibTextInputDrawableEnd.isVisible) {
+            binding.ibTextInputDrawableEnd.gone()
+            binding.tilTextInputLayout.isEndIconVisible = true
+        }
+    }
+
+    fun onSetupStatusFaildDrawableEnd() {
+        if (binding.tilTextInputLayout.isEndIconVisible) {
+            binding.tilTextInputLayout.isEndIconVisible = false
+        }
+        binding.etTextInputPrimary.setTextColor(context.getColorResource(R.color.red_primary))
+        with(binding.ibTextInputDrawableEnd) {
+            visible()
+            setOnClickListener {
+                onDrawableEndClickListener?.invoke(primaryText)
+            }
+            setImageDrawable(
+                context?.getDrawableRes(R.drawable.ic_verify_faild)
+            )
+            val params = binding.ibTextInputDrawableEnd.layoutParams as MarginLayoutParams
+            params.marginEnd = resources.getDimensionPixelSize(R.dimen._25sdp)
+        }
+    }
+
+    fun onSetupStatusDrawableEnd() {
+        if (!binding.tilTextInputLayout.isEndIconVisible) {
+            binding.ibTextInputDrawableEnd.gone()
+            binding.tilTextInputLayout.isEndIconVisible = true
+        }
+        val colorInputText = context.getColorResource(R.color.white)
+        binding.etTextInputPrimary.setTextColor(colorInputText)
+        val params = binding.etTextInputPrimary.layoutParams as MarginLayoutParams
+        params.marginEnd = resources.getDimensionPixelSize(R.dimen._25sdp)
+    }
+
+    fun onSetupEndIconVerifyPass() {
+        binding.tilTextInputLayout.isEndIconVisible = false
+        with(binding.ibTextInputDrawableEnd) {
+            visible()
+            setOnClickListener {
+                onDrawableEndClickListener?.invoke(primaryText)
+            }
+        }
+        binding.ibTextInputDrawableEnd.setImageDrawable(
+            context?.getDrawableRes(R.drawable.ic_password_visible)
+        )
+    }
+
+    fun onSetupStatusVerifyEmailPass() {
+        with(binding.ibTextInputDrawableEnd) {
+            visible()
+            setImageDrawable(
+                context?.getDrawableRes(R.drawable.ic_verify_pass)
+            )
+        }
+        val colorInputText = context.getColorResource(R.color.white)
+        binding.etTextInputPrimary.setTextColor(colorInputText)
+    }
+
+    fun setTransformationTextPassword() {
+        with(binding) {
+            etTextInputPrimary.setTransformationPassword(endableTransform)
+            endableTransform = !endableTransform
+        }
     }
 
     private fun setupDrawableEnd(styles: TypedArray) {
@@ -215,3 +321,6 @@ class InputEditText(
         }
     }
 }
+
+private const val TEXT_INPUT_SPARSE_STATE_KEY = "TEXT_INPUT_SPARSE_STATE_KEY"
+private const val TEXT_INPUT_SUPER_STATE_KEY = "TEXT_INPUT_SUPER_STATE_KEY"

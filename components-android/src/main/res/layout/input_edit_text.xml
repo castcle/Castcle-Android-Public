@@ -16,9 +16,11 @@
             style="@style/TextInput.TextLayout"
             android:id="@+id/tilTextInputLayout"
             android:layout_width="0dp"
+            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             android:layout_height="match_parent"
             android:paddingStart="0dp"
             android:paddingEnd="@dimen/_2sdp"
+            app:endIconTint="@color/light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -42,6 +44,16 @@
             app:layout_constraintEnd_toEndOf="@id/tilTextInputLayout"
             tools:src="@drawable/ic_search" />
 
+        <ProgressBar
+            android:id="@+id/ibTextInputLoading"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_12sdp"
+            android:visibility="gone"
+            android:secondaryProgressTint="@color/blue"
+            app:layout_constraintEnd_toEndOf="@id/tilTextInputLayout" />
+
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextInput.Text"
             android:id="@+id/tvTextInputHintEnd"
@@ -64,6 +76,5 @@
         android:layout_marginTop="@dimen/default_item_space"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/clTextInputLayout"
-        tools:text="Sample Error Text Input"
-        tools:visibility="visible" />
+        tools:text="Sample Error Text Input" />
 </androidx.constraintlayout.widget.ConstraintLayout>

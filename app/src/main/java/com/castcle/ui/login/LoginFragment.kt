@@ -67,7 +67,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     override fun bindViewEvents() {
         with(binding) {
             tvCastcleSignUp.subscribeOnClick {
-
+                onBoardNavigator.navigateToGreetingFragment()
             }
 
             ieEmail.onTextChanged = {
