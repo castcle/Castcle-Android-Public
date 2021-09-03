@@ -13,6 +13,9 @@ open class AppError(
 
     open val code: String?
         get() = (cause as? ApiException)?.code
+
+    open val statusCode: Int?
+        get() = (cause as? ApiException)?.statusCode
 }
 
 fun getErrorMessage(cause: Throwable?): String? {

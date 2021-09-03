@@ -2,10 +2,19 @@ package com.castcle.di.modules.onboard
 
 import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
+import com.castcle.di.modules.login.*
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
 import com.castcle.ui.feed.FeedFragment
+import com.castcle.ui.login.LoginFragment
+import com.castcle.ui.signin.aboutyou.AboutYouFragment
+import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
+import com.castcle.ui.signin.email.EmailFragment
+import com.castcle.ui.signin.geetingsignin.GreetingSignInFragment
+import com.castcle.ui.signin.password.PasswordFragment
+import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragment
+import com.castcle.ui.signin.verifyemail.VerifyEmailFragment
 import com.castcle.ui.webview.WebViewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -48,4 +57,36 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [WebViewFragmentViewModelModule::class])
     fun webViewFragment(): WebViewFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [LoginFragmentViewModelModule::class])
+    fun loginFragment(): LoginFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [EmailFragmentViewModelModule::class])
+    fun emailFragment(): EmailFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [PasswordFragmentViewModelModule::class])
+    fun passwordFragment(): PasswordFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [GreetingFragmentViewModelModule::class])
+    fun greetingSignInFragment(): GreetingSignInFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CreateDisplayNameViewModelModule::class])
+    fun createDisplayNameFragment(): CreateDisplayNameFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileChooseViewModelModule::class])
+    fun profileChooseFragment(): ProfileChooseFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [AboutYouViewModelModule::class])
+    fun aboutYouFragment(): AboutYouFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [VerifyEmailViewModelModule::class])
+    fun verifyEmailFragment(): VerifyEmailFragment
 }

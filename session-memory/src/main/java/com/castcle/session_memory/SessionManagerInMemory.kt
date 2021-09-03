@@ -5,6 +5,7 @@ import com.castcle.session_memory.model.SessionEnvironment
 object SessionManagerInMemory : SessionManager {
 
     private var token: SessionEnvironment.SessionToken? = null
+    private var refreshToken: SessionEnvironment.SessionRefreshToken? = null
     private var languageCode: String? = null
 
     override fun getSessionToken(): SessionEnvironment.SessionToken? {
@@ -13,6 +14,10 @@ object SessionManagerInMemory : SessionManager {
 
     override fun setSessionToken(token: SessionEnvironment.SessionToken) {
         SessionManagerInMemory.token = token
+    }
+
+    override fun setSessionRefreshToken(refreshToken: SessionEnvironment.SessionRefreshToken) {
+        SessionManagerInMemory.refreshToken = refreshToken
     }
 
     override fun setSessionEnvironment(environment: SessionEnvironment) {

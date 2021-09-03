@@ -13,10 +13,10 @@ interface AppPreferences {
     var locationPermissionDenied: Boolean?
     var appVersion: Int?
     var bottomNavigation: String?
-    var memberId: String?
+    var castcleId: String?
 
     fun clearAll() = Completable.fromAction {
-        memberId = null
+        castcleId = null
     }
 }
 
@@ -52,7 +52,7 @@ class AppPreferencesImpl @Inject constructor(
         get() = getString(KEY_BOTTOM_NAVIGATION)
         set(value) = setOrRemove(KEY_BOTTOM_NAVIGATION, value)
 
-    override var memberId: String?
+    override var castcleId: String?
         get() = getString(KEY_MEMBER_ID)
         set(value) = setOrRemove(KEY_MEMBER_ID, value)
 

@@ -1,5 +1,6 @@
 package com.castcle.ui.onboard
 
+import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -26,4 +27,10 @@ import javax.inject.Inject
 //
 //  Created by sklim on 19/8/2021 AD at 11:02.
 
-class OnBoardViewModelImpl @Inject constructor() : OnBoardViewModel()
+class OnBoardViewModelImpl @Inject constructor(
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
+) : OnBoardViewModel() {
+
+    override val isGuestMode: Boolean
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+}

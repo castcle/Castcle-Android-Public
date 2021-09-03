@@ -25,21 +25,31 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.6'
+        jvmTarget = '11'
     }
 }
 
 dependencies {
+    implementation(
+            fileTree(dir: 'libs', include: ['*.jar']),
+            project(':Authen-Android'),
+    )
 
     implementation(
             "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
             "androidx.core:core-ktx:$android_support_core_version",
             "androidx.appcompat:appcompat:$android_support_version",
             "com.jakewharton.threetenabp:threetenabp:$threetenabp_version",
-            "com.google.code.gson:gson:$gson_version"
+            "com.google.code.gson:gson:$gson_version",
+            "androidx.room:room-runtime:$room_version",
+            "androidx.room:room-rxjava2:$room_version",
+    )
+
+    kapt(
+            "androidx.room:room-compiler:$room_version"
     )
 }

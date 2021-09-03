@@ -4,8 +4,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.castcle.android.R
+import com.castcle.common_model.model.login.AuthBundle
 import com.castcle.ui.base.BaseNavigatorImpl
-import com.castcle.ui.feed.FeedFragmentDirections.Companion.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
+import com.castcle.ui.signin.password.PasswordFragmentArgs
 import com.castcle.ui.webview.WebViewFragmentArgs
 import javax.inject.Inject
 
@@ -43,7 +44,7 @@ class OnBoardNavigatorImpl @Inject constructor(
             R.id.onboard_nav_graph -> {
                 if (navController.currentDestination?.id == R.id.feedFragment) {
                     navController.navigate(
-                        actionFeedFragmentToNotiflyLoginDialoginDialogFragment()
+                        R.id.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
                     )
                 } else {
                     unsupportedNavigation()
@@ -61,6 +62,185 @@ class OnBoardNavigatorImpl @Inject constructor(
             R.id.webviewFragment,
             WebViewFragmentArgs(url).toBundle()
         )
+    }
+
+    override fun navigateToLoginFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.dialogLoginFragment) {
+                    navController.navigate(
+                        R.id.actionDialogLoginFragmentToLoginFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun nvaigateToFeedFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.loginFragment -> {
+                        navController.navigate(
+                            R.id.actionLoginFragmentToFeedFragment
+                        )
+                    }
+                    R.id.verifyEmailFragment -> {
+                        navController.navigate(
+                            R.id.verifyEmailFragmentToFeedFragment
+                        )
+                    }
+                    R.id.aboutYouFragment -> {
+                        navController.navigate(
+                            R.id.actionAboutYouFragmentToFeedFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToGreetingFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.loginFragment) {
+                    navController.navigate(
+                        R.id.actionLoginFragmentToGreetingFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToEmailFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.greetingFragment) {
+                    navController.navigate(
+                        R.id.actionGreetingFragmenToEmailFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToPassword(authBundle: AuthBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.emailFragment) {
+                    navController.navigate(
+                        R.id.actionEmailFragmentToPasswordFragment,
+                        PasswordFragmentArgs(authBundle).toBundle()
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigetToDisplayNameFragment(authBundle: AuthBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.passwordFragment) {
+                    navController.navigate(
+                        R.id.actionPasswordFragmentToCreateDisplayNameFragment,
+                        PasswordFragmentArgs(authBundle).toBundle()
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun naivgetToProfileChooseImageFragment(authBundle: AuthBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.createDisplayProfileFragment) {
+                    navController.navigate(
+                        R.id.actionCreateDisplayNameFragmentToProfileChooseFragment,
+                        PasswordFragmentArgs(authBundle).toBundle()
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun naivgetToProfileVerifyEmailFragment(authBundle: AuthBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.profileChooseFragment) {
+                    navController.navigate(
+                        R.id.actionProfileChooseFragmentToVerifyEmailFragment,
+                        PasswordFragmentArgs(authBundle).toBundle()
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToAboutYouFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.profileChooseFragment) {
+                    navController.navigate(
+                        R.id.actionProfileChooseFragmentToVerifyEmailFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
     }
 
     override fun findNavController(): NavController {

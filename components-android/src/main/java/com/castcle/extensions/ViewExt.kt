@@ -1,6 +1,18 @@
 package com.castcle.extensions
 
+import android.os.Build
+import android.os.Parcelable
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.method.PasswordTransformationMethod
+import android.text.style.ClickableSpan
+import android.util.SparseArray
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.annotation.StyleRes
+import androidx.core.view.children
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -60,4 +72,75 @@ fun View.visibleOrGone(visible: Boolean) {
 
 fun View.visibleOrInvisible(visible: Boolean) {
     if (visible) visible() else invisible()
+}
+
+fun TextView.setClickableText(
+    text: CharSequence,
+    vararg onLinkClickListener: OnSpanClickListener,
+    ignoreCase: Boolean = false
+) {
+    movementMethod = LinkMovementMethod.getInstance()
+
+    val spannable = SpannableString(text)
+    onLinkClickListener.forEach {
+        val startIndex = spannable.indexOf(string = it.span, ignoreCase = ignoreCase)
+        if (startIndex >= 0) {
+            val endIndex = startIndex + it.span.length
+            spannable.setSpan(it, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+    this.text = spannable
+}
+
+abstract class OnSpanClickListener(val span: String) : ClickableSpan() {
+
+    override fun onClick(widget: View) {
+        onClick(widget as TextView, span)
+        // Prevent CheckBox state from being toggled when link is clicked
+        widget.cancelPendingInputEvents()
+    }
+
+    abstract fun onClick(textView: TextView, span: String)
+
+    override fun updateDrawState(ds: TextPaint) {
+        // override this method in order to keep predefined text font and color
+    }
+}
+
+fun TextView.setTextStyle(@StyleRes styleResId: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        setTextAppearance(styleResId)
+    } else {
+        setTextAppearance(context, styleResId)
+    }
+}
+
+fun View.setBottomPaddingRes(@DimenRes dimenRes: Int) {
+    setPadding(paddingLeft, paddingTop, paddingRight, resources.getDimensionPixelSize(dimenRes))
+}
+
+fun View.setTopPaddingRes(@DimenRes dimenRes: Int) {
+    setPadding(paddingLeft, resources.getDimensionPixelSize(dimenRes), paddingRight, paddingBottom)
+}
+
+fun View.setTopPadding(padding: Int) {
+    setPadding(paddingLeft, padding, paddingRight, paddingBottom)
+}
+
+fun ViewGroup.saveChildViewStates(): SparseArray<Parcelable> {
+    val childViewStates = SparseArray<Parcelable>()
+    children.forEach { child -> child.saveHierarchyState(childViewStates) }
+    return childViewStates
+}
+
+fun ViewGroup.restoreChildViewStates(childViewStates: SparseArray<Parcelable>) {
+    children.forEach { child -> child.restoreHierarchyState(childViewStates) }
+}
+
+fun TextView.setTransformationPassword(visible: Boolean) {
+    transformationMethod = if (visible) {
+        PasswordTransformationMethod()
+    } else {
+        null
+    }
 }

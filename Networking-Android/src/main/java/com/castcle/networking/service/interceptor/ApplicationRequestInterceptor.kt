@@ -46,7 +46,7 @@ internal class ApplicationRequestInterceptor(
                 }
             } else {
                 if (token.isNotEmpty()) {
-                    request.addHeader(AUTHORIZATION_HEADER, " $token")
+                    request.addHeader(AUTHORIZATION_HEADER, "$TOKEN_TYPE $token")
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.castcle.di.modules.onboard
 import android.app.Activity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import com.castcle.data.datasource.UserProfileDataSourceModule
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
 import com.castcle.networking.NetworkModule
@@ -47,7 +48,8 @@ import dagger.multibindings.IntoMap
         NetworkModule::class,
         NonAuthenticationDataSourceModule::class,
         AuthenticationDataSourceModule::class,
-        FeedNonAuthenticationDataSourceModule::class
+        FeedNonAuthenticationDataSourceModule::class,
+        UserProfileDataSourceModule::class
     ]
 )
 interface OnBoardActivityModule {

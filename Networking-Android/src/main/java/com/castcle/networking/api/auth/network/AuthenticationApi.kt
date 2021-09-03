@@ -1,5 +1,14 @@
 package com.castcle.networking.api.auth.network
 
+import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.signin.response.AuthExsitResponse
+import com.castcle.common_model.model.signin.reuquest.*
+import com.castcle.networking.api.response.TokenResponse
+import io.reactivex.Flowable
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
+
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 //
@@ -25,4 +34,25 @@ package com.castcle.networking.api.auth.network
 //  Created by sklim on 23/8/2021 AD at 08:46.
 
 interface AuthenticationApi {
+
+    @POST("authentications/login")
+    fun authLogin(
+        @Body loginRequest: LoginRequest
+    ): Flowable<Response<TokenResponse>>
+
+    @POST("authentications/checkEmailExists")
+    fun checkEmailExists(
+        @Body emailRequest: EmailRequest
+    ): Flowable<Response<AuthExsitResponse>>
+
+    @POST("authentications/checkDisplayNameExists")
+    fun checkDisplayName(
+        @Body displayNameRequest: DisplayNameRequest
+    ): Flowable<Response<AuthExsitResponse>>
+
+    @POST("authentications/checkCastcleIdExists")
+    fun checkCastcleIdExists(
+        @Body castcleRequest: CastcleIdRequest
+    ): Flowable<Response<AuthExsitResponse>>
+
 }

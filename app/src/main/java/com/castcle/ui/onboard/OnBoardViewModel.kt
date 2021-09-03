@@ -1,5 +1,6 @@
 package com.castcle.ui.onboard
 
+import androidx.lifecycle.LiveData
 import com.castcle.ui.base.BaseViewModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -26,4 +27,8 @@ import com.castcle.ui.base.BaseViewModel
 //
 //  Created by sklim on 19/8/2021 AD at 11:01.
 
-abstract class OnBoardViewModel : BaseViewModel()
+abstract class OnBoardViewModel : BaseViewModel() {
+
+    abstract val isGuestMode: Boolean
+}
+

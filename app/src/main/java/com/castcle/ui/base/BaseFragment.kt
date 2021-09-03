@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.castcle.android.R
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
+import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.di.ActivityViewModelFactory
 import com.castcle.di.FragmentViewModelFactory
@@ -147,6 +148,7 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
                     removeAllViews()
                     setBaseToolbarBinding(context)
                     when (it) {
+                        TOOLBAR_COMMON_GREETING,
                         TOOLBAR_COMMON -> inflateCommonToolbar()
                         else -> inflate(it)
                     }
@@ -182,13 +184,20 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
                     false
                 )
             }
+            TOOLBAR_COMMON_GREETING -> {
+                _baseToolbarBinding = ToolbarCastcleGreetingBinding.inflate(
+                    LayoutInflater.from(context),
+                    container,
+                    false
+                )
+            }
         }
     }
 
     protected fun Disposable.addToDisposables() = addTo(disposables)
 
     companion object {
-        const val TOOLBAR_COMMON_GREETING = 2
-        const val TOOLBAR_COMMON = 0
+        const val TOOLBAR_COMMON_GREETING = 1
+        const val TOOLBAR_COMMON = -1
     }
 }

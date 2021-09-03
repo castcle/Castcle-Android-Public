@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
 
@@ -52,4 +54,10 @@ fun Context.getDrawableRes(@DrawableRes drawable: Int): Drawable? {
 
 fun Context.getColorResource(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(this, colorRes)
+}
+
+fun Context.showSoftKeyboard(view: View) {
+    view.requestFocus()
+    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
 }

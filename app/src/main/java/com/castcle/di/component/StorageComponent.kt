@@ -33,11 +33,7 @@ import javax.inject.Singleton
 //
 //  Created by sklim on 18/8/2021 AD at 18:59.
 @Singleton
-@Component(
-    modules = [
-        StorageModule::class
-    ]
-)
+@Component(modules = [StorageModule::class])
 interface StorageComponent : AuthenticateStorageComponent {
 
     @Component.Factory

@@ -29,11 +29,13 @@ import com.castcle.android.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 fun BottomNavigationView.setupWithNavController(
+    isGuestModel: Boolean,
     navGraphIds: List<Int>,
     fragmentManager: FragmentManager,
     containerId: Int,
     intent: Intent,
     onDestinationChangedListener: NavController.OnDestinationChangedListener,
+    onNavigateNotiflyLogin: (() -> Unit)
 ): LiveData<NavController> {
     // Map of tags
     val graphIdToTagMap = SparseArray<String>()
@@ -41,6 +43,7 @@ fun BottomNavigationView.setupWithNavController(
     val selectedNavController = MutableLiveData<NavController>()
 
     var firstFragmentGraphId = 0
+    val createBlogGragmentId = "bottomNavigation#1"
 
     // First create a NavHostFragment for each NavGraph ID
     navGraphIds
@@ -89,57 +92,72 @@ fun BottomNavigationView.setupWithNavController(
     // When a navigation item is selected
     setOnItemSelectedListener { item ->
         // Don't do anything if the state is state has already been saved.
-        if (fragmentManager.isStateSaved) {
-            false
-        } else {
-            val newlySelectedItemTag = graphIdToTagMap[item.itemId]
-            if (selectedItemTag != newlySelectedItemTag) {
-                // as client requirement, we need to pop all back stacks of Home screen
-                if (selectedItemTag == firstFragmentTag) {
-                    val firstFragment = fragmentManager.findFragmentByTag(firstFragmentTag)
-                        as NavHostFragment
-                    firstFragment.navController.popBackStack(R.id.feedFragment, false)
-                }
-                // Pop everything above the first fragment (the "fixed start destination")
-                fragmentManager.popBackStack(
-                    firstFragmentTag,
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE
-                )
-                val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
-                    as NavHostFragment
-
-                // Exclude the first fragment tag because it's always in the back stack.
-                if (firstFragmentTag != newlySelectedItemTag) {
-                    // Commit a transaction that cleans the back stack and adds the first fragment
-                    // to it, creating the fixed started destination.
-                    fragmentManager.beginTransaction()
-                        .attach(selectedFragment)
-                        .setPrimaryNavigationFragment(selectedFragment)
-                        .apply {
-                            // Detach all other Fragments
-                            graphIdToTagMap.forEach { _, fragmentTagIter ->
-                                if (fragmentTagIter != newlySelectedItemTag) {
-                                    detach(fragmentManager.findFragmentByTag(firstFragmentTag)!!)
-                                }
-                            }
-                        }
-                        .addToBackStack(firstFragmentTag)
-                        .setCustomAnimations(
-                            R.anim.nav_default_enter_anim,
-                            R.anim.nav_default_exit_anim,
-                            R.anim.nav_default_pop_enter_anim,
-                            R.anim.nav_default_pop_exit_anim
-                        )
-                        .setReorderingAllowed(true)
-                        .commitAllowingStateLoss()
-                }
-                selectedItemTag = newlySelectedItemTag
-                isOnFirstFragment = selectedItemTag == firstFragmentTag
-                selectedNavController.value = selectedFragment.navController
-                // This is a workaround, allow nav_graph a minimal amount of time to attach fragment
-                true
-            } else {
+        when {
+            fragmentManager.isStateSaved -> {
                 false
+            }
+            graphIdToTagMap[item.itemId] == createBlogGragmentId -> {
+                onNavigateNotiflyLogin.invoke()
+                false
+            }
+            else -> {
+                val newlySelectedItemTag = graphIdToTagMap[item.itemId]
+                when {
+                    selectedItemTag != newlySelectedItemTag -> {
+                        // as client requirement, we need to pop all back stacks of Home screen
+                        if (selectedItemTag == firstFragmentTag) {
+                            val firstFragment = fragmentManager.findFragmentByTag(firstFragmentTag)
+                                as NavHostFragment
+                            firstFragment.navController.popBackStack(R.id.feedFragment, false)
+                        }
+                        // Pop everything above the first fragment (the "fixed start destination")
+                        fragmentManager.popBackStack(
+                            firstFragmentTag,
+                            FragmentManager.POP_BACK_STACK_INCLUSIVE
+                        )
+                        val selectedFragment =
+                            fragmentManager.findFragmentByTag(newlySelectedItemTag)
+                                as NavHostFragment
+
+                        // Exclude the first fragment tag because it's always in the back stack.
+                        if (firstFragmentTag != newlySelectedItemTag) {
+                            // Commit a transaction that cleans the back stack and adds the first fragment
+                            // to it, creating the fixed started destination.
+                            fragmentManager.beginTransaction()
+                                .attach(selectedFragment)
+                                .setPrimaryNavigationFragment(selectedFragment)
+                                .apply {
+                                    // Detach all other Fragments
+                                    graphIdToTagMap.forEach { _, fragmentTagIter ->
+                                        if (fragmentTagIter != newlySelectedItemTag) {
+                                            detach(
+                                                fragmentManager.findFragmentByTag(
+                                                    firstFragmentTag
+                                                )!!
+                                            )
+                                        }
+                                    }
+                                }
+                                .addToBackStack(firstFragmentTag)
+                                .setCustomAnimations(
+                                    R.anim.nav_default_enter_anim,
+                                    R.anim.nav_default_exit_anim,
+                                    R.anim.nav_default_pop_enter_anim,
+                                    R.anim.nav_default_pop_exit_anim
+                                )
+                                .setReorderingAllowed(true)
+                                .commitAllowingStateLoss()
+                        }
+                        selectedItemTag = newlySelectedItemTag
+                        isOnFirstFragment = selectedItemTag == firstFragmentTag
+                        selectedNavController.value = selectedFragment.navController
+                        // This is a workaround, allow nav_graph a minimal amount of time to attach fragment
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }
         }
     }

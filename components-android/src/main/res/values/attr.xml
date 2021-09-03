@@ -7,4 +7,42 @@
     <attr name="bmBottomNavFeed" format="reference" />
     <attr name="bmBottomNavCreate" format="reference" />
     <attr name="bmBottomNavSearch" format="reference" />
+    <attr name="castcleInputBackground" format="reference" />
+
+    <declare-styleable name="TextInput">
+        <attr name="inputType" format="enum">
+            <enum name="text" value="0" />
+            <enum name="textEmailAddress" value="1" />
+            <enum name="textPassword" value="2" />
+            <enum name="textCapSentences" value="3" />
+            <enum name="numberDecimal" value="4" />
+            <enum name="numberPassword" value="5" />
+            <enum name="numberPhone" value="6" />
+            <enum name="number" value="7" />
+        </attr>
+        <attr name="hintText" format="string" />
+        <attr name="hintTextEnd" format="string" />
+        <attr name="maxLength" format="integer" />
+        <attr name="drawableStart" format="reference" />
+        <attr name="drawableEnd" format="reference" />
+        <attr name="editable" format="boolean" />
+        <attr name="errorShow" format="boolean" />
+        <attr name="background" />
+
+        <!-- Additional features you can enable in an IME associated with an editor
+         to improve the integration with your application.  The constants
+         here correspond to those defined by
+         {@link android.view.inputmethod.EditorInfo#imeOptions}. -->
+        <attr name="imeOptions" format="flags">
+            <!-- There are no special semantics associated with this editor. -->
+            <flag name="normal" value="0x00000000" />
+            <flag name="actionUnspecified" value="0x00000000" />
+            <flag name="actionNone" value="0x00000001" />
+            <flag name="actionGo" value="0x00000002" />
+            <flag name="actionSearch" value="0x00000003" />
+            <flag name="actionSend" value="0x00000004" />
+            <flag name="actionNext" value="0x00000005" />
+            <flag name="actionDone" value="0x00000006" />
+        </attr>
+    </declare-styleable>
 </resources>
