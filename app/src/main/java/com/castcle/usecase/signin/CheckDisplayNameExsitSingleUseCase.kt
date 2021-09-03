@@ -1,4 +1,13 @@
-package com.castcle.ui.signin.createdisplayname
+package com.castcle.usecase.signin
+
+import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
+import com.castcle.common_model.model.signin.reuquest.DisplayNameRequest
+import com.castcle.data.error.Ignored
+import com.castcle.networking.api.auth.AuthenticationsRepository
+import com.castcle.usecase.base.SingleUseCase
+import io.reactivex.Single
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,11 +31,19 @@ package com.castcle.ui.signin.createdisplayname
 //  or have any questions.
 //
 //
-//  Created by sklim on 3/9/2021 AD at 17:20.
+//  Created by sklim on 2/9/2021 AD at 11:34.
 
-enum class VerifyProfileState {
-    DISPLAY_NAME_ERROR,
-    DISPLAY_NAME_PASS,
-    CASTCLE_ID_ERROR,
-    CASTCLE_ID_PASS,
+class CheckDisplayNameExsitSingleUseCase @Inject constructor(
+    rxSchedulerProvider: RxSchedulerProvider,
+    private val authenticationsRepository: AuthenticationsRepository
+) : SingleUseCase<DisplayNameRequest, AuthVerifyBaseUiModel.DisplayNameVerifyUiModel>(
+    rxSchedulerProvider.io(),
+    rxSchedulerProvider.main(),
+    ::Ignored
+) {
+
+    override fun create(input: DisplayNameRequest): Single<AuthVerifyBaseUiModel.DisplayNameVerifyUiModel> {
+        return authenticationsRepository
+            .authCheckDisplayNameExsit(input)
+    }
 }

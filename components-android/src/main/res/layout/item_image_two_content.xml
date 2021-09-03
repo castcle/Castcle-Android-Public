@@ -7,7 +7,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivImageOne"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_250sdp"
+        android:layout_height="@dimen/_160sdp"
         android:layout_marginStart="@dimen/_8sdp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toStartOf="@id/ivImageTwo"
@@ -17,7 +17,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivImageTwo"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_250sdp"
+        android:layout_height="@dimen/_160sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
