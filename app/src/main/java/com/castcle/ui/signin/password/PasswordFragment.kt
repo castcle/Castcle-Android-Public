@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.AuthBundle
+import com.castcle.common_model.model.login.*
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -103,7 +103,14 @@ class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
                 viewModel.input.retypePassword(it)
             }
             btNext.subscribeOnClick {
-                onBoardNavigator.navigetToDisplayNameFragment(emailBundle)
+                val emailEdit = emailBundle.toEmailAuthBundle()
+                if (emailEdit is RegisterBundle.RegisterWithEmail) {
+                    emailEdit.apply {
+                        password = binding.itPassword.primaryText
+                    }.run {
+                        onBoardNavigator.navigetToDisplayNameFragment(this)
+                    }
+                }
             }
         }
     }

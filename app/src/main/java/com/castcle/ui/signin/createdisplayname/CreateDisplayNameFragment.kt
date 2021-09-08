@@ -5,14 +5,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.castcle.android.R
 import com.castcle.android.databinding.FragmentCreateProfileBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.AuthBundle
+import com.castcle.common_model.model.login.ProfileBundle
+import com.castcle.common_model.model.login.RegisterBundle
+import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.DisplayNameVerifyUiModel
+import com.castcle.data.error.RegisterErrorError
 import com.castcle.extensions.gone
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -48,8 +51,8 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     private val authBundle: CreateDisplayNameFragmentArgs by navArgs()
 
-    private val emailBundle: AuthBundle
-        get() = authBundle.emailBundle
+    private val resgisterBundle: RegisterBundle
+        get() = authBundle.registerBundle
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -90,15 +93,91 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     override fun bindViewEvents() {
         binding.itDisplatName.onTextChanged = {
-
+            viewModel.input.displayName(it)
         }
         binding.itCastcleId.onTextChanged = {
-
+            viewModel.input.checkCastcleId(it)
         }
         binding.btNext.subscribeOnClick {
-            onBoardNavigator.naivgetToProfileChooseImageFragment(emailBundle)
+            onRegister()
         }
     }
 
-    override fun bindViewModel() = Unit
+    private fun onRegister() {
+        with(binding) {
+            viewModel.input.authRegisterWithEmail(
+                resgisterBundle as RegisterBundle.RegisterWithEmail,
+                itDisplatName.primaryText,
+                itCastcleId.primaryText
+            ).subscribeBy(
+                onComplete = {
+                    navigateToChooseProfile()
+                }, onError = {
+                    handlerError(it)
+                }
+            ).addToDisposables()
+        }
+    }
+
+    private fun handlerError(error: Throwable) {
+        if(error is RegisterErrorError && error.hasAuthenticationTokenExprierd()){
+            binding.itCastcleId.setError(error = error.readableMessage)
+        }
+    }
+
+    private fun navigateToChooseProfile() {
+        with(binding) {
+            val registerBundle = resgisterBundle as RegisterBundle.RegisterWithEmail
+            onBoardNavigator.naivgetToProfileChooseImageFragment(
+                ProfileBundle.ProfileWithEmail(
+                    email = registerBundle.email,
+                    displayName = itDisplatName.primaryText,
+                    castcleId = itCastcleId.primaryText,
+                )
+            )
+        }
+    }
+
+    override fun bindViewModel() {
+        viewModel.verifyProfileState
+            .subscribe(::handlerUiState)
+            .addToDisposables()
+
+        viewModel.showLoading
+            .subscribe()
+            .addToDisposables()
+
+        viewModel.error
+            .subscribe()
+            .addToDisposables()
+
+        viewModel.responseCastcleIdSuggest
+            .subscribe(::fieldInCastcleSuggest)
+            .addToDisposables()
+    }
+
+    private fun fieldInCastcleSuggest(displayNameVerifyUiModel: DisplayNameVerifyUiModel) {
+        binding.itCastcleId.primaryText = displayNameVerifyUiModel.castcleIdSuggestions
+    }
+
+    private fun handlerUiState(verifyProfileState: VerifyProfileState) {
+        when (verifyProfileState) {
+            VerifyProfileState.CASTCLE_ID_ERROR -> {
+                endableButtomNext(false)
+            }
+            VerifyProfileState.CASTCLE_ID_PASS -> {
+                endableButtomNext(true)
+            }
+            else -> {
+                endableButtomNext(false)
+            }
+        }
+    }
+
+    private fun endableButtomNext(enable: Boolean) {
+        with(binding.btNext) {
+            isActivated = enable
+            isEnabled = enable
+        }
+    }
 }

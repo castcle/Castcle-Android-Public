@@ -20,6 +20,10 @@ object SessionManagerInMemory : SessionManager {
         SessionManagerInMemory.refreshToken = refreshToken
     }
 
+    override fun getSessionRefreshToken(): SessionEnvironment.SessionRefreshToken? {
+        return refreshToken
+    }
+
     override fun setSessionEnvironment(environment: SessionEnvironment) {
         if (environment.sessionToken != null) {
             token = environment.sessionToken

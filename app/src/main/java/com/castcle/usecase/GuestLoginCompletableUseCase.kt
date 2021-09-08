@@ -2,7 +2,7 @@ package com.castcle.usecase
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.data.error.Ignored
-import com.castcle.networking.api.auth.TokenRepository
+import com.castcle.networking.api.nonauthen.NonAuthenticationRepository
 import com.castcle.usecase.base.CompletableUseCase
 import io.reactivex.Completable
 import javax.inject.Inject
@@ -33,13 +33,13 @@ import javax.inject.Inject
 
 class GuestLoginCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
-    private val tokenRepository: TokenRepository
+    private val nonAuthenticationRepository: NonAuthenticationRepository
 ) : CompletableUseCase<Unit>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::Ignored
 ) {
     override fun create(input: Unit): Completable {
-        return tokenRepository.getLoginGuest()
+        return nonAuthenticationRepository.getLoginGuest()
     }
 }

@@ -1,12 +1,11 @@
 package com.castcle.usecase.signin
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
-import com.castcle.common_model.model.signin.reuquest.DisplayNameRequest
-import com.castcle.data.error.Ignored
+import com.castcle.common_model.model.signin.reuquest.RegisterRequest
+import com.castcle.data.error.RegisterErrorError
 import com.castcle.networking.api.auth.AuthenticationsRepository
-import com.castcle.usecase.base.SingleUseCase
-import io.reactivex.Single
+import com.castcle.usecase.base.CompletableUseCase
+import io.reactivex.Completable
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -31,19 +30,17 @@ import javax.inject.Inject
 //  or have any questions.
 //
 //
-//  Created by sklim on 2/9/2021 AD at 11:34.
+//  Created by sklim on 31/8/2021 AD at 15:14.
 
-class CheckDisplayNameExsitSingleUseCase @Inject constructor(
+class AuthenticationRegisterCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val authenticationsRepository: AuthenticationsRepository
-) : SingleUseCase<DisplayNameRequest, AuthVerifyBaseUiModel.DisplayNameVerifyUiModel>(
+) : CompletableUseCase<RegisterRequest>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
-    ::Ignored
+    ::RegisterErrorError
 ) {
-
-    override fun create(input: DisplayNameRequest): Single<AuthVerifyBaseUiModel.DisplayNameVerifyUiModel> {
-        return authenticationsRepository
-            .authCheckDisplayNameExsit(input)
+    override fun create(input: RegisterRequest): Completable {
+        return authenticationsRepository.authRegister(input)
     }
 }

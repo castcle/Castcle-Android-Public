@@ -12,6 +12,7 @@ import com.castcle.data.error.LoginError
 import com.castcle.data.error.userReadableMessage
 import com.castcle.extensions.gone
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
@@ -42,6 +43,11 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     override fun viewModel(): LoginFragmentViewModel =
         ViewModelProvider(this, viewModelFactory)
             .get(LoginFragmentViewModel::class.java)
+
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
 
     override fun initViewModel() = Unit
 
@@ -90,7 +96,16 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     private fun handlerError(error: Throwable) {
         if (error is LoginError && error.hasAuthenticationAccountNotFound()) {
-            binding.etPassword.setError(error = error.userReadableMessage(requireContext()))
+            binding.etPassword.setError(
+                error = error.userReadableMessage(requireContext()),
+                isShowErrorWithBackground = true
+            )
+        }
+        if (error is LoginError && error.hasAuthenticationLoginInvaildChannel()) {
+            binding.etPassword.setError(
+                error = error.userReadableMessage(requireContext()),
+                isShowErrorWithBackground = true
+            )
         }
     }
 

@@ -29,7 +29,7 @@ import io.reactivex.Single
 //  Created by sklim on 31/8/2021 AD at 17:03.
 
 @Dao
-interface UserDao:BaseDao<User> {
+interface UserDao : BaseDao<User> {
 
     @Query("SELECT * FROM user LIMIT 1")
     fun getUser(): Single<User>

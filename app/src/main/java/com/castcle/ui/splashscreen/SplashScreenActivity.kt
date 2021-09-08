@@ -47,6 +47,7 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, OnBoardActivity::class.java)
             startActivity(intent)
+            finishAffinity()
         }, DEPLAYED_SCREEN)
     }
 }

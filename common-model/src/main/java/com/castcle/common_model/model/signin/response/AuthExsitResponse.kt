@@ -28,7 +28,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AuthExsitResponse(
     @SerializedName("message")
-    val message: String = "",
+    val message: String? = null,
     @SerializedName("payload")
     val payload: AuthPayload
 )

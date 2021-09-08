@@ -46,7 +46,21 @@
             android:name="com.castcle.ui.onboard.OnBoardActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan">
+
+            <intent-filter android:autoVerify="true">
+                <data
+                    android:host="@string/deep_link_host"
+                    android:pathPrefix="@string/deep_link_path_prefix"
+                    android:scheme="@string/link_scheme" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <data
+                    android:pathPrefix="@string/deep_link_path_prefix"
+                    android:scheme="@string/deep_link_scheme_castcle" />
+            </intent-filter>
+        </activity>
 
     </application>
 

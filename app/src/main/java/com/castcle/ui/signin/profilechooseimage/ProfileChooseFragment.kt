@@ -4,10 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
-import com.castcle.android.databinding.*
+import com.castcle.android.databinding.FragmentCreateProfileChooseBinding
+import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.login.ProfileBundle
 import com.castcle.extensions.gone
+import com.castcle.extensions.visible
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
@@ -43,6 +47,11 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    private val authBundle: ProfileChooseFragmentArgs by navArgs()
+
+    private val emailBundle: ProfileBundle
+        get() = authBundle.profileBundle
+
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
         get() = { inflater, container, attachToRoot ->
@@ -71,13 +80,22 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.run {
+                visible()
+                text = context.getString(R.string.tool_bar_skip)
+                subscribeOnClick {
+                    navigateToVerifyEmail()
+                }.addToDisposables()
+            }
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {
                     findNavController().navigateUp()
                 }.addToDisposables()
         }
+    }
+
+    private fun navigateToVerifyEmail() {
     }
 
     override fun bindViewEvents() {

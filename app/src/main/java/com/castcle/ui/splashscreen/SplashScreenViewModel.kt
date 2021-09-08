@@ -31,5 +31,7 @@ import io.reactivex.Completable
 @SuppressLint("CustomSplashScreen")
 abstract class SplashScreenViewModel : BaseViewModel() {
 
+    abstract val isGuestMode: Boolean
+
     abstract fun requestGuestLogin(): Completable
 }

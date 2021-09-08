@@ -1,8 +1,8 @@
 package com.castcle.ui.splashscreen
 
 import android.annotation.SuppressLint
-import com.castcle.data.storage.AppPreferences
 import com.castcle.usecase.GuestLoginCompletableUseCase
+import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import io.reactivex.Completable
 import javax.inject.Inject
 
@@ -32,10 +32,18 @@ import javax.inject.Inject
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenViewModelImpl @Inject constructor(
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase
 ) : SplashScreenViewModel() {
 
+    override val isGuestMode: Boolean
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+
     override fun requestGuestLogin(): Completable {
-        return guestLoginCompletableUseCase.execute(Unit)
+        return if (isGuestMode) {
+            guestLoginCompletableUseCase.execute(Unit)
+        } else {
+            Completable.complete()
+        }
     }
 }

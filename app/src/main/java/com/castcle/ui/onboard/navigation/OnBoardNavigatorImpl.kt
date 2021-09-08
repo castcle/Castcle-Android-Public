@@ -1,13 +1,23 @@
 package com.castcle.ui.onboard.navigation
 
+import android.content.Intent
+import android.net.Uri
+import androidx.annotation.IdRes
+import androidx.annotation.Keep
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.*
 import com.castcle.android.R
-import com.castcle.common_model.model.login.AuthBundle
+import com.castcle.common_model.model.login.*
+import com.castcle.data.statickmodel.BottomNavigateStatic
+import com.castcle.extensions.containsSomeOf
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
+import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import com.castcle.ui.signin.password.PasswordFragmentArgs
+import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentArgs
 import com.castcle.ui.webview.WebViewFragmentArgs
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -35,6 +45,7 @@ import javax.inject.Inject
 //  Created by sklim on 18/8/2021 AD at 17:43.
 
 class OnBoardNavigatorImpl @Inject constructor(
+    private val localizedResources: LocalizedResources,
     private val activity: FragmentActivity
 ) : BaseNavigatorImpl(activity), OnBoardNavigator {
 
@@ -168,14 +179,14 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigetToDisplayNameFragment(authBundle: AuthBundle) {
+    override fun navigetToDisplayNameFragment(registerBundle: RegisterBundle) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
                 if (navController.currentDestination?.id == R.id.passwordFragment) {
                     navController.navigate(
                         R.id.actionPasswordFragmentToCreateDisplayNameFragment,
-                        PasswordFragmentArgs(authBundle).toBundle()
+                        CreateDisplayNameFragmentArgs(registerBundle).toBundle()
                     )
                 } else {
                     unsupportedNavigation()
@@ -187,14 +198,14 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun naivgetToProfileChooseImageFragment(authBundle: AuthBundle) {
+    override fun naivgetToProfileChooseImageFragment(profileBundle: ProfileBundle) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
                 if (navController.currentDestination?.id == R.id.createDisplayProfileFragment) {
                     navController.navigate(
                         R.id.actionCreateDisplayNameFragmentToProfileChooseFragment,
-                        PasswordFragmentArgs(authBundle).toBundle()
+                        ProfileChooseFragmentArgs(profileBundle).toBundle()
                     )
                 } else {
                     unsupportedNavigation()
@@ -243,7 +254,167 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
+    override fun navigateToSettingFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.feedFragment) {
+                    navController.navigate(
+                        R.id.actionFeedFragmentToSettingFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
     override fun findNavController(): NavController {
         return activity.findNavController(R.id.navHostContainer)
+    }
+
+    override fun navigateByDeepLink(
+        deepLink: Uri,
+        shouldPopStackToEntry: Boolean
+    ): Boolean {
+        val navController = findNavController()
+        val targetGraph = findGraphThatHasDeepLink(deepLink)
+        val bottomNavigationView: BottomNavigationView? =
+            activity.findViewById(R.id.bottomNavView)
+
+        return when (targetGraph) {
+            null -> false
+            navController.graph -> internalNavigate(deepLink)
+            else -> {
+                bottomNavigationView?.let {
+                    if (shouldPopStackToEntry) {
+                        popBackStackToEntry()
+                    }
+                    it.selectedItemId = targetGraph.id
+                    it.post { internalNavigate(deepLink) }
+                    true
+                } ?: false
+            }
+        }
+    }
+
+    override fun canHandleDeepLink(deepLink: Uri): Boolean {
+        val targetGraph = findGraphThatHasDeepLink(deepLink)
+        return targetGraph.isNotNull()
+    }
+
+    fun Any?.isNotNull(): Boolean {
+        return this != null
+    }
+
+    override fun handleDeepLink(intent: Intent, shouldPopStackToEntry: Boolean) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            intent.data?.let { deepLink ->
+                navigateByDeepLink(deepLink, shouldPopStackToEntry)
+            }
+        }
+    }
+
+    private fun internalNavigate(deepLink: Uri): Boolean {
+        val navController = findNavController()
+        if (isMainMenuBottomNavigation(deepLink)) {
+            popBackStackToEntry(true)
+        }
+
+        return try {
+            if (navController.graph.hasDeepLink(deepLink)) {
+                navigateToStartDestinationOfNestedGraph(deepLink)
+                navController.navigate(deepLink)
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun navigateToStartDestinationOfNestedGraph(deepLink: Uri) {
+        val nestedStartDestinationDeeLink = when (findNestedGraphThatHasDeepLink(deepLink)) {
+            NestedGraph.FEED_GRAPH -> Triple(
+                R.id.feedFragment,
+                localizedResources.getString(R.string.deep_link_path_prefix_feed),
+                localizedResources.getString(R.string.nav_deep_link_feed)
+            )
+            else -> null
+        }
+
+        nestedStartDestinationDeeLink?.run {
+            val (destinationId, destinationPath, destinationUrl) = this
+            val navController = findNavController()
+            if (navController.currentDestination?.id != destinationId
+                && deepLink.toString().contains(destinationPath).not()
+            ) {
+                navController.navigate(destinationUrl.toUri())
+            }
+        }
+    }
+
+    private fun findNestedGraphThatHasDeepLink(deepLink: Uri): NestedGraph? {
+        return NestedGraph.values().firstOrNull {
+            val graph = findNavController().navInflater.inflate(it.id)
+            graph.hasDeepLink(deepLink)
+        }
+    }
+
+    private fun findGraphThatHasDeepLink(deepLink: Uri): NavGraph? {
+        val navController = findNavController()
+        if (navController.graph.hasDeepLink(deepLink)) {
+            // Prioritize the current graph if it contains the deepLink
+            return navController.graph
+        }
+
+        availableGraphs.forEach {
+            val graph = navController.navInflater.inflate(it)
+            if (graph.hasDeepLink(deepLink)) {
+                return graph
+            }
+        }
+        return null
+    }
+
+    private val availableGraphs = BottomNavigateStatic.bottomMenu.map {
+        it.navGraph
+    }
+
+    private fun isMainMenuBottomNavigation(deepLink: Uri): Boolean {
+        val inputs = arrayOf(
+            localizedResources.getString(R.string.deep_link_path_https_feed),
+            localizedResources.getString(R.string.deep_link_path_https_blog),
+            localizedResources.getString(R.string.deep_link_path_https_search)
+        )
+
+        return deepLink.toString().containsSomeOf(*inputs, ignoreCase = true)
+    }
+
+    override fun popBackStackToEntry(popInclusive: Boolean) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> navController.popBackStack(
+                R.id.feedFragment,
+                popInclusive
+            )
+            R.id.bloc_nav_graph -> navController.popBackStack(
+                R.id.createBlogFragment,
+                popInclusive
+            )
+            R.id.search_nav_graph -> navController.popBackStack(
+                R.id.searchFragment,
+                popInclusive
+            )
+        }
+    }
+
+    @Keep
+    enum class NestedGraph(@IdRes val id: Int) {
+        FEED_GRAPH(R.navigation.onboard_nav_graph);
     }
 }

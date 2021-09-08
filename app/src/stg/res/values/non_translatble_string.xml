@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Castcle-STG</string>
+    <string name="deep_link_host" translatable="false">stg.castcle.co.th</string>
+    <string name="deep_link_scheme_castcle" translatable="false">castcle-stg</string>
+
+    <string name="nav_deep_link_feed" translatable="false">Castcle-stg://feed</string>
+    <string name="nav_deep_link_blog" translatable="false">Castcle-stg://blog</string>
+    <string name="nav_deep_link_search" translatable="false">Castcle-stg://search</string>
+    <string name="nav_deep_link_setting" translatable="false">Castcle-stg://setting</string>
 </resources>

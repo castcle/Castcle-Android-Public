@@ -4,10 +4,15 @@ import android.app.Activity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.castcle.data.datasource.UserProfileDataSourceModule
+import com.castcle.data.repository.UserProfileRepository
+import com.castcle.data.repository.UserProfileRepositoryImpl
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
+import com.castcle.localization.LocalizedResources
+import com.castcle.localization.LocalizedResourcesImpl
 import com.castcle.networking.NetworkModule
 import com.castcle.networking.api.auth.AuthenticationDataSourceModule
+import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.feed.FeedNonAuthenticationDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.ui.base.BaseNavigator
@@ -47,6 +52,7 @@ import dagger.multibindings.IntoMap
     includes = [
         NetworkModule::class,
         NonAuthenticationDataSourceModule::class,
+        AuthRefreshTokenDataSourceModule::class,
         AuthenticationDataSourceModule::class,
         FeedNonAuthenticationDataSourceModule::class,
         UserProfileDataSourceModule::class
@@ -71,8 +77,18 @@ interface OnBoardActivityModule {
     fun baseNavigateor(baseNavigatorImpl: BaseNavigatorImpl): BaseNavigator
 
     @Binds
+    @ActivityScope
+    fun localizedResources(localizedResources: LocalizedResourcesImpl): LocalizedResources
+
+    @Binds
     @IntoMap
     @ActivityScope
     @ViewModelKey(OnBoardViewModel::class)
     fun onBoardViewModel(viewModel: OnBoardViewModelImpl): ViewModel
+
+    @Binds
+    @ActivityScope
+    abstract fun userProfileRepository(
+        userRepository: UserProfileRepositoryImpl
+    ): UserProfileRepository
 }

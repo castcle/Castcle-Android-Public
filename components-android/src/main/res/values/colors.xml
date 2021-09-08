@@ -13,6 +13,7 @@
     <color name="black_light_filter">#F217191A</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#707070</color>
+    <color name="gray_header">#838587</color>
     <color name="gray_light">#9E9E9E</color>
     <color name="light">#CDD4D9</color>
     <color name="gray_medium">#6A6C6F</color>
@@ -24,6 +25,7 @@
     <color name="blue_gray">#0E82BA</color>
     <color name="red_gray">#D6C7C7</color>
     <color name="red_primary">#CC0000</color>
+    <color name="red_primary_warning">#FF3D3D</color>
     <color name="white_primary_alpha_20">#33F5F5F5</color>
     <color name="white_nobel">#999999</color>
 </resources>

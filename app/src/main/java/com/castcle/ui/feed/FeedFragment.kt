@@ -2,6 +2,7 @@ package com.castcle.ui.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
@@ -10,9 +11,10 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.data.statickmodel.FeedFilterMock.feedFilter
-import com.castcle.extensions.setupHorizontalSnapCarousel
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonMockAdapter
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.gson.Gson
 import org.json.JSONObject
@@ -50,13 +52,26 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(FeedFragmentViewModel::class.java)
 
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
+
     override fun initViewModel() {
-        viewModel.getMockFeed()
+        if (!viewModel.isGuestMode) {
+            viewModel.fetchUserProfile()
+                .subscribe()
+                .addToDisposables()
+
+            viewModel.getMockFeed()
+        }
     }
 
     override fun setupView() {
-        setupToolbar()
+        setupToolbar(viewModel.isGuestMode)
         with(binding) {
+            wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
+            rcFeedFillter.visibleOrGone(!viewModel.isGuestMode)
             rvFeedContent.adapter = CommonMockAdapter().also {
                 adapterCommon = it
             }
@@ -70,17 +85,30 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }
     }
 
-    private fun setupToolbar() {
+    private fun setupToolbar(guestMode: Boolean) {
         with(toolbarBinding) {
             tvToolbarTitle.text = getString(R.string.feed_title_toolbar)
-            ivToolbarProfileButton.subscribeOnClick {
-                navigateToNotiflyLoginDialog()
+            if (guestMode) {
+                ivToolbarProfileButton.subscribeOnClick {
+                    navigateToNotiflyLoginDialog()
+                }
+            } else {
+                ivToolbarProfileButton.background = context?.getVectorDrawableRes(
+                    R.drawable.ic_hamburger
+                )
+                ivToolbarProfileButton.subscribeOnClick {
+                    navigateToSettingFragment()
+                }
             }
         }
     }
 
     private fun navigateToNotiflyLoginDialog() {
         onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+    }
+
+    private fun navigateToSettingFragment() {
+        onBoardNavigator.navigateToSettingFragment()
     }
 
     override fun bindViewEvents() {
@@ -119,5 +147,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
+        viewModel.userProfile.observe(this, {
+
+        })
+
+        activityViewModel.user.subscribe {
+            setupView()
+        }.addToDisposables()
     }
 }

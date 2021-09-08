@@ -127,7 +127,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
         if (!emailVerifyUiModel.exist) {
             enableContinueButton(true)
         } else {
-            showErrorMessage(!emailVerifyUiModel.exist)
+            showErrorMessage(emailVerifyUiModel.exist)
         }
     }
 
@@ -155,7 +155,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     private fun showErrorMessage(exist: Boolean) {
         with(binding) {
             tvErrorMessage.visibleOrGone(exist)
-            tvSubTitle.visibleOrGone(exist)
+            tvSubTitle.visibleOrGone(!exist)
         }
     }
 

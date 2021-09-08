@@ -1,6 +1,11 @@
 package com.castcle.ui.onboard
 
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
+import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -28,9 +33,23 @@ import javax.inject.Inject
 //  Created by sklim on 19/8/2021 AD at 11:02.
 
 class OnBoardViewModelImpl @Inject constructor(
+    private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
 ) : OnBoardViewModel() {
 
+    private val _userProfile = BehaviorSubject.create<User>()
+
+    override val user: Observable<User>
+        get() = _userProfile
+
     override val isGuestMode: Boolean
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+
+    override fun onRefreshProfile() {
+        userProfileSingleUseCase.execute(Unit)
+            .subscribeBy(
+                onNext = _userProfile::onNext,
+                onError = {}
+            ).addToDisposables()
+    }
 }

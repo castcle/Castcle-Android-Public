@@ -1,7 +1,8 @@
 package com.castcle.ui.onboard
 
-import androidx.lifecycle.LiveData
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
+import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -29,6 +30,9 @@ import com.castcle.ui.base.BaseViewModel
 
 abstract class OnBoardViewModel : BaseViewModel() {
 
-    abstract val isGuestMode: Boolean
-}
+    abstract val user: Observable<User>
 
+    abstract val isGuestMode: Boolean
+
+    abstract fun onRefreshProfile()
+}

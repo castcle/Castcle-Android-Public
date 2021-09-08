@@ -28,10 +28,11 @@ import kotlinx.parcelize.Parcelize
 //
 //  Created by sklim on 3/9/2021 AD at 14:54.
 
-sealed class LoginBundle : Parcelable {
+sealed class RegisterBundle : Parcelable {
 
     @Parcelize
-    data class LoginWithEmail(
-        val email: String
-    ) : LoginBundle()
+    data class RegisterWithEmail(
+        var email: String,
+        var password: String? = "",
+    ) : RegisterBundle()
 }

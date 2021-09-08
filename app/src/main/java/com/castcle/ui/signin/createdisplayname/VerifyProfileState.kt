@@ -25,8 +25,8 @@ package com.castcle.ui.signin.createdisplayname
 //  Created by sklim on 3/9/2021 AD at 17:20.
 
 enum class VerifyProfileState {
-    DISPLAY_NAME_ERROR,
-    DISPLAY_NAME_PASS,
+    NONE,
     CASTCLE_ID_ERROR,
     CASTCLE_ID_PASS,
+    ALL_PASS
 }

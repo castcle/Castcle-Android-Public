@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -54,6 +55,10 @@ fun Context.getDrawableRes(@DrawableRes drawable: Int): Drawable? {
 
 fun Context.getColorResource(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(this, colorRes)
+}
+
+fun Context.getVectorDrawableRes(@DrawableRes drawable: Int): Drawable? {
+    return AppCompatResources.getDrawable(this, drawable)
 }
 
 fun Context.showSoftKeyboard(view: View) {

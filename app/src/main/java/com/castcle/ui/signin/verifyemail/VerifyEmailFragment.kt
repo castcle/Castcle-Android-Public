@@ -4,13 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentVerifyEmailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.login.AuthBundle
+import com.castcle.common_model.model.login.RegisterBundle
 import com.castcle.extensions.gone
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -43,6 +47,11 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
     ToolbarBindingInflater<ToolbarCastcleGreetingBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    private val authBundle: CreateDisplayNameFragmentArgs by navArgs()
+
+    private val emailBundle: RegisterBundle
+        get() = authBundle.registerBundle
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -82,7 +91,13 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
+        binding.btGoToFeed.subscribeOnClick {
+            naivgateToFeed()
+        }.addToDisposables()
+    }
 
+    private fun naivgateToFeed(){
+        onBoardNavigator.nvaigateToFeedFragment()
     }
 
     override fun bindViewModel() = Unit

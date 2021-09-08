@@ -15,6 +15,12 @@
         <action
             android:id="@+id/actionFeedFragmentToNotiflyLoginDialoginDialogFragment"
             app:destination="@id/dialog_login_nav_graph" />
+
+        <action
+            android:id="@+id/actionFeedFragmentToSettingFragment"
+            app:destination="@id/settingFragment" />
+
+        <deepLink app:uri="@string/nav_deep_link_feed" />
     </fragment>
 
     <fragment
@@ -98,8 +104,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <argument
-            android:name="emailBundle"
-            app:argType="com.castcle.common_model.model.login.AuthBundle" />
+            android:name="registerBundle"
+            app:argType="com.castcle.common_model.model.login.RegisterBundle" />
     </fragment>
 
     <fragment
@@ -117,8 +123,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <argument
-            android:name="emailBundle"
-            app:argType="com.castcle.common_model.model.login.AuthBundle" />
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.ProfileBundle" />
     </fragment>
 
     <fragment
@@ -159,5 +165,13 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/feedFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.castcle.ui.setting.SettingFragment"
+        tools:layout="@layout/fragment_setting">
+
+        <deepLink app:uri="@string/nav_deep_link_setting" />
     </fragment>
 </navigation>

@@ -34,8 +34,11 @@ class LoginError(
 
     fun hasAuthenticationAccountNotFound() = CODE_INVALID_ACCOUNT == code
         && STATUC_CODE_NOT_FOUND == statusCode
+
+    fun hasAuthenticationLoginInvaildChannel() = CODE_INVALID_CHANNEL_LOGIN == code
 }
 
 const val CODE_NOT_FOUND = "400"
 const val CODE_INVALID_ACCOUNT = "3003"
+const val CODE_INVALID_CHANNEL_LOGIN = "3002"
 const val STATUC_CODE_NOT_FOUND = 400

@@ -1,5 +1,8 @@
 package com.castcle.ui.onboard
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu.NONE
@@ -12,6 +15,8 @@ import com.castcle.android.databinding.ActivityOnBoardBinding
 import com.castcle.android.databinding.LayoutBottomMenuCustomBinding
 import com.castcle.data.statickmodel.BottomNavigateStatic
 import com.castcle.extensions.*
+import com.castcle.networking.service.interceptor.AppRefreshTokenFailedListener
+import com.castcle.networking.service.interceptor.AppTokenExpiredDelegate
 import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -19,7 +24,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import javax.inject.Inject
 
-class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
+class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
+    AppRefreshTokenFailedListener,
+    ViewBindingContract {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
@@ -60,11 +67,24 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
         return currentNavController?.value?.navigateUp() ?: false
     }
 
-    override fun onBackPressed() {
-        if (isOnBoardScreen) {
-            // Disable the Back button
-            return
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        this.intent = intent
+        try {
+            onBoardNavigator.handleDeepLink(
+                intent,
+                intent.getBooleanExtra(EXTRA_SHOULD_POP_STACK_TO_ENTRY, true)
+            )
+        } catch (e: Exception) {
+            // Ignored
         }
+    }
+
+    override fun onBackPressed() {
+//        if (isOnBoardScreen) {
+//            // Disable the Back button
+//            return
+//        }
         super.onBackPressed()
     }
 
@@ -145,4 +165,37 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(), ViewBindingContract {
             todayTabViewItem.addView(layoutNotificationBadge.root)
         }
     }
+
+    override fun onRefreshTokenFailed(error: Throwable) {
+
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        AppTokenExpiredDelegate.bindAppTokenExpiredListener(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppTokenExpiredDelegate.unbindAppTokenExpiredListener(this)
+    }
+
+    companion object {
+        fun start(context: Context, bundle: Bundle? = null) {
+            val intent = Intent(context, OnBoardActivity::class.java)
+            bundle?.let { intent.putExtras(it) }
+            context.startActivity(intent)
+        }
+
+        fun start(context: Context, deepLinkUri: Uri, shouldPopStackToEntry: Boolean = true) {
+            val intent = Intent(context, OnBoardActivity::class.java).apply {
+                data = deepLinkUri
+                putExtra(EXTRA_SHOULD_POP_STACK_TO_ENTRY, shouldPopStackToEntry)
+                action = Intent.ACTION_VIEW
+            }
+            context.startActivity(intent)
+        }
+    }
 }
+
+private const val EXTRA_SHOULD_POP_STACK_TO_ENTRY = "shouldPopStackToEntry"

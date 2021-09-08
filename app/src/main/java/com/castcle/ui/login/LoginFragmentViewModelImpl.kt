@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.login.LoginRequest
 import com.castcle.extensions.isEmail
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
+import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import io.reactivex.Completable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -35,7 +37,8 @@ import javax.inject.Inject
 
 class LoginFragmentViewModelImpl @Inject constructor(
     private val authenticationLoginWithEmailCompletableUseCase:
-    AuthenticationLoginWithEmailCompletableUseCase
+    AuthenticationLoginWithEmailCompletableUseCase,
+    private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
 ) : LoginFragmentViewModel(), LoginFragmentViewModel.Input {
 
     private var _userEmail = MutableLiveData<String>()
@@ -45,6 +48,8 @@ class LoginFragmentViewModelImpl @Inject constructor(
     private val _enableLogin = MutableLiveData<Boolean>()
 
     private val _showLoading = PublishSubject.create<Boolean>()
+
+    private val _error = PublishSubject.create<Throwable>()
 
     override val enableLogin: LiveData<Boolean>
         get() = _enableLogin
@@ -56,8 +61,21 @@ class LoginFragmentViewModelImpl @Inject constructor(
         return authenticationLoginWithEmailCompletableUseCase.execute(
             LoginRequest(_userEmail.value!!, _password.value!!)
         ).doOnSubscribe { _showLoading.onNext(true) }
-            .doOnError { _showLoading.onNext(false) }
+            .doOnComplete {
+                fetchUserProfile().subscribe().addToDisposables()
+            }
+            .doOnError {
+                _showLoading.onNext(false)
+            }
     }
+
+    private fun fetchUserProfile(): Completable =
+        userProfileSingleUseCase
+            .execute(Unit)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doFinally { _showLoading.onNext(false) }
+            .doOnError(_error::onNext).firstOrError()
+            .ignoreElement()
 
     override fun userEmail(email: String) {
         _userEmail.value = email

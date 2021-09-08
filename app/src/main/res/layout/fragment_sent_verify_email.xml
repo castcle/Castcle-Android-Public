@@ -84,7 +84,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/AppTextKanitLight.Medium"
-        android:id="@+id/btTakePhoto"
+        android:id="@+id/btResent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"

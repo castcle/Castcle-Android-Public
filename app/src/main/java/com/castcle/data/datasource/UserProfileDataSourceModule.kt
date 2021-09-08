@@ -1,12 +1,14 @@
 package com.castcle.data.datasource
 
+import com.castcle.common_model.model.userprofile.UserProfileResponse
 import com.castcle.data.model.dao.UserDao
-import com.castcle.data.repository.UserProfileRepository
-import com.castcle.data.repository.UserProfileRepositoryImpl
+import com.castcle.data.repository.*
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.UserApi
 import dagger.Module
 import dagger.Provides
+import io.reactivex.functions.Function
+import retrofit2.Response
 import retrofit2.Retrofit
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -43,13 +45,8 @@ class UserProfileDataSourceModule {
     }
 
     @Provides
-    fun userProfileRepository(
-        userDao: UserDao,
-        userApi: UserApi,
-        appPreferences: AppPreferences
-    ): UserProfileRepository = UserProfileRepositoryImpl(
-        userDao,
-        userApi,
-        appPreferences
-    )
+    fun provideUserProfileResponseMapper(
+        userProfileMapper: UserProfileMapper
+    ): Function<Response<UserProfileResponse>, UserProfileResponse> = userProfileMapper
+
 }

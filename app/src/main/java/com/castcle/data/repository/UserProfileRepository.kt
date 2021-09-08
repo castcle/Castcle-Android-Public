@@ -36,15 +36,16 @@ import javax.inject.Inject
 //
 //  Created by sklim on 31/8/2021 AD at 18:00.
 
-abstract class UserProfileRepository {
-    abstract val currentUser: Flowable<User>
+interface UserProfileRepository {
+    val currentUser: Flowable<User>
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val userApi: UserApi,
+    private val userProfileMapper: UserProfileMapper,
     private val appPreferences: AppPreferences,
-) : UserProfileRepository() {
+) : UserProfileRepository {
 
     override val currentUser: Flowable<User>
         get() = getUserProfile()
@@ -77,15 +78,16 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     private fun getUserRemoteProfile(): Flowable<User> {
         return userApi.getUserProfile()
-            .lift(ApiOperators.mobileApiError())
+            .map(userProfileMapper)
             .map { it.toUserProfile() }
-            .doOnNext {
+            .doOnSuccess {
                 setCastcleId(it.castcleId)
                 _onMemoryUser = it
                 _remoteUser.onNext(it)
             }
             .doOnSubscribe { _isLoadingUser = true }
             .doFinally { _isLoadingUser = false }
+            .toFlowable()
     }
 
     private fun setCastcleId(castcleId: String) {

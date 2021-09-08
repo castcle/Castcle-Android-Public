@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="link_scheme" translatable="false">https</string>
+    <string name="deep_link_path_prefix" translatable="false">/</string>
+
+    <!-- Path prefix -->
+    <string name="deep_link_path_prefix_feed" translatable="false">/feed</string>
+    <string name="deep_link_path_prefix_blog" translatable="false">/blog</string>
+    <string name="deep_link_path_prefix_search" translatable="false">/search</string>
+
+    <!-- Https Deep Link with path -->
+    <string name="deep_link_path_https_feed" translatable="false">.*/feed</string>
+    <string name="deep_link_path_https_blog" translatable="false">.*/blog</string>
+    <string name="deep_link_path_https_search" translatable="false">.*/search</string>
 </resources>

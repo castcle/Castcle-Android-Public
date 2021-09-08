@@ -37,6 +37,11 @@ fun Activity.openUri(url: String, isOpenExternal: Boolean = false) {
 
 private fun Activity.navigateUri(uri: Uri, isOpenExternal: Boolean) {
     when {
+        canAppHandleDeepLink(uri) -> {
+            (this as? OnBoardActivity)?.let { onBoardActivity ->
+                OnBoardActivity.start(onBoardActivity, uri)
+            }
+        }
         shouldNavigateToExternal(uri, isOpenExternal) -> {
             val intent = Intent(Intent.ACTION_VIEW, uri)
                 .addCategory(Intent.CATEGORY_BROWSABLE)
@@ -48,6 +53,13 @@ private fun Activity.navigateUri(uri: Uri, isOpenExternal: Boolean) {
                 is OnBoardActivity -> onBoardNavigator.navigateToWebView(uri.toString())
             }
         }
+    }
+}
+
+private fun Activity.canAppHandleDeepLink(uri: Uri): Boolean {
+    return when (this) {
+        is OnBoardActivity -> onBoardNavigator.canHandleDeepLink(uri)
+        else -> false
     }
 }
 

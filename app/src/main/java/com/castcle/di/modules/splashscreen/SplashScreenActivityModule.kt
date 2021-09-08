@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
 import com.castcle.networking.NetworkModule
+import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.ui.splashscreen.*
 import dagger.Binds
@@ -41,6 +42,7 @@ import dagger.multibindings.IntoMap
     includes = [
         NetworkModule::class,
         NonAuthenticationDataSourceModule::class,
+        AuthRefreshTokenDataSourceModule::class
     ]
 )
 interface SplashScreenActivityModule {

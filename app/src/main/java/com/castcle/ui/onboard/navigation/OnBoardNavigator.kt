@@ -1,6 +1,8 @@
 package com.castcle.ui.onboard.navigation
 
-import com.castcle.common_model.model.login.AuthBundle
+import android.content.Intent
+import android.net.Uri
+import com.castcle.common_model.model.login.*
 import com.castcle.ui.base.BaseNavigator
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -43,11 +45,21 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToPassword(authBundle: AuthBundle)
 
-    fun navigetToDisplayNameFragment(authBundle: AuthBundle)
+    fun navigetToDisplayNameFragment(registerBundle: RegisterBundle)
 
-    fun naivgetToProfileChooseImageFragment(authBundle: AuthBundle)
+    fun naivgetToProfileChooseImageFragment(profileBundle: ProfileBundle)
 
     fun naivgetToProfileVerifyEmailFragment(authBundle: AuthBundle)
 
     fun navigateToAboutYouFragment()
+
+    fun navigateToSettingFragment()
+
+    fun navigateByDeepLink(deepLink: Uri, shouldPopStackToEntry: Boolean = true): Boolean
+
+    fun canHandleDeepLink(deepLink: Uri): Boolean
+
+    fun handleDeepLink(intent: Intent, shouldPopStackToEntry: Boolean)
+
+    fun popBackStackToEntry(popInclusive: Boolean = false)
 }

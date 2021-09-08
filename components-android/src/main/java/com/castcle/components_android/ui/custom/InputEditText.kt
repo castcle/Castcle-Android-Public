@@ -185,7 +185,11 @@ class InputEditText(
         }
     }
 
-    fun setError(error: String?, isShowErrorWithOutText: Boolean = false) {
+    fun setError(
+        error: String?,
+        isShowErrorWithOutText: Boolean = false,
+        isShowErrorWithBackground: Boolean = false
+    ) {
         with(binding) {
             when {
                 isShowErrorWithOutText -> {
@@ -193,6 +197,10 @@ class InputEditText(
                         context.getDrawableRes(R.drawable.bg_round_corner_input_error)
                 }
                 error.isNullOrEmpty() -> hideError()
+                isShowErrorWithBackground -> {
+                    tvTextInputError.visible()
+                    tvTextInputError.text = error
+                }
                 binding.tvTextInputError.isGone -> {
                     tilTextInputLayout.background =
                         context.getDrawableRes(R.drawable.bg_round_corner_input_error)

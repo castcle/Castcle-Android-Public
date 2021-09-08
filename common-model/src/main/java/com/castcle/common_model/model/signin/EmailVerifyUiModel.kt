@@ -37,29 +37,29 @@ sealed class AuthVerifyBaseUiModel(
 
     data class DisplayNameVerifyUiModel(
         override val message: String = "",
-        override val exist: Boolean = false
+        override val exist: Boolean = false,
+        val castcleIdSuggestions: String = ""
     ) : AuthVerifyBaseUiModel(message, exist)
 
     data class CastcleIdVerifyUiModel(
         override val message: String = "",
         override val exist: Boolean = false,
-        val castcleIdSuggestions: String
     ) : AuthVerifyBaseUiModel(message, exist)
 }
 
 
 fun AuthExsitResponse.toEmailVerifyUiModel() = AuthVerifyBaseUiModel.EmailVerifyUiModel(
-    message = message,
+    message = message ?: "",
     exist = payload.exist
 )
 
 fun AuthExsitResponse.toDisplayNameUiModel() = AuthVerifyBaseUiModel.DisplayNameVerifyUiModel(
-    message = message,
-    exist = payload.exist,
+    message = message ?: "",
+    exist = false,
+    castcleIdSuggestions = payload.suggestCastcleId ?: ""
 )
 
 fun AuthExsitResponse.toCastcleIdVerifyUiModel() = AuthVerifyBaseUiModel.CastcleIdVerifyUiModel(
-    message = message,
-    exist = payload.exist,
-    castcleIdSuggestions = payload.suggestCastcleId ?: ""
+    message = message ?: "",
+    exist = payload.exist
 )

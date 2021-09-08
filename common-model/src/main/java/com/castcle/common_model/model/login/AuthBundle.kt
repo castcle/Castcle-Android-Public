@@ -38,16 +38,17 @@ open class AuthBundle : Parcelable {
         @Parcelize
         class EmailAuthBundle(
             val email: String,
-            val password: String = "",
+            val password: String? = "",
             override val authenticationMethod: AuthenticationInfo.Method,
         ) : LoginAuthBundle(authenticationMethod)
     }
 }
 
-fun AuthBundle.toEmailAuthBundle(): LoginBundle {
+fun AuthBundle.toEmailAuthBundle(): RegisterBundle {
     return when (this) {
-        is EmailAuthBundle -> LoginBundle.LoginWithEmail(
-            email = email
+        is EmailAuthBundle -> RegisterBundle.RegisterWithEmail(
+            email = email,
+            password = password ?: ""
         )
         else -> throw  UnsupportedOperationException()
     }

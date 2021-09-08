@@ -3,17 +3,20 @@ package com.castcle.di.modules.onboard
 import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.login.*
+import com.castcle.di.modules.setting.SettingFragmentViewModelModule
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
 import com.castcle.ui.feed.FeedFragment
 import com.castcle.ui.login.LoginFragment
+import com.castcle.ui.setting.SettingFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
 import com.castcle.ui.signin.email.EmailFragment
 import com.castcle.ui.signin.geetingsignin.GreetingSignInFragment
 import com.castcle.ui.signin.password.PasswordFragment
 import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragment
+import com.castcle.ui.signin.verifyemail.ResentVerifyEmailFragment
 import com.castcle.ui.signin.verifyemail.VerifyEmailFragment
 import com.castcle.ui.webview.WebViewFragment
 import dagger.Module
@@ -89,4 +92,12 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [VerifyEmailViewModelModule::class])
     fun verifyEmailFragment(): VerifyEmailFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ResentVerifyEmailViewModelModule::class])
+    fun resentVerifyEmailFragment(): ResentVerifyEmailFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [SettingFragmentViewModelModule::class])
+    fun settingFragment(): SettingFragment
 }

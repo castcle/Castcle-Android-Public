@@ -46,6 +46,15 @@ fun String.isEmail() = this.matches(EMAIL_PATTERN.toRegex())
 
 fun String.isPasswordPatten() = this.matches(PASSWORD_PATTERN.toRegex())
 
+fun String.toUrlScheme(): String {
+    return "$this$URL_SCHEME_EXT"
+}
+
+fun String.containsSomeOf(vararg keywords: String, ignoreCase: Boolean = false): Boolean {
+    return keywords.any { this.contains(it, ignoreCase) }
+}
+
+private const val URL_SCHEME_EXT = "://"
 private const val EMAIL_PATTERN = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
     "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\." +
     "[a-zA-Z0-9][a-zA-Z0-9\\-]{1,25})+"

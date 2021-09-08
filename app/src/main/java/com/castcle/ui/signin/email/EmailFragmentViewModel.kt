@@ -5,6 +5,8 @@ import com.castcle.common.lib.extension.doIfTakeLongerThan
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.EmailVerifyUiModel
 import com.castcle.common_model.model.signin.reuquest.EmailRequest
+import com.castcle.networking.service.common.TIMEOUT_SEARCH_REQUEST
+import com.castcle.networking.service.common.TIMEOUT_SHOWING_SPINNER
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.usecase.signin.CheckEmailExsitSingleUseCase
 import io.reactivex.Observable
@@ -59,7 +61,6 @@ class EmailFragmentViewModelImpl @Inject constructor(
     private val rxSchedulerProvider: RxSchedulerProvider,
     private val checkEmailExsitSingleUseCase: CheckEmailExsitSingleUseCase
 ) : EmailFragmentViewModel(), EmailFragmentViewModel.Input {
-    private var _enableContinue = MutableLiveData<Boolean>()
 
     override val showLoading: Observable<Boolean>
         get() = _showLoading
@@ -118,6 +119,3 @@ class EmailFragmentViewModelImpl @Inject constructor(
         }
     }
 }
-
-private const val TIMEOUT_SEARCH_REQUEST = 500L
-private const val TIMEOUT_SHOWING_SPINNER = 1000L

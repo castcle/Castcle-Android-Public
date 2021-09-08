@@ -6,9 +6,14 @@ import androidx.paging.cachedIn
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.api.response.FeedContentResponse
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
+import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import com.google.gson.Gson
+import io.reactivex.Completable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -38,8 +43,17 @@ import javax.inject.Inject
 
 class FeedFragmentViewModelImpl @Inject constructor(
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val feedNonAuthRepository: FeedRepository
 ) : FeedFragmentViewModel() {
+
+    private val _showLoading = BehaviorSubject.create<Boolean>()
+
+    private val _error = PublishSubject.create<Throwable>()
+
+    private val _userProfile = MutableLiveData<User>()
+    override val userProfile: LiveData<User>
+        get() = _userProfile
 
     private lateinit var _feedUiMode: Flow<PagingData<FeedContentResponse>>
 
@@ -49,6 +63,19 @@ class FeedFragmentViewModelImpl @Inject constructor(
 
     override val isGuestMode: Boolean
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+
+    private fun setUserProfileData(user: User) {
+        _userProfile.value = user
+    }
+
+    override fun fetchUserProfile(): Completable =
+        userProfileSingleUseCase
+            .execute(Unit)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doFinally { _showLoading.onNext(false) }
+            .doOnNext(::setUserProfileData)
+            .doOnError(_error::onNext).firstOrError()
+            .ignoreElement()
 
     private fun getAllCharacters() = launchPagingAsync({
         val feedRequestHeader = FeedRequestHeader(

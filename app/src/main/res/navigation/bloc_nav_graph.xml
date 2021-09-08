@@ -9,5 +9,8 @@
     <fragment
         android:id="@+id/createBlogFragment"
         android:name="com.castcle.ui.createbloc.CreateBlogFragment"
-        tools:layout="@layout/fragment_create_bloc" />
+        tools:layout="@layout/fragment_create_bloc">
+
+        <deepLink app:uri="@string/nav_deep_link_blog" />
+    </fragment>
 </navigation>

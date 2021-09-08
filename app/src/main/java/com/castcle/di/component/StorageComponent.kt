@@ -2,6 +2,7 @@ package com.castcle.di.component
 
 import android.content.Context
 import com.castcle.authen_android.di.components.dependencies.AuthenticateStorageComponent
+import com.castcle.data.model.dao.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.data.storage.DeviceSettings
 import com.castcle.di.storage.StorageModule
@@ -40,6 +41,8 @@ interface StorageComponent : AuthenticateStorageComponent {
     interface Factory {
         fun create(@BindsInstance context: Context): StorageComponent
     }
+
+    fun userDao(): UserDao
 
     fun appPreferences(): AppPreferences
 
