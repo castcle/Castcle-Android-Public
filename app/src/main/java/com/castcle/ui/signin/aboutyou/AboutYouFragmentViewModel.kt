@@ -1,6 +1,11 @@
 package com.castcle.ui.signin.aboutyou
 
+import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.userprofile.UpdateUserProfileCompletableUseCase
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,6 +32,24 @@ import javax.inject.Inject
 //
 //  Created by sklim on 1/9/2021 AD at 18:14.
 
-abstract class AboutYouFragmentViewModel : BaseViewModel()
+abstract class AboutYouFragmentViewModel : BaseViewModel() {
+    abstract val showLoading: Observable<Boolean>
 
-class AboutYouFragmentViewModelImpl @Inject constructor() : AboutYouFragmentViewModel()
+    abstract fun requestUpdateProfile(userRequest: UserUpdateRequest): Completable
+}
+
+class AboutYouFragmentViewModelImpl @Inject constructor(
+    private val updateUserProfileCompletableUseCase: UpdateUserProfileCompletableUseCase
+) : AboutYouFragmentViewModel() {
+
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
+    private val _showLoading = BehaviorSubject.create<Boolean>()
+
+    override fun requestUpdateProfile(userRequest: UserUpdateRequest): Completable {
+        return updateUserProfileCompletableUseCase
+            .execute(userRequest)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+    }
+}

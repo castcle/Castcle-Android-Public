@@ -81,14 +81,14 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     override fun onBackPressed() {
-//        if (isOnBoardScreen) {
-//            // Disable the Back button
-//            return
-//        }
         super.onBackPressed()
     }
 
     private fun initBottomNavigation() {
+        viewModel.user.subscribe {
+            setupBottomNavigationBar()
+        }.addToDisposables()
+
         with(binding.bottomNavView) {
             itemIconTintList = null
             BottomNavigateStatic.bottomMenu.forEachIndexed { index, item ->
@@ -145,6 +145,9 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.verifyEmailFragment,
                 R.id.createDisplayProfileFragment,
                 R.id.profileChooseFragment,
+                R.id.settingFragment,
+                R.id.resentVerifyFragment,
+                R.id.aboutYouFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

@@ -41,13 +41,17 @@ import javax.inject.Inject
 interface AuthenticationsRepository {
     fun authLoginWithEmail(loginRequest: LoginRequest): Completable
 
+    fun authRegister(registerRequest: RegisterRequest): Completable
+
     fun authCheckEmailExsit(emailRequest: EmailRequest): Single<EmailVerifyUiModel>
 
-    fun authCheckDisplayNameExsit(displayNameRequest: DisplayNameRequest):
+    fun suggestionsDisplayName(displayNameRequest: DisplayNameRequest):
         Single<DisplayNameVerifyUiModel>
 
     fun authCheckCastcleExsit(castcleIdRequest: CastcleIdRequest):
         Single<CastcleIdVerifyUiModel>
+
+    fun authRequestLinkVerifyEmail(): Completable
 }
 
 class AuthenticationsRepositoryImpl @Inject constructor(
@@ -67,6 +71,25 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .ignoreElement()
     }
 
+    override fun authRegister(registerRequest: RegisterRequest): Completable {
+        return authenticationApi
+            .register(registerRequest)
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .doOnSuccess {
+                updateAccessToken(it.toOAuthResponse())
+            }
+            .ignoreElement()
+    }
+
+    override fun authRequestLinkVerifyEmail(): Completable {
+        return authenticationApi
+            .checkrRquestLinkVerify()
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
     override fun authCheckEmailExsit(emailRequest: EmailRequest): Single<EmailVerifyUiModel> {
         return authenticationApi
             .checkEmailExists(emailRequest)
@@ -75,10 +98,10 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .firstOrError()
     }
 
-    override fun authCheckDisplayNameExsit(displayNameRequest: DisplayNameRequest):
+    override fun suggestionsDisplayName(displayNameRequest: DisplayNameRequest):
         Single<DisplayNameVerifyUiModel> {
         return authenticationApi
-            .checkDisplayName(displayNameRequest)
+            .getSuggestionDisplayName(displayNameRequest)
             .lift(ApiOperators.mobileApiError())
             .map { it.toDisplayNameUiModel() }
             .firstOrError()

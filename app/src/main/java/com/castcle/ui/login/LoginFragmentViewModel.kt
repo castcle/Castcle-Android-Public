@@ -1,6 +1,7 @@
 package com.castcle.ui.login
 
 import androidx.lifecycle.LiveData
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.Completable
 
@@ -34,7 +35,11 @@ abstract class LoginFragmentViewModel : BaseViewModel() {
 
     abstract val input: Input
 
+    abstract val userResponse: LiveData<User>
+
     abstract fun getAuthLoginWithEmail(): Completable
+
+    abstract fun refreshToken(): Completable
 
     interface Input {
 

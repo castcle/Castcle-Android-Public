@@ -34,5 +34,7 @@ sealed class ProfileBundle : Parcelable {
         var email: String,
         var displayName: String? = "",
         var castcleId: String? = "",
+        var imageAvatar: String? = "",
+        var imageCover: String? = ""
     ) : ProfileBundle()
 }

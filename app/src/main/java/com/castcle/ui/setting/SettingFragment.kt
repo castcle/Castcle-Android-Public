@@ -8,10 +8,17 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.setting.toPageHeaderUiModel
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.statickmodel.StaticSeetingMenu
-import com.castcle.extensions.getVectorDrawableRes
+import com.castcle.extensions.getDrawableRes
+import com.castcle.extensions.visibleOrGone
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.OnBoardActivity
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.ui.splashscreen.SplashScreenActivity
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -65,7 +72,16 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(SettingFragmentViewModel::class.java)
 
-    override fun initViewModel() = Unit
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
+
+    override fun initViewModel() {
+        viewModel.fetchCachedUserProfile()
+            .subscribe()
+            .addToDisposables()
+    }
 
     override fun setupView() {
         setupToolBar()
@@ -76,16 +92,18 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         with(binding) {
             val settingUiModel = StaticSeetingMenu.staticMenuSetting
             mtMenuSetting.bindingMenu(settingUiModel)
-
-            val pageHeaderList = StaticSeetingMenu.staticPage
-            ptPageContentList.bindPage(pageHeaderList)
+            layoutNotification.tvNotiCount.text =
+                context?.getString(R.string.setting_noti_count)?.format("3")
+            layoutNotification.tvCount.text = "3"
         }
     }
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.background = context?.getVectorDrawableRes(
-                R.drawable.ic_hamburger_selected
+            ivToolbarProfileButton.setImageDrawable(
+                context?.getDrawableRes(
+                    R.drawable.ic_hamburger_selected
+                )
             )
             tvToolbarTitle.text = context?.getString(R.string.setting_title)
             ivToolbarLogoButton
@@ -97,9 +115,32 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
 
     override fun bindViewEvents() {
         binding.btContinue.subscribeOnClick {
-            onBoardNavigator.navigateToEmailFragment()
+            viewModel.onLogOut().subscribeBy(
+                onComplete = {
+                    logoutToSplashScreen()
+                }
+            ).addToDisposables()
         }
     }
 
-    override fun bindViewModel() = Unit
+    private fun logoutToSplashScreen() {
+        SplashScreenActivity.start(requireContext())
+        (context as OnBoardActivity).finish()
+        findNavController().navigateUp()
+    }
+
+    override fun bindViewModel() {
+        viewModel.userProfile.observe(this, {
+            onBindUserData(it)
+        })
+    }
+
+    private fun onBindUserData(user: User) {
+        with(binding) {
+            val pageHeaderList = user.toPageHeaderUiModel()
+            ptPageContentList.bindPage(pageHeaderList)
+
+            layoutNotificationWarning.clWarningNoti.visibleOrGone(!user.verified)
+        }
+    }
 }

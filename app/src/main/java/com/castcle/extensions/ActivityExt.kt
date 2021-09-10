@@ -35,6 +35,15 @@ fun Activity.openUri(url: String, isOpenExternal: Boolean = false) {
     navigateUri(uri, isOpenExternal)
 }
 
+fun Activity.isExternalLink(uri: Uri): Boolean {
+    return isHttpsOrSupportedHttpDeepLink(uri) &&
+        uri.toString().contains(getString(R.string.deep_link_host)).not()
+}
+
+fun Activity.isHttpsOrSupportedHttpDeepLink(uri: Uri): Boolean {
+    return uri.scheme == getString(R.string.link_scheme)
+}
+
 private fun Activity.navigateUri(uri: Uri, isOpenExternal: Boolean) {
     when {
         canAppHandleDeepLink(uri) -> {

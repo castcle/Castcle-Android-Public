@@ -58,6 +58,25 @@ object CoreApi {
         context: Context,
         apiEndPointUrl: ApiEndPointUrl,
         sessionVariable: SessionEnvironment,
+        requiredAuthenticated: Boolean = true,
+        secureStorage: SecureStorage,
+        sessionManagerRepository: SessionManagerRepository?
+    ): Retrofit {
+        sessionManagerRepository?.setSessionEnvironment(sessionVariable)
+        return RetrofitServiceProviders.getRetrofitApi(
+            context = context,
+            apiEndPointUrl = apiEndPointUrl,
+            sessionManagerRepository = sessionManagerRepository,
+            requiredAuthenticated = requiredAuthenticated,
+            tokenRefresher = null,
+            secureStorage = secureStorage
+        )
+    }
+
+    fun retrofitService(
+        context: Context,
+        apiEndPointUrl: ApiEndPointUrl,
+        sessionVariable: SessionEnvironment,
         requiredAuthenticated: Boolean = false,
         sessionManagerRepository: SessionManagerRepository?
     ): Retrofit {

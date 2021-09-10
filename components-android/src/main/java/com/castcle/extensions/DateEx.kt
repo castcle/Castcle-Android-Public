@@ -5,8 +5,7 @@ import org.threeten.bp.LocalTime
 import org.threeten.bp.chrono.ChronoLocalDateTime
 import org.threeten.bp.chrono.ThaiBuddhistDate
 import org.threeten.bp.format.DateTimeFormatter
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.text.*
 import java.util.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -91,6 +90,16 @@ fun Date.toLocalDateTime(isHourOfDay: Boolean): ChronoLocalDateTime<*> {
             get(Calendar.SECOND)
         )
     }
+}
+
+fun Int.getMonthName(language: String = LANGUAGE_CODE_EN): String {
+    var month = ""
+    val dfs = DateFormatSymbols()
+    val months = dfs.months
+    if (this in 0..11) {
+        month = months[this]
+    }
+    return month
 }
 
 const val COMMON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"

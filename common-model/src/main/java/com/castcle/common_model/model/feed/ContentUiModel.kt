@@ -3,6 +3,7 @@ package com.castcle.common_model.model.feed
 import android.os.Parcelable
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.api.response.*
+import com.castcle.common_model.model.userprofile.User
 import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -39,12 +40,12 @@ fun List<FeedContentResponse>.toContentFeedUiModel(): ContentFeedUiModel {
 
 @Parcelize
 data class ContentUiModel(
-    val id: String,
-    val featureSlug: String,
-    val circleSlug: String,
-    val contentType: String,
-    val created: String,
-    val updated: String,
+    val id: String = "",
+    val featureSlug: String = "",
+    val circleSlug: String = "",
+    val contentType: String = "",
+    val created: String = "",
+    val updated: String = "",
     val payLoadUiModel: PayLoadUiModel
 ) : Parcelable
 
@@ -62,16 +63,16 @@ fun FeedContentResponse.toContentUiModel(): ContentUiModel {
 
 @Parcelize
 data class PayLoadUiModel(
-    val headerFeed: String,
-    val contentFeed: String,
-    val photo: PhotoUiModel,
-    val created: String,
-    val updated: String,
-    val link: List<LinkUiModel>,
-    val likedUiModel: LikedUiModel,
-    val commentedUiModel: CommentedUiModel,
-    val reCastedUiModel: RecastedUiModel,
-    val author: AuthorUiModel
+    val headerFeed: String = "",
+    val contentFeed: String = "",
+    val photo: PhotoUiModel = PhotoUiModel(),
+    val created: String = "",
+    val updated: String = "",
+    val link: List<LinkUiModel> = emptyList(),
+    val likedUiModel: LikedUiModel = LikedUiModel(),
+    val commentedUiModel: CommentedUiModel = CommentedUiModel(),
+    val reCastedUiModel: RecastedUiModel = RecastedUiModel(),
+    val author: AuthorUiModel = AuthorUiModel()
 ) : Parcelable
 
 fun PayloadResponse.toPayloadUiModel(): PayLoadUiModel {
@@ -95,7 +96,7 @@ fun PayloadResponse.toPayloadUiModel(): PayLoadUiModel {
 @Parcelize
 data class PhotoUiModel(
     val imageCover: String? = null,
-    val imageContent: List<String>
+    val imageContent: List<String> = emptyList()
 ) : Parcelable
 
 fun PhotoResponse.toPhotoUiMode() =
@@ -121,9 +122,9 @@ fun LinkResponse.toLinkUiModel(): LinkUiModel {
 
 @Parcelize
 data class LikedUiModel(
-    val count: Int,
-    val liked: Boolean,
-    val participantUiModel: List<ParticipantUiModel>
+    val count: Int = 0,
+    val liked: Boolean = false,
+    val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
 
 fun LikedResponse.toLikedUiModel() =
@@ -137,9 +138,9 @@ fun LikedResponse.toLikedUiModel() =
 
 @Parcelize
 data class CommentedUiModel(
-    val count: Int,
-    val commented: Boolean,
-    val participantUiModel: List<ParticipantUiModel>
+    val count: Int = 0,
+    val commented: Boolean = false,
+    val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
 
 fun CommentedResponse.toCommentedUiModel() =
@@ -154,9 +155,9 @@ fun CommentedResponse.toCommentedUiModel() =
 
 @Parcelize
 data class RecastedUiModel(
-    val count: Int,
-    val recasted: Boolean,
-    val participantUiModel: List<ParticipantUiModel>
+    val count: Int = 0,
+    val recasted: Boolean = false,
+    val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
 
 fun RecastedResponse.toRecastedUiModel() =
@@ -191,12 +192,12 @@ data class QuoteCast(
 
 @Parcelize
 data class AuthorUiModel(
-    val avatar: String,
-    val displayName: String,
-    val followed: Boolean,
-    val id: String,
-    val type: String,
-    val verified: Boolean
+    val avatar: String = "",
+    val displayName: String = "",
+    val followed: Boolean = false,
+    val id: String = "",
+    val type: String = "",
+    val verified: Boolean = false
 ) : Parcelable
 
 fun Author.toAuthorUiModel() =
@@ -208,3 +209,13 @@ fun Author.toAuthorUiModel() =
         type = type,
         verified = verified
     )
+
+fun User.toContentUiModel(): ContentUiModel {
+    return ContentUiModel(
+        payLoadUiModel = PayLoadUiModel(
+            author = AuthorUiModel(
+                avatar = avatar
+            )
+        )
+    )
+}

@@ -59,6 +59,16 @@ class InputEditText(
             binding.etTextInputPrimary.setText(value)
         }
 
+    var isEditable: Boolean
+        set(isEditable) {
+            if (isEditable) {
+                binding.etTextInputPrimary.editable(true, inputType)
+            } else {
+                binding.etTextInputPrimary.editable(false)
+            }
+        }
+        get() = binding.etTextInputPrimary.isEditable()
+
     private var defaultBackgroundRes: Int = 0
     private lateinit var textWatcher: TextWatcher
     var onTextChanged: ((String) -> Unit)? = null
@@ -102,6 +112,7 @@ class InputEditText(
                     R.styleable.TextInput_imeOptions, 0
                 )
                 setupDrawableEnd(styles)
+                isEditable = styles.getBoolean(R.styleable.TextInput_editable, true)
             }
         } finally {
             styles.recycle()

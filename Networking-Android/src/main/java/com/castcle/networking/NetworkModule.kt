@@ -2,8 +2,8 @@ package com.castcle.networking
 
 import android.content.Context
 import com.castcle.authen_android.data.storage.SecureStorage
-import com.castcle.networking.api.auth.TokenRepositoryImpl
-import com.castcle.networking.api.nonauthen.NonAuthenticationApi
+import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenApi
+import com.castcle.networking.api.auth.freshtoken.AuthenticationTokenRepositoryImpl
 import com.castcle.networking.service.authenticator.TokenRefresher
 import com.castcle.networking.service.common.secrets.ApiEndPointUrl
 import com.castcle.networking.service.common.secrets.ApiEndPointUrlImpl
@@ -49,12 +49,12 @@ class NetworkModule {
     fun provideTokenRefreshRepository(
         context: Context,
         secureStorage: SecureStorage,
-        nonAuthenticationApi: NonAuthenticationApi,
+        authRefreshTokenApi: AuthRefreshTokenApi,
         sessionManagerRepository: SessionManagerRepository
-    ): TokenRefresher = TokenRepositoryImpl(
+    ): TokenRefresher = AuthenticationTokenRepositoryImpl(
         context,
         secureStorage,
-        nonAuthenticationApi,
+        authRefreshTokenApi,
         sessionManagerRepository
     )
 

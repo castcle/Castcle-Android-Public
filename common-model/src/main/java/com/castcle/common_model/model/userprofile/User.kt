@@ -50,19 +50,19 @@ fun UserProfileResponse.toUserProfile(): User {
     return User(
         castcleId = castcleId,
         id = id,
-        dob = dob,
+        dob = dob ?: "",
         email = email,
         avatar = images.avatar,
         cover = images.cover,
         followed = followed,
         followersCount = followers.count,
         followingCount = following.count,
-        overview = overview,
-        verified = verified,
-        facebookLinks = links.facebook,
-        mediumLinks = links.medium,
-        twitterLinks = links.twitter,
-        websiteLinks = links.website,
-        youtubeLinks = links.youtube
+        overview = overview ?: "",
+        verified = verified ?: false,
+        facebookLinks = links?.facebook ?: "",
+        mediumLinks = links?.medium ?: "",
+        twitterLinks = links?.twitter ?: "",
+        websiteLinks = links?.website ?: "",
+        youtubeLinks = links?.youtube ?: ""
     )
 }

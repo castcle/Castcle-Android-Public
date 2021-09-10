@@ -6,14 +6,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
-import com.castcle.android.databinding.*
+import com.castcle.android.databinding.FragmentSentVerifyEmailBinding
+import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.AuthBundle
-import com.castcle.common_model.model.login.RegisterBundle
 import com.castcle.extensions.gone
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -40,17 +39,14 @@ import javax.inject.Inject
 //
 //  Created by sklim on 1/9/2021 AD at 18:12.
 
-class ResentVerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
+class ResentVerifyEmailFragment : BaseFragment<ResentVerifyEmailFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentSentVerifyEmailBinding>,
     ToolbarBindingInflater<ToolbarCastcleGreetingBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
-    private val authBundle: CreateDisplayNameFragmentArgs by navArgs()
-
-    private val emailBundle: RegisterBundle
-        get() = authBundle.registerBundle
+    private val args: ResentVerifyEmailFragmentArgs by navArgs()
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -68,9 +64,9 @@ class ResentVerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
     override val binding: FragmentSentVerifyEmailBinding
         get() = viewBinding as FragmentSentVerifyEmailBinding
 
-    override fun viewModel(): VerifyEmailFragmentViewModel =
+    override fun viewModel(): ResentVerifyEmailFragmentViewModel =
         ViewModelProvider(this, viewModelFactory)
-            .get(VerifyEmailFragmentViewModel::class.java)
+            .get(ResentVerifyEmailFragmentViewModel::class.java)
 
     override fun initViewModel() = Unit
 
@@ -82,21 +78,25 @@ class ResentVerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
         with(toolbarBinding) {
             tvToolbarTitleAction.gone()
             tvToolbarTitle.gone()
-            ivToolbarLogoButton
-                .subscribeOnClick {
-                    findNavController().navigateUp()
-                }.addToDisposables()
+            ivToolbarLogoButton.subscribeOnClick {
+                findNavController().navigateUp()
+            }.addToDisposables()
         }
     }
 
     override fun bindViewEvents() {
-        binding.btResent.subscribeOnClick {
-            naivgateToFeed()
-        }.addToDisposables()
-    }
+        binding.tvWarning.text = context?.getString(
+            R.string.sent_verify_email_decscription_1
+        )?.format(args.email)
 
-    private fun naivgateToFeed() {
-        onBoardNavigator.nvaigateToFeedFragment()
+        binding.btResent.subscribeOnClick {
+            viewModel.resentVerifyEmail()
+                .subscribeBy(
+                    onComplete = {
+                        findNavController().navigateUp()
+                    }
+                ).addToDisposables()
+        }.addToDisposables()
     }
 
     override fun bindViewModel() = Unit

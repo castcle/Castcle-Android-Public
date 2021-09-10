@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent">#00000000</color>
+    <color name="black_drak">#000000</color>
     <color name="black">#14171A</color>
     <color name="black_night">#23262B</color>
     <color name="black_night_tranparent">#8023262B</color>

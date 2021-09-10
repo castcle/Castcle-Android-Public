@@ -96,7 +96,7 @@ fun BottomNavigationView.setupWithNavController(
             fragmentManager.isStateSaved -> {
                 false
             }
-            graphIdToTagMap[item.itemId] == createBlogGragmentId -> {
+            graphIdToTagMap[item.itemId] == createBlogGragmentId && isGuestModel -> {
                 onNavigateNotiflyLogin.invoke()
                 false
             }

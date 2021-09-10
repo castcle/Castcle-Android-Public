@@ -1,7 +1,11 @@
 package com.castcle.ui.signin.profilechooseimage
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -10,10 +14,14 @@ import com.castcle.android.databinding.FragmentCreateProfileChooseBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.ProfileBundle
-import com.castcle.extensions.gone
-import com.castcle.extensions.visible
+import com.castcle.common_model.model.userprofile.ImagesRequest
+import com.castcle.common_model.model.userprofile.UserUpdateRequest
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.permissionx.guolindev.PermissionMediator
+import io.reactivex.rxkotlin.subscribeBy
+import pl.aprilapps.easyphotopicker.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -46,6 +54,10 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
     ToolbarBindingInflater<ToolbarCastcleGreetingBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    @Inject lateinit var easyImage: EasyImage
+
+    @Inject lateinit var rxPermissions: PermissionMediator
 
     private val authBundle: ProfileChooseFragmentArgs by navArgs()
 
@@ -96,10 +108,125 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
     }
 
     private fun navigateToVerifyEmail() {
+        onBoardNavigator.naivgetToProfileVerifyEmailFragment(emailBundle)
     }
 
     override fun bindViewEvents() {
+        with(binding) {
+            btTakePhoto.subscribeOnClick {
+                requestCameraPermission(action = {
+                    openCamera()
+                })
+            }
+            btChoosePhoto.subscribeOnClick {
+                requestGalleryPermission(action = {
+                    openGallery()
+                })
+            }
+        }
+    }
 
+    private fun openCamera() {
+        easyImage.openCameraForImage(this)
+    }
+
+    private fun openGallery() {
+        easyImage.openGallery(this)
+    }
+
+    private fun requestCameraPermission(action: () -> Unit) {
+        rxPermissions.permissions(Manifest.permission.CAMERA)
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(
+                    deniedList,
+                    "Core fundamental are based on these permissions",
+                    "OK", "Cancel"
+                )
+            }.request { allGranted, _, deniedList ->
+                if (allGranted) {
+                    action.invoke()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "These permissions are denied: $deniedList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun requestGalleryPermission(action: () -> Unit) {
+        rxPermissions.permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(
+                    deniedList,
+                    "Core fundamental are based on these permissions",
+                    "OK", "Cancel"
+                )
+            }.request { allGranted, _, deniedList ->
+                if (allGranted) {
+                    action.invoke()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "These permissions are denied: $deniedList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        easyImage.handleActivityResult(requestCode, resultCode, data, requireActivity(),
+            object : DefaultCallback() {
+                override fun onMediaFilesPicked(imageFiles: Array<MediaFile>, source: MediaSource) {
+                    imageFiles
+                        .firstOrNull()?.let(::handlerCropImageAvatar)
+                }
+
+                override fun onImagePickerError(error: Throwable, source: MediaSource) {
+                }
+            })
+    }
+
+    private fun handlerCropImageAvatar(media: MediaFile) {
+        toolBarApplyAction()
+        val contentUri: Uri = Uri.fromFile(media.file)
+        with(binding) {
+            cvCropImage.visible()
+            group.gone()
+            cvCropImage.setImageURI(contentUri)
+        }
+    }
+
+    private fun toolBarApplyAction() {
+        with(toolbarBinding.tvToolbarTitleAction) {
+            text = context.getString(R.string.tool_bar_apply)
+            subscribeOnClick {
+                applyImageProfile()
+            }
+        }
+    }
+
+    private fun applyImageProfile() {
+        val profileBundle = emailBundle as ProfileBundle.ProfileWithEmail
+        val image = binding.cvCropImage.croppedBitmap.toBase62String()
+        viewModel.requestUpdateProfile(
+            UserUpdateRequest(
+                images = ImagesRequest(avatar = image)
+            )
+        ).subscribeBy(onComplete = {
+            navigateToAboutMe(image, profileBundle.email)
+        }).addToDisposables()
+    }
+
+    private fun navigateToAboutMe(image: String, email: String) {
+        onBoardNavigator.naivgetToProfileVerifyEmailFragment(
+            ProfileBundle.ProfileWithEmail(
+                email = email,
+                imageAvatar = image
+            )
+        )
     }
 
     override fun bindViewModel() = Unit

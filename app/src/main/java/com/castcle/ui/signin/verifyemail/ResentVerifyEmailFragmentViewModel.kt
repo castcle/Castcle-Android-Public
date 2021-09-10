@@ -1,6 +1,8 @@
 package com.castcle.ui.signin.verifyemail
 
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.signin.ResentVerifyEmailCompletableUseCase
+import io.reactivex.Completable
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,7 +29,15 @@ import javax.inject.Inject
 //
 //  Created by sklim on 1/9/2021 AD at 18:14.
 
-abstract class ResentVerifyEmailFragmentViewModel : BaseViewModel()
+abstract class ResentVerifyEmailFragmentViewModel : BaseViewModel() {
+    abstract fun resentVerifyEmail(): Completable
+}
 
-class ResentVerifyEmailFragmentViewModelImpl @Inject constructor() :
-    ResentVerifyEmailFragmentViewModel()
+class ResentVerifyEmailFragmentViewModelImpl @Inject constructor(
+    private val resentVerifyEmailCompletableUseCase: ResentVerifyEmailCompletableUseCase
+) : ResentVerifyEmailFragmentViewModel() {
+
+    override fun resentVerifyEmail(): Completable {
+        return resentVerifyEmailCompletableUseCase.execute(Unit)
+    }
+}

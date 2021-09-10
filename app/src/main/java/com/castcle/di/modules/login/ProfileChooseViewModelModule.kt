@@ -3,10 +3,10 @@ package com.castcle.di.modules.login
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentViewModel
-import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentViewModelImpl
-import dagger.Binds
-import dagger.Module
+import com.castcle.ui.signin.profilechooseimage.*
+import com.permissionx.guolindev.PermissionMediator
+import com.permissionx.guolindev.PermissionX
+import dagger.*
 import dagger.multibindings.IntoMap
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -33,7 +33,12 @@ import dagger.multibindings.IntoMap
 //
 //  Created by sklim on 31/8/2021 AD at 09:10.
 
-@Module
+@Module(
+    includes = [
+        EasyImageModule::class,
+        PermissionOnProfileChooseFragment::class
+    ]
+)
 interface ProfileChooseViewModelModule {
 
     @FragmentScope
@@ -41,4 +46,12 @@ interface ProfileChooseViewModelModule {
     @IntoMap
     @ViewModelKey(ProfileChooseFragmentViewModel::class)
     fun createProfileDisplayNameChoose(viewModel: ProfileChooseFragmentViewModelImpl): ViewModel
+}
+
+@Module
+class PermissionOnProfileChooseFragment {
+
+    @Provides
+    fun permissionX(fragment: ProfileChooseFragment): PermissionMediator =
+        PermissionX.init(fragment)
 }

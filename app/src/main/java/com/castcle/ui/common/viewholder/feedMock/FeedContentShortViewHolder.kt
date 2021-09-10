@@ -61,7 +61,7 @@ class FeedContentShortMockViewHolder(
                             }
 
                             override fun onFailed(throwable: Throwable) {
-                                TODO("Not yet implemented")
+
                             }
                         }).fetchUrlPreview()
                     }

@@ -25,10 +25,10 @@
         <entry key="app/src/main/res/layout/bottom_create_bloc.xml" value="0.1260245901639344" />
         <entry key="app/src/main/res/layout/content_on_board.xml" value="0.16041666666666668" />
         <entry key="app/src/main/res/layout/dialog_fragment_notifly_login.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_about_you.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/fragment_about_you.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_create_bloc.xml" value="0.121484375" />
         <entry key="app/src/main/res/layout/fragment_create_profile.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/fragment_create_profile_choose.xml" value="0.3306613226452906" />
+        <entry key="app/src/main/res/layout/fragment_create_profile_choose.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_email.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_geeting_sign_in.xml" value="0.15881147540983606" />
@@ -40,7 +40,7 @@
         <entry key="app/src/main/res/layout/fragment_passwordl.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_sent_verify_email.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.34390651085141904" />
+        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_vadify_email.xml" value="0.15881147540983606" />
         <entry key="app/src/main/res/layout/fragment_verify_email.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_webview.xml" value="0.13900273224043716" />
@@ -101,6 +101,7 @@
         <entry key="components-android/src/main/res/layout/item_image_two_content.xml" value="0.121484375" />
         <entry key="components-android/src/main/res/layout/item_menu.xml" value="0.25" />
         <entry key="components-android/src/main/res/layout/item_menu_header.xml" value="0.335" />
+        <entry key="components-android/src/main/res/layout/item_page_header.xml" value="0.1260245901639344" />
         <entry key="components-android/src/main/res/layout/latout_feed_template_bloc.xml" value="0.13524590163934427" />
         <entry key="components-android/src/main/res/layout/latout_feed_template_blog.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/latout_feed_template_f01.xml" value="0.30875787429552826" />

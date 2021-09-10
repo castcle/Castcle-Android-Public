@@ -11,14 +11,14 @@
         android:id="@+id/ivToolbarLogoButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
         android:paddingStart="@dimen/_16sdp"
         android:paddingEnd="@dimen/_16sdp"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_left"
-        android:focusable="true" />
+        app:srcCompat="@drawable/ic_arrow_left" />
 
     <TextView
         style="@style/AppTextKanit.Medium"
@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Page Title"/>
+        tools:text="Page Title" />
 
     <TextView
         style="@style/CastcleToolBar"
@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
+        android:layout_marginEnd="@dimen/_12sdp"
         android:textAlignment="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

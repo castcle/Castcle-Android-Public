@@ -3,8 +3,6 @@ package com.castcle.networking.api.nonauthen
 import android.content.Context
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.networking.NonAuthentication
-import com.castcle.networking.api.auth.TokenRepository
-import com.castcle.networking.api.auth.TokenRepositoryImpl
 import com.castcle.session_memory.SessionManagerRepository
 import dagger.Module
 import dagger.Provides
@@ -45,12 +43,12 @@ class NonAuthenticationDataSourceModule {
     }
 
     @Provides
-    fun provideTokenRefreshRepository(
+    fun provideNonAuthenticationRepository(
         context: Context,
         secureStorage: SecureStorage,
         nonAuthenticationApi: NonAuthenticationApi,
         sessionManagerRepository: SessionManagerRepository
-    ): TokenRepository = TokenRepositoryImpl(
+    ): NonAuthenticationRepository = NonAuthenticationRepositoryImpl(
         context,
         secureStorage,
         nonAuthenticationApi,

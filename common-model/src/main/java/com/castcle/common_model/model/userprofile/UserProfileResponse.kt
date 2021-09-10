@@ -30,7 +30,7 @@ data class UserProfileResponse(
     @SerializedName("castcleId")
     val castcleId: String,
     @SerializedName("dob")
-    val dob: String,
+    val dob: String? = null,
     @SerializedName("email")
     val email: String,
     @SerializedName("followed")
@@ -44,11 +44,11 @@ data class UserProfileResponse(
     @SerializedName("images")
     val images: Images,
     @SerializedName("links")
-    val links: Links,
+    val links: Links? = null,
     @SerializedName("overview")
-    val overview: String,
+    val overview: String? = null,
     @SerializedName("verified")
-    val verified: Boolean
+    val verified: Boolean? = false
 )
 
 data class Followers(

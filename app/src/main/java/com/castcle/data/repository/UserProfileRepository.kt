@@ -1,13 +1,11 @@
 package com.castcle.data.repository
 
-import com.castcle.common_model.model.userprofile.User
-import com.castcle.common_model.model.userprofile.toUserProfile
+import com.castcle.common.lib.common.Optional
+import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.model.dao.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.UserApi
-import com.castcle.networking.service.operators.ApiOperators
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
+import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
 import java.util.*
 import javax.inject.Inject
@@ -38,6 +36,10 @@ import javax.inject.Inject
 
 interface UserProfileRepository {
     val currentUser: Flowable<User>
+
+    val cachedUser: Flowable<Optional<User>>
+
+    fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -49,6 +51,18 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override val currentUser: Flowable<User>
         get() = getUserProfile()
+
+    override val cachedUser: Flowable<Optional<User>>
+        get() = getCachedUserProfile()
+
+    override fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable {
+        return userApi.updateUserProfile(userUpdateRequest)
+            .map(userProfileMapper)
+            .map { it.toUserProfile() }
+            .doOnNext {
+                _onMemoryUser = it
+            }.ignoreElements()
+    }
 
     private val _remoteUser = BehaviorSubject.create<User>()
 
@@ -88,6 +102,20 @@ class UserProfileRepositoryImpl @Inject constructor(
             .doOnSubscribe { _isLoadingUser = true }
             .doFinally { _isLoadingUser = false }
             .toFlowable()
+    }
+
+    private fun getCachedUserProfile(): Flowable<Optional<User>> {
+        return Flowable.concat(
+            _onMemoryUser?.let {
+                Flowable.just(Optional.of(it))
+            } ?: userDao.getUser().map {
+                Optional.of(it)
+            }.onErrorReturn {
+                Optional.empty()
+            }.toFlowable(),
+            getUserProfile()
+                .map { Optional.of(it) }
+        )
     }
 
     private fun setCastcleId(castcleId: String) {

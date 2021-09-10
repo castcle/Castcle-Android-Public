@@ -85,7 +85,6 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
-
         with(binding) {
             itEmail.onTextChanged = {
                 checkEmailExsit(it)

@@ -31,7 +31,7 @@ import com.castcle.data.model.dao.UserDao
 @Database(
     entities = [
         User::class
-    ], version = 0
+    ], version = 1
 )
 abstract class CastcleDataBase : RoomDatabase() {
     abstract fun userDao(): UserDao

@@ -1,13 +1,15 @@
 package com.castcle.ui.login
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.extensions.isEmail
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
+import com.castcle.usecase.login.AuthenticationRefreshTokenCompletableUseCase
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import io.reactivex.Completable
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -39,7 +41,13 @@ class LoginFragmentViewModelImpl @Inject constructor(
     private val authenticationLoginWithEmailCompletableUseCase:
     AuthenticationLoginWithEmailCompletableUseCase,
     private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
+    private val authenticationRefreshTokenCompletableUseCase:
+    AuthenticationRefreshTokenCompletableUseCase
 ) : LoginFragmentViewModel(), LoginFragmentViewModel.Input {
+
+    override val userResponse: LiveData<User>
+        get() = _userResponse
+    private var _userResponse = MutableLiveData<User>()
 
     private var _userEmail = MutableLiveData<String>()
 
@@ -57,16 +65,25 @@ class LoginFragmentViewModelImpl @Inject constructor(
     override val input: Input
         get() = this
 
+    @SuppressLint("CheckResult")
     override fun getAuthLoginWithEmail(): Completable {
         return authenticationLoginWithEmailCompletableUseCase.execute(
             LoginRequest(_userEmail.value!!, _password.value!!)
         ).doOnSubscribe { _showLoading.onNext(true) }
-            .doOnComplete {
-                fetchUserProfile().subscribe().addToDisposables()
+            .andThen {
+                fetchUserProfile()
+                    .subscribe()
+                    .addToDisposables()
             }
+            .doOnComplete { Completable.complete() }
             .doOnError {
                 _showLoading.onNext(false)
             }
+    }
+
+    override fun refreshToken(): Completable {
+        return authenticationRefreshTokenCompletableUseCase
+            .execute(Unit)
     }
 
     private fun fetchUserProfile(): Completable =
@@ -75,7 +92,13 @@ class LoginFragmentViewModelImpl @Inject constructor(
             .doOnSubscribe { _showLoading.onNext(true) }
             .doFinally { _showLoading.onNext(false) }
             .doOnError(_error::onNext).firstOrError()
-            .ignoreElement()
+            .doOnSuccess {
+                setUserProfile(it)
+            }.ignoreElement()
+
+    private fun setUserProfile(user: User) {
+        _userResponse.value = user
+    }
 
     override fun userEmail(email: String) {
         _userEmail.value = email

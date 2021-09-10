@@ -4,8 +4,13 @@
     <string name="deep_link_host" translatable="false">dev.castcle.co.th</string>
     <string name="deep_link_scheme_castcle" translatable="false">castcle-dev</string>
 
-    <string name="nav_deep_link_feed" translatable="false">Castcle-dev://feed</string>
-    <string name="nav_deep_link_blog" translatable="false">Castcle-dev://blog</string>
-    <string name="nav_deep_link_search" translatable="false">Castcle-dev://search</string>
-    <string name="nav_deep_link_setting" translatable="false">Castcle-dev://setting</string>
+    <string name="nav_deep_link_feed" translatable="false">castcle-dev://feed</string>
+    <string name="nav_deep_link_blog" translatable="false">castcle-dev://blog</string>
+    <string name="nav_deep_link_search" translatable="false">castcle-dev://search</string>
+    <string name="nav_deep_link_setting" translatable="false">castcle-dev://setting</string>
+    <string name="nav_deep_link_choose_profile" translatable="false">castcle-dev://choose-profile</string>
+    <string name="nav_deep_link_verify_email" translatable="false">castcle-dev://verify-email</string>
+    <string name="nav_deep_link_resent_verify_email" translatable="false">castcle-dev://resentverify-email</string>
+    <string name="nav_deep_link_resent_verify_email_input" translatable="false">castcle-dev://resentverify-email/{email}</string>
+    <string name="nav_deep_link_about_you" translatable="false">castcle-dev://about-you</string>
 </resources>

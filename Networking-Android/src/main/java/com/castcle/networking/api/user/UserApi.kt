@@ -1,9 +1,11 @@
 package com.castcle.networking.api.user
 
 import com.castcle.common_model.model.userprofile.UserProfileResponse
+import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import io.reactivex.Flowable
+import io.reactivex.Single
 import retrofit2.Response
-import retrofit2.http.GET
+import retrofit2.http.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -32,5 +34,10 @@ import retrofit2.http.GET
 interface UserApi {
 
     @GET("users/me")
-    fun getUserProfile(): Flowable<Response<UserProfileResponse>>
+    fun getUserProfile(): Single<Response<UserProfileResponse>>
+
+    @PUT("users/me")
+    fun updateUserProfile(
+        @Body userUpdateRequest: UserUpdateRequest
+    ): Flowable<Response<UserProfileResponse>>
 }

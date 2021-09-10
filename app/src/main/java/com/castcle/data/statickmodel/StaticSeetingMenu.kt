@@ -48,7 +48,12 @@ object StaticSeetingMenu {
                 MenuItem(
                     menuName = R.string.setting_menu_language,
                     icon = R.drawable.ic_language
-                ),
+                )
+            )
+        ),
+        SettingMenuUiModel(
+            header = 0,
+            menuItem = listOf(
                 MenuItem(
                     menuName = R.string.setting_menu_about_us,
                     icon = R.drawable.ic_info

@@ -47,13 +47,13 @@
         android:id="@+id/btChoosePhoto"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_12sdp"
         android:background="@drawable/bg_border_blue"
         android:clickable="true"
         android:focusable="true"
         android:text="@string/create_profile_image_chooes_camera"
         android:textAllCaps="false"
         android:textColor="@color/blue"
-        android:layout_marginBottom="@dimen/_12sdp"
         app:layout_constraintBottom_toTopOf="@id/btTakePhoto"
         app:layout_constraintEnd_toEndOf="@id/btTakePhoto"
         app:layout_constraintStart_toStartOf="@id/btTakePhoto" />
@@ -75,4 +75,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.adamstyrc.cookiecutter.CookieCutterImageView
+        android:id="@+id/cvCropImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ivCreatePass,tvTitle,tvWelcome,btChoosePhoto,btTakePhoto" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

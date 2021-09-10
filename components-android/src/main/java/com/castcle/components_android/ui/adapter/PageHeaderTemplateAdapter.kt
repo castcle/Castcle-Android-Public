@@ -7,8 +7,8 @@ import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.ItemPageHeaderBinding
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.components_android.ui.base.*
+import com.castcle.extensions.getColorResource
 import com.castcle.extensions.loadCircleImage
-import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -65,7 +65,10 @@ class PageHeaderTemplateAdapter(listener: OnItemClickListener) :
 
 
         override fun onBind(item: PageUiModel) {
-            binding.ivAvatar.loadCircleImage(item.avatarUrl)
+            with(binding.ivAvatar) {
+                borderColor = binding.root.context.getColorResource(R.color.red_primary_warning)
+                loadCircleImage(item.avatarUrl)
+            }
         }
     }
 

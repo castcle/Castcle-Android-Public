@@ -9,6 +9,7 @@ import android.text.style.ClickableSpan
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
@@ -143,4 +144,14 @@ fun TextView.setTransformationPassword(visible: Boolean) {
     } else {
         null
     }
+}
+
+fun EditText.editable(editable: Boolean, inputType: Int = InputType.TYPE_NULL) {
+    isFocusable = editable
+    isFocusableInTouchMode = editable
+    this.inputType = inputType
+}
+
+fun EditText.isEditable(): Boolean {
+    return !isFocusable && !isFocusableInTouchMode && inputType == InputType.TYPE_NULL
 }

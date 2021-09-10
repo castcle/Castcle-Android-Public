@@ -49,9 +49,9 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun naivgetToProfileChooseImageFragment(profileBundle: ProfileBundle)
 
-    fun naivgetToProfileVerifyEmailFragment(authBundle: AuthBundle)
+    fun naivgetToProfileVerifyEmailFragment(profileBundle: ProfileBundle)
 
-    fun navigateToAboutYouFragment()
+    fun navigateToAboutYouFragment(profileBundle: ProfileBundle)
 
     fun navigateToSettingFragment()
 

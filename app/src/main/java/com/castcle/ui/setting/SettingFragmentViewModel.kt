@@ -1,6 +1,17 @@
 package com.castcle.ui.setting
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.castcle.authen_android.data.storage.SecureStorage
+import com.castcle.common.lib.common.Optional
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.data.storage.AppPreferences
+import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
+import io.reactivex.Completable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,6 +38,53 @@ import javax.inject.Inject
 //
 //  Created by sklim on 1/9/2021 AD at 18:14.
 
-abstract class SettingFragmentViewModel : BaseViewModel()
+abstract class SettingFragmentViewModel : BaseViewModel() {
 
-class SettingFragmentViewModelImpl @Inject constructor() : SettingFragmentViewModel()
+    abstract val userProfile: LiveData<User>
+
+    abstract fun onLogOut(): Completable
+
+    abstract fun fetchCachedUserProfile(): Completable
+}
+
+class SettingFragmentViewModelImpl @Inject constructor(
+    private val appPreferences: AppPreferences,
+    private val secureStorage: SecureStorage,
+    private val sessionManagerRepository: SessionManagerRepository,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
+) : SettingFragmentViewModel() {
+
+    private val _showLoading = BehaviorSubject.create<Boolean>()
+
+    private val _error = PublishSubject.create<Throwable>()
+
+    private val _userProfile = MutableLiveData<User>()
+    override val userProfile: LiveData<User>
+        get() = _userProfile
+
+    override fun onLogOut(): Completable {
+        appPreferences.clearAll()
+            .subscribe()
+            .addToDisposables()
+        sessionManagerRepository.clearSession()
+        with(secureStorage) {
+            userTokenType = null
+            userAccessToken = null
+            userRefreshToken = null
+        }
+        return Completable.complete()
+    }
+
+    override fun fetchCachedUserProfile(): Completable =
+        cachedUserProfileSingleUseCase
+            .execute(Unit)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doFinally { _showLoading.onNext(false) }
+            .doOnNext(::setUserProfileData)
+            .doOnError(_error::onNext).firstOrError()
+            .ignoreElement()
+
+    private fun setUserProfileData(user: Optional<User>) {
+        _userProfile.value = user.get()
+    }
+}

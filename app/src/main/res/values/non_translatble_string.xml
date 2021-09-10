@@ -7,9 +7,16 @@
     <string name="deep_link_path_prefix_feed" translatable="false">/feed</string>
     <string name="deep_link_path_prefix_blog" translatable="false">/blog</string>
     <string name="deep_link_path_prefix_search" translatable="false">/search</string>
+    <string name="deep_link_path_prefix_verify_email" translatable="false">/verify-email</string>
+    <string name="deep_link_path_prefix_resent_verify_email" translatable="false">/resentverify-email</string>
+    <string name="deep_link_path_prefix_about_you" translatable="false">/about-you</string>
 
     <!-- Https Deep Link with path -->
     <string name="deep_link_path_https_feed" translatable="false">.*/feed</string>
     <string name="deep_link_path_https_blog" translatable="false">.*/blog</string>
     <string name="deep_link_path_https_search" translatable="false">.*/search</string>
+    <string name="deep_link_path_https_choose_profile" translatable="false">.*/choose-profile</string>
+    <string name="deep_link_path_https_verify_email" translatable="false">.*/verify-email</string>
+    <string name="deep_link_path_https_resent_verify_email" translatable="false">.*/resentverify-email/{email}</string>
+    <string name="deep_link_path_https_about_you" translatable="false">.*/about-you</string>
 </resources>

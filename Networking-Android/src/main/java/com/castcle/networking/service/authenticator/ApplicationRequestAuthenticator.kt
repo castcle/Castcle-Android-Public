@@ -1,6 +1,7 @@
 package com.castcle.networking.service.authenticator
 
 import com.castcle.networking.service.common.AUTHORIZATION_HEADER
+import com.castcle.networking.service.interceptor.AppTokenExpiredDelegate
 import com.castcle.networking.service.response.OAuthResponse
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.session_memory.model.SessionEnvironment
@@ -41,7 +42,6 @@ internal class ApplicationRequestAuthenticator(
         val failedToken = response.request.header(AUTHORIZATION_HEADER)
         var refreshTokenResponse: OAuthResponse? = null
         var newToken = ""
-
         try {
             refreshTokenResponse = tokenRefresher
                 .refreshToken()
@@ -56,6 +56,7 @@ internal class ApplicationRequestAuthenticator(
             newToken = refreshTokenResponse.accessToken
         } catch (e: Exception) {
             okHttpClient?.dispatcher?.cancelAll()
+            AppTokenExpiredDelegate.requestTokenFailed(e)
             return null
         }
 
@@ -74,9 +75,10 @@ internal class ApplicationRequestAuthenticator(
         // Retry this failed request (401) with the new token
         return response.request
             .newBuilder()
-            .header(AUTHORIZATION_HEADER, newToken)
+            .header(AUTHORIZATION_HEADER, "$TOKEN_TYPE $newToken")
             .build()
     }
 }
 
 const val LOG_APPLICATION_REQUEST_AUTHENTICATOR = "log-api-ApplicationRequestAuthenticator"
+private const val TOKEN_TYPE = "Bearer"

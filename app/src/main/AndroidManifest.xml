@@ -49,6 +49,11 @@
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/deep_link_host"
                     android:pathPrefix="@string/deep_link_path_prefix"
@@ -56,12 +61,28 @@
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:pathPrefix="@string/deep_link_path_prefix"
+                    android:pathPrefix="@string/deep_link_path_prefix_feed"
+                    android:scheme="@string/deep_link_scheme_castcle" />
+
+                <data
+                    android:pathPrefix="@string/deep_link_path_prefix_verify_email"
+                    android:scheme="@string/deep_link_scheme_castcle" />
+
+                <data
+                    android:pathPrefix="@string/deep_link_path_prefix_resent_verify_email"
+                    android:scheme="@string/deep_link_scheme_castcle" />
+
+                <data
+                    android:pathPrefix="@string/deep_link_path_prefix_about_you"
                     android:scheme="@string/deep_link_scheme_castcle" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

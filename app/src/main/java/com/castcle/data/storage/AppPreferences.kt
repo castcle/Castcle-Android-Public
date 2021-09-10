@@ -17,6 +17,7 @@ interface AppPreferences {
 
     fun clearAll() = Completable.fromAction {
         castcleId = null
+        language = null
     }
 }
 

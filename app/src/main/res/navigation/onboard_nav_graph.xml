@@ -41,7 +41,9 @@
 
         <action
             android:id="@+id/actionLoginFragmentToFeedFragment"
-            app:destination="@id/feedFragment" />
+            app:destination="@id/feedFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/actionLoginFragmentToGreetingFragment"
@@ -125,6 +127,8 @@
         <argument
             android:name="profileBundle"
             app:argType="com.castcle.common_model.model.login.ProfileBundle" />
+
+        <deepLink app:uri="@string/nav_deep_link_choose_profile" />
     </fragment>
 
     <fragment
@@ -141,6 +145,13 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/feedFragment"
             app:popUpToInclusive="true" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.ProfileBundle" />
+
+        <deepLink app:uri="@string/deep_link_path_https_about_you" />
+        <deepLink app:uri="@string/nav_deep_link_about_you" />
     </fragment>
 
     <fragment
@@ -165,6 +176,20 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/feedFragment"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/verifyEmailFragmentToResentVerifyEmailFragment"
+            app:destination="@id/resentVerifyFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.ProfileBundle" />
+
+        <deepLink app:uri="@string/nav_deep_link_verify_email" />
     </fragment>
 
     <fragment
@@ -173,5 +198,20 @@
         tools:layout="@layout/fragment_setting">
 
         <deepLink app:uri="@string/nav_deep_link_setting" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resentVerifyFragment"
+        android:name="com.castcle.ui.signin.verifyemail.ResentVerifyEmailFragment"
+        tools:layout="@layout/fragment_sent_verify_email">
+
+        <argument
+            android:name="email"
+            android:defaultValue=""
+            app:argType="string"
+            app:nullable="false" />
+
+        <deepLink app:uri="@string/deep_link_path_https_resent_verify_email" />
+        <deepLink app:uri="@string/nav_deep_link_resent_verify_email_input" />
     </fragment>
 </navigation>

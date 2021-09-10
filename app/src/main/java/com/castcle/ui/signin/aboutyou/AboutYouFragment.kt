@@ -8,9 +8,13 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentAboutYouBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.extensions.gone
+import com.castcle.common_model.model.userprofile.LinksRequest
+import com.castcle.common_model.model.userprofile.UserUpdateRequest
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
+import com.castcle.ui.common.dialog.DatePickerDialogFragment
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -72,7 +76,14 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.apply {
+                visible()
+                text = context.getString(R.string.tool_bar_skip)
+            }.run {
+                subscribeOnClick {
+                    onNavigateToFeedFragment()
+                }
+            }
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {
@@ -82,7 +93,43 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
+        with(binding) {
+            itBirthday.onDrawableEndClickListener = {
+                DatePickerDialogFragment { _, year, month, dayOfMonth ->
+                    itBirthday.primaryText = "$dayOfMonth ${month.getMonthName()} $year"
+                }.show(childFragmentManager, "date picker")
+            }
 
+            btDone.subscribeOnClick {
+                onRequestUpdateProfile()
+            }
+        }
+    }
+
+    private fun onRequestUpdateProfile() {
+        with(binding) {
+            val requestUpdate = UserUpdateRequest(
+                dob = itBirthday.primaryText,
+                overview = itOverView.primaryText,
+                links = LinksRequest(
+                    facebook = itOverView.primaryText,
+                    twitter = itOverView.primaryText,
+                    youtube = itOverView.primaryText,
+                    website = itOverView.primaryText,
+                    medium = itOverView.primaryText,
+                )
+            )
+            viewModel.requestUpdateProfile(requestUpdate)
+                .subscribeBy(
+                    onComplete = {
+                        onNavigateToFeedFragment()
+                    }
+                ).addToDisposables()
+        }
+    }
+
+    private fun onNavigateToFeedFragment() {
+        onBoardNavigator.nvaigateToFeedFragment()
     }
 
     override fun bindViewModel() = Unit

@@ -16,6 +16,7 @@ import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import com.castcle.ui.signin.password.PasswordFragmentArgs
 import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentArgs
+import com.castcle.ui.signin.verifyemail.VerifyEmailFragmentArgs
 import com.castcle.ui.webview.WebViewFragmentArgs
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
@@ -217,14 +218,14 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun naivgetToProfileVerifyEmailFragment(authBundle: AuthBundle) {
+    override fun naivgetToProfileVerifyEmailFragment(profileBundle: ProfileBundle) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
                 if (navController.currentDestination?.id == R.id.profileChooseFragment) {
                     navController.navigate(
                         R.id.actionProfileChooseFragmentToVerifyEmailFragment,
-                        PasswordFragmentArgs(authBundle).toBundle()
+                        VerifyEmailFragmentArgs(profileBundle).toBundle()
                     )
                 } else {
                     unsupportedNavigation()
@@ -236,13 +237,14 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToAboutYouFragment() {
+    override fun navigateToAboutYouFragment(profileBundle: ProfileBundle) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
-                if (navController.currentDestination?.id == R.id.profileChooseFragment) {
+                if (navController.currentDestination?.id == R.id.verifyEmailFragment) {
                     navController.navigate(
-                        R.id.actionProfileChooseFragmentToVerifyEmailFragment
+                        R.id.verifyEmailFragmentToAboutYouFragment,
+                        VerifyEmailFragmentArgs(profileBundle).toBundle()
                     )
                 } else {
                     unsupportedNavigation()

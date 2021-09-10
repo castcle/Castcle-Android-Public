@@ -1,18 +1,13 @@
-package com.castcle.networking.api.auth
+package com.castcle.networking.api.auth.freshtoken
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.provider.Settings
 import com.castcle.authen_android.data.storage.SecureStorage
-import com.castcle.networking.api.auth.request.DeviceUUIDRequest
-import com.castcle.networking.api.nonauthen.NonAuthenticationApi
 import com.castcle.networking.api.response.toOAuthResponse
 import com.castcle.networking.service.authenticator.TokenRefresher
 import com.castcle.networking.service.operators.ApiOperators
 import com.castcle.networking.service.response.OAuthResponse
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.session_memory.model.SessionEnvironment
-import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -38,35 +33,21 @@ import javax.inject.Inject
 //  or have any questions.
 //
 //
-//  Created by sklim on 20/8/2021 AD at 13:57.
+//  Created by sklim on 6/9/2021 AD at 13:49.
 
-interface TokenRepository : TokenRefresher {
-    fun getLoginGuest(): Completable
-}
+interface AuthenticationTokenRepository : TokenRefresher
 
-class TokenRepositoryImpl @Inject constructor(
+class AuthenticationTokenRepositoryImpl @Inject constructor(
     private val context: Context,
     private val secureStorage: SecureStorage,
-    private val nonAuthenticationApi: NonAuthenticationApi,
+    private val authRefreshTokenApi: AuthRefreshTokenApi,
     private val sessionManagerRepository: SessionManagerRepository
-) : TokenRepository {
-
-    override fun getLoginGuest(): Completable {
-        val deviceUUid = DeviceUUIDRequest(getDeviceId())
-        return nonAuthenticationApi
-            .getLoginGuest(deviceUUid)
-            .lift(ApiOperators.mobileApiError())
-            .firstOrError()
-            .doOnSuccess {
-                updateAccessToken(it.toOAuthResponse())
-            }
-            .ignoreElement()
-    }
+) : AuthenticationTokenRepository {
 
     override fun refreshToken(): Single<OAuthResponse> {
-        return nonAuthenticationApi
-            .getRefreshToken()
-            .retry(2)
+        val refreshToken = secureStorage.userRefreshToken
+        return authRefreshTokenApi
+            .getRefreshToken("$TOKEN_TYPE $refreshToken")
             .lift(ApiOperators.mobileApiError())
             .firstOrError()
             .map { it.toOAuthResponse() }
@@ -87,13 +68,6 @@ class TokenRepositoryImpl @Inject constructor(
             )
         )
     }
-
-    @SuppressLint("HardwareIds")
-    private fun getDeviceId(): String {
-        return Settings.Secure.getString(
-            context.contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
-    }
 }
 
+private const val TOKEN_TYPE = "Bearer"

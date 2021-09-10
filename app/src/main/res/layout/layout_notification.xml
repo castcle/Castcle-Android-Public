@@ -7,24 +7,24 @@
     android:background="@drawable/bg_notification">
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanit.Headline"
+        style="@style/AppTextKanit.Medium"
         android:id="@+id/tvNotiTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:text="@string/setting_noti_title"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
+        style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvNotiCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
-        android:layout_marginBottom="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:text="@string/setting_noti_count"
         android:textColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,9 +33,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivNotification"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
-        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_24sdp"
         app:layout_constraintBottom_toBottomOf="@id/tvNotiCount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvNotiTitle"
@@ -51,8 +51,8 @@
         android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"
         app:layout_constraintCircle="@id/ivNotification"
-        app:layout_constraintCircleAngle="46"
-        app:layout_constraintCircleRadius="@dimen/_18sdp"
+        app:layout_constraintCircleAngle="47"
+        app:layout_constraintCircleRadius="@dimen/_16sdp"
         tools:ignore="MissingConstraints"
         tools:text="3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

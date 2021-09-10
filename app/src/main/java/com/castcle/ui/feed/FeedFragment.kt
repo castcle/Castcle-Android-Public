@@ -2,7 +2,6 @@ package com.castcle.ui.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
@@ -10,6 +9,8 @@ import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.toContentFeedUiModel
+import com.castcle.common_model.model.feed.toContentUiModel
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.statickmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
@@ -62,9 +63,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             viewModel.fetchUserProfile()
                 .subscribe()
                 .addToDisposables()
-
-            viewModel.getMockFeed()
         }
+        viewModel.getMockFeed()
     }
 
     override fun setupView() {
@@ -93,8 +93,10 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                     navigateToNotiflyLoginDialog()
                 }
             } else {
-                ivToolbarProfileButton.background = context?.getVectorDrawableRes(
-                    R.drawable.ic_hamburger
+                ivToolbarProfileButton.setImageDrawable(
+                    context?.getDrawableRes(
+                        R.drawable.ic_hamburger
+                    )
                 )
                 ivToolbarProfileButton.subscribeOnClick {
                     navigateToSettingFragment()
@@ -115,8 +117,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         val mock = getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
 
         adapterCommon?.uiModels = mock
-        binding.wtWhatYouMind.bindUiModel(mock.first())
-
         adapterFilterAdapter.items = feedFilter
         adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
     }
@@ -148,11 +148,20 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     override fun bindViewModel() {
         viewModel.userProfile.observe(this, {
-
+            onBindWhatYouMind(it)
         })
 
         activityViewModel.user.subscribe {
-            setupView()
+            onRefreshProfile()
         }.addToDisposables()
+    }
+
+    private fun onBindWhatYouMind(user: User) {
+        binding.wtWhatYouMind.bindUiModel(user.toContentUiModel())
+    }
+
+    private fun onRefreshProfile() {
+        setupView()
+        bindViewEvents()
     }
 }

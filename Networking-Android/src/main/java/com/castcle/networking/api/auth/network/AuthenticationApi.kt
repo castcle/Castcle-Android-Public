@@ -45,8 +45,8 @@ interface AuthenticationApi {
         @Body emailRequest: EmailRequest
     ): Flowable<Response<AuthExsitResponse>>
 
-    @POST("authentications/checkDisplayNameExists")
-    fun checkDisplayName(
+    @POST("authentications/suggestCastcleId")
+    fun getSuggestionDisplayName(
         @Body displayNameRequest: DisplayNameRequest
     ): Flowable<Response<AuthExsitResponse>>
 
@@ -55,4 +55,11 @@ interface AuthenticationApi {
         @Body castcleRequest: CastcleIdRequest
     ): Flowable<Response<AuthExsitResponse>>
 
+    @POST("authentications/register")
+    fun register(
+        @Body registerRequest: RegisterRequest
+    ): Flowable<Response<TokenResponse>>
+
+    @POST("authentications/requestLinkVerify")
+    fun checkrRquestLinkVerify(): Flowable<Response<Unit>>
 }

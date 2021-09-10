@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_2sdp"
     android:background="@color/black_light">
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Small"
+        style="@style/AppTextKanitLight.Default"
         android:id="@+id/tvHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,4 +29,10 @@
         app:layout_constraintTop_toBottomOf="@id/tvHeader"
         tools:listitem="@layout/item_menu" />
 
+    <View
+        android:id="@+id/vLine"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/black_drak"
+        app:layout_constraintTop_toBottomOf="@id/rvItemMenu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

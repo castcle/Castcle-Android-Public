@@ -1,6 +1,11 @@
 package com.castcle.ui.signin.profilechooseimage
 
+import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.userprofile.UpdateUserProfileCompletableUseCase
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,6 +32,26 @@ import javax.inject.Inject
 //
 //  Created by sklim on 1/9/2021 AD at 18:14.
 
-abstract class ProfileChooseFragmentViewModel : BaseViewModel()
+abstract class ProfileChooseFragmentViewModel : BaseViewModel() {
 
-class ProfileChooseFragmentViewModelImpl @Inject constructor() : ProfileChooseFragmentViewModel()
+    abstract val showLoading: Observable<Boolean>
+
+    abstract fun requestUpdateProfile(userRequest: UserUpdateRequest): Completable
+}
+
+class ProfileChooseFragmentViewModelImpl @Inject constructor(
+    private val updateUserProfileCompletableUseCase: UpdateUserProfileCompletableUseCase
+) : ProfileChooseFragmentViewModel() {
+
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
+    private val _showLoading = BehaviorSubject.create<Boolean>()
+
+    override fun requestUpdateProfile(userRequest: UserUpdateRequest): Completable {
+        return updateUserProfileCompletableUseCase
+            .execute(userRequest)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+    }
+
+}

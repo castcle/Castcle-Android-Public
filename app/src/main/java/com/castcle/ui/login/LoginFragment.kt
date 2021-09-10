@@ -113,5 +113,10 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
         viewModel.enableLogin.observe(this, {
             binding.btLogin.isEnabled = it
         })
+
+        viewModel.userResponse.observe(this, {
+            navigatToHomeFeed()
+            activityViewModel.onRefreshProfile()
+        })
     }
 }

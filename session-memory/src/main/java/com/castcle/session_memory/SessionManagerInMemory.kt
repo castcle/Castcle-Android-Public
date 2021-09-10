@@ -34,6 +34,7 @@ object SessionManagerInMemory : SessionManager {
 
     override fun clearSession() {
         token = null
+        refreshToken = null
         languageCode = null
     }
 

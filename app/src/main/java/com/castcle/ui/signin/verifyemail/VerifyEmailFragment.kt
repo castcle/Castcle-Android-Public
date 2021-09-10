@@ -1,20 +1,17 @@
 package com.castcle.ui.signin.verifyemail
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.castcle.android.R
 import com.castcle.android.databinding.FragmentVerifyEmailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.AuthBundle
-import com.castcle.common_model.model.login.RegisterBundle
-import com.castcle.extensions.gone
+import com.castcle.common_model.model.login.ProfileBundle
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -48,10 +45,10 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
-    private val authBundle: CreateDisplayNameFragmentArgs by navArgs()
+    private val authBundle: VerifyEmailFragmentArgs by navArgs()
 
-    private val emailBundle: RegisterBundle
-        get() = authBundle.registerBundle
+    private val profileBundle: ProfileBundle
+        get() = authBundle.profileBundle
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -83,10 +80,7 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
         with(toolbarBinding) {
             tvToolbarTitleAction.gone()
             tvToolbarTitle.gone()
-            ivToolbarLogoButton
-                .subscribeOnClick {
-                    findNavController().navigateUp()
-                }.addToDisposables()
+            ivToolbarLogoButton.gone()
         }
     }
 
@@ -94,10 +88,27 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
         binding.btGoToFeed.subscribeOnClick {
             naivgateToFeed()
         }.addToDisposables()
+
+        binding.tvSentVerifyEmail.subscribeOnClick {
+            navigateToResentVerifyEmail()
+        }
     }
 
-    private fun naivgateToFeed(){
+    private fun naivgateToFeed() {
         onBoardNavigator.nvaigateToFeedFragment()
+    }
+
+    private fun navigateToResentVerifyEmail() {
+//        val bundle = profileBundle as ProfileBundle.ProfileWithEmail
+        val input = Input(
+            contentData = "TestResent@gmail.com",
+            type = DeepLinkTarget.VERIFY_EMAIL
+        )
+        makeDeepLinkUrl(requireContext(), input).run(::navigateByDeepLink)
+    }
+
+    private fun navigateByDeepLink(uri: Uri) {
+        onBoardNavigator.navigateByDeepLink(uri, false)
     }
 
     override fun bindViewModel() = Unit

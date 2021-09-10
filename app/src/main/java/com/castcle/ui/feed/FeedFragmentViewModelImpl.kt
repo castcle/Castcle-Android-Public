@@ -3,13 +3,13 @@ package com.castcle.ui.feed
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
-import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
-import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.*
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.subjects.BehaviorSubject
@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 class FeedFragmentViewModelImpl @Inject constructor(
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
-    private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val feedNonAuthRepository: FeedRepository
 ) : FeedFragmentViewModel() {
 
@@ -64,12 +64,12 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override val isGuestMode: Boolean
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
-    private fun setUserProfileData(user: User) {
-        _userProfile.value = user
+    private fun setUserProfileData(user: Optional<User>) {
+        _userProfile.value = user.get()
     }
 
     override fun fetchUserProfile(): Completable =
-        userProfileSingleUseCase
+        cachedUserProfileSingleUseCase
             .execute(Unit)
             .doOnSubscribe { _showLoading.onNext(true) }
             .doFinally { _showLoading.onNext(false) }
