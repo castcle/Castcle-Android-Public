@@ -92,4 +92,18 @@
     <string name="setting_menu_privacy">Privacy</string>
     <string name="setting_menu_language">Language</string>
     <string name="setting_menu_about_us">About Us</string>
+    <string name="profile_view_profile">View Profile</string>
+    <string name="profile_edit_profile">Edit Profile</string>
+    <string name="profile_follow">Follow</string>
+    <string name="profile_following">Following</string>
+    <string name="profile_followers">Followers</string>
+    <string name="profile_error_message">Content Not Found</string>
+    <string name="profile_tab_all">All</string>
+    <string name="profile_tab_post">Post</string>
+    <string name="profile_tab_photo">Photo</string>
+    <string name="profile_tab_blog">Blog</string>
+    <string name="create_blog_cast">Cast</string>
+    <string name="create_blog_status_public">Public</string>
+    <string name="create_blog_status">What\'s in your mind?</string>
+    <string name="create_blog_toolbar_title">NewCast</string>
 </resources>

@@ -1,9 +1,9 @@
 package com.castcle.data.datasource
 
+import com.castcle.common_model.model.userprofile.CreateCastResponse
 import com.castcle.common_model.model.userprofile.UserProfileResponse
-import com.castcle.data.model.dao.UserDao
-import com.castcle.data.repository.*
-import com.castcle.data.storage.AppPreferences
+import com.castcle.data.repository.CreateContentMapper
+import com.castcle.data.repository.UserProfileMapper
 import com.castcle.networking.api.user.UserApi
 import dagger.Module
 import dagger.Provides
@@ -48,5 +48,10 @@ class UserProfileDataSourceModule {
     fun provideUserProfileResponseMapper(
         userProfileMapper: UserProfileMapper
     ): Function<Response<UserProfileResponse>, UserProfileResponse> = userProfileMapper
+
+    @Provides
+    fun provideCreateContentResponseMapper(
+        createContentMapper: CreateContentMapper
+    ): Function<Response<CreateCastResponse>, CreateCastResponse> = createContentMapper
 
 }

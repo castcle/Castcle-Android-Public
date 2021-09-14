@@ -13,7 +13,7 @@ import androidx.navigation.NavDestination
 import com.castcle.android.R
 import com.castcle.android.databinding.ActivityOnBoardBinding
 import com.castcle.android.databinding.LayoutBottomMenuCustomBinding
-import com.castcle.data.statickmodel.BottomNavigateStatic
+import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.*
 import com.castcle.networking.service.interceptor.AppRefreshTokenFailedListener
 import com.castcle.networking.service.interceptor.AppTokenExpiredDelegate
@@ -135,6 +135,10 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
         }
     }
 
+    fun onGoneBottomNavigate() {
+        binding.bottomNavView.gone()
+    }
+
     private fun setBottomNavVisibility(destination: NavDestination) {
         with(binding) {
             when (destination.id) {
@@ -148,6 +152,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.settingFragment,
                 R.id.resentVerifyFragment,
                 R.id.aboutYouFragment,
+                R.id.createBlogFragment,
+                R.id.profileFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

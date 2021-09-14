@@ -35,7 +35,7 @@ interface FeedApi {
     @GET("feeds/{feature_slug}/{circle_slug}")
     suspend fun getFeed(
         @Path("feature_slug") featureSlug: String,
-        @Query("circle_slug") circleSlug: String,
+        @Path("circle_slug") circleSlug: String,
         @Query(EXCLUDE) exclude: String,
         @Query(MODE) mode: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
@@ -45,7 +45,7 @@ interface FeedApi {
     @GET("feeds/{feature_slug}/{circle_slug}")
     fun getFeedByMode(
         @Path("feature_slug") featureSlug: String,
-        @Query("circle_slug") circleSlug: String,
+        @Path("circle_slug") circleSlug: String,
         @Query(MODE) mode: String,
         @Query(PAGE_NUMBER) pageNuber: String,
         @Query(PAGE_SIZE) pageSize: String,

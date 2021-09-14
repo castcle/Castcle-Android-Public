@@ -27,8 +27,6 @@
         <item name="colorControlActivated">@color/white</item>
     </style>
 
-
-
     <style name="TextInput" >
         <item name="boxStrokeWidthFocused">0dp</item>
         <item name="boxStrokeWidth">0dp</item>

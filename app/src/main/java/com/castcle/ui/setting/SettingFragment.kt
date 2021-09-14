@@ -2,6 +2,7 @@ package com.castcle.ui.setting
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.castcle.android.R
@@ -10,7 +11,7 @@ import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.toPageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.statickmodel.StaticSeetingMenu
+import com.castcle.data.staticmodel.StaticSeetingMenu
 import com.castcle.extensions.getDrawableRes
 import com.castcle.extensions.visibleOrGone
 import com.castcle.ui.base.*
@@ -140,7 +141,19 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
             val pageHeaderList = user.toPageHeaderUiModel()
             ptPageContentList.bindPage(pageHeaderList)
 
-            layoutNotificationWarning.clWarningNoti.visibleOrGone(!user.verified)
+            with(layoutNotificationWarning) {
+                clWarningNoti.visibleOrGone(!user.verified)
+                if (clWarningNoti.isVisible) {
+                    clWarningNoti.subscribeOnClick {
+                        val email = viewModel.userProfile.value?.email ?: ""
+                        navigateToResentVerifyFragment(email)
+                    }
+                }
+            }
         }
+    }
+
+    private fun navigateToResentVerifyFragment(email: String) {
+        onBoardNavigator.navigateToResentVerifyEmail(email)
     }
 }

@@ -9,13 +9,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.*
 import com.castcle.android.R
 import com.castcle.common_model.model.login.*
-import com.castcle.data.statickmodel.BottomNavigateStatic
+import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.containsSomeOf
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import com.castcle.ui.signin.password.PasswordFragmentArgs
 import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentArgs
+import com.castcle.ui.signin.verifyemail.ResentVerifyEmailFragmentArgs
 import com.castcle.ui.signin.verifyemail.VerifyEmailFragmentArgs
 import com.castcle.ui.webview.WebViewFragmentArgs
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -390,7 +391,6 @@ class OnBoardNavigatorImpl @Inject constructor(
     private fun isMainMenuBottomNavigation(deepLink: Uri): Boolean {
         val inputs = arrayOf(
             localizedResources.getString(R.string.deep_link_path_https_feed),
-            localizedResources.getString(R.string.deep_link_path_https_blog),
             localizedResources.getString(R.string.deep_link_path_https_search)
         )
 
@@ -404,14 +404,48 @@ class OnBoardNavigatorImpl @Inject constructor(
                 R.id.feedFragment,
                 popInclusive
             )
-            R.id.bloc_nav_graph -> navController.popBackStack(
-                R.id.createBlogFragment,
-                popInclusive
-            )
+            R.id.bloc_nav_graph -> navController.popBackStack()
             R.id.search_nav_graph -> navController.popBackStack(
                 R.id.searchFragment,
                 popInclusive
             )
+        }
+    }
+
+    override fun navigateCreateBlogFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.feedFragment) {
+                    navController.navigate(
+                        R.id.actionFeedFragmentToCreateBlogFragment
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToResentVerifyEmail(email: String) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                if (navController.currentDestination?.id == R.id.settingFragment) {
+                    navController.navigate(
+                        R.id.actionSettingFragmentToResentVerifyFragment,
+                        ResentVerifyEmailFragmentArgs(email).toBundle()
+                    )
+                } else {
+                    unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
         }
     }
 

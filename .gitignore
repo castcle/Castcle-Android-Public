@@ -27,3 +27,4 @@ proguard/
 .cxx
 local.properties
 /app/dev/release/
+/.idea/

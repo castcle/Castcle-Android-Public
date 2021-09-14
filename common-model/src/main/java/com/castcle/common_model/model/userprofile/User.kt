@@ -29,6 +29,7 @@ import androidx.room.*
 data class User(
     @PrimaryKey
     @ColumnInfo(name = "castcle_id") val castcleId: String,
+    @ColumnInfo(name = "displayName") val displayName: String,
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "dob") val dob: String,
     @ColumnInfo(name = "email") val email: String,
@@ -49,6 +50,7 @@ data class User(
 fun UserProfileResponse.toUserProfile(): User {
     return User(
         castcleId = castcleId,
+        displayName = displayName ?: "",
         id = id,
         dob = dob ?: "",
         email = email,

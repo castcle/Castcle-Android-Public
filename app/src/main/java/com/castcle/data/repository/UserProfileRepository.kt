@@ -1,12 +1,17 @@
 package com.castcle.data.repository
 
+import androidx.paging.*
 import com.castcle.common.lib.common.Optional
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.model.dao.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.UserApi
+import com.castcle.networking.api.user.UserProfilePagingDataSource
+import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
 
@@ -40,12 +45,17 @@ interface UserProfileRepository {
     val cachedUser: Flowable<Optional<User>>
 
     fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
+
+    fun getUserPofileContent(): Flow<PagingData<ContentUiModel>>
+
+    fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val userApi: UserApi,
     private val userProfileMapper: UserProfileMapper,
+    private val createContentMapper: CreateContentMapper,
     private val appPreferences: AppPreferences,
 ) : UserProfileRepository {
 
@@ -63,6 +73,25 @@ class UserProfileRepositoryImpl @Inject constructor(
                 _onMemoryUser = it
             }.ignoreElements()
     }
+
+    override fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel> {
+        return userApi
+            .createContent(
+                featureSlug = contentRequest.createType,
+                createContentRequest = contentRequest
+            ).lift(ApiOperators.mobileApiError())
+            .map { it.toCreateContentUiModel() }
+            .firstOrError()
+    }
+
+    override fun getUserPofileContent()
+        : Flow<PagingData<ContentUiModel>> = Pager(config =
+    PagingConfig(
+        pageSize = DEFAULT_PAGE_SIZE,
+        prefetchDistance = DEFAULT_PREFETCH
+    ), pagingSourceFactory = {
+        UserProfilePagingDataSource(userApi)
+    }).flow
 
     private val _remoteUser = BehaviorSubject.create<User>()
 
@@ -128,3 +157,6 @@ class UserProfileRepositoryImpl @Inject constructor(
             && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
     }
 }
+
+private const val DEFAULT_PAGE_SIZE = 25
+private const val DEFAULT_PREFETCH = 2

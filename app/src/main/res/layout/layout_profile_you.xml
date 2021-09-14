@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|center_horizontal"
+    android:background="@drawable/bg_common_template"
+    tools:ignore="MissingDefaultResource">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clProfileContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:background="@drawable/bg_round_corner_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivAvatarProfile">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:background="@color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_optional_menu" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/ivAvatarProfile"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_marginStart="@dimen/_24sdp"
+        android:src="@drawable/ic_avatar_placeholder"
+        app:civ_border="@color/white"
+        app:civ_border_width="2dp"
+        app:layout_constraintBaseline_toTopOf="@id/clProfileContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Default"
+        android:id="@+id/tvFollowingCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/tvFollowersCount"
+        app:layout_constraintEnd_toStartOf="@+id/tvFollowersCount"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ivAvatarProfile"
+        app:layout_constraintTop_toTopOf="@id/ivAvatarProfile"
+        tools:text="198" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Default"
+        android:id="@+id/tvFollowing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:text="@string/profile_following"
+        android:textAlignment="center"
+        android:textColor="@color/light"
+        app:layout_constraintEnd_toEndOf="@id/tvFollowingCount"
+        app:layout_constraintStart_toStartOf="@id/tvFollowingCount"
+        app:layout_constraintTop_toBottomOf="@id/tvFollowingCount" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Default"
+        android:id="@+id/tvFollowersCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvFollowingCount"
+        app:layout_constraintTop_toTopOf="@id/tvFollowingCount"
+        tools:text="33.6K " />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Default"
+        android:id="@+id/tvFollowers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/_2sdp"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:text="@string/profile_followers"
+        android:textAlignment="center"
+        android:textColor="@color/light"
+        app:layout_constraintEnd_toEndOf="@id/tvFollowersCount"
+        app:layout_constraintStart_toStartOf="@id/tvFollowersCount"
+        app:layout_constraintTop_toBottomOf="@id/tvFollowersCount" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Medium"
+        android:id="@+id/tvProfileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/ivAvatarProfile"
+        app:layout_constraintTop_toBottomOf="@id/ivAvatarProfile"
+        tools:text="Kasidej Daengdej" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Small"
+        android:id="@+id/tvProfileCastcleId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light"
+        app:layout_constraintStart_toStartOf="@id/tvProfileName"
+        app:layout_constraintTop_toBottomOf="@id/tvProfileName"
+        tools:text="\@Kasidej Daengdej" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Regular"
+        android:id="@+id/tvProfileOverView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:textAlignment="center"
+        android:textColor="@color/light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProfileCastcleId"
+        tools:text="Bitcoin is an open source censorship-resistant peer-to-peer immutable network." />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btViewProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/bg_border_blue"
+        android:text="@string/profile_view_profile"
+        android:textAllCaps="false"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btFollow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProfileOverView" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btFollow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:background="@drawable/bg_border_blue"
+        android:text="@string/profile_follow"
+        android:textAllCaps="false"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toBottomOf="@id/btViewProfile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btViewProfile"
+        app:layout_constraintTop_toTopOf="@id/btViewProfile" />
+</androidx.constraintlayout.widget.ConstraintLayout>

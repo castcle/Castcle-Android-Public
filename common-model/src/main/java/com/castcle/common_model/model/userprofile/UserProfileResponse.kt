@@ -29,6 +29,8 @@ import com.google.gson.annotations.SerializedName
 data class UserProfileResponse(
     @SerializedName("castcleId")
     val castcleId: String,
+    @SerializedName("displayName")
+    val displayName: String? = null,
     @SerializedName("dob")
     val dob: String? = null,
     @SerializedName("email")

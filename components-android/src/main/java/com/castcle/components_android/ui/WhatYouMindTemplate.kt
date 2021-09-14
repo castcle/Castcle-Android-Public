@@ -6,8 +6,12 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.LayoutWhatYouMindBinding
+import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.base.TemplateClicks
+import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.extensions.loadCircleImage
+import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -38,6 +42,9 @@ class WhatYouMindTemplate(
     attrs: AttributeSet
 ) : ConstraintLayout(context, attrs) {
 
+    private val _clickMenu = BehaviorSubject.create<TemplateClicks>()
+    val clickStatus: BehaviorSubject<TemplateClicks>
+        get() = _clickMenu
 
     private val binding: LayoutWhatYouMindBinding by lazy {
         LayoutWhatYouMindBinding.inflate(
@@ -49,7 +56,16 @@ class WhatYouMindTemplate(
         with(binding) {
             with(itemUiModel.payLoadUiModel) {
                 tvWathYouMind.text = context.getString(R.string.feed_what_you_mind_bar)
-                ivAvatar.loadCircleImage(author.avatar)
+                ivAvatar.run {
+                    loadCircleImage(author.avatar)
+                    subscribeOnClick {
+                        _clickMenu.onNext(
+                            TemplateClicks.AvatarClick(
+                                itemUiModel.deepLink
+                            )
+                        )
+                    }.addToDisposables()
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.castcle.data.statickmodel
+package com.castcle.data.staticmodel
 
 import com.castcle.android.R
 import com.castcle.common_model.model.setting.*

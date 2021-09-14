@@ -1,7 +1,11 @@
-package com.castcle.data.statickmodel
+package com.castcle.ui.profile
 
-import com.castcle.android.R
-import com.castcle.data.model.BottomNavigation
+import androidx.paging.PagingData
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.ui.base.BaseViewCoroutinesModel
+import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -25,30 +29,13 @@ import com.castcle.data.model.BottomNavigation
 //  or have any questions.
 //
 //
-//  Created by sklim on 19/8/2021 AD at 13:03.
+//  Created by sklim on 10/9/2021 AD at 11:38.
 
-object BottomNavigateStatic {
-    val bottomMenu = mutableListOf(
-        BottomNavigation(
-            R.string.bottom_menu_feed,
-            R.attr.bmBottomNavFeed,
-            R.navigation.onboard_nav_graph,
-            R.id.onboard_nav_graph,
-            R.dimen._12sdp
-        ),
-        BottomNavigation(
-            R.string.bottom_menu_create,
-            R.attr.bmBottomNavCreate,
-            R.navigation.bloc_nav_graph,
-            R.id.bloc_nav_graph,
-            R.dimen._30sdp
-        ),
-        BottomNavigation(
-            R.string.bottom_menu_search,
-            R.attr.bmBottomNavSearch,
-            R.navigation.search_nav_graph,
-            R.id.search_nav_graph,
-            R.dimen._12sdp
-        )
-    )
+abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
+
+    abstract val userProfileContentRes: Flow<PagingData<ContentUiModel>>
+
+    abstract fun fetachUserProfileContent()
+
+    abstract val userProfileRes: Observable<User>
 }

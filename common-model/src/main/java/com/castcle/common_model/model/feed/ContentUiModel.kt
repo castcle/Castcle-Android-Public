@@ -46,7 +46,8 @@ data class ContentUiModel(
     val contentType: String = "",
     val created: String = "",
     val updated: String = "",
-    val payLoadUiModel: PayLoadUiModel
+    val payLoadUiModel: PayLoadUiModel,
+    var deepLink: String = ""
 ) : Parcelable
 
 fun FeedContentResponse.toContentUiModel(): ContentUiModel {
@@ -202,19 +203,21 @@ data class AuthorUiModel(
 
 fun Author.toAuthorUiModel() =
     AuthorUiModel(
-        avatar = avatar,
-        displayName = displayName,
-        followed = followed,
+        avatar = avatar ?: "",
+        displayName = displayName ?: "",
+        followed = followed ?: false,
         id = id,
         type = type,
-        verified = verified
+        verified = verified ?: false
     )
 
 fun User.toContentUiModel(): ContentUiModel {
     return ContentUiModel(
         payLoadUiModel = PayLoadUiModel(
             author = AuthorUiModel(
-                avatar = avatar
+                avatar = avatar,
+                displayName = castcleId,
+                followed = followed,
             )
         )
     )

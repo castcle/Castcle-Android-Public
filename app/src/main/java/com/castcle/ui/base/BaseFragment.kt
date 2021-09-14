@@ -8,6 +8,7 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.castcle.android.R
@@ -191,6 +192,12 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
                     false
                 )
             }
+        }
+    }
+
+    fun launchOnLifecycleScope(execute: suspend () -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            execute()
         }
     }
 

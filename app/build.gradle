@@ -190,7 +190,8 @@ dependencies {
 
             "com.github.jkwiecien:EasyImage:$easy_image_version",
             "com.adamstyrc.cookiecutter:cookie-cutter:1.0.2",
-            "com.guolindev.permissionx:permissionx:1.5.1"
+            "com.guolindev.permissionx:permissionx:1.5.1",
+            "com.mikhaellopez:circularimageview:$circle_image_version",
     )
 
     implementation("com.github.bumptech.glide:glide:4.12.0") {

@@ -82,13 +82,13 @@
         android:textAllCaps="false"
         android:textColor="@color/blue"
         android:layout_marginBottom="@dimen/_12sdp"
-        app:layout_constraintBottom_toTopOf="@id/btTakePhoto"
-        app:layout_constraintEnd_toEndOf="@id/btTakePhoto"
-        app:layout_constraintStart_toStartOf="@id/btTakePhoto" />
+        app:layout_constraintBottom_toTopOf="@id/btProfileSetting"
+        app:layout_constraintEnd_toEndOf="@id/btProfileSetting"
+        app:layout_constraintStart_toStartOf="@id/btProfileSetting" />
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/AppTextKanitLight.Medium"
-        android:id="@+id/btTakePhoto"
+        android:id="@+id/btProfileSetting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"

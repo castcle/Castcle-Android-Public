@@ -92,16 +92,24 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
         binding.tvSentVerifyEmail.subscribeOnClick {
             navigateToResentVerifyEmail()
         }
+
+        binding.btProfileSetting.subscribeOnClick {
+            navigateToProfileSetting()
+        }
     }
 
     private fun naivgateToFeed() {
         onBoardNavigator.nvaigateToFeedFragment()
     }
 
+    private fun navigateToProfileSetting() {
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle)
+    }
+
     private fun navigateToResentVerifyEmail() {
-//        val bundle = profileBundle as ProfileBundle.ProfileWithEmail
+        val bundle = profileBundle as ProfileBundle.ProfileWithEmail
         val input = Input(
-            contentData = "TestResent@gmail.com",
+            contentData = bundle.email,
             type = DeepLinkTarget.VERIFY_EMAIL
         )
         makeDeepLinkUrl(requireContext(), input).run(::navigateByDeepLink)

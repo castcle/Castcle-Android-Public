@@ -1,8 +1,13 @@
 package com.castcle.extensions
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import com.castcle.android.R
 import com.castcle.ui.onboard.OnBoardActivity
 
@@ -80,3 +85,58 @@ private fun Activity.shouldNavigateToExternal(uri: Uri, isOpenExternal: Boolean)
 fun Activity.isHttps(uri: Uri): Boolean {
     return uri.scheme == getString(R.string.link_scheme)
 }
+
+fun Activity.registerKeyboardListener(listener: KeyboardListener) {
+    val content = findViewById<View>(android.R.id.content)
+    listener.bindContent(content)
+    content.viewTreeObserver.addOnGlobalLayoutListener(listener)
+}
+
+fun Activity.hideSoftKeyboard() {
+    val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    inputMethodManager?.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+}
+
+fun Activity.getSoftInputMode(): Int {
+    return window.attributes.softInputMode
+}
+
+fun Activity.setSoftInputMode(mode: Int) {
+    window.setSoftInputMode(mode)
+}
+
+fun Activity.unregisterKeyboardListener(listener: KeyboardListener) {
+    val content = findViewById<View>(android.R.id.content)
+    content.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+}
+
+abstract class KeyboardListener : ViewTreeObserver.OnGlobalLayoutListener {
+
+    private var isShown = false
+
+    lateinit var content: View
+
+    internal fun bindContent(content: View) {
+        this.content = content
+    }
+
+    override fun onGlobalLayout() {
+        val rec = Rect()
+        content.getWindowVisibleDisplayFrame(rec)
+
+        // Finding screen height
+        val screenHeight = content.rootView.height
+
+        // Finding keyboard height
+        val keypadHeight = screenHeight - rec.bottom
+
+        val shown = keypadHeight > screenHeight * SCREEN_HEIGHT_MULTIPLIER
+        if (isShown == shown) return
+        isShown = shown
+        onVisibilityStateChanged(isShown)
+    }
+
+    abstract fun onVisibilityStateChanged(isShown: Boolean)
+}
+
+private const val SCREEN_HEIGHT_MULTIPLIER = 0.15

@@ -111,10 +111,10 @@ data class Participant(
 data class Author(
     @SerializedName("id") var id: String,
     @SerializedName("type") var type: String,
-    @SerializedName("displayName") var displayName: String,
-    @SerializedName("avatar") var avatar: String,
-    @SerializedName("verified") var verified: Boolean,
-    @SerializedName("followed") var followed: Boolean
+    @SerializedName("displayName") var displayName: String? = null,
+    @SerializedName("avatar") var avatar: String? = null,
+    @SerializedName("verified") var verified: Boolean? = null,
+    @SerializedName("followed") var followed: Boolean? = null
 )
 
 data class Contents(

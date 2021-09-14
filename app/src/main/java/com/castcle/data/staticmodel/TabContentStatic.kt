@@ -1,4 +1,7 @@
-package com.castcle.data.statickmodel
+package com.castcle.data.staticmodel
+
+import com.castcle.android.R
+import com.castcle.common_model.model.userprofile.TabContentUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,11 +25,29 @@ package com.castcle.data.statickmodel
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 15:53.
+//  Created by sklim on 13/9/2021 AD at 21:53.
 
-enum class ContentType(val type: String) {
-    CONTENT("Content"),
-    IMAGE("image"),
-    SHORT("short"),
-    BLOG("blog")
+object TabContentStatic {
+    val tabContent = mutableListOf(
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.profile_tab_all,
+            featureSlug = "all"
+        ),
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.profile_tab_post,
+            featureSlug = "post"
+        ),
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.profile_tab_blog,
+            featureSlug = "blog"
+        ),
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.profile_tab_photo,
+            featureSlug = "photo"
+        )
+    )
 }

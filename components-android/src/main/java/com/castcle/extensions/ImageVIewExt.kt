@@ -1,13 +1,16 @@
 package com.castcle.extensions
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.Px
+import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.*
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -141,6 +144,22 @@ fun ImageView.loadCircleImage(
         })
 }
 
+fun ImageView.loadImageUrlWithTransformation(
+    url: String,
+    @DrawableRes errorDrawableRes: Int = R.drawable.ic_img_placeholder,
+    transform: (Bitmap) -> Bitmap
+) {
+    Glide.with(context)
+        .load(url)
+        .error(errorDrawableRes)
+        .into(object : DrawableImageViewTarget(this) {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                val newResource = transform(resource.toBitmap()).toDrawable(resources)
+                super.onResourceReady(newResource, transition)
+            }
+        })
+}
+
 fun ImageView.loadImageWithoutTransformation(
     url: String,
     @DrawableRes errorDrawableRes: Int = R.drawable.ic_img_placeholder
@@ -172,4 +191,22 @@ fun ImageView.loadImageResource(@DrawableRes resId: Int) {
         .load(resId)
         .centerCrop()
         .into(this)
+}
+
+fun ImageView.loadCircleImageCache(url: String) {
+    Glide.with(context)
+        .load(url)
+        .diskCacheStrategy(DiskCacheStrategy.DATA)
+        .skipMemoryCache(true)
+        .error(R.drawable.ic_img_placeholder)
+        .circleCrop()
+        .into(this)
+}
+
+
+fun Bitmap.addVerticalMargin(@Px margin: Int): Bitmap {
+    return Bitmap.createBitmap(width, height + 2 * margin, Bitmap.Config.ARGB_8888).applyCanvas {
+        drawColor(Color.WHITE)
+        drawBitmap(this@addVerticalMargin, 0f, margin.toFloat(), null)
+    }
 }

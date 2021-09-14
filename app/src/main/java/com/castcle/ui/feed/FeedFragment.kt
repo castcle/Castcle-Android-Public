@@ -2,6 +2,7 @@ package com.castcle.ui.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
@@ -11,7 +12,8 @@ import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.statickmodel.FeedFilterMock.feedFilter
+import com.castcle.components_android.ui.base.TemplateClicks
+import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonMockAdapter
@@ -157,7 +159,32 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun onBindWhatYouMind(user: User) {
-        binding.wtWhatYouMind.bindUiModel(user.toContentUiModel())
+        user.toContentUiModel().apply {
+            deepLink = makeDeepLinkUrl(
+                requireContext(), Input(
+                    type = DeepLinkTarget.USER_PROFILE,
+                    contentData = user.castcleId
+                )
+            ).toString()
+        }.run(binding.wtWhatYouMind::bindUiModel)
+
+        binding.wtWhatYouMind.clickStatus.subscribe {
+            handleNavigateOnClick(it)
+        }.addToDisposables()
+    }
+
+    private fun handleNavigateOnClick(click: TemplateClicks) {
+        when (click) {
+            is TemplateClicks.AvatarClick -> {
+                navigateByDeepLink(click.deepLink)
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun navigateByDeepLink(url: String) {
+        onBoardNavigator.navigateByDeepLink(url.toUri())
     }
 
     private fun onRefreshProfile() {

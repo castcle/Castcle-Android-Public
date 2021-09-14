@@ -39,10 +39,18 @@ data class Input(
 ) : Parcelable
 
 enum class DeepLinkTarget(val resource: String) {
-    VERIFY_EMAIL("resentverify-email/%s")
+    VERIFY_EMAIL("resentverify-email/%s"),
+    USER_PROFILE("profile/%s"),
+    HOME_FEED("feed")
 }
 
 fun makeDeepLinkUrl(context: Context, input: Input): Uri {
     val schema = context.getString(R.string.deep_link_scheme_castcle).toUrlScheme()
-    return with(input) { "$schema${format(type.resource, contentData)}" }.toUri()
+    return with(input) {
+        if (contentData?.isNotBlank() == true) {
+            "$schema${format(type.resource, contentData)}"
+        } else {
+            "$schema${type.resource}"
+        }
+    }.toUri()
 }

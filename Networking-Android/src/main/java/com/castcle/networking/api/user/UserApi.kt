@@ -1,7 +1,9 @@
 package com.castcle.networking.api.user
 
-import com.castcle.common_model.model.userprofile.UserProfileResponse
-import com.castcle.common_model.model.userprofile.UserUpdateRequest
+import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.userprofile.*
+import com.castcle.networking.service.common.PAGE_NUMBER
+import com.castcle.networking.service.common.PAGE_SIZE
 import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.Response
@@ -36,8 +38,33 @@ interface UserApi {
     @GET("users/me")
     fun getUserProfile(): Single<Response<UserProfileResponse>>
 
+    @GET("users/{castcleId}")
+    fun getUserViewProfileId(
+        @Query("castcleId") castcleId: String
+    ): Single<Response<UserProfileResponse>>
+
+    @GET("users/me/contents")
+    suspend fun getUserProfileContent(
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<FeedResponse>
+
+    @GET("users/{castcleId}/contents")
+    suspend fun getUserViewProfileContent(
+        @Path("feature_slug") featureSlug: String,
+        @Path("circle_slug") circleSlug: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<FeedResponse>
+
     @PUT("users/me")
     fun updateUserProfile(
         @Body userUpdateRequest: UserUpdateRequest
     ): Flowable<Response<UserProfileResponse>>
+
+    @POST("contents/{feature_slug}")
+    fun createContent(
+        @Path("feature_slug") featureSlug: String,
+        @Body createContentRequest: CreateContentRequest
+    ): Flowable<Response<CreateCastResponse>>
 }

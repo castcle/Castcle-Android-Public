@@ -6,6 +6,7 @@
     app:startDestination="@id/feedFragment">
 
     <include app:graph="@navigation/dialog_login_nav_graph" />
+    <include app:graph="@navigation/bloc_nav_graph" />
 
     <fragment
         android:id="@+id/feedFragment"
@@ -19,6 +20,10 @@
         <action
             android:id="@+id/actionFeedFragmentToSettingFragment"
             app:destination="@id/settingFragment" />
+
+        <action
+            android:id="@+id/actionFeedFragmentToCreateBlogFragment"
+            app:destination="@id/bloc_nav_graph" />
 
         <deepLink app:uri="@string/nav_deep_link_feed" />
     </fragment>
@@ -197,6 +202,14 @@
         android:name="com.castcle.ui.setting.SettingFragment"
         tools:layout="@layout/fragment_setting">
 
+        <action
+            android:id="@+id/actionSettingFragmentToResentVerifyFragment"
+            app:destination="@id/resentVerifyFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <deepLink app:uri="@string/nav_deep_link_setting" />
     </fragment>
 
@@ -213,5 +226,19 @@
 
         <deepLink app:uri="@string/deep_link_path_https_resent_verify_email" />
         <deepLink app:uri="@string/nav_deep_link_resent_verify_email_input" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.castcle.ui.profile.ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <deepLink app:uri="@string/deep_link_path_https_profile" />
+        <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
 </navigation>

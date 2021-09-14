@@ -1,6 +1,4 @@
-package com.castcle.data.statickmodel
-
-import com.castcle.ui.feed.FilterUiModel
+package com.castcle.data.error
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -24,24 +22,15 @@ import com.castcle.ui.feed.FilterUiModel
 //  or have any questions.
 //
 //
-//  Created by sklim on 30/8/2021 AD at 21:00.
+//  Created by sklim on 1/9/2021 AD at 10:30.
 
-object FeedFilterMock {
-    val feedFilter = listOf(
-        FilterUiModel.FeedFilterUiModel(
-            "X01", "#Dogecoin"
-        ),
-        FilterUiModel.FeedFilterUiModel(
-            "X01", "#BNB"
-        ),
-        FilterUiModel.FeedFilterUiModel(
-            "X01", "#bsc"
-        ),
-        FilterUiModel.FeedFilterUiModel(
-            "X01", "#Coin"
-        ),
-        FilterUiModel.FeedFilterUiModel(
-            "X01", "#ABNBA"
-        )
-    )
+internal class CreateContentError constructor(
+    cause: Throwable?,
+) : AppError(
+    cause = cause,
+    readableMessage = ""
+) {
+    fun cannotCreateContent() = CODE_NOT_CREATE == code
 }
+
+const val CODE_NOT_CREATE = "403"

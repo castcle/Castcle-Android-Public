@@ -19,4 +19,5 @@
     <string name="deep_link_path_https_verify_email" translatable="false">.*/verify-email</string>
     <string name="deep_link_path_https_resent_verify_email" translatable="false">.*/resentverify-email/{email}</string>
     <string name="deep_link_path_https_about_you" translatable="false">.*/about-you</string>
+    <string name="deep_link_path_https_profile" translatable="false">.*/profile/{id}</string>
 </resources>

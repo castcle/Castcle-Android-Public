@@ -62,4 +62,8 @@ interface OnBoardNavigator : BaseNavigator {
     fun handleDeepLink(intent: Intent, shouldPopStackToEntry: Boolean)
 
     fun popBackStackToEntry(popInclusive: Boolean = false)
+
+    fun navigateCreateBlogFragment()
+
+    fun navigateToResentVerifyEmail(email: String)
 }

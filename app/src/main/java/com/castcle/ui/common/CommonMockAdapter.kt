@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
-import com.castcle.data.statickmodel.ContentType.*
+import com.castcle.data.staticmodel.ContentType.*
 import com.castcle.ui.common.events.*
 import com.castcle.ui.common.viewholder.feedMock.*
 import io.reactivex.disposables.CompositeDisposable

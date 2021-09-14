@@ -6,4 +6,6 @@
     <dimen name="image_round_radius">@dimen/_12sdp</dimen>
     <dimen name="default_item_space">@dimen/_6sdp</dimen>
     <dimen name="default_padding_margin_medium">@dimen/_13sdp</dimen>
+
+    <dimen name="default_expanded_image_size">@dimen/_200sdp</dimen>
 </resources>
