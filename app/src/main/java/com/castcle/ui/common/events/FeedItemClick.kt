@@ -36,7 +36,8 @@ sealed class FeedItemClick(
     ) : FeedItemClick(position)
 
     class FeedLikeClick(
-        position: Int
+        position: Int,
+        val contentUiModel: ContentUiModel
     ) : FeedItemClick(position)
 
     class FeedCommentClick(

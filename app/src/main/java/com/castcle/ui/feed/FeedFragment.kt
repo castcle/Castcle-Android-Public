@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
@@ -19,9 +19,6 @@ import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.google.gson.Gson
-import org.json.JSONObject
-import java.io.InputStream
 import javax.inject.Inject
 
 class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
@@ -107,24 +104,13 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
-        val mock = getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
+        adapterFilterAdapter.items = feedFilter
+        adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
 
         with(adapterCommon) {
-            uiModels = mock
             itemClick.subscribe {
                 handleContentClick(it)
             }.addToDisposables()
-        }
-
-        adapterFilterAdapter.items = feedFilter
-        adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
-    }
-
-    private fun handleContentClick(click: Click) {
-        when (click) {
-            is FeedItemClick.FeedAvatarClick -> {
-                handleNavigateAvatarClick(click.contentUiModel)
-            }
         }
     }
 
@@ -138,29 +124,13 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         navigateByDeepLink(deepLink)
     }
 
+    private fun handleLikeClick(contentUiModel: ContentUiModel) {
+        adapterCommon.onUpdateItem(contentUiModel)
+        viewModel.input.updateLikeContent(contentUiModel.payLoadUiModel.author.displayName)
+    }
+
     private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
         adapterFilterAdapter.selectedFilter(itemFilter)
-    }
-
-    private fun getFeedResponse(): FeedResponse {
-        return Gson().fromJson(
-            JSONObject(readJSONFromAsset() ?: "").toString(),
-            FeedResponse::class.java
-        )
-    }
-
-    private fun readJSONFromAsset(): String? {
-        val json: String?
-        try {
-            val inputStream: InputStream? = context?.resources?.openRawResource(
-                R.raw.feed_mock
-            )
-            json = inputStream?.bufferedReader().use { it?.readText() }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
     }
 
     override fun bindViewModel() {
@@ -171,6 +141,23 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         activityViewModel.user.subscribe {
             onRefreshProfile()
         }.addToDisposables()
+
+        viewModel.getFeedResponseMock()
+
+        viewModel.feedContentMock.observe(this, {
+            adapterCommon.uiModels = it
+        })
+    }
+
+    private fun handleContentClick(click: Click) {
+        when (click) {
+            is FeedItemClick.FeedAvatarClick -> {
+                handleNavigateAvatarClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedLikeClick -> {
+                handleLikeClick(click.contentUiModel)
+            }
+        }
     }
 
     private fun onBindWhatYouMind(user: User) {

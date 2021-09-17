@@ -93,6 +93,9 @@
         <entry key="components-android/src/main/res/drawable/ic_avatar_placeholder.xml" value="0.18680555555555556" />
         <entry key="components-android/src/main/res/drawable/ic_bagde_follow.xml" value="0.17291666666666666" />
         <entry key="components-android/src/main/res/drawable/ic_camera_selected.xml" value="0.18472222222222223" />
+        <entry key="components-android/src/main/res/drawable/ic_comment.xml" value="0.1798611111111111" />
+        <entry key="components-android/src/main/res/drawable/ic_comment_selected.xml" value="0.1798611111111111" />
+        <entry key="components-android/src/main/res/drawable/ic_comment_selector.xml" value="0.1798611111111111" />
         <entry key="components-android/src/main/res/drawable/ic_create_content.xml" value="0.108984375" />
         <entry key="components-android/src/main/res/drawable/ic_facebook.xml" value="0.1638888888888889" />
         <entry key="components-android/src/main/res/drawable/ic_feed.xml" value="0.15486111111111112" />
@@ -101,8 +104,14 @@
         <entry key="components-android/src/main/res/drawable/ic_filter.xml" value="0.235546875" />
         <entry key="components-android/src/main/res/drawable/ic_img_email.xml" value="0.14722222222222223" />
         <entry key="components-android/src/main/res/drawable/ic_img_placeholder.xml" value="0.18333333333333332" />
+        <entry key="components-android/src/main/res/drawable/ic_like.xml" value="0.1798611111111111" />
+        <entry key="components-android/src/main/res/drawable/ic_like_selected.xml" value="0.1798611111111111" />
+        <entry key="components-android/src/main/res/drawable/ic_like_selector.xml" value="0.1798611111111111" />
         <entry key="components-android/src/main/res/drawable/ic_message.xml" value="0.14722222222222223" />
         <entry key="components-android/src/main/res/drawable/ic_password_visible.xml" value="0.131640625" />
+        <entry key="components-android/src/main/res/drawable/ic_recast.xml" value="0.1798611111111111" />
+        <entry key="components-android/src/main/res/drawable/ic_recast_selected.xml" value="0.1798611111111111" />
+        <entry key="components-android/src/main/res/drawable/ic_recast_selector.xml" value="0.1798611111111111" />
         <entry key="components-android/src/main/res/drawable/ic_search.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selected.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selector.xml" value="0.14930555555555555" />

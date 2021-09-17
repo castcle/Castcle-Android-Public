@@ -2,9 +2,11 @@ package com.castcle.ui.feed
 
 import androidx.lifecycle.LiveData
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Completable
+import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,11 +36,19 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val isGuestMode: Boolean
 
-    abstract val feedMockUiModel: LiveData<ContentFeedUiModel>
+    abstract val feedContentMock: LiveData<List<ContentUiModel>>
+
+    abstract fun getFeedResponseMock()
 
     abstract val userProfile: LiveData<User>
 
     abstract fun getMockFeed()
 
     abstract fun fetchUserProfile(): Completable
+
+    abstract val input: Input
+
+    interface Input {
+        fun updateLikeContent(uuid: String)
+    }
 }

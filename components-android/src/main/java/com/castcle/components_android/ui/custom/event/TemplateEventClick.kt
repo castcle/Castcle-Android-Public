@@ -32,6 +32,7 @@ sealed class TemplateEventClick(
 ) {
 
     class LikeClick(
+        val contentUiModel: ContentUiModel,
         participantUiModel: List<ParticipantUiModel>
     ) : TemplateEventClick(participantUiModel)
 

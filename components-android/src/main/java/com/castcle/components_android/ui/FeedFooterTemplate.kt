@@ -53,6 +53,7 @@ class FeedFooterTemplate(
             tvLiked.subscribeOnClick {
                 _itemClick.onNext(
                     TemplateEventClick.LikeClick(
+                        itemUiModel,
                         itemUiModel.payLoadUiModel.likedUiModel.participantUiModel
                     )
                 )
@@ -75,8 +76,11 @@ class FeedFooterTemplate(
         with(binding) {
             with(itemUiModel.payLoadUiModel) {
                 tvLiked.text = likedUiModel.count.toCount()
+                tvLiked.isActivated = likedUiModel.liked
                 tvCommented.text = commentedUiModel.count.toCount()
+                tvCommented.isActivated = commentedUiModel.commented
                 tvReCasted.text = reCastedUiModel.count.toCount()
+                tvReCasted.isActivated = reCastedUiModel.recasted
             }
         }
     }

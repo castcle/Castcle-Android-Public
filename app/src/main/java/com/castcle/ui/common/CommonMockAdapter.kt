@@ -56,6 +56,11 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
         )
     }
 
+    fun onUpdateItem(contentUiModel: ContentUiModel) {
+        val indexItem = uiModels.indexOf(contentUiModel)
+        notifyItemChanged(indexItem)
+    }
+
     override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
         holder.bindUiModel(uiModels[position])
     }

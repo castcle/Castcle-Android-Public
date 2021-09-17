@@ -42,6 +42,9 @@ class FeedContentImageMockViewHolder(
         binding.ubUser.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
+        binding.ftFooter.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
     }
 
     private fun handleItemClick(it: TemplateEventClick?) {
@@ -49,6 +52,14 @@ class FeedContentImageMockViewHolder(
             is TemplateEventClick.AvatarClick -> {
                 click.invoke(
                     FeedItemClick.FeedAvatarClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.LikeClick -> {
+                click.invoke(
+                    FeedItemClick.FeedLikeClick(
                         bindingAdapterPosition,
                         it.contentUiModel
                     )

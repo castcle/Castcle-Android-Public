@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.*
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.extensions.loadGranularRoundedCornersContentImage
-import com.castcle.extensions.loadRoundedCornersImage
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -44,7 +42,10 @@ class ImageContentTemplate(
     }
 
     fun bindImageContent(itemUiModel: ContentUiModel) {
-        val listImage = itemUiModel.payLoadUiModel.photo.imageContent
+        var listImage = itemUiModel.payLoadUiModel.photo.imageContent
+        if (listImage.size > FOUR_IMAGE) {
+            listImage = listImage.take(FOUR_IMAGE)
+        }
         when (listImage.size) {
             SING_IMAGE -> {
                 val bindingSingle =

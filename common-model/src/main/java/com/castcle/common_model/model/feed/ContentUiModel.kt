@@ -124,7 +124,7 @@ fun LinkResponse.toLinkUiModel(): LinkUiModel {
 @Parcelize
 data class LikedUiModel(
     val count: Int = 0,
-    val liked: Boolean = false,
+    var liked: Boolean = false,
     val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
 
