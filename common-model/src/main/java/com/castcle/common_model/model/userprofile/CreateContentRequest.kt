@@ -50,7 +50,7 @@ data class Payload(
     val message: String = "",
 
     @SerializedName("photo")
-    val photo: Photo ? = null
+    val photo: Photo? = null
 )
 
 data class Photo(
@@ -60,6 +60,14 @@ data class Photo(
     @SerializedName("cover")
     val cover: Content? = null,
 )
+
+fun List<String>.toRequestPhoto(): List<Content> {
+    return map {
+        Content(
+            url = it
+        )
+    }
+}
 
 data class Content(
     @SerializedName("url")

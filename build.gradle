@@ -95,7 +95,7 @@ buildscript {
 
         play_service_base = '17.6.0'
         spinner_date_picker = "2.0.1"
-        flexbox_lib_version = "2.0.1"
+        flexbox_lib_version = "3.0.0"
         facebook_shimmer_lib = "0.5.0"
         flipper_version = "0.91.2"
         facebook_soloader_version = "0.10.1"
@@ -124,6 +124,7 @@ buildscript {
         base_adapter_version = "3.0.4"
         collage_version = "2.0.2"
         gravitysnaphelper_version = "2.2.0"
+        rximagepicker_version = "2.5.6"
     }
 
     repositories {

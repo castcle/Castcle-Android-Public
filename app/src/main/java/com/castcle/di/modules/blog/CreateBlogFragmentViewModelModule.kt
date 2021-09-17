@@ -2,11 +2,13 @@ package com.castcle.di.modules.blog
 
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
+import com.castcle.di.modules.login.PermissionOnProfileChooseFragment
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.createbloc.CreateBlogFragmentViewModel
-import com.castcle.ui.createbloc.CreateBlogFragmentViewModelImpl
-import dagger.Binds
-import dagger.Module
+import com.castcle.ui.createbloc.*
+import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragment
+import com.permissionx.guolindev.PermissionMediator
+import com.permissionx.guolindev.PermissionX
+import dagger.*
 import dagger.multibindings.IntoMap
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -32,7 +34,7 @@ import dagger.multibindings.IntoMap
 //
 //
 //  Created by sklim on 13/9/2021 AD at 10:14.
-@Module
+@Module(includes = [PermissionOnCreateBlogFragment::class])
 interface CreateBlogFragmentViewModelModule {
 
     @FragmentScope
@@ -41,3 +43,12 @@ interface CreateBlogFragmentViewModelModule {
     @ViewModelKey(CreateBlogFragmentViewModel::class)
     fun createBlogViewModel(viewModel: CreateBlogFragmentViewModelImpl): ViewModel
 }
+
+@Module
+class PermissionOnCreateBlogFragment {
+
+    @Provides
+    fun permissionX(fragment: CreateBlogFragment): PermissionMediator =
+        PermissionX.init(fragment)
+}
+

@@ -3,6 +3,7 @@ package com.castcle.ui.profile
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.data.staticmodel.ContentType
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
@@ -37,5 +38,13 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun fetachUserProfileContent()
 
+    abstract fun getFeedResponse(contentType: ContentType)
+
+    abstract fun getUserViewProfileMock(castcleId: String)
+
     abstract val userProfileRes: Observable<User>
+
+    abstract val userProfileYouRes: Observable<User>
+
+    abstract val userProfileContentMock: Observable<List<ContentUiModel>>
 }

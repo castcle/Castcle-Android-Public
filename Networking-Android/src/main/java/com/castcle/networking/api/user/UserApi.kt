@@ -2,6 +2,9 @@ package com.castcle.networking.api.user
 
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.userprofile.*
+import com.castcle.networking.service.common.*
+import com.castcle.networking.service.common.EXCLUDE
+import com.castcle.networking.service.common.MODE
 import com.castcle.networking.service.common.PAGE_NUMBER
 import com.castcle.networking.service.common.PAGE_SIZE
 import io.reactivex.Flowable
@@ -51,8 +54,8 @@ interface UserApi {
 
     @GET("users/{castcleId}/contents")
     suspend fun getUserViewProfileContent(
-        @Path("feature_slug") featureSlug: String,
-        @Path("circle_slug") circleSlug: String,
+        @Query(EXCLUDE) exclude: String,
+        @Query(MODE) mode: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<FeedResponse>

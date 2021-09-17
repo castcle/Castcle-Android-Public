@@ -40,7 +40,8 @@ data class Input(
 
 enum class DeepLinkTarget(val resource: String) {
     VERIFY_EMAIL("resentverify-email/%s"),
-    USER_PROFILE("profile/%s"),
+    USER_PROFILE_ME("profile/me/%s"),
+    USER_PROFILE_YOU("profile/you/%s"),
     HOME_FEED("feed")
 }
 

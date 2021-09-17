@@ -45,4 +45,17 @@
             <flag name="actionDone" value="0x00000006" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="MentionsInput">
+        <attr name="mentionTextView_hashtagColor" format="color" />
+        <attr name="mentionTextView_mentionColor" format="color" />
+        <attr name="mentionTextView_urlColor" format="color" />
+        <attr name="mentionTextView_selectedColor" format="color" />
+
+        <attr name="linkType" format="flags">
+            <flag name="hashtag" value="1"/>
+            <flag name="mention" value="2"/>
+            <flag name="url" value="4"/>
+        </attr>
+    </declare-styleable>
 </resources>

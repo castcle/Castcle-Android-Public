@@ -6,17 +6,17 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
-import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.castcle.common_model.model.feed.toContentFeedUiModel
-import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonMockAdapter
+import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.gson.Gson
@@ -26,22 +26,13 @@ import javax.inject.Inject
 
 class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     BaseFragmentCallbacks,
-    ViewBindingInflater<FragmentFeedBinding>,
-    ToolbarBindingInflater<ToolbarCastcleCommonBinding> {
+    ViewBindingInflater<FragmentFeedBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
-    private var adapterCommon: CommonMockAdapter? = null
+
+    private lateinit var adapterCommon: CommonMockAdapter
 
     private var adapterFilterAdapter = FeedFilterAdapter()
-
-    override val toolbarBindingInflater:
-            (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleCommonBinding
-        get() = { inflater, container, attachToRoot ->
-            ToolbarCastcleCommonBinding.inflate(inflater, container, attachToRoot)
-        }
-
-    override val toolbarBinding: ToolbarCastcleCommonBinding
-        get() = toolbarViewBinding as ToolbarCastcleCommonBinding
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentFeedBinding
         get() = { inflater, container, attachToRoot ->
@@ -88,7 +79,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun setupToolbar(guestMode: Boolean) {
-        with(toolbarBinding) {
+        with(binding.tbProfile) {
             tvToolbarTitle.text = getString(R.string.feed_title_toolbar)
             if (guestMode) {
                 ivToolbarProfileButton.subscribeOnClick {
@@ -118,9 +109,33 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     override fun bindViewEvents() {
         val mock = getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
 
-        adapterCommon?.uiModels = mock
+        with(adapterCommon) {
+            uiModels = mock
+            itemClick.subscribe {
+                handleContentClick(it)
+            }.addToDisposables()
+        }
+
         adapterFilterAdapter.items = feedFilter
         adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
+    }
+
+    private fun handleContentClick(click: Click) {
+        when (click) {
+            is FeedItemClick.FeedAvatarClick -> {
+                handleNavigateAvatarClick(click.contentUiModel)
+            }
+        }
+    }
+
+    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
+        val deepLink = makeDeepLinkUrl(
+            requireContext(), Input(
+                type = DeepLinkTarget.USER_PROFILE_YOU,
+                contentData = contentUiModel.payLoadUiModel.author.displayName
+            )
+        ).toString()
+        navigateByDeepLink(deepLink)
     }
 
     private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
@@ -162,7 +177,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         user.toContentUiModel().apply {
             deepLink = makeDeepLinkUrl(
                 requireContext(), Input(
-                    type = DeepLinkTarget.USER_PROFILE,
+                    type = DeepLinkTarget.USER_PROFILE_ME,
                     contentData = user.castcleId
                 )
             ).toString()

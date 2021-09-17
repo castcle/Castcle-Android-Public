@@ -14,3 +14,4 @@ internal const val FILTER_TYPE = "filterType"
 internal const val FILTER_TYPE_SIMILAR = "similar"
 const val TIMEOUT_SEARCH_REQUEST = 500L
 const val TIMEOUT_SHOWING_SPINNER = 1000L
+

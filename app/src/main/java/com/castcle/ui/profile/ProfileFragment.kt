@@ -3,23 +3,20 @@ package com.castcle.ui.profile
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
+import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
-import com.castcle.android.databinding.FragmentProfileBinding
-import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
+import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.staticmodel.TabContentStatic
+import com.castcle.data.staticmodel.ContentType
+import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.ui.profile.adapter.ContentPageAdapter
 import com.castcle.ui.profile.viewholder.UserProfileAdapter
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -48,20 +45,21 @@ import javax.inject.Inject
 
 class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     BaseFragmentCallbacks,
-    ToolbarBindingInflater<ToolbarCastcleGreetingBinding>,
     ViewBindingInflater<FragmentProfileBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     private lateinit var userProfileAdapter: UserProfileAdapter
 
-    override val toolbarBindingInflater:
-            (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
-        get() = { inflater, container, attachToRoot ->
-            ToolbarCastcleGreetingBinding.inflate(inflater, container, attachToRoot)
-        }
-    override val toolbarBinding: ToolbarCastcleGreetingBinding
-        get() = toolbarViewBinding as ToolbarCastcleGreetingBinding
+    private lateinit var contentPageAdapter: ContentPageAdapter
+
+    private val argsBundle: ProfileFragmentArgs by navArgs()
+
+    private val profileType: String
+        get() = argsBundle.me
+
+    private val profileId: String
+        get() = argsBundle.id
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentProfileBinding
@@ -76,50 +74,45 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             .get(ProfileFragmentViewModel::class.java)
 
     override fun initViewModel() {
-        viewModel.fetachUserProfileContent()
+        if (isProfileIsMe()) {
+            viewModel.fetachUserProfileContent()
+        }
+    }
+
+    private fun isProfileIsMe(): Boolean {
+        return profileType == PROFILE_TYPE_ME
     }
 
     override fun setupView() {
         setupToolBar()
-
         with(binding.vpPageContent) {
-            adapter = UserProfileAdapter().also {
-                userProfileAdapter = it
+            adapter = ContentPageAdapter(this@ProfileFragment).also {
+                contentPageAdapter = it
             }
         }
-        toolbarBinding.tvToolbarTitle.setTextColor(
-            requireContext().getColorResource(R.color.white)
-        )
 
-        val tabStatic = TabContentStatic.tabContent
-        with(binding.tabs) {
-            addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    
-                }
+        TabLayoutMediator(
+            binding.tabs,
+            binding.vpPageContent
+        ) { Tab, position ->
+            Tab.text = requireContext().getString(tabContent[position].tabNameRes)
+        }.attach()
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-                    
-                }
-
-            })
+        if (isProfileIsMe()) {
+            binding.profileMe.clMainContent.visible()
+            binding.profileYou.clMainContent.gone()
+        } else {
+            binding.profileMe.clMainContent.gone()
+            binding.profileYou.clMainContent.visible()
         }
     }
 
     private fun setupToolBar() {
-        with(binding) {
-            appBarLayoutProfile.addOnOffsetChangedListener(
-                AppBarLayout.OnOffsetChangedListener { _, _ ->
-                }
+        with(binding.tbProfile) {
+            ivToolbarLogoButton.visible()
+            tvToolbarTitle.setTextColor(
+                requireContext().getColorResource(R.color.white)
             )
-        }
-
-        with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {
                     findNavController().navigateUp()
@@ -128,6 +121,27 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
+
+//        with(viewModel) {
+//            launchOnLifecycleScope {
+//                userProfileContentRes.collectLatest {
+//                    userProfileAdapter.submitData(it)
+//                }
+//            }
+//        }
+
+//        lifecycleScope.launchWhenCreated {
+//            userProfileAdapter.loadStateFlow.collectLatest { loadStates ->
+//                val refresher = loadStates.refresh
+//                val displayEmptyMessage = (refresher is LoadState.NotLoading &&
+//                    refresher.endOfPaginationReached && userProfileAdapter.itemCount == 0)
+//                binding.tvMessageError.visibleOrGone(displayEmptyMessage)
+//            }
+//        }
+    }
+
+    override fun bindViewModel() {
+        viewModel.getFeedResponse(ContentType.SHORT)
         viewModel.errorMessage.observe(this, {
             binding.tvMessageError.run {
                 visible()
@@ -135,26 +149,18 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
         })
 
-        viewModel.userProfileRes
-            .subscribe {
-                onBindProfile(it)
-            }.addToDisposables()
+        if (isProfileIsMe()) {
+            viewModel.userProfileRes
+                .subscribe {
+                    onBindProfile(it)
+                }.addToDisposables()
+        } else {
+            viewModel.getUserViewProfileMock(profileId)
+        }
 
-        with(viewModel) {
-            launchOnLifecycleScope {
-                userProfileContentRes.collectLatest {
-                    userProfileAdapter.submitData(it)
-                }
-            }
-        }
-        lifecycleScope.launchWhenCreated {
-            userProfileAdapter.loadStateFlow.collectLatest { loadStates ->
-                val refresher = loadStates.refresh
-                val displayEmptyMessage = (refresher is LoadState.NotLoading &&
-                    refresher.endOfPaginationReached && userProfileAdapter.itemCount == 0)
-//                binding.tvMessageError.visibleOrGone(displayEmptyMessage)
-            }
-        }
+        viewModel.userProfileYouRes.subscribe {
+            onBindViewProfile(it)
+        }.addToDisposables()
     }
 
     private fun onBindProfile(user: User) {
@@ -169,10 +175,26 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
         }
-        binding.ivProfileCover.loadCircleImageCache(user.cover)
-        toolbarBinding.tvToolbarTitle.text = user.castcleId
+        binding.ivProfileCover.loadImageWithCache(user.cover)
+        binding.tbProfile.tvToolbarTitle.text = user.castcleId
     }
 
-    override fun bindViewModel() {
+    private fun onBindViewProfile(user: User) {
+        with(binding.profileYou) {
+            tvFollowingCount.text = user.followersCount.toCount()
+            tvFollowersCount.text = user.followersCount.toCount()
+            tvProfileName.text = user.displayName
+            tvProfileCastcleId.text = user.castcleId
+            with(user.overview) {
+                tvProfileOverView.visibleOrInvisible(!isEmpty())
+                tvProfileOverView.text = this
+            }
+            ivAvatarProfile.loadCircleImage(user.avatar)
+        }
+        binding.ivProfileCover.loadImageWithCache(user.cover)
+        binding.tbProfile.tvToolbarTitle.text = user.castcleId
     }
 }
+
+private const val PROFILE_TYPE_ME = "me"
+private const val PROFILE_TYPE_YOU = "you"

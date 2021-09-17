@@ -4,11 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.previewlinkurl.*
 import com.castcle.extensions.loadGranularRoundedCornersImage
 import com.castcle.extensions.visible
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.FeedItemClick
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -38,6 +40,27 @@ class FeedContentShortMockViewHolder(
     val binding: LayoutFeedTemplateShortBinding,
     private val click: (Click) -> Unit
 ) : CommonMockAdapter.ViewHolder<ContentUiModel>(binding.root) {
+
+    init {
+        binding.ubUser.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+    }
+
+    private fun handleItemClick(it: TemplateEventClick?) {
+        when (it) {
+            is TemplateEventClick.AvatarClick -> {
+                click.invoke(
+                    FeedItemClick.FeedAvatarClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            else -> {
+            }
+        }
+    }
 
     override fun bindUiModel(uiModel: ContentUiModel) {
         super.bindUiModel(uiModel)

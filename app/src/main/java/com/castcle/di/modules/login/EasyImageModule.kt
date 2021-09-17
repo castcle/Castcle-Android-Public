@@ -11,6 +11,6 @@ class EasyImageModule {
     @Provides
     fun easyImage(context: Context): EasyImage = EasyImage
         .Builder(context)
-        .allowMultiple(true)
+        .allowMultiple(false)
         .build()
 }

@@ -238,6 +238,11 @@
             android:defaultValue=""
             app:argType="string" />
 
+        <argument
+            android:name="me"
+            android:defaultValue=""
+            app:argType="string" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>

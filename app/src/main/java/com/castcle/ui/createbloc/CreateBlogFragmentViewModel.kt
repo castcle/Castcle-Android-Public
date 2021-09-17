@@ -1,9 +1,9 @@
 package com.castcle.ui.createbloc
 
 import androidx.lifecycle.LiveData
+import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
-import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.*
 
@@ -41,9 +41,15 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract val enableSubmitButton: Observable<Boolean>
 
+    abstract val mediaItemImage: LiveData<MutableList<MediaItem>>
+
+    abstract val messageLength: Observable<Pair<Int, Int>>
+
     abstract fun createContent(): Single<CreateContentUiModel>
 
     abstract fun fetchCastUserProfile(): Completable
+
+    abstract fun fetchImageGallery(): Completable
 
     interface Input {
         fun validateMessage(message: String): Completable
@@ -51,5 +57,11 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
         fun validateImageContent(imageList: List<String>?)
 
         fun validateImageCover(imageCover: String)
+
+        fun updateSelectedImage(id: String)
+
+        fun setMediaItem(mediaItem: List<MediaItem>)
+
+        fun addMediaItem(mediaItem: MediaItem)
     }
 }

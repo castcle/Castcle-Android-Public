@@ -3,11 +3,11 @@ package com.castcle.data.repository
 import androidx.paging.*
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.model.dao.UserDao
 import com.castcle.data.storage.AppPreferences
-import com.castcle.networking.api.user.UserApi
-import com.castcle.networking.api.user.UserProfilePagingDataSource
+import com.castcle.networking.api.user.*
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
@@ -42,11 +42,16 @@ import javax.inject.Inject
 interface UserProfileRepository {
     val currentUser: Flowable<User>
 
+    fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User>
+
     val cachedUser: Flowable<Optional<User>>
 
     fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
 
     fun getUserPofileContent(): Flow<PagingData<ContentUiModel>>
+
+    fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader):
+        Flow<PagingData<ContentUiModel>>
 
     fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
 }
@@ -61,6 +66,20 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override val currentUser: Flowable<User>
         get() = getUserProfile()
+
+    override fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User> {
+        val idRequest = if (viewProfileRequest.castcleId.isBlank()) {
+            viewProfileRequest.castcleId
+        } else {
+            viewProfileRequest.uuid
+        }
+        return userApi.getUserViewProfileId(idRequest)
+            .map(userProfileMapper)
+            .map { it.toUserProfile() }
+            .doOnSubscribe { _isLoadingUser = true }
+            .doFinally { _isLoadingUser = false }
+            .toFlowable()
+    }
 
     override val cachedUser: Flowable<Optional<User>>
         get() = getCachedUserProfile()
@@ -92,6 +111,17 @@ class UserProfileRepositoryImpl @Inject constructor(
     ), pagingSourceFactory = {
         UserProfilePagingDataSource(userApi)
     }).flow
+
+    override fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader)
+        : Flow<PagingData<ContentUiModel>> = Pager(config =
+    PagingConfig(
+        pageSize = DEFAULT_PAGE_SIZE,
+        prefetchDistance = DEFAULT_PREFETCH
+    ), pagingSourceFactory =
+    {
+        UserViewProfilePagingDataSource(userApi, feedRequestHeader)
+    }).flow
+
 
     private val _remoteUser = BehaviorSubject.create<User>()
 

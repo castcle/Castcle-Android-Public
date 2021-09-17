@@ -9,6 +9,7 @@ import androidx.annotation.Px
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.*
@@ -48,6 +49,17 @@ fun ImageView.loadRoundedCornersImage(
 ) {
     Glide.with(context)
         .load(url)
+        .error(R.drawable.ic_img_placeholder)
+        .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
+        .into(this)
+}
+
+fun ImageView.loadRoundedCornersImageUri(
+    url: String,
+    @Px roundRadius: Int = context.resources.getDimensionPixelSize(R.dimen.default_round_radius)
+) {
+    Glide.with(context)
+        .load(url.toUri())
         .error(R.drawable.ic_img_placeholder)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
         .into(this)
@@ -193,16 +205,14 @@ fun ImageView.loadImageResource(@DrawableRes resId: Int) {
         .into(this)
 }
 
-fun ImageView.loadCircleImageCache(url: String) {
+fun ImageView.loadImageWithCache(url: String) {
     Glide.with(context)
         .load(url)
         .diskCacheStrategy(DiskCacheStrategy.DATA)
-        .skipMemoryCache(true)
         .error(R.drawable.ic_img_placeholder)
-        .circleCrop()
+        .centerCrop()
         .into(this)
 }
-
 
 fun Bitmap.addVerticalMargin(@Px margin: Int): Bitmap {
     return Bitmap.createBitmap(width, height + 2 * margin, Bitmap.Config.ARGB_8888).applyCanvas {

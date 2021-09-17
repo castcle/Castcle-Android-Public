@@ -128,4 +128,4 @@ private const val SING_IMAGE = 1
 private const val TWO_IMAGE = 2
 private const val THREE_IMAGE = 3
 private const val FOUR_IMAGE = 4
-private const val CORNER = 20f
+const val CORNER = 20f

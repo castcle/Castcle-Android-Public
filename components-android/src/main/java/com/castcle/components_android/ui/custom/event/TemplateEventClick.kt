@@ -1,5 +1,6 @@
 package com.castcle.components_android.ui.custom.event
 
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.ParticipantUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,7 +28,7 @@ import com.castcle.common_model.model.feed.ParticipantUiModel
 //  Created by sklim on 27/8/2021 AD at 09:59.
 
 sealed class TemplateEventClick(
-    val participantUiModel: List<ParticipantUiModel>
+    val participantUiModel: List<ParticipantUiModel>? = emptyList()
 ) {
 
     class LikeClick(
@@ -41,4 +42,8 @@ sealed class TemplateEventClick(
     class RecasteClick(
         participantUiModel: List<ParticipantUiModel>
     ) : TemplateEventClick(participantUiModel)
+
+    class AvatarClick(
+        val contentUiModel: ContentUiModel
+    ) : TemplateEventClick()
 }

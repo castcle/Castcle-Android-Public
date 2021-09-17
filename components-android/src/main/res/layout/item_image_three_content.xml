@@ -30,6 +30,7 @@
         android:layout_height="@dimen/_150sdp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="@id/ivImageTwo"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/ivImageOne"
         app:layout_constraintTop_toBottomOf="@id/ivImageOne" />
 

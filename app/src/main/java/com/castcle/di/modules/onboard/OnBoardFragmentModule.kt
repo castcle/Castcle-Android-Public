@@ -13,6 +13,10 @@ import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.feed.FeedFragment
 import com.castcle.ui.login.LoginFragment
 import com.castcle.ui.profile.ProfileFragment
+import com.castcle.ui.profile.childview.all.ContentAllFragment
+import com.castcle.ui.profile.childview.blog.ContentPostFragment
+import com.castcle.ui.profile.childview.photo.ContentBlogFragment
+import com.castcle.ui.profile.childview.post.ContentPhotoFragment
 import com.castcle.ui.setting.SettingFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
@@ -108,6 +112,22 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [ProfileFragmentViewModelModule::class])
     fun profileFragment(): ProfileFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileFragmentViewModelModule::class])
+    fun contentAllFragment(): ContentAllFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileFragmentViewModelModule::class])
+    fun contentPostFragment(): ContentPostFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileFragmentViewModelModule::class])
+    fun contentBlogFragment(): ContentBlogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileFragmentViewModelModule::class])
+    fun contentPhotoFragment(): ContentPhotoFragment
 
     @FragmentScope
     @ContributesAndroidInjector(modules = [CreateBlogFragmentViewModelModule::class])

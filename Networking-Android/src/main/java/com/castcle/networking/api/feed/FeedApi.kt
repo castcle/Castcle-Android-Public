@@ -3,6 +3,7 @@ package com.castcle.networking.api.feed
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
+import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -50,4 +51,10 @@ interface FeedApi {
         @Query(PAGE_NUMBER) pageNuber: String,
         @Query(PAGE_SIZE) pageSize: String,
     ): Flowable<Response<List<FeedResponse>>>
+
+    @POST("content/{contentId}/likeStatus")
+    fun likeFeedContent(
+        @Path("contentId") featureSlug: String,
+        @Path("likeStatus") circleSlug: String,
+    ): Single<Response<Any>>
 }

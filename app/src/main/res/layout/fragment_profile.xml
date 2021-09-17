@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black_night">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayoutProfile"
@@ -12,12 +14,14 @@
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_450sdp"
+            android:layout_height="@dimen/_480sdp"
+            android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="?actionBarSize"
                 app:layout_collapseMode="parallax">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -28,72 +32,65 @@
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
                     app:srcCompat="@drawable/ic_img_placeholder" />
-            </FrameLayout>
 
-            <FrameLayout
-                android:id="@+id/fl_background"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_cover_camera"
+                    tools:ignore="RtlHardcoded" />
+
+            </FrameLayout>
 
             <include
                 android:id="@+id/profileMe"
                 layout="@layout/layout_profile_me" />
 
+            <include
+                android:id="@+id/profileYou"
+                layout="@layout/layout_profile_you"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/tbProfile"
+                layout="@layout/toolbar_castcle_profile"
+                android:elevation="@dimen/_4sdp" />
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+        <com.google.android.material.tabs.TabLayout
+            style="@style/ContentTabStyle"
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="bottom"
+            app:layout_collapseMode="pin"
+            app:tabGravity="fill"
+            app:tabIndicatorFullWidth="false"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@color/transparent"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:background="@color/black_drak" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_night"
-        android:scrollbars="none"
+        android:fillViewport="true"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
-                android:background="@color/black_night"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tabIndicator="@color/blue"
-                app:tabIndicatorFullWidth="false"
-                app:tabMode="scrollable"
-                app:tabPaddingBottom="@dimen/_6sdp"
-                app:tabRippleColor="@color/transparent"
-                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabTextColor="@color/white">
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_tab_all"
-                    android:textAlignment="center" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_tab_post"
-                    android:textAlignment="center" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_tab_blog"
-                    android:textAlignment="center" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_tab_photo"
-                    android:textAlignment="center" />
-            </com.google.android.material.tabs.TabLayout>
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vpPageContent"
@@ -102,13 +99,12 @@
                 android:layout_marginTop="@dimen/_6sdp"
                 android:layout_marginBottom="@dimen/_6sdp"
                 android:layout_weight="1"
-                android:background="@color/black_night"
+                android:background="@color/black_drak"
                 android:elevation="@dimen/_5sdp"
                 android:translationZ="@dimen/_4sdp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tabs" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/AppTextKanit.Medium"
@@ -117,11 +113,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/profile_error_message"
                 android:textColor="@color/white"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tabs" />
+                app:layout_constraintTop_toBottomOf="@id/vpPageContent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

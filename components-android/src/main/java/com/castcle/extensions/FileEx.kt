@@ -3,6 +3,7 @@ package com.castcle.extensions
 import android.graphics.Bitmap
 import android.util.Base64
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

@@ -14,41 +14,86 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        style="@style/TextInput.Text"
-        android:id="@+id/etInputMessage"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"
-        android:layout_marginStart="@dimen/_12sdp"
-        android:layout_marginEnd="@dimen/_12sdp"
-        android:gravity="top"
-        android:hint="@string/create_blog_status"
-        android:lines="6"
-        android:maxLines="280"
-        android:scrollbars="vertical"
-        android:textAlignment="gravity"
-        android:textColorHint="@color/gray_light"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvImagePickger"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/utUserBar" />
+        app:layout_constraintTop_toBottomOf="@id/utUserBar">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanit.Small"
-        android:id="@+id/tvCountChar"
-        android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.castcle.components_android.ui.custom.mention.MentionEditText
+                style="@style/TextInput.Text"
+                android:id="@+id/etInputMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:gravity="top"
+                android:hint="@string/create_blog_status"
+                android:maxLines="280"
+                android:scrollbars="vertical"
+                android:textAlignment="gravity"
+                android:textColorHint="@color/gray_light"
+                android:inputType="textMultiLine"
+                app:layout_constraintBottom_toTopOf="@id/tvCountChar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:linkType="mention|hashtag"
+                app:mentionTextView_hashtagColor="@color/blue"
+                app:mentionTextView_mentionColor="@color/blue" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/_50sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/tvCountChar" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/tvCountChar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@id/etInputMessage"
+                app:layout_constraintTop_toBottomOf="@id/etInputMessage"
+                tools:text="0/280" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvImagePickger"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@id/etInputMessage"
-        app:layout_constraintTop_toBottomOf="@id/etInputMessage"
-        tools:text="0/280" />
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_8sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/clToolBarCast"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_image_gallery" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clToolBarCast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -59,7 +104,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_add_image" />
+            app:srcCompat="@drawable/ic_add_image_selector" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/AppTextKanit.Regular"
@@ -77,7 +122,7 @@
             android:textColor="@color/light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_add_image" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

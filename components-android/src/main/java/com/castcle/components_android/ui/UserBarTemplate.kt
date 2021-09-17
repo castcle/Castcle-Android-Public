@@ -5,9 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutUserBarTemplateBinding
+import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.timeago.TimeAgo
 import com.castcle.extensions.*
+import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -44,7 +47,24 @@ class UserBarTemplate(
         )
     }
 
+    private lateinit var itemUiModel: ContentUiModel
+
+    private val _itemClick = BehaviorSubject.create<TemplateEventClick>()
+    val itemClick: BehaviorSubject<TemplateEventClick>
+        get() = _itemClick
+
+    init {
+        binding.ivAvatar.subscribeOnClick {
+            _itemClick.onNext(
+                TemplateEventClick.AvatarClick(
+                    contentUiModel = itemUiModel
+                )
+            )
+        }
+    }
+
     fun bindUiModel(itemUiModel: ContentUiModel) {
+        this.itemUiModel = itemUiModel
         with(binding) {
             with(itemUiModel.payLoadUiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
