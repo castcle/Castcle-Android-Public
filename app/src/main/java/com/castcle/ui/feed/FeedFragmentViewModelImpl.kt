@@ -12,10 +12,12 @@ import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import com.google.gson.Gson
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +53,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val appContext: Context,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
-    private val feedNonAuthRepository: FeedRepository
+    private val feedNonAuthRepository: FeedRepository,
+    private val likeContentCompletableUseCase: LikeContentCompletableUseCase
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -101,15 +104,38 @@ class FeedFragmentViewModelImpl @Inject constructor(
         val gson = Gson()
     }
 
-    override fun updateLikeContent(uuid: String) {
+    private var _onUpdateContentLike = BehaviorSubject.create<ContentUiModel>()
+    override val onUpdateContentLike: Observable<ContentUiModel>
+        get() = _onUpdateContentLike
+
+    override fun updateLikeContent(contentUiModel: ContentUiModel) {
         val feedContent = _feedContentMock.value
         feedContent?.find {
-            it.payLoadUiModel.author.displayName == uuid
+            it.payLoadUiModel.author.displayName == contentUiModel.payLoadUiModel.author.displayName
+                && it.contentType == contentUiModel.contentType
         }?.apply {
             this.payLoadUiModel.likedUiModel.liked = !this.payLoadUiModel.likedUiModel.liked
         }?.let {
             setFeedContent(feedContent)
+            postLikeContent(contentUiModel)
+                .subscribe()
+                .addToDisposables()
+            _onUpdateContentLike.onNext(contentUiModel)
         }
+    }
+
+    private fun postLikeContent(contentUiModel: ContentUiModel): Completable {
+        return likeContentCompletableUseCase
+            .execute(
+                LikeContentCompletableUseCase.Input(
+                    contentUiModel.id,
+                    contentUiModel.payLoadUiModel.likedUiModel.liked
+                )
+            ).onErrorResumeNext {
+                Completable.complete()
+            }.doOnError {
+                _error.onNext(it)
+            }
     }
 
     override fun getFeedResponseMock() {

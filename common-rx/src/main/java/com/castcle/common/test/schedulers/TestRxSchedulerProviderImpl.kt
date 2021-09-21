@@ -9,4 +9,6 @@ class TestRxSchedulerProviderImpl : RxSchedulerProvider {
     override fun computation(): RxScheduler = RxScheduler.TestComputationThread
 
     override fun main(): RxScheduler = RxScheduler.TestMainThread
+
+    override fun background(): RxScheduler = RxScheduler.TestBackgroundThread
 }

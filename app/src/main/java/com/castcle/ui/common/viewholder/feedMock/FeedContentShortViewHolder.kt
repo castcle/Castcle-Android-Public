@@ -6,8 +6,7 @@ import com.castcle.android.components_android.databinding.LayoutFeedTemplateShor
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.previewlinkurl.*
-import com.castcle.extensions.loadGranularRoundedCornersImage
-import com.castcle.extensions.visible
+import com.castcle.extensions.*
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
@@ -99,6 +98,8 @@ class FeedContentShortMockViewHolder(
                             }
                         }).fetchUrlPreview()
                     }
+                } else {
+                    groupPreview.gone()
                 }
             }
         }

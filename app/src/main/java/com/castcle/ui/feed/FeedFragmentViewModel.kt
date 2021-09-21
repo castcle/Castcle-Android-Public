@@ -1,7 +1,6 @@
 package com.castcle.ui.feed
 
 import androidx.lifecycle.LiveData
-import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
@@ -42,6 +41,8 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val userProfile: LiveData<User>
 
+    abstract val onUpdateContentLike: Observable<ContentUiModel>
+
     abstract fun getMockFeed()
 
     abstract fun fetchUserProfile(): Completable
@@ -49,6 +50,6 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
     abstract val input: Input
 
     interface Input {
-        fun updateLikeContent(uuid: String)
+        fun updateLikeContent(contentUiModel: ContentUiModel)
     }
 }

@@ -13,6 +13,7 @@ import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.dialog.DatePickerDialogFragment
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
@@ -67,6 +68,11 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
     override fun viewModel(): AboutYouFragmentViewModel =
         ViewModelProvider(this, viewModelFactory)
             .get(AboutYouFragmentViewModel::class.java)
+
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
 
     override fun initViewModel() = Unit
 
@@ -130,6 +136,7 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     private fun onNavigateToFeedFragment() {
         onBoardNavigator.nvaigateToFeedFragment()
+        activityViewModel.onRefreshProfile()
     }
 
     override fun bindViewModel() = Unit

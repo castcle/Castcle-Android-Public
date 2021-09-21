@@ -1,6 +1,7 @@
 package com.castcle.extensions
 
 import android.graphics.Bitmap
+import android.os.Build
 import android.util.Base64
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -34,4 +35,14 @@ fun Bitmap.toBase62String(): String {
         compress(Bitmap.CompressFormat.JPEG, 10, this)
         return Base64.encodeToString(toByteArray(), Base64.DEFAULT)
     }
+}
+
+fun File.toBase64String(): String {
+    return Base64.encodeToString(readBytes(), Base64.NO_WRAP)
+}
+
+inline fun <T> sdk29AndUp(onSdk29: () -> T): T? {
+    return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        onSdk29()
+    } else null
 }

@@ -4,9 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.castcle.android.components_android.databinding.*
+import com.castcle.android.components_android.databinding.LayoutImageContentTemplateBinding
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.extensions.loadGranularRoundedCornersContentImage
+import com.castcle.components_android.ui.adapter.ImageTemplateFloxBoxAdapter
+import com.google.android.flexbox.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -37,96 +38,40 @@ class ImageContentTemplate(
     attrs: AttributeSet
 ) : ConstraintLayout(context, attrs) {
 
-    private val binding: LayoutImageContentTemplateBinding by lazy {
-        LayoutImageContentTemplateBinding.inflate(LayoutInflater.from(context), this, true)
+    private lateinit var adapterImageTemplate: ImageTemplateFloxBoxAdapter
+    private val fbLayoutManager: FlexboxLayoutManager = FlexboxLayoutManager(
+        context
+    )
+
+    private var binding: LayoutImageContentTemplateBinding =
+        LayoutImageContentTemplateBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
+
+    init {
+        fbLayoutManager.flexWrap = FlexWrap.WRAP
+        fbLayoutManager.flexDirection = FlexDirection.ROW
+        fbLayoutManager.justifyContent = JustifyContent.SPACE_AROUND
+        fbLayoutManager.justifyContent = JustifyContent.SPACE_BETWEEN
+        fbLayoutManager.alignItems = AlignItems.FLEX_START
     }
 
     fun bindImageContent(itemUiModel: ContentUiModel) {
+        with(binding) {
+            rcImageContent.layoutManager = fbLayoutManager
+            rcImageContent.adapter = ImageTemplateFloxBoxAdapter().also {
+                adapterImageTemplate = it
+            }
+        }
         var listImage = itemUiModel.payLoadUiModel.photo.imageContent
-        if (listImage.size > FOUR_IMAGE) {
-            listImage = listImage.take(FOUR_IMAGE)
+        if (listImage.size > LIMNIT_MAX_IMAGE) {
+            listImage = listImage.take(LIMNIT_MAX_IMAGE)
         }
-        when (listImage.size) {
-            SING_IMAGE -> {
-                val bindingSingle =
-                    ItemImageSingleContentBinding.inflate(
-                        LayoutInflater.from(context),
-                        this,
-                        true
-                    )
-                bindingSingle.ivImageView.loadGranularRoundedCornersContentImage(
-                    listImage.first(), CORNER, CORNER, CORNER, CORNER
-                )
-            }
-            TWO_IMAGE -> {
-                val bindingTwo =
-                    ItemImageTwoContentBinding.inflate(
-                        LayoutInflater.from(context),
-                        this,
-                        true
-                    )
-                bindingTwo.ivImageOne.loadGranularRoundedCornersContentImage(
-                    listImage.first(),
-                    topLeft = CORNER,
-                    bottomLeft = CORNER
-                )
-                bindingTwo.ivImageTwo.loadGranularRoundedCornersContentImage(
-                    listImage[1],
-                    topRight = CORNER,
-                    bottomRight = CORNER
-                )
-            }
-            THREE_IMAGE -> {
-                val bindingThree =
-                    ItemImageThreeContentBinding.inflate(
-                        LayoutInflater.from(context),
-                        this,
-                        true
-                    )
-                bindingThree.ivImageOne.loadGranularRoundedCornersContentImage(
-                    listImage.first(),
-                    topLeft = CORNER,
-                )
-                bindingThree.ivImageTwo.loadGranularRoundedCornersContentImage(
-                    listImage[1],
-                    topRight = CORNER,
-                )
-                bindingThree.ivImageThree.loadGranularRoundedCornersContentImage(
-                    listImage[2],
-                    bottomLeft = CORNER,
-                    bottomRight = CORNER
-                )
-            }
-            FOUR_IMAGE -> {
-                val bindingFour =
-                    ItemImageFourContentBinding.inflate(
-                        LayoutInflater.from(context),
-                        this,
-                        true
-                    )
-                bindingFour.ivImageOne.loadGranularRoundedCornersContentImage(
-                    listImage.first(),
-                    topLeft = CORNER
-                )
-                bindingFour.ivImageTwo.loadGranularRoundedCornersContentImage(
-                    listImage[1],
-                    topRight = CORNER,
-                )
-                bindingFour.ivImageThree.loadGranularRoundedCornersContentImage(
-                    listImage[2],
-                    bottomLeft = CORNER
-                )
-                bindingFour.ivImageFour.loadGranularRoundedCornersContentImage(
-                    listImage[3],
-                    bottomRight = CORNER
-                )
-            }
-        }
+        adapterImageTemplate.items = listImage
     }
 }
 
-private const val SING_IMAGE = 1
-private const val TWO_IMAGE = 2
-private const val THREE_IMAGE = 3
-private const val FOUR_IMAGE = 4
+private const val LIMNIT_MAX_IMAGE = 4
 const val CORNER = 20f

@@ -1,5 +1,6 @@
 package com.castcle.common_model.model.userprofile
 
+import com.castcle.common_model.model.createblog.MediaItem
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -61,10 +62,10 @@ data class Photo(
     val cover: Content? = null,
 )
 
-fun List<String>.toRequestPhoto(): List<Content> {
+fun List<MediaItem>.toRequestPhoto(): List<Content> {
     return map {
         Content(
-            url = it
+            url = it.uri.toString()
         )
     }
 }

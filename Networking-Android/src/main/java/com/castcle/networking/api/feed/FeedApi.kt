@@ -52,9 +52,9 @@ interface FeedApi {
         @Query(PAGE_SIZE) pageSize: String,
     ): Flowable<Response<List<FeedResponse>>>
 
-    @POST("content/{contentId}/likeStatus")
+    @POST("content/{contentId}/{likeStatus}")
     fun likeFeedContent(
-        @Path("contentId") featureSlug: String,
-        @Path("likeStatus") circleSlug: String,
-    ): Single<Response<Any>>
+        @Path("contentId") contentId: String,
+        @Path("likeStatus") likeStatus: String,
+    ): Flowable<Response<Any>>
 }

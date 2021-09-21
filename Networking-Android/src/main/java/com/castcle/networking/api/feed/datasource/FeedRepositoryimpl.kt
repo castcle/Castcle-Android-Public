@@ -2,8 +2,10 @@ package com.castcle.networking.api.feed.datasource
 
 import androidx.paging.*
 import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.networking.api.feed.FeedApi
 import com.castcle.common_model.model.feed.api.response.FeedContentResponse
+import com.castcle.networking.api.feed.FeedApi
+import com.castcle.networking.service.operators.ApiOperators
+import io.reactivex.Completable
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -42,7 +44,20 @@ class FeedRepositoryImpl @Inject constructor(
         pagingSourceFactory = { FeedPagingDataSource(feedApi, feedRequestHeader) }
     ).flow
 
+    override fun likeContent(contentId: String, likeStatus: Boolean): Completable {
+        val status = if (likeStatus) {
+            LIKE_STATUS_LIKE
+        } else {
+            LIKE_STATUS_UNLIKE
+        }
+        return feedApi.likeFeedContent(contentId, status)
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
 }
 
 private const val DEFAULT_PAGE_SIZE = 25
 private const val DEFAULT_PREFETCH = 2
+private const val LIKE_STATUS_LIKE = "liked"
+private const val LIKE_STATUS_UNLIKE = "unliked"

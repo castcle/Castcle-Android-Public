@@ -29,6 +29,7 @@ import java.util.*
 sealed class MediaItem(
     open var id: String,
     open var uri: String = "",
+    open var displayName: String = "",
     @DrawableRes open val imgRes: Int,
     open var isSelected: Boolean = false
 ) {
@@ -36,24 +37,27 @@ sealed class MediaItem(
         override val imgRes: Int,
         override var id: String,
         override var uri: String,
+        override var displayName: String,
         var size: Long,
         var date: Date? = null,
         override var isSelected: Boolean = false
-    ) : MediaItem(id, uri, imgRes, isSelected)
+    ) : MediaItem(id, uri, displayName, imgRes, isSelected)
 
     data class OpenCamera(
         override var id: String,
         override var uri: String,
         override val imgRes: Int,
+        override var displayName: String,
         override var isSelected: Boolean = false
-    ) : MediaItem(id, uri, imgRes, isSelected)
+    ) : MediaItem(id, uri, displayName, imgRes, isSelected)
 
     data class OpenGallery(
         override var id: String,
         override var uri: String,
         override val imgRes: Int,
+        override var displayName: String,
         override var isSelected: Boolean = false
-    ) : MediaItem(id, uri, imgRes, isSelected)
+    ) : MediaItem(id, uri, displayName, imgRes, isSelected)
 }
 
 fun ArrayList<String>.toImageMediaItem(): List<MediaItem> {
@@ -62,8 +66,13 @@ fun ArrayList<String>.toImageMediaItem(): List<MediaItem> {
             uri = it,
             size = 0,
             id = UUID.randomUUID().toString(),
-            imgRes = 0
+            imgRes = 0,
+            displayName = ""
         )
     }
+}
+
+fun List<MediaItem>.toListUri(): List<String> {
+    return map { it.uri }
 }
 //MediaItem

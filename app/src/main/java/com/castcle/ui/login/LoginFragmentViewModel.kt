@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.Completable
+import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -32,6 +33,8 @@ import io.reactivex.Completable
 abstract class LoginFragmentViewModel : BaseViewModel() {
 
     abstract val enableLogin: LiveData<Boolean>
+
+    abstract val showLoading: Observable<Boolean>
 
     abstract val input: Input
 

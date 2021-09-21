@@ -6,10 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.login.LoginRequest
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.extensions.isEmail
+import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
 import com.castcle.usecase.login.AuthenticationRefreshTokenCompletableUseCase
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -55,6 +57,8 @@ class LoginFragmentViewModelImpl @Inject constructor(
 
     private val _enableLogin = MutableLiveData<Boolean>()
 
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
     private val _showLoading = PublishSubject.create<Boolean>()
 
     private val _error = PublishSubject.create<Throwable>()
@@ -78,7 +82,7 @@ class LoginFragmentViewModelImpl @Inject constructor(
             .doOnComplete { Completable.complete() }
             .doOnError {
                 _showLoading.onNext(false)
-            }
+            }.doFinally { _showLoading.onNext(false) }
     }
 
     override fun refreshToken(): Completable {

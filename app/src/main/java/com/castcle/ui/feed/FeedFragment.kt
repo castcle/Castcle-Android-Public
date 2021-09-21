@@ -62,6 +62,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(binding) {
             wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
             rcFeedFillter.visibleOrGone(!viewModel.isGuestMode)
+            ivFilter.visibleOrGone(!viewModel.isGuestMode)
             rvFeedContent.adapter = CommonMockAdapter().also {
                 adapterCommon = it
             }
@@ -125,8 +126,9 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
-        adapterCommon.onUpdateItem(contentUiModel)
-        viewModel.input.updateLikeContent(contentUiModel.payLoadUiModel.author.displayName)
+        guestEnable(enable = {
+            viewModel.input.updateLikeContent(contentUiModel)
+        }, disable = {})
     }
 
     private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
@@ -147,6 +149,10 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         viewModel.feedContentMock.observe(this, {
             adapterCommon.uiModels = it
         })
+
+        viewModel.onUpdateContentLike.subscribe {
+            adapterCommon.onUpdateItem(it)
+        }.addToDisposables()
     }
 
     private fun handleContentClick(click: Click) {
@@ -175,6 +181,14 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }.addToDisposables()
     }
 
+    private fun guestEnable(disable: () -> Unit, enable: () -> Unit) {
+        if (viewModel.isGuestMode) {
+            disable.invoke()
+        } else {
+            enable.invoke()
+        }
+    }
+
     private fun handleNavigateOnClick(click: TemplateClicks) {
         when (click) {
             is TemplateClicks.AvatarClick -> {
@@ -190,7 +204,5 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun onRefreshProfile() {
-        setupView()
-        bindViewEvents()
     }
 }

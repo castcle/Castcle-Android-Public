@@ -1,8 +1,8 @@
 package com.castcle.usecase.createblog
 
 import android.annotation.SuppressLint
-import android.content.ContentUris
-import android.content.Context
+import android.content.*
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -55,6 +55,10 @@ class GetImagePathMapUseCase @Inject constructor(
 ) {
     var outputFile: File? = null
     var outputStream: OutputStream? = null
+    private val collection =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.Images.Media.getContentUri(
+            MediaStore.VOLUME_EXTERNAL
+        ) else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
     override fun create(input: Unit): Single<List<MediaItem>> {
         return Single.just(getPathStream())
@@ -65,42 +69,45 @@ class GetImagePathMapUseCase @Inject constructor(
         if (imagePath.isEmpty()) {
             imagePath = queryPathImage(uriExternal, SELECT_PATH)
         }
-        imagePath.add(0, MediaItem.OpenCamera(id = "", uri = "", imgRes = R.drawable.ic_camera))
+        imagePath.add(
+            0, MediaItem.OpenCamera(
+                id = "",
+                uri = "",
+                imgRes = R.drawable.ic_camera,
+                displayName = ""
+            )
+        )
         return imagePath.toList()
     }
 
     private fun queryPathImage(uriInternal: Uri, path: Array<String>): MutableList<MediaItem> {
         val allImagrPath = mutableListOf<MediaItem>()
+        val mCursor: Cursor?
+
         if (Build.VERSION.SDK_INT >= BUILD_VERSION_CODE_Q) {
 
-            val projection = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.SIZE,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED
+            mCursor = appContext.contentResolver.query(
+                uriInternal,
+                null,
+                MediaStore.Images.Media.MIME_TYPE + "=? or "
+                    + MediaStore.Images.Media.MIME_TYPE + "=? or "
+                    + MediaStore.Images.Media.MIME_TYPE + "=?",
+                arrayOf("image/jpeg", "image/png", "image/x-ms-bmp"),
+                MediaStore.Images.Media.DATE_MODIFIED + " desc"
             )
 
-            val selection: String? =
-                "${MediaStore.Images.Media.SIZE} >= ?"     //Selection criteria
-            val selectionArgs = arrayOf("20000")  //Selection criteria
-            val sortOrder: String? = "${MediaStore.Images.Media.DATE_MODIFIED} DESC"
-
-            appContext.applicationContext.contentResolver.query(
-                uriInternal,
-                projection,
-                selection,
-                selectionArgs,
-                sortOrder
-            )?.use { cursor ->
+            mCursor?.use { cursor ->
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
                 val dateModifiedColumn =
                     cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
                 val sizeColumn =
                     cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
+                val displayName =
+                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumn)
-
+                    val displayName = cursor.getString(displayName)
                     val dateModified =
                         Date(TimeUnit.SECONDS.toMillis(cursor.getLong(dateModifiedColumn)))
                     val size = cursor.getLong(sizeColumn)
@@ -112,6 +119,7 @@ class GetImagePathMapUseCase @Inject constructor(
                         0,
                         id.toString(),
                         contentUri.toString(),
+                        displayName,
                         size,
                         dateModified
                     )

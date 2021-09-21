@@ -62,6 +62,7 @@ dependencies {
             "org.jsoup:jsoup:$jsoup_version",
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:$corotines_version",
             "com.mikhaellopez:circularimageview:$circle_image_version",
+            "com.google.android.flexbox:flexbox:$flexbox_lib_version",
             "com.github.rubensousa:gravitysnaphelper:$gravitysnaphelper_version"
     )
 

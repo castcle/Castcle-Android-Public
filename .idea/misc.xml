@@ -126,6 +126,7 @@
         <entry key="components-android/src/main/res/layout/item_image_content.xml" value="0.1837431693989071" />
         <entry key="components-android/src/main/res/layout/item_image_four_content.xml" value="0.13437626949857157" />
         <entry key="components-android/src/main/res/layout/item_image_single_content.xml" value="0.18135245901639344" />
+        <entry key="components-android/src/main/res/layout/item_image_template_preview.xml" value="0.13490437158469945" />
         <entry key="components-android/src/main/res/layout/item_image_three_content.xml" value="0.121484375" />
         <entry key="components-android/src/main/res/layout/item_image_two_content.xml" value="0.121484375" />
         <entry key="components-android/src/main/res/layout/item_mention_user.xml" value="0.14583333333333334" />

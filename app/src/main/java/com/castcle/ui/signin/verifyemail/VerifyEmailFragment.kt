@@ -11,6 +11,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.ProfileBundle
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
 
@@ -70,6 +71,11 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(VerifyEmailFragmentViewModel::class.java)
 
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
+
     override fun initViewModel() = Unit
 
     override fun setupView() {
@@ -100,6 +106,7 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
 
     private fun naivgateToFeed() {
         onBoardNavigator.nvaigateToFeedFragment()
+        activityViewModel.onRefreshProfile()
     }
 
     private fun navigateToProfileSetting() {

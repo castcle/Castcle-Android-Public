@@ -6,4 +6,6 @@ interface RxSchedulerProvider {
     fun computation(): RxScheduler
 
     fun main(): RxScheduler
+
+    fun background(): RxScheduler
 }

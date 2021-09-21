@@ -10,7 +10,7 @@ import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.data.error.LoginError
 import com.castcle.data.error.userReadableMessage
-import com.castcle.extensions.gone
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -118,5 +118,14 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
             navigatToHomeFeed()
             activityViewModel.onRefreshProfile()
         })
+
+        viewModel.showLoading.subscribe {
+            handleOnLoading(it)
+        }.addToDisposables()
+    }
+
+    private fun handleOnLoading(show: Boolean) {
+        binding.btLogin.visibleOrInvisible(!show)
+        binding.progressBar.visibleOrGone(show)
     }
 }

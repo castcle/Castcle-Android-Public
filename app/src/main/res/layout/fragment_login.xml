@@ -21,8 +21,10 @@
         android:background="@color/black_tranparen_80"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivLogo"
@@ -71,8 +73,8 @@
             android:textColorHint="@color/gray_light"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/light"
-            app:inputType="textPassword"
             app:hintText="@string/login_password"
+            app:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ieEmail" />
@@ -96,13 +98,23 @@
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@drawable/bg_login"
             android:clickable="true"
+            android:focusable="true"
             android:text="@string/login_title"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="@id/etPassword"
             app:layout_constraintStart_toStartOf="@id/etPassword"
-            app:layout_constraintTop_toBottomOf="@id/tvForgetPass"
-            android:focusable="true" />
+            app:layout_constraintTop_toBottomOf="@id/tvForgetPass" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:progressTint="@color/blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvForgetPass" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/AppTextKanit.Regular"

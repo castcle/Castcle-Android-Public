@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.android.R
 import com.castcle.common_model.model.createblog.MediaItem
+import com.castcle.common_model.model.createblog.toListUri
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.usecase.createblog.GetImagePathMapUseCase
+import com.castcle.usecase.feed.ReduceAndScaleImageSingleUseCase
 import com.castcle.usecase.userprofile.*
 import io.reactivex.*
 import io.reactivex.rxkotlin.Observables
@@ -45,6 +47,7 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val createContentSingleUseCase: CreateContentSingleUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val reduceAndScaleImageSingleUseCase: ReduceAndScaleImageSingleUseCase
 ) : CreateBlogFragmentViewModel(), CreateBlogFragmentViewModel.Input {
 
     private var _userProfileUiModel = MutableLiveData<ContentUiModel>()
@@ -74,6 +77,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     override val input: Input
         get() = this
 
+    private var _mediaItemImage = MutableLiveData<MutableList<MediaItem>>()
+    override val mediaItemImage: LiveData<MutableList<MediaItem>>
+        get() = _mediaItemImage
+
     override val enableSubmitButton: Observable<Boolean>
         get() = Observables.combineLatest(
             _message,
@@ -87,17 +94,52 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
                 }
             }
             when {
+                imageContent.isNotEmpty() -> true
                 message.isNotEmpty() && (imageContent.isEmpty() || imageCover.isEmpty()) -> true
                 else -> false
             }
         }
 
     override fun createContent(): Single<CreateContentUiModel> {
+        val imageSelected = takeImageSelected()
+        return if (imageSelected.isNullOrEmpty()) {
+            postCreateContent()
+        } else {
+            reduceAndScaleImageSingleUseCase.execute(
+                imageSelected
+            ).flatMap(::postCreateContent)
+        }
+    }
+
+    private fun postCreateContent(imageList: List<Content>): Single<CreateContentUiModel> {
         return createContentSingleUseCase.execute(
             CreateContentRequest(
                 type = contentType.blockingFirst().type,
                 payload = Payload(
-                    message = _message.blockingFirst()
+                    message = _message.blockingFirst(),
+                    photo = Photo(
+                        contents = imageList
+                    )
+                ),
+                authorId = _castUserProfile.value?.castcleId ?: "",
+                createType = ContentType.FEED.type
+            )
+        ).doOnSubscribe {
+            _showLoading.onNext(true)
+        }.doOnSuccess {
+            _showLoading.onNext(true)
+        }.onErrorReturn { CreateContentUiModel() }
+    }
+
+    private fun postCreateContent(): Single<CreateContentUiModel> {
+        return createContentSingleUseCase.execute(
+            CreateContentRequest(
+                type = contentType.blockingFirst().type,
+                payload = Payload(
+                    message = _message.blockingFirst(),
+                    photo = Photo(
+                        contents = _mediaItemImage.value?.toRequestPhoto() ?: emptyList()
+                    )
                 ),
                 authorId = _castUserProfile.value?.castcleId ?: "",
                 createType = ContentType.FEED.type
@@ -154,10 +196,6 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
             .ignoreElement()
     }
 
-    private var _mediaItemImage = MutableLiveData<MutableList<MediaItem>>()
-    override val mediaItemImage: LiveData<MutableList<MediaItem>>
-        get() = _mediaItemImage
-
     override fun fetchImageGallery(): Completable {
         return if (!_mediaItemImage.value.isNullOrEmpty()) {
             Completable.complete()
@@ -185,7 +223,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
                 0, MediaItem.OpenCamera(
                     id = "",
                     uri = "",
-                    imgRes = R.drawable.ic_camera
+                    imgRes = R.drawable.ic_camera,
+                    displayName = ""
                 )
             )
         }
@@ -205,12 +244,24 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     override fun updateSelectedImage(id: String) {
         val updateImage = _mediaItemImage.value
         updateImage?.find { item ->
-            item.id == id.toString()
+            item.id == id
         }?.apply {
             isSelected = !isSelected
         }?.let {
+            if (it.isSelected) {
+                _imageContent.onNext(listOf(Content(id)))
+            } else {
+                _imageContent.onNext(emptyList())
+            }
             setMediaItem(updateImage.toList())
         }
+    }
+
+    private fun takeImageSelected(): List<String> {
+        val updateImage = _mediaItemImage.value
+        return updateImage?.filter {
+            it.isSelected
+        }?.toListUri() ?: emptyList()
     }
 }
 

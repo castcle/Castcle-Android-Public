@@ -6,4 +6,6 @@ class RxSchedulerProviderImpl : RxSchedulerProvider {
     override fun computation(): RxScheduler = RxScheduler.ComputationThread
 
     override fun main(): RxScheduler = RxScheduler.MainThread
+
+    override fun background(): RxScheduler = RxScheduler.BackgroundThread
 }

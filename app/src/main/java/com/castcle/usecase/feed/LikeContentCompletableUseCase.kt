@@ -1,10 +1,11 @@
-package com.castcle.networking.api.feed.datasource
+package com.castcle.usecase.feed
 
-import androidx.paging.PagingData
-import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
+import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.data.error.Ignored
+import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.usecase.base.CompletableUseCase
 import io.reactivex.Completable
-import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -28,16 +29,26 @@ import kotlinx.coroutines.flow.Flow
 //  or have any questions.
 //
 //
-//  Created by sklim on 24/8/2021 AD at 16:43.
+//  Created by sklim on 23/8/2021 AD at 07:50.
 
-interface FeedRepository {
+class LikeContentCompletableUseCase @Inject constructor(
+    rxSchedulerProvider: RxSchedulerProvider,
+    private val feedRepository: FeedRepository
+) : CompletableUseCase<LikeContentCompletableUseCase.Input>(
+    rxSchedulerProvider.io(),
+    rxSchedulerProvider.main(),
+    ::Ignored
+) {
 
-    suspend fun getFeed(
-        feedRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<FeedContentResponse>>
+    data class Input(
+        val contentId: String,
+        val likeStatus: Boolean
+    )
 
-    fun likeContent(
-        contentId: String,
-        likeStatus: Boolean
-    ): Completable
+    override fun create(input: Input): Completable {
+        return feedRepository.likeContent(
+            input.contentId,
+            input.likeStatus
+        )
+    }
 }

@@ -1,9 +1,12 @@
 package com.castcle.ui.createbloc
 
 import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.net.Uri
+import android.os.Build
 import android.view.*
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
@@ -264,10 +267,9 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
                 .maxSelectable(4)
                 .theme(R.style.Zhihu_Dracula)
                 .build()
-        )
-            .subscribeBy {
-                addImageSelected(it.uri)
-            }.addToDisposables()
+        ).subscribeBy {
+            addImageSelected(it.uri)
+        }.addToDisposables()
     }
 
     private fun addImageSelected(imageUrl: Uri) {
@@ -276,6 +278,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             id = UUID.randomUUID().toString(),
             uri = imageUrl.toString(),
             size = 0,
+            displayName ="",
             isSelected = true
         )
         addImageFormGallery(itemMedia)
@@ -317,8 +320,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun requestStoragePermission(action: () -> Unit) {
         rxPermissions.permissions(
-            Manifest.permission.ACCESS_MEDIA_LOCATION,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            READ_EXTERNAL_STORAGE
         ).onExplainRequestReason { scope, deniedList ->
             scope.showRequestReasonDialog(
                 deniedList,
