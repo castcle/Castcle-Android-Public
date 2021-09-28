@@ -59,13 +59,19 @@ class FeedFooterTemplate(
                 )
             }
             tvCommented.subscribeOnClick {
-                TemplateEventClick.CommentClick(
-                    itemUiModel.payLoadUiModel.commentedUiModel.participantUiModel
+                _itemClick.onNext(
+                    TemplateEventClick.CommentClick(
+                        itemUiModel,
+                        itemUiModel.payLoadUiModel.commentedUiModel.participantUiModel
+                    )
                 )
             }
             tvReCasted.subscribeOnClick {
-                TemplateEventClick.RecasteClick(
-                    itemUiModel.payLoadUiModel.reCastedUiModel.participantUiModel
+                _itemClick.onNext(
+                    TemplateEventClick.RecasteClick(
+                        itemUiModel,
+                        itemUiModel.payLoadUiModel.reCastedUiModel.participantUiModel
+                    )
                 )
             }
         }

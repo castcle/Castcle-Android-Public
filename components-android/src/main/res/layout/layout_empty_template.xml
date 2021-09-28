@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_light">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        style="@style/AppTextKanitExLight.xxSmall"
+        android:id="@+id/ivEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_120sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_feed_empty_state" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Medium"
+        android:id="@+id/tvEmptyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:drawablePadding="@dimen/_4sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/ivEmptyState"
+        app:layout_constraintStart_toStartOf="@id/ivEmptyState"
+        app:layout_constraintTop_toBottomOf="@id/ivEmptyState"
+        tools:text="Trouble Loading News Feed" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.Medium"
+        android:id="@+id/tvEmptySubTitleAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_reload"
+        android:drawablePadding="@dimen/_4sdp"
+        android:textColor="@color/light"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/tvEmptyTitle"
+        app:layout_constraintStart_toStartOf="@id/tvEmptyTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvEmptyTitle"
+        tools:text="Tap to Retry" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.Medium"
+        android:id="@+id/tvEmptySubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:drawablePadding="@dimen/_4sdp"
+        android:textColor="@color/light"
+        app:layout_constraintEnd_toEndOf="@id/tvEmptyTitle"
+        app:layout_constraintStart_toStartOf="@id/tvEmptyTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvEmptyTitle"
+        tools:text="Tap to Retry" />
+</androidx.constraintlayout.widget.ConstraintLayout>

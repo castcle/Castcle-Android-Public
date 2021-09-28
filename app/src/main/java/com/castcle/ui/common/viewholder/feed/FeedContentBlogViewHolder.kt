@@ -2,11 +2,15 @@ package com.castcle.ui.common.viewholder.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.castcle.android.R
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateBlogBinding
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.FeedItemClick
+import com.castcle.ui.common.viewholder.feedMock.FeedContentBlogMockViewHolder
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -37,6 +41,47 @@ class FeedContentBlogViewHolder(
     private val click: (Click) -> Unit
 ) : CommonAdapter.ViewHolder<ContentUiModel>(binding.root) {
 
+    init {
+        binding.ubUser.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+
+        binding.ftFooter.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+    }
+
+    private fun handleItemClick(it: TemplateEventClick?) {
+        when (it) {
+            is TemplateEventClick.AvatarClick -> {
+                click.invoke(
+                    FeedItemClick.FeedAvatarClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.LikeClick -> {
+                click.invoke(
+                    FeedItemClick.FeedLikeClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.RecasteClick -> {
+                click.invoke(
+                    FeedItemClick.FeedRecasteClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            else -> {
+            }
+        }
+    }
+
     override fun bindUiModel(uiModel: ContentUiModel) {
         super.bindUiModel(uiModel)
 
@@ -57,6 +102,9 @@ class FeedContentBlogViewHolder(
                             visible()
                             text = headerFeed
                         }
+                        ivContentBlog.loadImageResource(
+                            R.drawable.bg_cover
+                        )
                     }
                 }
                 ftFooter.bindUiModel(uiModel)

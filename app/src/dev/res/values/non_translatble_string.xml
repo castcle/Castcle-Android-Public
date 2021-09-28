@@ -14,4 +14,5 @@
     <string name="nav_deep_link_resent_verify_email_input" translatable="false">castcle-dev://resentverify-email/{email}</string>
     <string name="nav_deep_link_about_you" translatable="false">castcle-dev://about-you</string>
     <string name="nav_deep_link_profile" translatable="false">castcle-dev://profile/{me}/{id}</string>
+    <string name="nav_deep_link_recast_dialog" translatable="false">castcle-dev://recast-dialog</string>
 </resources>

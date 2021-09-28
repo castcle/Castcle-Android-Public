@@ -1,12 +1,9 @@
 package com.castcle.ui.createbloc
 
-import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.net.Uri
-import android.os.Build
 import android.view.*
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
@@ -278,7 +275,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             id = UUID.randomUUID().toString(),
             uri = imageUrl.toString(),
             size = 0,
-            displayName ="",
+            displayName = "",
             isSelected = true
         )
         addImageFormGallery(itemMedia)

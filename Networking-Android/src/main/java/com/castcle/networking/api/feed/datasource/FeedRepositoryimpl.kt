@@ -1,11 +1,11 @@
 package com.castcle.networking.api.feed.datasource
 
 import androidx.paging.*
-import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
+import com.castcle.common_model.model.feed.*
 import com.castcle.networking.api.feed.FeedApi
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Completable
+import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -39,7 +39,7 @@ class FeedRepositoryImpl @Inject constructor(
 
     override suspend fun getFeed(
         feedRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<FeedContentResponse>> = Pager(
+    ): Flow<PagingData<ContentUiModel>> = Pager(
         config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
         pagingSourceFactory = { FeedPagingDataSource(feedApi, feedRequestHeader) }
     ).flow
@@ -54,6 +54,35 @@ class FeedRepositoryImpl @Inject constructor(
             .lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()
+    }
+
+    override fun recastContentPost(
+        recastRequest: RecastRequest
+    ): Single<ContentUiModel> {
+        return if (recastRequest.reCasted) {
+            feedApi.unRecastContent(id = recastRequest.contentId, recastRequest)
+                .lift(ApiOperators.mobileApiError())
+                .map {
+                    it.toContentUiModel()
+                }.firstOrError()
+        } else {
+            feedApi.recastContent(id = recastRequest.contentId, recastRequest)
+                .lift(ApiOperators.mobileApiError())
+                .map {
+                    it.toContentUiModel()
+                }.firstOrError()
+        }
+    }
+
+    override fun quoteCastContentPost(
+        recastRequest: RecastRequest
+    ): Single<ContentUiModel> {
+        return feedApi.quoteCastContent(id = recastRequest.contentId, recastRequest)
+            .lift(ApiOperators.mobileApiError())
+            .map {
+                it.toContentUiModel()
+            }
+            .firstOrError()
     }
 }
 

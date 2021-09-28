@@ -46,7 +46,7 @@ data class ContentUiModel(
     val contentType: String = "",
     val created: String = "",
     val updated: String = "",
-    val payLoadUiModel: PayLoadUiModel,
+    val payLoadUiModel: PayLoadUiModel = PayLoadUiModel(),
     var deepLink: String = ""
 ) : Parcelable
 
@@ -64,6 +64,7 @@ fun FeedContentResponse.toContentUiModel(): ContentUiModel {
 
 @Parcelize
 data class PayLoadUiModel(
+    val contentId: String = "",
     val headerFeed: String = "",
     val contentFeed: String = "",
     val photo: PhotoUiModel = PhotoUiModel(),
@@ -78,6 +79,7 @@ data class PayLoadUiModel(
 
 fun PayloadResponse.toPayloadUiModel(): PayLoadUiModel {
     return PayLoadUiModel(
+        contentId = id,
         headerFeed = payload.header ?: "",
         contentFeed = payload.content,
         photo = payload.photo.toPhotoUiMode(),
@@ -140,7 +142,7 @@ fun LikedResponse.toLikedUiModel() =
 @Parcelize
 data class CommentedUiModel(
     val count: Int = 0,
-    val commented: Boolean = false,
+    var commented: Boolean = false,
     val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
 
@@ -157,7 +159,7 @@ fun CommentedResponse.toCommentedUiModel() =
 @Parcelize
 data class RecastedUiModel(
     val count: Int = 0,
-    val recasted: Boolean = false,
+    var recasted: Boolean = false,
     val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
 

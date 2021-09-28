@@ -107,4 +107,16 @@
     <string name="create_blog_status">What\'s in your mind?</string>
     <string name="create_blog_toolbar_title">NewCast</string>
     <string name="error_get_image">Error has occurred. Please try get. (Error : Failed to get image)</string>
+    <string name="recast_title">Choose page or User which to Recast</string>
+    <string name="recast_title_recast">Recast</string>
+    <string name="recast_title_unrecast">UnRecast</string>
+    <string name="recast_title_quote_cast">Quote cast</string>
+    <string name="empty_state_feed">Trouble Loading News Feed</string>
+    <string name="empty_state_feed_action">Tap to Retry</string>
+    <string name="empty_state_page">Sorry, this page isn\'t available</string>
+    <string name="empty_state_page_subtitle">The link you followed may be broken, or the page may have been removed.</string>
+    <string name="empty_state_noti">No Notification</string>
+    <string name="empty_state_noti_subtitle">Be the first to comment.</string>
+    <string name="empty_state_search">We didn\'t find any results</string>
+    <string name="empty_state_search_subtitle">Make sure everything is spelled correctly or try different keywords.</string>
 </resources>

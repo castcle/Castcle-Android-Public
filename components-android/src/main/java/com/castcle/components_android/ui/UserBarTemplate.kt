@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.castcle.android.components_android.databinding.LayoutQuoteBarTemplateBinding
 import com.castcle.android.components_android.databinding.LayoutUserBarTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
@@ -47,6 +48,12 @@ class UserBarTemplate(
         )
     }
 
+    val bindingQute: LayoutQuoteBarTemplateBinding by lazy {
+        LayoutQuoteBarTemplateBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
+    }
+
     private lateinit var itemUiModel: ContentUiModel
 
     private val _itemClick = BehaviorSubject.create<TemplateEventClick>()
@@ -63,20 +70,39 @@ class UserBarTemplate(
         }
     }
 
-    fun bindUiModel(itemUiModel: ContentUiModel) {
+    fun bindUiModel(itemUiModel: ContentUiModel, onBindQuote: Boolean = false) {
         this.itemUiModel = itemUiModel
-        with(binding) {
-            with(itemUiModel.payLoadUiModel) {
-                ivAvatar.loadCircleImage(author.avatar)
-                tvUserName.text = author.displayName
-                ivStatusFollow.visibleOrGone(author.followed)
-                tvStatusFollow.visibleOrGone(author.followed)
-                val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
-                    created.toFormatDate()
-                } else {
-                    TimeAgo.using(created.toTime())
+        if (!onBindQuote) {
+            bindingQute.group.gone()
+            with(binding) {
+                with(itemUiModel.payLoadUiModel) {
+                    ivAvatar.loadCircleImage(author.avatar)
+                    tvUserName.text = author.displayName
+                    ivStatusFollow.visibleOrGone(author.followed)
+                    tvStatusFollow.visibleOrGone(author.followed)
+                    val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
+                        created.toFormatDate()
+                    } else {
+                        TimeAgo.using(created.toTime())
+                    }
+                    tvDataTime.text = dateTime
                 }
-                tvDataTime.text = dateTime
+            }
+        } else {
+            binding.group.gone()
+            with(bindingQute) {
+                with(itemUiModel.payLoadUiModel) {
+                    ivAvatar.loadCircleImage(author.avatar)
+                    tvUserName.text = author.displayName
+                    ivStatusFollow.visibleOrGone(author.followed)
+                    tvStatusFollow.visibleOrGone(author.followed)
+                    val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
+                        created.toFormatDate()
+                    } else {
+                        TimeAgo.using(created.toTime())
+                    }
+                    tvDataTime.text = dateTime
+                }
             }
         }
     }

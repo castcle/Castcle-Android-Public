@@ -4,9 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.User
@@ -14,11 +17,14 @@ import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
+import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.CommonMockAdapter
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
@@ -28,6 +34,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     private lateinit var adapterCommon: CommonMockAdapter
+
+    private lateinit var adapterPagingCommon: CommonAdapter
 
     private var adapterFilterAdapter = FeedFilterAdapter()
 
@@ -54,7 +62,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 .subscribe()
                 .addToDisposables()
         }
-        viewModel.getMockFeed()
     }
 
     override fun setupView() {
@@ -63,8 +70,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
             rcFeedFillter.visibleOrGone(!viewModel.isGuestMode)
             ivFilter.visibleOrGone(!viewModel.isGuestMode)
-            rvFeedContent.adapter = CommonMockAdapter().also {
-                adapterCommon = it
+            rvFeedContent.adapter = CommonAdapter().also {
+                adapterPagingCommon = it
             }
 
             with(rcFeedFillter) {
@@ -108,9 +115,41 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         adapterFilterAdapter.items = feedFilter
         adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
 
-        with(adapterCommon) {
+        with(adapterPagingCommon) {
             itemClick.subscribe {
                 handleContentClick(it)
+            }.addToDisposables()
+        }
+
+        with(viewModel) {
+            launchOnLifecycleScope {
+                feedContentPage.collectLatest {
+                    adapterPagingCommon.submitData(it)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
+                val refresher = loadStates.refresh
+                val displayEmpty = (refresher is LoadState.NotLoading &&
+                    refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                handleEmptyState(displayEmpty)
+            }
+        }
+    }
+
+    private fun handleEmptyState(show: Boolean) {
+        with(binding) {
+            rvFeedContent.visibleOrGone(show)
+            wtWhatYouMind.visibleOrGone(show)
+            clFilter.visibleOrGone(show)
+        }
+        with(binding.empState) {
+            visibleOrGone(!show)
+            bindUiState(EmptyState.FEED_EMPTY)
+            itemClick.subscribe {
+                viewModel.getAllFeedContent()
             }.addToDisposables()
         }
     }
@@ -131,6 +170,24 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }, disable = {})
     }
 
+    private fun handleRecastClick(contentUiModel: ContentUiModel) {
+        guestEnable(enable = {
+            navigateToRecastDialogFragment(contentUiModel)
+        }, disable = {})
+    }
+
+    private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+        onBoardNavigator.navigateToRecastDialogFragment(contentUiModel)
+
+        getNavigationResult<ContentUiModel>(
+            onBoardNavigator,
+            R.id.dialogRecastFragment,
+            KEY_REQUEST,
+            onResult = {
+                adapterPagingCommon.updateStateItemLike(it)
+            })
+    }
+
     private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
         adapterFilterAdapter.selectedFilter(itemFilter)
     }
@@ -146,13 +203,13 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
         viewModel.getFeedResponseMock()
 
-        viewModel.feedContentMock.observe(this, {
-            adapterCommon.uiModels = it
-        })
-
-        viewModel.onUpdateContentLike.subscribe {
-            adapterCommon.onUpdateItem(it)
-        }.addToDisposables()
+//        viewModel.feedContentMock.observe(this, {
+//            adapterPagingCommon.uiModels = it
+//        })
+//
+//        viewModel.onUpdateContentLike.subscribe {
+//            adapterCommon.onUpdateItem(it)
+//        }.addToDisposables()
     }
 
     private fun handleContentClick(click: Click) {
@@ -162,6 +219,9 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             }
             is FeedItemClick.FeedLikeClick -> {
                 handleLikeClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedRecasteClick -> {
+                handleRecastClick(click.contentUiModel)
             }
         }
     }

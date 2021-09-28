@@ -1,9 +1,9 @@
 package com.castcle.networking.api.feed.datasource
 
 import androidx.paging.PagingData
-import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
+import com.castcle.common_model.model.feed.*
 import io.reactivex.Completable
+import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -34,10 +34,18 @@ interface FeedRepository {
 
     suspend fun getFeed(
         feedRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<FeedContentResponse>>
+    ): Flow<PagingData<ContentUiModel>>
 
     fun likeContent(
         contentId: String,
         likeStatus: Boolean
     ): Completable
+
+    fun recastContentPost(
+        recastRequest: RecastRequest
+    ): Single<ContentUiModel>
+
+    fun quoteCastContentPost(
+        recastRequest: RecastRequest
+    ): Single<ContentUiModel>
 }

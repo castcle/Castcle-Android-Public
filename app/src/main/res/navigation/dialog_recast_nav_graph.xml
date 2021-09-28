@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_recast_nav_graph"
+    app:startDestination="@id/dialogRecastFragment">
+
+    <dialog
+        android:id="@+id/dialogRecastFragment"
+        android:name="com.castcle.ui.common.dialog.recast.RecastDialogFragment"
+        tools:layout="@layout/dialog_fragment_recast">
+
+        <argument
+            android:name="contentUiModel"
+            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+
+        <action
+            android:id="@+id/actionDialogRecastFragmentToCreateQuoteFragment"
+            app:destination="@id/createQuoteFragment" />
+
+        <deepLink app:uri="@string/deep_link_path_https_recast_dialog" />
+        <deepLink app:uri="@string/nav_deep_link_recast_dialog" />
+    </dialog>
+
+    <fragment
+        android:id="@+id/createQuoteFragment"
+        android:name="com.castcle.ui.createbloc.CreateQuoteFragment"
+        tools:layout="@layout/fragment_create_bloc">
+
+        <argument
+            android:name="contentUiModel"
+            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+    </fragment>
+
+</navigation>

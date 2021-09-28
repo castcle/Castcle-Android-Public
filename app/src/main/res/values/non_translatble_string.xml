@@ -10,6 +10,7 @@
     <string name="deep_link_path_prefix_verify_email" translatable="false">/verify-email</string>
     <string name="deep_link_path_prefix_resent_verify_email" translatable="false">/resentverify-email</string>
     <string name="deep_link_path_prefix_about_you" translatable="false">/about-you</string>
+    <string name="deep_link_path_prefix_recast_dialog" translatable="false">/recast-dialog</string>
 
     <!-- Https Deep Link with path -->
     <string name="deep_link_path_https_feed" translatable="false">.*/feed</string>
@@ -20,4 +21,5 @@
     <string name="deep_link_path_https_resent_verify_email" translatable="false">.*/resentverify-email/{email}</string>
     <string name="deep_link_path_https_about_you" translatable="false">.*/about-you</string>
     <string name="deep_link_path_https_profile" translatable="false">.*/profile/{me}/{id}</string>
+    <string name="deep_link_path_https_recast_dialog" translatable="false">.*/recast-dialog</string>
 </resources>

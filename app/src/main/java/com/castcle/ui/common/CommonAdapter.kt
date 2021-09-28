@@ -55,6 +55,19 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
         getItem(position)?.let { holder.bindUiModel(it) }
     }
 
+    fun updateStateItemRecast(contentUiModel: ContentUiModel) {
+        val index = snapshot().indexOf(contentUiModel)
+        snapshot()[index]?.payLoadUiModel?.reCastedUiModel?.recasted = true
+        notifyItemChanged(index)
+    }
+
+    fun updateStateItemLike(contentUiModel: ContentUiModel) {
+        val index = snapshot().indexOf(contentUiModel)
+        val likeUiModel = snapshot()[index]?.payLoadUiModel?.likedUiModel
+        likeUiModel?.liked = !likeUiModel?.liked!!
+        notifyItemChanged(index)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentUiModel> {
         return when (viewType) {
             R.layout.layout_feed_template_image ->

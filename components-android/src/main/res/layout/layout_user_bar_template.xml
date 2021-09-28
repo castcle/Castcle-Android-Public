@@ -83,4 +83,11 @@
         app:layout_constraintStart_toEndOf="@id/ivStatusGlobe"
         app:layout_constraintTop_toTopOf="@id/ivStatusGlobe"
         tools:text="July 06, 2021" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ivAvatar,tvUserName,ivStatusFollow,tvStatusFollow,ivOptional,ivStatusGlobe,tvDataTime" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

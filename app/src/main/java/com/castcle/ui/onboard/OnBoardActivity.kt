@@ -176,7 +176,11 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     override fun onRefreshTokenFailed(error: Throwable) {
+        onTokenIsExpired()
+    }
 
+    private fun onTokenIsExpired() {
+        viewModel.onAccessTokenExpired().subscribe().addToDisposables()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

@@ -51,6 +51,8 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract fun fetchImageGallery(): Completable
 
+    abstract val onSuccess: Observable<Boolean>
+
     interface Input {
         fun validateMessage(message: String): Completable
 
@@ -63,5 +65,7 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
         fun setMediaItem(mediaItem: List<MediaItem>)
 
         fun addMediaItem(mediaItem: MediaItem)
+
+        fun quoteCasteContent(contentUiModel: ContentUiModel)
     }
 }

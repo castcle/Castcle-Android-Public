@@ -41,11 +41,13 @@ sealed class FeedItemClick(
     ) : FeedItemClick(position)
 
     class FeedCommentClick(
-        position: Int
+        position: Int,
+        val contentUiModel: ContentUiModel
     ) : FeedItemClick(position)
 
     class FeedRecasteClick(
-        position: Int
+        position: Int,
+        val contentUiModel: ContentUiModel
     ) : FeedItemClick(position)
 
     class FeedReadMoreClick(

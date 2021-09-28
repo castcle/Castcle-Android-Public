@@ -3,7 +3,7 @@ package com.castcle.networking.api.feed.datasource
 import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.networking.api.feed.FeedApi
 import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 
@@ -34,23 +34,21 @@ import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 class FeedPagingDataSource(
     private val feedApi: FeedApi,
     private val feedRequestHeader: FeedRequestHeader
-) : PagingSource<Int, FeedContentResponse>() {
+) : PagingSource<Int, ContentUiModel>() {
 
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, FeedContentResponse> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentUiModel> {
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
             val response = feedApi.getFeed(
-                featureSlug = feedRequestHeader.exclude,
+                featureSlug = feedRequestHeader.featureSlug,
                 circleSlug = feedRequestHeader.circleSlug,
-                mode = feedRequestHeader.mode,
-                exclude = feedRequestHeader.exclude,
                 pageNumber = pageNumber,
                 pageSize = pageSize
             )
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload
+            val data = pagedResponse?.payload?.toContentFeedUiModel()
 
             var nextPageNumber: Int? = null
             if (pagedResponse?.pagination?.next != null) {
@@ -60,7 +58,7 @@ class FeedPagingDataSource(
             }
 
             LoadResult.Page(
-                data = data.orEmpty(),
+                data = data?.feedContentUiModel.orEmpty(),
                 prevKey = null,
                 nextKey = nextPageNumber
             )
@@ -69,5 +67,5 @@ class FeedPagingDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, FeedContentResponse>): Int = 1
+    override fun getRefreshKey(state: PagingState<Int, ContentUiModel>): Int = 1
 }

@@ -2,6 +2,7 @@ package com.castcle.ui.onboard
 
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
+import io.reactivex.Completable
 import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -33,6 +34,8 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract val user: Observable<User>
 
     abstract val isGuestMode: Boolean
+
+    abstract fun onAccessTokenExpired(): Completable
 
     abstract fun onRefreshProfile()
 }

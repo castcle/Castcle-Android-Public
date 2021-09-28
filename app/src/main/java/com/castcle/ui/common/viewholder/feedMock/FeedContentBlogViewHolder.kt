@@ -68,6 +68,14 @@ class FeedContentBlogMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.RecasteClick -> {
+                click.invoke(
+                    FeedItemClick.FeedRecasteClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }

@@ -29,4 +29,5 @@
     <color name="red_primary_warning">#FF3D3D</color>
     <color name="white_primary_alpha_20">#33F5F5F5</color>
     <color name="white_nobel">#999999</color>
+    <color name="gray_border">#65676A</color>
 </resources>

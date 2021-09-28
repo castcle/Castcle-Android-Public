@@ -54,7 +54,7 @@
             android:name="com.castcle.ui.onboard.OnBoardActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -88,6 +88,10 @@
 
                 <data
                     android:pathPrefix="@string/deep_link_path_prefix_about_you"
+                    android:scheme="@string/deep_link_scheme_castcle" />
+
+                <data
+                    android:pathPrefix="@string/deep_link_path_prefix_recast_dialog"
                     android:scheme="@string/deep_link_scheme_castcle" />
             </intent-filter>
         </activity>

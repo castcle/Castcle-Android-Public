@@ -2,8 +2,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.previewlinkurl.*
+import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.FeedItemClick
+import com.castcle.ui.common.viewholder.feedMock.FeedContentShortMockViewHolder
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,6 +39,46 @@ class FeedContentShortViewHolder(
     private val click: (Click) -> Unit
 ) : CommonAdapter.ViewHolder<ContentUiModel>(binding.root) {
 
+    init {
+        binding.ubUser.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+        binding.ftFooter.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+    }
+
+    private fun handleItemClick(it: TemplateEventClick?) {
+        when (it) {
+            is TemplateEventClick.AvatarClick -> {
+                click.invoke(
+                    FeedItemClick.FeedAvatarClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.LikeClick -> {
+                click.invoke(
+                    FeedItemClick.FeedLikeClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.RecasteClick -> {
+                click.invoke(
+                    FeedItemClick.FeedRecasteClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            else -> {
+            }
+        }
+    }
+
     override fun bindUiModel(uiModel: ContentUiModel) {
         super.bindUiModel(uiModel)
 
@@ -42,6 +87,27 @@ class FeedContentShortViewHolder(
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentFeed
                 ftFooter.bindUiModel(uiModel)
+                if (link.isNotEmpty()) {
+                    groupPreview.visible()
+                    link.firstOrNull()?.url?.let {
+                        PreViewLinkUrl(it, object : PreViewLinkCallBack {
+                            override fun onComplete(urlInfo: UrlInfoUiModel) {
+                                with(urlInfo) {
+                                    ivPerviewUrl.loadGranularRoundedCornersImage(image)
+                                    tvPreviewUrl.text = url
+                                    tvPreviewHeader.text = title
+                                    tvFeedContent.text = description
+                                }
+                            }
+
+                            override fun onFailed(throwable: Throwable) {
+
+                            }
+                        }).fetchUrlPreview()
+                    }
+                } else {
+                    groupPreview.gone()
+                }
             }
         }
     }

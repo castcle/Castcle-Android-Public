@@ -1,9 +1,10 @@
 package com.castcle.networking.api.feed
 
+import com.castcle.common_model.model.feed.RecastRequest
+import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
-import io.reactivex.Single
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -37,8 +38,6 @@ interface FeedApi {
     suspend fun getFeed(
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
-        @Query(EXCLUDE) exclude: String,
-        @Query(MODE) mode: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<FeedResponse>
@@ -52,9 +51,27 @@ interface FeedApi {
         @Query(PAGE_SIZE) pageSize: String,
     ): Flowable<Response<List<FeedResponse>>>
 
-    @POST("content/{contentId}/{likeStatus}")
+    @PUT("contents/{contentId}/{likeStatus}")
     fun likeFeedContent(
         @Path("contentId") contentId: String,
         @Path("likeStatus") likeStatus: String,
     ): Flowable<Response<Any>>
+
+    @POST("contents/{id}/recasted")
+    fun recastContent(
+        @Path("id") id: String,
+        @Body recastRequest: RecastRequest,
+    ): Flowable<Response<FeedContentResponse>>
+
+    @DELETE("contents/{id}/recasted")
+    fun unRecastContent(
+        @Path("id") id: String,
+        @Body recastRequest: RecastRequest,
+    ): Flowable<Response<FeedContentResponse>>
+
+    @POST("contents/{id}/quotecast")
+    fun quoteCastContent(
+        @Path("id") id: String,
+        @Body recastRequest: RecastRequest,
+    ): Flowable<Response<FeedContentResponse>>
 }

@@ -1,19 +1,21 @@
 package com.castcle.ui.createbloc
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.android.R
 import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.common_model.model.createblog.toListUri
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.toContentUiModel
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.usecase.createblog.GetImagePathMapUseCase
+import com.castcle.usecase.feed.QuoteCastContentSingleUseCase
 import com.castcle.usecase.feed.ReduceAndScaleImageSingleUseCase
 import com.castcle.usecase.userprofile.*
 import io.reactivex.*
 import io.reactivex.rxkotlin.Observables
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -47,7 +49,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val createContentSingleUseCase: CreateContentSingleUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
-    private val reduceAndScaleImageSingleUseCase: ReduceAndScaleImageSingleUseCase
+    private val reduceAndScaleImageSingleUseCase: ReduceAndScaleImageSingleUseCase,
+    private val quoteCastContentSingleUseCase: QuoteCastContentSingleUseCase
 ) : CreateBlogFragmentViewModel(), CreateBlogFragmentViewModel.Input {
 
     private var _userProfileUiModel = MutableLiveData<ContentUiModel>()
@@ -80,6 +83,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private var _mediaItemImage = MutableLiveData<MutableList<MediaItem>>()
     override val mediaItemImage: LiveData<MutableList<MediaItem>>
         get() = _mediaItemImage
+
+    override val onSuccess: Observable<Boolean>
+        get() = _onSuccess
+    private val _onSuccess = PublishSubject.create<Boolean>()
 
     override val enableSubmitButton: Observable<Boolean>
         get() = Observables.combineLatest(
@@ -262,6 +269,33 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         return updateImage?.filter {
             it.isSelected
         }?.toListUri() ?: emptyList()
+    }
+
+    override fun quoteCasteContent(contentUiModel: ContentUiModel) {
+        RecastRequest(
+            reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
+            contentId = contentUiModel.payLoadUiModel.contentId,
+            authorId = contentUiModel.payLoadUiModel.author.id
+        ).run {
+            postReCastContent(this)
+                .subscribeBy(
+                    onError = {
+                        _error.onNext(it)
+                    }
+                ).addToDisposables()
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun postReCastContent(recastRequest: RecastRequest): Completable {
+        return quoteCastContentSingleUseCase.execute(
+            recastRequest
+        ).doOnSuccess {
+            _onSuccess.onNext(true)
+        }.onErrorReturn {
+            Completable.error(it)
+            ContentUiModel()
+        }.ignoreElement()
     }
 }
 

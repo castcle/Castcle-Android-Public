@@ -37,10 +37,12 @@ sealed class TemplateEventClick(
     ) : TemplateEventClick(participantUiModel)
 
     class CommentClick(
+        val contentUiModel: ContentUiModel,
         participantUiModel: List<ParticipantUiModel>
     ) : TemplateEventClick(participantUiModel)
 
     class RecasteClick(
+        val contentUiModel: ContentUiModel,
         participantUiModel: List<ParticipantUiModel>
     ) : TemplateEventClick(participantUiModel)
 

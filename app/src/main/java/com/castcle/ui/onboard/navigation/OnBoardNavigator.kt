@@ -2,6 +2,7 @@ package com.castcle.ui.onboard.navigation
 
 import android.content.Intent
 import android.net.Uri
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.*
 import com.castcle.ui.base.BaseNavigator
 
@@ -66,4 +67,8 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateCreateBlogFragment()
 
     fun navigateToResentVerifyEmail(email: String)
+
+    fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel)
+
+    fun navigateToCreateQuoteFragment(contentUiModel: ContentUiModel)
 }

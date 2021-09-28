@@ -1,22 +1,29 @@
 package com.castcle.di.modules.onboard
 
 import com.castcle.di.modules.blog.CreateBlogFragmentViewModelModule
+import com.castcle.di.modules.blog.CreateQuoteFragmentViewModelModule
 import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
+import com.castcle.di.modules.common.dialog.RecastDialogFragmentModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.login.*
 import com.castcle.di.modules.profile.ProfileFragmentViewModelModule
+import com.castcle.di.modules.search.SearchFragmentViewModelModule
 import com.castcle.di.modules.setting.SettingFragmentViewModelModule
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
+import com.castcle.ui.common.dialog.recast.RecastDialogFragment
 import com.castcle.ui.createbloc.CreateBlogFragment
+import com.castcle.ui.createbloc.CreateQuoteFragment
 import com.castcle.ui.feed.FeedFragment
+import com.castcle.ui.feed.FeedMockFragment
 import com.castcle.ui.login.LoginFragment
 import com.castcle.ui.profile.ProfileFragment
 import com.castcle.ui.profile.childview.all.ContentAllFragment
 import com.castcle.ui.profile.childview.blog.ContentPostFragment
 import com.castcle.ui.profile.childview.photo.ContentBlogFragment
 import com.castcle.ui.profile.childview.post.ContentPhotoFragment
+import com.castcle.ui.search.SearchFragment
 import com.castcle.ui.setting.SettingFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
@@ -62,8 +69,16 @@ interface OnBoardFragmentModule {
     fun feedFragment(): FeedFragment
 
     @FragmentScope
+    @ContributesAndroidInjector(modules = [FeedFragmentViewModelModule::class])
+    fun feedMockFragment(): FeedMockFragment
+
+    @FragmentScope
     @ContributesAndroidInjector(modules = [NotiflyLoginDialogFragmentModule::class])
     fun notiflyLoginDialogFragment(): NotiflyLoginDialogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [RecastDialogFragmentModule::class])
+    fun recastDialogFragment(): RecastDialogFragment
 
     @FragmentScope
     @ContributesAndroidInjector(modules = [WebViewFragmentViewModelModule::class])
@@ -132,4 +147,12 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [CreateBlogFragmentViewModelModule::class])
     fun createBlogFragment(): CreateBlogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CreateQuoteFragmentViewModelModule::class])
+    fun createQuoteFragment(): CreateQuoteFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [SearchFragmentViewModelModule::class])
+    fun searchFragment(): SearchFragment
 }

@@ -8,11 +8,15 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.*
 import com.castcle.android.R
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.*
 import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.containsSomeOf
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
+import com.castcle.ui.common.dialog.recast.RecastDialogFragment
+import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
+import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import com.castcle.ui.signin.password.PasswordFragmentArgs
 import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentArgs
@@ -441,6 +445,56 @@ class OnBoardNavigatorImpl @Inject constructor(
                     )
                 } else {
                     unsupportedNavigation()
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToRecastDialogFragment,
+                            RecastDialogFragmentArgs(contentUiModel).toBundle()
+                        )
+                    }
+                    R.id.feedMockFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedMockFragmentToRecastDialogFragment,
+                            RecastDialogFragmentArgs(contentUiModel).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToCreateQuoteFragment(contentUiModel: ContentUiModel) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.dialogRecastFragment -> {
+                        navController.navigate(
+                            R.id.actionDialogRecastFragmentToCreateQuoteFragment,
+                            CreateQuoteFragmentArgs(contentUiModel).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
                 }
             }
             else -> {

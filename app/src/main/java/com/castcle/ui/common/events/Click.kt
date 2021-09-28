@@ -1,3 +1,3 @@
 package com.castcle.ui.common.events
 
-open class Click(val position: Int)
+open class Click(open val position: Int)

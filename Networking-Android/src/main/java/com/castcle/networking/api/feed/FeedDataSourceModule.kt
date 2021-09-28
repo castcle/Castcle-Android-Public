@@ -1,6 +1,5 @@
 package com.castcle.networking.api.feed
 
-import com.castcle.networking.NonAuthentication
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.networking.api.feed.datasource.FeedRepositoryImpl
 import dagger.Module
@@ -35,7 +34,7 @@ class FeedNonAuthenticationDataSourceModule {
 
     @Provides
     fun feedApiNonAuth(
-        @NonAuthentication retrofit: Retrofit
+        retrofit: Retrofit
     ): FeedApi {
         return retrofit.create(FeedApi::class.java)
     }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -15,6 +16,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.data.error.userReadableMessage
 import com.castcle.di.ActivityViewModelFactory
 import com.castcle.di.FragmentViewModelFactory
 import com.castcle.extensions.inflate

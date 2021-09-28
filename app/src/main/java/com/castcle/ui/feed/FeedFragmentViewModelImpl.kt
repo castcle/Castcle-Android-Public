@@ -8,9 +8,10 @@ import androidx.paging.cachedIn
 import com.castcle.android.R
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.data.staticmodel.FeedContentType
+import com.castcle.data.staticmodel.ModeType
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
@@ -68,13 +69,19 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override val userProfile: LiveData<User>
         get() = _userProfile
 
-    private lateinit var _feedUiMode: Flow<PagingData<FeedContentResponse>>
+    private lateinit var _feedUiMode: Flow<PagingData<ContentUiModel>>
+    override val feedContentPage: Flow<PagingData<ContentUiModel>>
+        get() = _feedUiMode
 
     override val isGuestMode: Boolean
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     private fun setUserProfileData(user: Optional<User>) {
         _userProfile.value = user.get()
+    }
+
+    init {
+        getAllFeedContent()
     }
 
     private val _feedContentMock = MutableLiveData<List<ContentUiModel>>()
@@ -90,19 +97,16 @@ class FeedFragmentViewModelImpl @Inject constructor(
             .doOnError(_error::onNext).firstOrError()
             .ignoreElement()
 
-    private fun getAllCharacters() = launchPagingAsync({
+    override fun getAllFeedContent() = launchPagingAsync({
         val feedRequestHeader = FeedRequestHeader(
-            "Feed",
-            "Foryou"
+            featureSlug = FeedContentType.FEED_SLUG.type,
+            circleSlug = FeedContentType.CIRCLE_SLUG.type,
+            mode = ModeType.MODE_CURRENT.type
         )
         feedNonAuthRepository.getFeed(feedRequestHeader).cachedIn(viewModelScope)
     }, {
         _feedUiMode = it
     })
-
-    override fun getMockFeed() {
-        val gson = Gson()
-    }
 
     private var _onUpdateContentLike = BehaviorSubject.create<ContentUiModel>()
     override val onUpdateContentLike: Observable<ContentUiModel>

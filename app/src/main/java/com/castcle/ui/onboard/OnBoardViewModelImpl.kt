@@ -1,8 +1,10 @@
 package com.castcle.ui.onboard
 
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -34,7 +36,8 @@ import javax.inject.Inject
 
 class OnBoardViewModelImpl @Inject constructor(
     private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val logoutCompletableUseCase: LogoutCompletableUseCase
 ) : OnBoardViewModel() {
 
     private val _userProfile = BehaviorSubject.create<User>()
@@ -51,5 +54,9 @@ class OnBoardViewModelImpl @Inject constructor(
                 onNext = _userProfile::onNext,
                 onError = {}
             ).addToDisposables()
+    }
+
+    override fun onAccessTokenExpired(): Completable {
+        return logoutCompletableUseCase.execute(Unit)
     }
 }

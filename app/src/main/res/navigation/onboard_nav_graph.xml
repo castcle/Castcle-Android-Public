@@ -6,6 +6,7 @@
     app:startDestination="@id/feedFragment">
 
     <include app:graph="@navigation/dialog_login_nav_graph" />
+    <include app:graph="@navigation/dialog_recast_nav_graph" />
     <include app:graph="@navigation/bloc_nav_graph" />
 
     <fragment
@@ -18,6 +19,10 @@
             app:destination="@id/dialog_login_nav_graph" />
 
         <action
+            android:id="@+id/actionFeedFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
+
+        <action
             android:id="@+id/actionFeedFragmentToSettingFragment"
             app:destination="@id/settingFragment" />
 
@@ -26,6 +31,18 @@
             app:destination="@id/bloc_nav_graph" />
 
         <deepLink app:uri="@string/nav_deep_link_feed" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/feedMockFragment"
+        android:name="com.castcle.ui.feed.FeedMockFragment"
+        tools:layout="@layout/fragment_feed">
+
+        <action
+            android:id="@+id/actionFeedMockFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
+
+        <deepLink app:uri="castcle-dev://feed-mock" />
     </fragment>
 
     <fragment
