@@ -50,7 +50,7 @@ data class UserProfileResponse(
     @SerializedName("overview")
     val overview: String? = null,
     @SerializedName("verified")
-    val verified: Boolean? = false
+    val verified: Verified
 )
 
 data class Followers(
@@ -81,4 +81,13 @@ data class Links(
     val website: String,
     @SerializedName("youtube")
     val youtube: String
+)
+
+data class Verified(
+    @SerializedName("email")
+    val email: Boolean,
+    @SerializedName("mobile")
+    val mobile: Boolean,
+    @SerializedName("official")
+    val official: Boolean
 )

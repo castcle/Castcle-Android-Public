@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.ItemPageHeaderBinding
+import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.components_android.ui.base.*
 import com.castcle.extensions.getColorResource
@@ -68,6 +69,11 @@ class PageHeaderTemplateAdapter(listener: OnItemClickListener) :
             with(binding.ivAvatar) {
                 borderColor = binding.root.context.getColorResource(R.color.red_primary_warning)
                 loadCircleImage(item.avatarUrl)
+                itemView.subscribeOnClick {
+                    listener?.onItemClick(
+                        TemplateClicks.AvatarClick("")
+                    )
+                }.addToDisposables()
             }
         }
     }

@@ -2,6 +2,7 @@ package com.castcle.ui.setting
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -9,13 +10,13 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.setting.toPageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.StaticSeetingMenu
-import com.castcle.extensions.getDrawableRes
-import com.castcle.extensions.visibleOrGone
+import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardActivity
@@ -162,6 +163,24 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                 }
             ).addToDisposables()
         }
+
+        binding.ptPageContentList.clickPage.subscribe {
+            handleNavigateAvatarClick()
+        }.addToDisposables()
+    }
+
+    private fun handleNavigateAvatarClick() {
+        val deepLink = makeDeepLinkUrl(
+            requireContext(), Input(
+                type = DeepLinkTarget.USER_PROFILE_ME,
+                contentData = ""
+            )
+        ).toString()
+        navigateByDeepLink(deepLink)
+    }
+
+    private fun navigateByDeepLink(url: String) {
+        onBoardNavigator.navigateByDeepLink(url.toUri())
     }
 
     private fun logoutToSplashScreen() {
