@@ -7,8 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutMenuTemplateBinding
 import com.castcle.common_model.model.setting.SettingMenuUiModel
 import com.castcle.components_android.ui.adapter.MenuHeaderTemplateAdapter
-import com.castcle.components_android.ui.base.OnItemClickListener
-import com.castcle.components_android.ui.base.TemplateClicks
+import com.castcle.components_android.ui.base.*
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -41,7 +40,7 @@ class MenuTemplate(
 ) : ConstraintLayout(context, attrs), OnItemClickListener {
 
     private val _clickMenu = BehaviorSubject.create<TemplateClicks>()
-    val clickStatus: BehaviorSubject<TemplateClicks>
+    val clickStateMenu: BehaviorSubject<TemplateClicks>
         get() = _clickMenu
 
     val binding: LayoutMenuTemplateBinding by lazy {
@@ -65,6 +64,6 @@ class MenuTemplate(
     }
 
     override fun onItemClick(templateClicks: TemplateClicks) {
-        clickStatus.onNext(templateClicks)
+        clickStateMenu.onNext(templateClicks)
     }
 }

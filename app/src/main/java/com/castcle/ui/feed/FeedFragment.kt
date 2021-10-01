@@ -14,8 +14,10 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
+import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.CommonMockAdapter
@@ -32,6 +34,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     ViewBindingInflater<FragmentFeedBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    @Inject lateinit var localizedResources: LocalizedResources
 
     private lateinit var adapterCommon: CommonMockAdapter
 
@@ -85,7 +89,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun setupToolbar(guestMode: Boolean) {
         with(binding.tbProfile) {
-            tvToolbarTitle.text = getString(R.string.feed_title_toolbar)
+            tvToolbarTitle.text = localizedResources.getString(R.string.feed_title_toolbar)
             if (guestMode) {
                 ivToolbarProfileButton.subscribeOnClick {
                     navigateToNotiflyLoginDialog()
@@ -137,6 +141,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 handleEmptyState(displayEmpty)
             }
         }
+
+        with(binding.empState) {
+            itemClick.subscribe {
+                handleRefreshFeed(it)
+            }.addToDisposables()
+        }
     }
 
     private fun handleEmptyState(show: Boolean) {
@@ -148,9 +158,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(binding.empState) {
             visibleOrGone(!show)
             bindUiState(EmptyState.FEED_EMPTY)
-            itemClick.subscribe {
-                viewModel.getAllFeedContent()
-            }.addToDisposables()
+        }
+    }
+
+    private fun handleRefreshFeed(it: TemplateEventClick?) {
+        if (it is TemplateEventClick.ReTryClick) {
+            adapterPagingCommon.refresh()
         }
     }
 
@@ -202,14 +215,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }.addToDisposables()
 
         viewModel.getFeedResponseMock()
-
-//        viewModel.feedContentMock.observe(this, {
-//            adapterPagingCommon.uiModels = it
-//        })
-//
-//        viewModel.onUpdateContentLike.subscribe {
-//            adapterCommon.onUpdateItem(it)
-//        }.addToDisposables()
     }
 
     private fun handleContentClick(click: Click) {

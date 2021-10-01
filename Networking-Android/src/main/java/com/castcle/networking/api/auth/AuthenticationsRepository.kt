@@ -2,6 +2,7 @@ package com.castcle.networking.api.auth
 
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.*
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.*
 import com.castcle.common_model.model.signin.reuquest.*
@@ -52,6 +53,10 @@ interface AuthenticationsRepository {
         Single<CastcleIdVerifyUiModel>
 
     fun authRequestLinkVerifyEmail(): Completable
+
+    fun authVerificationPassword(password: String): Single<VerificationUiModel>
+
+    fun authChangePasswordSubmit(changePassRequest: ChangePassRequest): Completable
 }
 
 class AuthenticationsRepositoryImpl @Inject constructor(
@@ -78,8 +83,7 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .firstOrError()
             .doOnSuccess {
                 updateAccessToken(it.toOAuthResponse())
-            }
-            .ignoreElement()
+            }.ignoreElement()
     }
 
     override fun authRequestLinkVerifyEmail(): Completable {
@@ -135,5 +139,26 @@ class AuthenticationsRepositoryImpl @Inject constructor(
                 response.refreshToken
             )
         )
+    }
+
+    override fun authVerificationPassword(password: String): Single<VerificationUiModel> {
+        return authenticationApi
+            .verificationPassword(
+                VerificationRequest(
+                    password = password
+                )
+            ).lift(ApiOperators.mobileApiError())
+            .map {
+                it.toVerificationUiModel()
+            }.firstOrError()
+    }
+
+    override fun authChangePasswordSubmit(changePassRequest: ChangePassRequest): Completable {
+        return authenticationApi
+            .changePasswordSubmit(
+                changePassRequest
+            ).lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
     }
 }

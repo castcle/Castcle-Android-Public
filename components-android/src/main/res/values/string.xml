@@ -19,7 +19,7 @@
     <string name="dialog_login_footer_join_us">Join Us</string>
     <string name="dialog_login_footer_menifesto">Manifesto</string>
     <string name="dialog_login_footer_whitepaper">Whitepaper</string>
-    <string name="dialog_login_footer_title">Already have a Castcle account ?</string>
+    <string name="dialog_login_footer_title">Already have a Castcle account?</string>
     <string name="dialog_login">Login</string>
     <string name="tool_bar_skip">Skip</string>
     <string name="tool_bar_apply">Apply</string>
@@ -88,7 +88,7 @@
     <string name="setting_padge_add">+ New Page</string>
     <string name="setting_menu_header_account">Account Settings</string>
     <string name="setting_menu_header_language">Regional &amp; Language</string>
-    <string name="setting_menu_profile">Profile</string>
+    <string name="setting_account">Account</string>
     <string name="setting_menu_privacy">Privacy</string>
     <string name="setting_menu_language">Language</string>
     <string name="setting_menu_about_us">About Us</string>
@@ -119,4 +119,40 @@
     <string name="empty_state_noti_subtitle">Be the first to comment.</string>
     <string name="empty_state_search">We didn\'t find any results</string>
     <string name="empty_state_search_subtitle">Make sure everything is spelled correctly or try different keywords.</string>
+    <string name="setting_language_title">Language</string>
+    <string name="language_title_search">Search</string>
+    <string name="setting_display_language">Display language</string>
+    <string name="setting_select_additional_languages_add">Add Language</string>
+    <string name="setting_select_additional_languages">Select additional languages</string>
+    <string name="setting_select_additional_languages_description">Select additional languages for hte content you want to see on Castcle.</string>
+    <string name="setting_display_language_description">Select your preferred language for headlines, buttons, and other text from Castcle.</string>
+    <string name="error_get_language">Error has occurred. Please try again. (Error : XXX)</string>
+    <string name="error_set_language">Error has occurred. Please try again. (Error: Set Language)</string>
+    <!--    Account Setting-->
+    <string name="setting_account_title">Account </string>
+    <string name="setting_account_section_account_setting">Account Setting</string>
+    <string name="setting_account_email">Email</string>
+    <string name="setting_account_password">Password</string>
+    <string name="setting_account_section_account_control">Account Control</string>
+    <string name="setting_account_delete_account">Delete Account</string>
+    <!--    Setting (Delete Account)-->
+    <string name="setting_profile_delete_title">Delete Account</string>
+    <string name="setting_profile_delete_id">Delete Account %@?</string>
+    <string name="setting_profile_delete_description">"If you delete account:
+ ● You won't be able to reactivate your account
+ ● Your profile, photos, posts, videos and everything else you've added will be permanently deleted. You won't be able to retrieve anything you've added.
+ ● Your pages will be deleted"
+</string>
+    <string name="setting_profile_delete_button">Delete Account</string>
+    <string name="setting_change_password_tool_bar">Change password</string>
+    <string name="setting_change_password_title">Enter your old password</string>
+    <string name="setting_change_password_decsription">You need to fill your old password before create a new password</string>
+    <string name="setting_change_button">Apply</string>
+    <string name="setting_create_password_tool_bar">Reset password</string>
+    <string name="setting_create_password_decsription">Your password must have:</string>
+    <string name="setting_create_password_law">8 to 20 characters</string>
+    <string name="setting_create_password_law_2">Letters, numbers, and special characters</string>
+    <string name="setting_create_password_error">Your password is follow a condition</string>
+    <string name="setting_complete_change_title">Your password already changed</string>
+    <string name="setting_complete_change_button">Back to menu</string>
 </resources>

@@ -36,5 +36,6 @@ data class SettingMenuUiModel(
 data class MenuItem(
     @DrawableRes val icon: Int,
     @StringRes val menuName: Int,
-    val deepLink: String = ""
+    var menuDetail: String = "",
+    val menuType: SettingMenuType
 )

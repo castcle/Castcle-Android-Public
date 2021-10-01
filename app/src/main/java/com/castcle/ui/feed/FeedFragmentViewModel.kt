@@ -40,6 +40,10 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val feedContentMock: LiveData<List<ContentUiModel>>
 
+    abstract val showLoading:Observable<Boolean>
+
+    abstract val onError:Observable<Throwable>
+
     abstract fun getFeedResponseMock()
 
     abstract val userProfile: LiveData<User>

@@ -8,7 +8,7 @@ import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.login.*
 import com.castcle.di.modules.profile.ProfileFragmentViewModelModule
 import com.castcle.di.modules.search.SearchFragmentViewModelModule
-import com.castcle.di.modules.setting.SettingFragmentViewModelModule
+import com.castcle.di.modules.setting.*
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
@@ -25,6 +25,12 @@ import com.castcle.ui.profile.childview.photo.ContentBlogFragment
 import com.castcle.ui.profile.childview.post.ContentPhotoFragment
 import com.castcle.ui.search.SearchFragment
 import com.castcle.ui.setting.SettingFragment
+import com.castcle.ui.setting.applanguage.AppLanguageFragment
+import com.castcle.ui.setting.changepassword.ChangePasswordFragment
+import com.castcle.ui.setting.changepassword.complete.CompleteFragment
+import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragment
+import com.castcle.ui.setting.language.LanguageAppFragment
+import com.castcle.ui.setting.profile.SettingProfileFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
 import com.castcle.ui.signin.email.EmailFragment
@@ -155,4 +161,28 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [SearchFragmentViewModelModule::class])
     fun searchFragment(): SearchFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [LanguageFragmentViewModelModule::class])
+    fun languageFragment(): LanguageAppFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [LanguageFragmentViewModelModule::class])
+    fun appLanguageFragment(): AppLanguageFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [SettingProfileFragmentViewModelModule::class])
+    fun settingProfileFragment(): SettingProfileFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ChangePasswordFragmentViewModelModule::class])
+    fun changePasswordFragment(): ChangePasswordFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CreatePasswordFragmentViewModelModule::class])
+    fun createPasswordFragment(): CreatePasswordFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CompleteFragmentViewModelModule::class])
+    fun completeFragment(): CompleteFragment
 }

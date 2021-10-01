@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.*
+import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.ui.base.BaseNavigator
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -71,4 +72,16 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel)
 
     fun navigateToCreateQuoteFragment(contentUiModel: ContentUiModel)
+
+    fun navigateToLanguageFragment()
+
+    fun navigateToAppLanguageFragment(isAppLanguage: Boolean)
+
+    fun navigateToSettingProfileFragment()
+
+    fun navigateToChangePasswordFragment()
+
+    fun navigateToCreatePasswordFragment(verificationUiModel: VerificationUiModel)
+
+    fun navigateToCompleteFragment()
 }

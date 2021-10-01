@@ -49,4 +49,6 @@ sealed class TemplateEventClick(
     class AvatarClick(
         val contentUiModel: ContentUiModel
     ) : TemplateEventClick()
+
+    class ReTryClick() : TemplateEventClick()
 }

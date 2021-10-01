@@ -1,5 +1,7 @@
 package com.castcle.ui.onboard
 
+import androidx.lifecycle.LiveData
+import com.castcle.common_model.model.setting.LanguageUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.Completable
@@ -35,7 +37,29 @@ abstract class OnBoardViewModel : BaseViewModel() {
 
     abstract val isGuestMode: Boolean
 
+    abstract val onSetLanguageSuccess: Observable<Unit>
+
+    abstract val preferredLanguage: LiveData<List<LanguageUiModel>>
+
+    abstract val preferredLanguageSelected: LiveData<MutableList<LanguageUiModel>>
+
+    abstract fun getCachePreferredLanguage(): Completable
+
+    abstract fun getCurrentAppLanguage(): Completable
+
+    abstract fun setPerferredLanguage(languageCode: String, isShow: Boolean = true)
+
+    abstract fun setPreferredLanguageData(language: List<LanguageUiModel>)
+
     abstract fun onAccessTokenExpired(): Completable
 
     abstract fun onRefreshProfile()
+
+    abstract val currentAppLanguage: LiveData<List<LanguageUiModel>>
+
+    abstract fun setAppLanguage(languageCode: String, isUpdate: Boolean = false)
+
+    abstract fun setCurrentAppLanguage(languageList: List<LanguageUiModel>)
+
+    abstract fun filterSearchLanguage(display: String)
 }

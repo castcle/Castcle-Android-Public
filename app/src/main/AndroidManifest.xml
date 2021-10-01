@@ -54,7 +54,7 @@
             android:name="com.castcle.ui.onboard.OnBoardActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustPan">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

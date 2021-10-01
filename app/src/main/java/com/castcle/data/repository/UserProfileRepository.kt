@@ -154,7 +154,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             .map(userProfileMapper)
             .map { it.toUserProfile() }
             .doOnSuccess {
-                setCastcleId(it.castcleId)
+                setCastcleId(it)
                 _onMemoryUser = it
                 _remoteUser.onNext(it)
             }
@@ -177,8 +177,9 @@ class UserProfileRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun setCastcleId(castcleId: String) {
-        appPreferences.castcleId = castcleId
+    private fun setCastcleId(castcleId: User) {
+        appPreferences.castcleId = castcleId.castcleId
+        appPreferences.email = castcleId.email
     }
 
     private fun GregorianCalendar.isSameDate(date: GregorianCalendar): Boolean {

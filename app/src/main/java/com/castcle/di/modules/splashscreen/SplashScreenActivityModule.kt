@@ -5,6 +5,8 @@ import android.app.Activity
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
+import com.castcle.localization.LocalizedResources
+import com.castcle.localization.LocalizedResourcesImpl
 import com.castcle.networking.NetworkModule
 import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
@@ -50,6 +52,10 @@ interface SplashScreenActivityModule {
     @Binds
     @ActivityScope
     fun splashScreenActivity(splashScreenActivity: SplashScreenActivity): Activity
+
+    @Binds
+    @ActivityScope
+    fun localizedResources(localizedResources: LocalizedResourcesImpl): LocalizedResources
 
     @Binds
     @IntoMap

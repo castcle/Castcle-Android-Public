@@ -118,12 +118,16 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
 }
 
 private const val STATIC_LINK_USER_AGREEMENT =
-    "https://castcle-public.s3.amazonaws.com/documents/terms-of-service.html"
+    "https://documents.castcle.com/terms-of-service.html"
 private const val STATIC_LINK_PRIVACY_POLICY =
-    "https://castcle-public.s3.amazonaws.com/documents/privacy-policy.html"
+    "https://documents.castcle.com/privacy-policy.html"
 private const val STATIC_LINK_JOIN_US =
-    "https://castcle-public.s3.amazonaws.com/documents/join-us.html"
+    "https://jobs.blognone.com/company/castcle"
+private const val STATIC_LINK_DOCS =
+    "https://docs.castcle.com/"
+private const val STATIC_LINK_ABOUT_US =
+    "https://documents.castcle.com/about-us.html"
 private const val STATIC_LINK_MENIFESTO =
     "https://castcle.gitbook.io/document/"
 private const val STATIC_LINK_WHITEPAPER =
-    "https://castcle-public.s3.amazonaws.com/documents/castcle-whitepaper-v1_2.pdf"
+    "https://documents.castcle.com/castcle-whitepaper-v1_3.pdf"

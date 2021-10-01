@@ -109,6 +109,8 @@ class LocalizedResourcesImpl @Inject constructor(
 }
 
 const val LANGUAGE_CODE_TH = "th"
+const val LANGUAGE_TITLE_TH = "Thai"
 const val LANGUAGE_CODE_EN = "en"
+const val LANGUAGE_TITLE_EN = "English"
 
 private const val EMPTY = ""

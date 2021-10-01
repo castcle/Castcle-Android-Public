@@ -9,6 +9,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.MenuItem
 import com.castcle.components_android.ui.base.*
 import com.castcle.extensions.loadImageResource
+import com.castcle.extensions.visible
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -69,10 +70,14 @@ class MenuChildTemplateAdapter(
             with(binding) {
                 ivMenu.loadImageResource(item.icon)
                 tvHeader.setText(item.menuName)
-                ivAction.subscribeOnClick {
+                if(item.menuDetail.isNotBlank()){
+                    tvDetail.visible()
+                    tvDetail.text = item.menuDetail
+                }
+                itemView.subscribeOnClick {
                     listener?.onItemClick(
                         TemplateClicks.MenuClick(
-                            item.deepLink
+                            item.menuType
                         )
                     )
                 }

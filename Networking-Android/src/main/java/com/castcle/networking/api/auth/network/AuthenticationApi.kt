@@ -1,6 +1,7 @@
 package com.castcle.networking.api.auth.network
 
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.response.AuthExsitResponse
 import com.castcle.common_model.model.signin.reuquest.*
 import com.castcle.networking.api.response.TokenResponse
@@ -62,4 +63,14 @@ interface AuthenticationApi {
 
     @POST("authentications/requestLinkVerify")
     fun checkrRquestLinkVerify(): Flowable<Response<Unit>>
+
+    @POST("authentications/verificationPassword")
+    fun verificationPassword(
+        @Body verificationRequest: VerificationRequest
+    ): Flowable<Response<VerificationResponse>>
+
+    @POST("authentications/changePasswordSubmit")
+    fun changePasswordSubmit(
+        @Body changePassRequest: ChangePassRequest
+    ): Flowable<Response<Unit>>
 }

@@ -11,11 +11,15 @@
         <item name="android:textSize">@dimen/_25ssp</item>
     </style>
 
+    <style name="AppTextKanit.xHeadline">
+        <item name="android:textSize">@dimen/_22ssp</item>
+    </style>
+
     <style name="AppTextKanit.Headline">
         <item name="android:textSize">@dimen/_18ssp</item>
     </style>
 
-    <style name="AppTextKanit.Medium">
+    <style name="AppTextKanit.MediumMedium">
         <item name="android:textSize">@dimen/_16ssp</item>
     </style>
 

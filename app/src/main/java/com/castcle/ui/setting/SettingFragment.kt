@@ -9,11 +9,14 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.setting.toPageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.StaticSeetingMenu
 import com.castcle.extensions.getDrawableRes
 import com.castcle.extensions.visibleOrGone
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -52,6 +55,8 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
     ToolbarBindingInflater<ToolbarCastcleCommonBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    @Inject lateinit var localizedResources: LocalizedResources
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleCommonBinding
@@ -92,11 +97,46 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
     private fun bindingSettingContent() {
         with(binding) {
             val settingUiModel = StaticSeetingMenu.staticMenuSetting
+            with(layoutNotification) {
+                tvNotiCount.text =
+                    context?.getString(R.string.setting_noti_count)?.format("3")
+                tvCount.text = "3"
+                clNotiication.subscribeOnClick {
+
+                }
+            }
             mtMenuSetting.bindingMenu(settingUiModel)
-            layoutNotification.tvNotiCount.text =
-                context?.getString(R.string.setting_noti_count)?.format("3")
-            layoutNotification.tvCount.text = "3"
+            mtMenuSetting.clickStateMenu.subscribe {
+                handleMenuClick(it)
+            }.addToDisposables()
         }
+    }
+
+    private fun handleMenuClick(menuClick: TemplateClicks?) {
+        if (menuClick is TemplateClicks.MenuClick) {
+            when (menuClick.menuType) {
+                SettingMenuType.LANGUAGE -> {
+                    navigateToLanguageFragment()
+                }
+                SettingMenuType.PROFILE -> {
+                    navigateToProfileSettingFragment()
+                }
+                SettingMenuType.PRIVACY -> {
+
+                }
+                else -> {
+
+                }
+            }
+        }
+    }
+
+    private fun navigateToProfileSettingFragment() {
+        onBoardNavigator.navigateToSettingProfileFragment()
+    }
+
+    private fun navigateToLanguageFragment() {
+        onBoardNavigator.navigateToLanguageFragment()
     }
 
     private fun setupToolBar() {
@@ -106,7 +146,7 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                     R.drawable.ic_hamburger_selected
                 )
             )
-            tvToolbarTitle.text = context?.getString(R.string.setting_title)
+            tvToolbarTitle.text = localizedResources.getString(R.string.setting_title)
             ivToolbarLogoButton
                 .subscribeOnClick {
                     findNavController().navigateUp()

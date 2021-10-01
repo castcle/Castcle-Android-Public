@@ -15,11 +15,14 @@ import com.castcle.networking.api.auth.AuthenticationDataSourceModule
 import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.feed.FeedNonAuthenticationDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
+import com.castcle.networking.api.setting.SettingDataSourceModule
 import com.castcle.ui.base.BaseNavigator
 import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.onboard.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.onboard.navigation.OnBoardNavigatorImpl
+import com.castcle.usecase.OverrideLocaleApp
+import com.castcle.usecase.OverrideLocaleAppImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -55,36 +58,43 @@ import dagger.multibindings.IntoMap
         AuthRefreshTokenDataSourceModule::class,
         AuthenticationDataSourceModule::class,
         FeedNonAuthenticationDataSourceModule::class,
-        UserProfileDataSourceModule::class
+        UserProfileDataSourceModule::class,
+        SettingDataSourceModule::class
     ]
 )
-interface OnBoardActivityModule {
+abstract class OnBoardActivityModule {
 
     @Binds
     @ActivityScope
-    fun onBoardActivity(onBoardActivity: OnBoardActivity): Activity
+    internal abstract fun onBoardActivity(onBoardActivity: OnBoardActivity): Activity
 
     @Binds
     @ActivityScope
-    fun fragmentActivity(onBoardActivity: OnBoardActivity): FragmentActivity
+    internal abstract fun fragmentActivity(onBoardActivity: OnBoardActivity): FragmentActivity
 
     @Binds
     @ActivityScope
-    fun onBoardNaivgator(onBoardNavigatorImpl: OnBoardNavigatorImpl): OnBoardNavigator
+    internal abstract fun onBoardNaivgator(onBoardNavigatorImpl: OnBoardNavigatorImpl): OnBoardNavigator
 
     @Binds
     @ActivityScope
-    fun baseNavigateor(baseNavigatorImpl: BaseNavigatorImpl): BaseNavigator
+    internal abstract fun baseNavigateor(baseNavigatorImpl: BaseNavigatorImpl): BaseNavigator
 
     @Binds
     @ActivityScope
-    fun localizedResources(localizedResources: LocalizedResourcesImpl): LocalizedResources
+    internal abstract fun localizedResources(localizedResources: LocalizedResourcesImpl): LocalizedResources
+
+    @Binds
+    @ActivityScope
+    internal abstract fun overrideLocaleApp(
+        overrideLocaleAppImpl: OverrideLocaleAppImpl
+    ): OverrideLocaleApp
 
     @Binds
     @IntoMap
     @ActivityScope
     @ViewModelKey(OnBoardViewModel::class)
-    fun onBoardViewModel(viewModel: OnBoardViewModelImpl): ViewModel
+    internal abstract fun onBoardViewModel(viewModel: OnBoardViewModelImpl): ViewModel
 
     @Binds
     @ActivityScope

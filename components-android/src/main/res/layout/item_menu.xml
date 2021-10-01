@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_clickable_item">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivMenu"
@@ -28,6 +29,20 @@
         app:layout_constraintStart_toEndOf="@id/ivMenu"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Account Settings" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Small"
+        android:id="@+id/tvDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:textColor="@color/light"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivAction"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Email.com" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivAction"

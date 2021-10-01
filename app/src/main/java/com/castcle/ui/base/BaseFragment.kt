@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,10 +15,10 @@ import com.castcle.android.R
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.data.error.userReadableMessage
 import com.castcle.di.ActivityViewModelFactory
 import com.castcle.di.FragmentViewModelFactory
 import com.castcle.extensions.inflate
+import com.castcle.usecase.OverrideLocaleAppImpl
 import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -31,6 +30,8 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
     @Inject lateinit var viewModelFactory: FragmentViewModelFactory
 
     @Inject lateinit var activityViewModelFactory: ActivityViewModelFactory
+
+    @Inject lateinit var overrideLocaleApp: OverrideLocaleAppImpl
 
     val viewModel: VM by lazy { viewModel() }
 
@@ -57,6 +58,11 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (this as? BaseFragmentCallbacks)?.let { initViewModel() }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        this.context?.let { overrideLocaleApp.execute(it) }
     }
 
     override fun onCreateView(

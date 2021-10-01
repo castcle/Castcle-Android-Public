@@ -37,6 +37,7 @@
         android:id="@+id/tvEmptySubTitleAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_clickable_item"
         android:drawableLeft="@drawable/ic_reload"
         android:drawablePadding="@dimen/_4sdp"
         android:textColor="@color/light"

@@ -62,8 +62,12 @@ class FeedFragmentViewModelImpl @Inject constructor(
         get() = this
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
 
     private val _error = PublishSubject.create<Throwable>()
+    override val onError: Observable<Throwable>
+        get() = _error
 
     private val _userProfile = MutableLiveData<User>()
     override val userProfile: LiveData<User>
@@ -103,8 +107,10 @@ class FeedFragmentViewModelImpl @Inject constructor(
             circleSlug = FeedContentType.CIRCLE_SLUG.type,
             mode = ModeType.MODE_CURRENT.type
         )
+        _showLoading.onNext(true)
         feedNonAuthRepository.getFeed(feedRequestHeader).cachedIn(viewModelScope)
     }, {
+        _showLoading.onNext(false)
         _feedUiMode = it
     })
 

@@ -11,6 +11,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.empty.EmptyState.*
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import io.reactivex.subjects.BehaviorSubject
@@ -74,6 +75,9 @@ class EmptyStateTemplate(
                 tvEmptySubTitle.gone()
                 tvEmptySubTitleAction.visible()
                 tvEmptySubTitleAction.text = subtitle
+                tvEmptySubTitleAction.subscribeOnClick {
+                    _itemClick.onNext(TemplateEventClick.ReTryClick())
+                }.addToDisposables()
             } else {
                 tvEmptySubTitle.gone()
             }

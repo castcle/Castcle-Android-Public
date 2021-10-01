@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 interface AppPreferences {
     var language: String?
+    var preferredLanguage: String?
     var appTheme: Int?
     var cameraPermissionDenied: Boolean?
     var galleryPermissionDenied: Boolean?
@@ -14,10 +15,11 @@ interface AppPreferences {
     var appVersion: Int?
     var bottomNavigation: String?
     var castcleId: String?
+    var email: String?
 
     fun clearAll() = Completable.fromAction {
         castcleId = null
-        language = null
+        preferredLanguage = null
     }
 }
 
@@ -28,6 +30,10 @@ class AppPreferencesImpl @Inject constructor(
     override var language: String?
         get() = getString(KEY_LANGUAGE)
         set(language) = setOrRemove(KEY_LANGUAGE, language)
+
+    override var preferredLanguage: String?
+        get() = getString(KEY_LANGUAGE_PREFERRED)
+        set(language) = setOrRemove(KEY_LANGUAGE_PREFERRED, language)
 
     override var appTheme: Int?
         get() = getInt(KEY_THEME)
@@ -56,6 +62,10 @@ class AppPreferencesImpl @Inject constructor(
     override var castcleId: String?
         get() = getString(KEY_MEMBER_ID)
         set(value) = setOrRemove(KEY_MEMBER_ID, value)
+
+    override var email: String?
+        get() = getString(KEY_EMAIL)
+        set(value) = setOrRemove(KEY_EMAIL, value)
 
     private fun getString(key: String): String? {
         return preferences.getString(key, null)
@@ -100,11 +110,13 @@ class AppPreferencesImpl @Inject constructor(
 }
 
 private const val KEY_LANGUAGE = "language"
+private const val KEY_LANGUAGE_PREFERRED = "language-preferred"
 private const val KEY_THEME = "app_theme"
 private const val KEY_CAMERA_PERMISSION = "camera_permission"
 private const val KEY_GALLERY_PERMISSION = "gallery_permission"
 private const val KEY_LOCATION_PERMISSION = "location_permission"
 private const val KEY_MEMBER_ID = "member_id"
+private const val KEY_EMAIL = "email_id"
 const val KEY_APP_VERSION = "app_version"
 const val KEY_BOTTOM_NAVIGATION = "bottom_navigation"
 const val KEY_CALL_ALLOWED_MAIN_ACTIVITY = "call_allowed"

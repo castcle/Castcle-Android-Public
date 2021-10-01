@@ -33,12 +33,14 @@ object StaticSeetingMenu {
             header = R.string.setting_menu_header_account,
             menuItem = listOf(
                 MenuItem(
-                    menuName = R.string.setting_menu_profile,
-                    icon = R.drawable.ic_avata_profile
+                    menuName = R.string.setting_account,
+                    icon = R.drawable.ic_avata_profile,
+                    menuType = SettingMenuType.PROFILE
                 ),
                 MenuItem(
                     menuName = R.string.setting_menu_privacy,
-                    icon = R.drawable.ic_policry
+                    icon = R.drawable.ic_policry,
+                    menuType = SettingMenuType.PRIVACY
                 )
             )
         ),
@@ -47,7 +49,8 @@ object StaticSeetingMenu {
             menuItem = listOf(
                 MenuItem(
                     menuName = R.string.setting_menu_language,
-                    icon = R.drawable.ic_language
+                    icon = R.drawable.ic_language,
+                    menuType = SettingMenuType.LANGUAGE
                 )
             )
         ),
@@ -56,7 +59,36 @@ object StaticSeetingMenu {
             menuItem = listOf(
                 MenuItem(
                     menuName = R.string.setting_menu_about_us,
-                    icon = R.drawable.ic_info
+                    icon = R.drawable.ic_info,
+                    menuType = SettingMenuType.ABOUT_US
+                )
+            )
+        )
+    )
+
+    val staticProfileSetting = listOf(
+        SettingMenuUiModel(
+            header = R.string.setting_account_section_account_setting,
+            menuItem = listOf(
+                MenuItem(
+                    menuName = R.string.setting_account_email,
+                    icon = 0,
+                    menuType = SettingMenuType.SETTING_EMAIL
+                ),
+                MenuItem(
+                    menuName = R.string.setting_account_password,
+                    icon = 0,
+                    menuType = SettingMenuType.SETTING_PASSWORD
+                )
+            )
+        ),
+        SettingMenuUiModel(
+            header = R.string.setting_account_section_account_control,
+            menuItem = listOf(
+                MenuItem(
+                    menuName = R.string.setting_account_delete_account,
+                    icon = 0,
+                    menuType = SettingMenuType.ABOUT_US
                 )
             )
         )

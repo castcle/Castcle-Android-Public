@@ -112,6 +112,7 @@ class InputEditText(
                     R.styleable.TextInput_imeOptions, 0
                 )
                 setupDrawableEnd(styles)
+                setupDrawableStart(styles)
                 isEditable = styles.getBoolean(R.styleable.TextInput_editable, true)
             }
         } finally {
@@ -312,6 +313,20 @@ class InputEditText(
         with(binding) {
             etTextInputPrimary.setTransformationPassword(endableTransform)
             endableTransform = !endableTransform
+        }
+    }
+
+    private fun setupDrawableStart(styles: TypedArray) {
+        styles.getDrawable(R.styleable.TextInput_drawableStart)?.let { drawableEnd ->
+            with(binding.ibTextInputDrawableStart) {
+                visible()
+                setImageDrawable(drawableEnd)
+                setOnClickListener {
+                    onDrawableEndClickListener?.invoke(primaryText)
+                }
+            }
+            val params = binding.etTextInputPrimary.layoutParams as MarginLayoutParams
+            params.marginEnd = resources.getDimensionPixelSize(R.dimen._25sdp)
         }
     }
 

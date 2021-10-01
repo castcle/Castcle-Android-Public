@@ -2,6 +2,7 @@ package com.castcle.ui.onboard
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,12 +15,14 @@ import com.castcle.android.R
 import com.castcle.android.databinding.ActivityOnBoardBinding
 import com.castcle.android.databinding.LayoutBottomMenuCustomBinding
 import com.castcle.data.staticmodel.BottomNavigateStatic
+import com.castcle.data.staticmodel.LanguageStatic
 import com.castcle.extensions.*
 import com.castcle.networking.service.interceptor.AppRefreshTokenFailedListener
 import com.castcle.networking.service.interceptor.AppTokenExpiredDelegate
 import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.usecase.OverrideLocaleAppImpl
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import javax.inject.Inject
@@ -29,6 +32,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     ViewBindingContract {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    @Inject lateinit var overrideLocaleApp: OverrideLocaleAppImpl
 
     private var currentMenuItem = R.id.onboard_nav_graph
     private var currentNavController: LiveData<NavController>? = null
@@ -42,6 +47,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     override val layoutResource: Int = 0
 
     override fun beforeLayoutInflated() {
+        overrideLocaleApp.execute(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +58,15 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         }
+
+        if (viewModel.currentAppLanguage.value.isNullOrEmpty()) {
+            viewModel.setCurrentAppLanguage(LanguageStatic.appLanguage)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        overrideLocaleApp.execute(this)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -154,6 +169,11 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.aboutYouFragment,
                 R.id.createBlogFragment,
                 R.id.profileFragment,
+                R.id.languageAppFragment,
+                R.id.languageFragment,
+                R.id.createPasswordFragment,
+                R.id.changePasswordFragment,
+                R.id.completeFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

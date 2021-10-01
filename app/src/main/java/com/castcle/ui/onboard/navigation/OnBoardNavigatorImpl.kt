@@ -10,13 +10,15 @@ import androidx.navigation.*
 import com.castcle.android.R
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.*
+import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.containsSomeOf
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
-import com.castcle.ui.common.dialog.recast.RecastDialogFragment
 import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
 import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
+import com.castcle.ui.setting.applanguage.AppLanguageFragmentArgs
+import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragmentArgs
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import com.castcle.ui.signin.password.PasswordFragmentArgs
 import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentArgs
@@ -265,12 +267,20 @@ class OnBoardNavigatorImpl @Inject constructor(
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
-                if (navController.currentDestination?.id == R.id.feedFragment) {
-                    navController.navigate(
-                        R.id.actionFeedFragmentToSettingFragment
-                    )
-                } else {
-                    unsupportedNavigation()
+                when (navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToSettingFragment
+                        )
+                    }
+                    R.id.completeFragment -> {
+                        navController.navigate(
+                            R.id.actionCompleteFragmentToSettingFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
                 }
             }
             else -> {
@@ -490,6 +500,134 @@ class OnBoardNavigatorImpl @Inject constructor(
                         navController.navigate(
                             R.id.actionDialogRecastFragmentToCreateQuoteFragment,
                             CreateQuoteFragmentArgs(contentUiModel).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToLanguageFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.settingFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingFragmentToLanguageFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToAppLanguageFragment(isAppLanguage: Boolean) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.languageFragment -> {
+                        navController.navigate(
+                            R.id.actionLanguageFragmentToAppLanguageFragment,
+                            AppLanguageFragmentArgs(isAppLanguage).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToSettingProfileFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.settingFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingFragmentToSettingProfileFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToChangePasswordFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.settingProfileFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingProfileFragmentToChangePasswordFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToCreatePasswordFragment(verificationUiModel: VerificationUiModel) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.changePasswordFragment -> {
+                        navController.navigate(
+                            R.id.actionChangePasswordFragmentToCreatePasswordFragment,
+                            CreatePasswordFragmentArgs(verificationUiModel).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToCompleteFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.createPasswordFragment -> {
+                        navController.navigate(
+                            R.id.actionCreatePasswordToCompleteFragment
                         )
                     }
                     else -> {

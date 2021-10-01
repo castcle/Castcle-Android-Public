@@ -2,8 +2,12 @@ package com.castcle.ui.splashscreen
 
 import android.annotation.SuppressLint
 import com.castcle.usecase.GuestLoginCompletableUseCase
+import com.castcle.usecase.setting.GetCurrentLocalSingleUseCase
+import com.castcle.usecase.setting.SetAppLanguageUseCase
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -33,8 +37,14 @@ import javax.inject.Inject
 @SuppressLint("CustomSplashScreen")
 class SplashScreenViewModelImpl @Inject constructor(
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
-    private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase
+    private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase,
+    private val getCurrentLocalSingleUseCase: GetCurrentLocalSingleUseCase,
+    private val setAppLanguageUseCase: SetAppLanguageUseCase
 ) : SplashScreenViewModel() {
+
+    init {
+        initAppLanguage()
+    }
 
     override val isGuestMode: Boolean
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
@@ -45,5 +55,20 @@ class SplashScreenViewModelImpl @Inject constructor(
         } else {
             Completable.complete()
         }
+    }
+
+    private fun initAppLanguage() {
+        getCurrentLocaleApp().subscribeBy {
+            setAppLanguage(it)
+        }.addToDisposables()
+    }
+
+    private fun setAppLanguage(languageCode: String) {
+        setAppLanguageUseCase.execute(languageCode)
+            .subscribe().addToDisposables()
+    }
+
+    private fun getCurrentLocaleApp(): Single<String> {
+        return getCurrentLocalSingleUseCase.execute(Unit)
     }
 }

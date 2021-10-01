@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/clNotiication"
     android:background="@drawable/bg_notification">
 
     <androidx.appcompat.widget.AppCompatTextView
