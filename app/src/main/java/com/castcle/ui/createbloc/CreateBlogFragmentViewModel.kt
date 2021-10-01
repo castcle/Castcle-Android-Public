@@ -53,6 +53,8 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract val onSuccess: Observable<Boolean>
 
+    abstract val onError: Observable<Throwable>
+
     interface Input {
         fun validateMessage(message: String): Completable
 

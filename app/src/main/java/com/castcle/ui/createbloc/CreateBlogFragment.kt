@@ -17,6 +17,7 @@ import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
+import com.castcle.data.error.userReadableMessage
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.createbloc.adapter.ImageFloxBoxAdapter
@@ -199,6 +200,10 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         viewModel.messageLength.subscribe {
             onBindMessageCount(it)
         }.addToDisposables()
+
+        viewModel.onError.subscribe {
+            displayError(it)
+        }.addToDisposables()
     }
 
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
@@ -363,11 +368,11 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun handleOnError(case: Throwable) {
-        (context as OnBoardActivity).displayError(case)
+        displayError(case)
     }
 
     private fun handleOnResponse(createContentUiModel: CreateContentUiModel) {
-        if (!createContentUiModel.type.isNullOrBlank()) {
+        if (createContentUiModel.type.isNullOrBlank()) {
             Toast.makeText(activity, "Can not Create Post", Toast.LENGTH_LONG).also {
                 it.show()
             }

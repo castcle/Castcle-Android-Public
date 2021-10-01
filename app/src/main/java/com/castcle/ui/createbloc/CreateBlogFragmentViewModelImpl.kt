@@ -60,6 +60,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private val _showLoading = BehaviorSubject.create<Boolean>()
 
     private val _error = PublishSubject.create<Throwable>()
+    override val onError: Observable<Throwable>
+        get() = _error
 
     private val _message = BehaviorSubject.create<String>()
 
@@ -135,7 +137,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
             _showLoading.onNext(true)
         }.doOnSuccess {
             _showLoading.onNext(true)
-        }.onErrorReturn { CreateContentUiModel() }
+        }.onErrorReturn {
+            _error.onNext(it)
+            CreateContentUiModel()
+        }
     }
 
     private fun postCreateContent(): Single<CreateContentUiModel> {
@@ -155,7 +160,7 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
             _showLoading.onNext(true)
         }.doOnSuccess {
             _showLoading.onNext(true)
-        }.onErrorReturn { CreateContentUiModel() }
+        }
     }
 
     private val contentType: Observable<ContentType>

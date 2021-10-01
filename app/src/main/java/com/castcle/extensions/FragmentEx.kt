@@ -45,7 +45,11 @@ fun Fragment.addOnBackPressedCallback(block: () -> Unit) {
 }
 
 fun Fragment.displayError(error: Throwable) {
-    val message = error.userReadableMessage(this.requireContext())
+    val message = if(error.userReadableMessage(this.requireContext()).isBlank()){
+        error.cause?.message
+    }else{
+        error.userReadableMessage(this.requireContext())
+    }
     Toast.makeText(this.requireContext(), message, Toast.LENGTH_LONG).also { it.show() }
 }
 

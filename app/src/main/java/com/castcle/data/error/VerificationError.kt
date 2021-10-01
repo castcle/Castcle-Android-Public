@@ -32,7 +32,7 @@ class VerificationError(
 ) {
     fun hasPasswordInvalid() = CODE_INVALID_PASSWORD == code
 
-    fun hasResetCodeInvalid() = CODE_INVALID_PASSWORD == code
+    fun hasResetCodeInvalid() = CODE_INVALID_RESET_CODE == code
 }
 
 private const val CODE_INVALID_PASSWORD = "3011"
