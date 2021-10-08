@@ -7,6 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutImageContentTemplateBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.adapter.ImageTemplateFloxBoxAdapter
+import com.castcle.extensions.gone
+import com.castcle.extensions.visible
 import com.google.android.flexbox.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -58,11 +60,20 @@ class ImageContentTemplate(
         fbLayoutManager.alignItems = AlignItems.FLEX_START
     }
 
-    fun bindImageContent(itemUiModel: ContentUiModel) {
+    fun bindImageContent(itemUiModel: ContentUiModel, onMargin: Boolean = false) {
         with(binding) {
-            rcImageContent.layoutManager = fbLayoutManager
-            rcImageContent.adapter = ImageTemplateFloxBoxAdapter().also {
-                adapterImageTemplate = it
+            if (onMargin) {
+                rcImageContentOnMargin.visible()
+                rcImageContent.gone()
+                rcImageContentOnMargin.layoutManager = fbLayoutManager
+                rcImageContentOnMargin.adapter = ImageTemplateFloxBoxAdapter().also {
+                    adapterImageTemplate = it
+                }
+            } else {
+                rcImageContent.layoutManager = fbLayoutManager
+                rcImageContent.adapter = ImageTemplateFloxBoxAdapter().also {
+                    adapterImageTemplate = it
+                }
             }
         }
         var listImage = itemUiModel.payLoadUiModel.photo.imageContent

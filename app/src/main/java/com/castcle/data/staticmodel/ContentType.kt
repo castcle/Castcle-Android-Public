@@ -29,5 +29,7 @@ enum class ContentType(val type: String) {
     IMAGE("image"),
     SHORT("short"),
     BLOG("blog"),
-    FEED("feed")
+    FEED("feed"),
+    RECAST("recast"),
+    QUOTE("quote")
 }

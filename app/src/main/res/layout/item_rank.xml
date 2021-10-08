@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clQuotecastPost"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_2sdp"
+    android:background="@color/black_night">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivRank"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_margin="@dimen/_8sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_rank_up" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.xSmall"
+        android:id="@+id/tvTrend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:paddingTop="@dimen/_2sdp"
+        android:paddingBottom="@dimen/_4sdp"
+        android:text="@string/search_title_rank"
+        android:textColor="@color/gray_light"
+        app:layout_constraintEnd_toStartOf="@id/ivArrowRight"
+        app:layout_constraintStart_toEndOf="@id/ivRank"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1 · Trending" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Regular"
+        android:id="@+id/tvHastag"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_2sdp"
+        android:paddingBottom="@dimen/_4sdp"
+        android:text="@string/search_title_rank"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/tvTrend"
+        app:layout_constraintStart_toStartOf="@id/tvTrend"
+        app:layout_constraintTop_toBottomOf="@id/tvTrend"
+        tools:text="#Defi" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.xSmall"
+        android:id="@+id/tvTrendCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_2sdp"
+        android:paddingBottom="@dimen/_4sdp"
+        android:text="@string/search_title_rank"
+        android:textColor="@color/gray_light"
+        app:layout_constraintEnd_toEndOf="@id/tvTrend"
+        app:layout_constraintEnd_toStartOf="@id/ivArrowRight"
+        app:layout_constraintStart_toEndOf="@id/ivRank"
+        app:layout_constraintStart_toStartOf="@id/tvTrend"
+        app:layout_constraintTop_toBottomOf="@id/tvHastag"
+        tools:text="175.0k Post" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivArrowRight"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="@dimen/_12sdp"
+        app:srcCompat="@drawable/ic_arrow_right" />
+</androidx.constraintlayout.widget.ConstraintLayout>

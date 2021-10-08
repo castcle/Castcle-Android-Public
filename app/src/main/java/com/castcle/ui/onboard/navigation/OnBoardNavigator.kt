@@ -84,4 +84,8 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToCreatePasswordFragment(verificationUiModel: VerificationUiModel)
 
     fun navigateToCompleteFragment()
+
+    fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean = false)
+
+    fun navigateToSearchTrendFragmrnt()
 }

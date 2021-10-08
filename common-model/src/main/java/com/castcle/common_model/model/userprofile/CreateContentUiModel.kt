@@ -28,18 +28,28 @@ import com.castcle.common_model.model.feed.*
 
 data class CreateContentUiModel(
     var type: String? = "",
-    var header: String? = "",
+    var message: String? = "",
     var content: String? = "",
+    var created: String? = "",
+    var updated: String? = "",
+    val commentedUiModel: CommentedUiModel? = null,
     val photo: PhotoUiModel = PhotoUiModel(),
-    val link: List<LinkUiModel> = emptyList(),
-    val author: AuthorUiModel = AuthorUiModel()
+    val link: LikedUiModel? = null,
+    val author: AuthorUiModel = AuthorUiModel(),
+    val featureUiModel: FeatureUiModel? = null
 )
 
 fun CreateCastResponse.toCreateContentUiModel() =
     CreateContentUiModel(
-        type = type,
-        header = payload.header,
-        content = payload.content,
-        photo = payload.photo.toPhotoUiMode(),
-        author = author?.toAuthorUiModel() ?: AuthorUiModel()
+        type = payload.type,
+        message = payload.payload.message,
+        commentedUiModel = payload.commentedResponse?.toCommentedUiModel(),
+        photo = payload.payload.photo?.let {
+            it.toPhotoUiMode()
+        } ?: PhotoUiModel(),
+        link = payload.likedResponse?.toLikedUiModel(),
+        author = payload.author.toAuthorUiModel(),
+        featureUiModel = payload.feature?.let {
+            it.toFeatureUiModel()
+        }
     )

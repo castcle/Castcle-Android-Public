@@ -2,13 +2,26 @@ package com.castcle.ui.profile.childview.all
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.data.staticmodel.ContentType
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
-import com.castcle.ui.common.CommonMockAdapter
+import com.castcle.ui.common.CommonAdapter
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST
+import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.FeedItemClick
+import com.castcle.ui.onboard.OnBoardViewModel
+import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
-import com.castcle.ui.profile.adapter.VerticalDecoration
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -38,7 +51,9 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentContentAllBinding> {
 
-    private var adapterCommon: CommonMockAdapter? = null
+    private lateinit var adapterPagingCommon: CommonAdapter
+
+    @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentContentAllBinding
         get() = { inflater, container, attachToRoot ->
@@ -52,27 +67,125 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(ProfileFragmentViewModel::class.java)
 
-    override fun initViewModel() {
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
 
+    override fun initViewModel() {
+        if (activityViewModel.isContentTypeMe.value == true) {
+            val feedRequestHeader = FeedRequestHeader(isMe = true)
+            viewModel.fetachUserProfileContent(feedRequestHeader)
+        } else {
+            val feedRequestHeader = FeedRequestHeader(
+                castcleId = activityViewModel.isContentTypeYouId.value ?: ""
+            )
+            viewModel.fetachUserViewProfileContent(feedRequestHeader)
+        }
     }
 
     override fun setupView() {
         viewModel.getFeedResponse(ContentType.CONTENT)
-        val verticalDecoration = VerticalDecoration(requireContext())
-        with(binding.rvContent) {
-            adapter = CommonMockAdapter().also {
-                adapterCommon = it
+        with(binding) {
+            rvContent.adapter = CommonAdapter().also {
+                adapterPagingCommon = it
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
+                val refresher = loadStates.refresh
+                val displayEmpty = (refresher is LoadState.NotLoading &&
+                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                handleEmptyState(displayEmpty)
             }
         }
     }
 
+    private fun handleContentClick(click: Click) {
+        when (click) {
+            is FeedItemClick.FeedAvatarClick -> {
+                handleNavigateAvatarClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedLikeClick -> {
+                handleLikeClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedRecasteClick -> {
+                handleRecastClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedCommentClick -> {
+                handleCommentClick(click.contentUiModel)
+            }
+        }
+    }
+
+    private fun handleCommentClick(contentUiModel: ContentUiModel) {
+        navigateToFeedDetailFragment(contentUiModel)
+    }
+
+    private fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel) {
+        onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
+    }
+
+    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
+        val deepLink = makeDeepLinkUrl(
+            requireContext(), Input(
+                type = DeepLinkTarget.USER_PROFILE_YOU,
+                contentData = contentUiModel.payLoadUiModel.author.displayName
+            )
+        ).toString()
+        navigateByDeepLink(deepLink)
+    }
+
+    private fun navigateByDeepLink(url: String) {
+        onBoardNavigator.navigateByDeepLink(url.toUri())
+    }
+
+    private fun handleLikeClick(contentUiModel: ContentUiModel) {
+
+    }
+
+    private fun handleRecastClick(contentUiModel: ContentUiModel) {
+        navigateToRecastDialogFragment(contentUiModel)
+    }
+
+    private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+        onBoardNavigator.navigateToRecastDialogFragment(contentUiModel)
+
+        getNavigationResult<ContentUiModel>(
+            onBoardNavigator,
+            R.id.dialogRecastFragment,
+            KEY_REQUEST,
+            onResult = {
+                adapterPagingCommon.updateStateItemRecast(it)
+            })
+    }
+
+    private fun handleEmptyState(show: Boolean) {
+        with(binding) {
+            rvContent.visibleOrGone(!show)
+        }
+        with(binding.empState) {
+            visibleOrGone(show)
+            bindUiState(com.castcle.common_model.model.empty.EmptyState.FEED_EMPTY)
+        }
+    }
+
     override fun bindViewEvents() {
-        viewModel.userProfileContentMock.subscribe {
-            adapterCommon?.uiModels = it
-        }.addToDisposables()
+        with(adapterPagingCommon) {
+            itemClick.subscribe {
+                handleContentClick(it)
+            }.addToDisposables()
+        }
     }
 
     override fun bindViewModel() {
-
+        with(viewModel) {
+            launchOnLifecycleScope {
+                userProfileContentRes.collectLatest {
+                    adapterPagingCommon.submitData(lifecycle, it)
+                }
+            }
+        }
     }
 }

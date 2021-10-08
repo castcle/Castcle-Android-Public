@@ -19,6 +19,7 @@ import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +82,9 @@ class FeedFragmentViewModelImpl @Inject constructor(
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     private fun setUserProfileData(user: Optional<User>) {
-        _userProfile.value = user.get()
+        if (user.isPresent) {
+            _userProfile.value = user.get()
+        }
     }
 
     init {
@@ -119,31 +122,26 @@ class FeedFragmentViewModelImpl @Inject constructor(
         get() = _onUpdateContentLike
 
     override fun updateLikeContent(contentUiModel: ContentUiModel) {
-        val feedContent = _feedContentMock.value
-        feedContent?.find {
-            it.payLoadUiModel.author.displayName == contentUiModel.payLoadUiModel.author.displayName
-                && it.contentType == contentUiModel.contentType
-        }?.apply {
-            this.payLoadUiModel.likedUiModel.liked = !this.payLoadUiModel.likedUiModel.liked
-        }?.let {
-            setFeedContent(feedContent)
-            postLikeContent(contentUiModel)
-                .subscribe()
-                .addToDisposables()
-            _onUpdateContentLike.onNext(contentUiModel)
-        }
+        postLikeContent(contentUiModel)
+            .subscribeBy(
+                onComplete = {
+                    _onUpdateContentLike.onNext(contentUiModel)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            )
+            .addToDisposables()
     }
 
     private fun postLikeContent(contentUiModel: ContentUiModel): Completable {
         return likeContentCompletableUseCase
             .execute(
                 LikeContentCompletableUseCase.Input(
-                    contentUiModel.id,
+                    contentUiModel.payLoadUiModel.contentId,
                     contentUiModel.payLoadUiModel.likedUiModel.liked
                 )
-            ).onErrorResumeNext {
-                Completable.complete()
-            }.doOnError {
+            ).doOnError {
                 _error.onNext(it)
             }
     }

@@ -43,34 +43,35 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:825985676502:android:94580162268800363f8577",
+        "mobilesdk_app_id": "1:946784514991:android:ac2a54362ffcb0f71ef55a",
         "android_client_info": {
           "package_name": "com.castcle.android.dev"
         }
       },
       "oauth_client": [
         {
-          "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+          "client_id": "946784514991-ld1lttpv93slvt085s5501e8e01l3p21.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDnEVX8_k8YRyIl3qYeuQDhXkAvqTuMrQQ"
+          "current_key": "AIzaSyDax5IYmGAbdE8GZ2-y3b4fPtZPhYVL02A"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "825985676502-2c2b92lk0ocoinkbej6h0ro16vh7q84h.apps.googleusercontent.com",
+              "client_id": "946784514991-ld1lttpv93slvt085s5501e8e01l3p21.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "825985676502-8g9lng1bgk1ag9jmqjtahfvctvkgk37c.apps.googleusercontent.com",
+              "client_id": "946784514991-4nii9754v8ajshie93hfc72f6ueihe1s.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.castcle.ios.prod"
+                "bundle_id": "com.castcle.ios.devs",
+                "app_store_id": "1508572894"
               }
             }
           ]

@@ -25,12 +25,12 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
+        android:text="@string/feed_title_toolbar"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToolbarProfileButton"
         app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Page Title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivToolbarProfileButton"

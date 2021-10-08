@@ -3,9 +3,9 @@ package com.castcle.di.modules.onboard
 import android.app.Activity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import com.castcle.data.datasource.CommentDataSourceModule
 import com.castcle.data.datasource.UserProfileDataSourceModule
-import com.castcle.data.repository.UserProfileRepository
-import com.castcle.data.repository.UserProfileRepositoryImpl
+import com.castcle.data.repository.*
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
 import com.castcle.localization.LocalizedResources
@@ -15,6 +15,7 @@ import com.castcle.networking.api.auth.AuthenticationDataSourceModule
 import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.feed.FeedNonAuthenticationDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
+import com.castcle.networking.api.search.SearchDataSourceModule
 import com.castcle.networking.api.setting.SettingDataSourceModule
 import com.castcle.ui.base.BaseNavigator
 import com.castcle.ui.base.BaseNavigatorImpl
@@ -59,7 +60,9 @@ import dagger.multibindings.IntoMap
         AuthenticationDataSourceModule::class,
         FeedNonAuthenticationDataSourceModule::class,
         UserProfileDataSourceModule::class,
-        SettingDataSourceModule::class
+        SettingDataSourceModule::class,
+        CommentDataSourceModule::class,
+        SearchDataSourceModule::class
     ]
 )
 abstract class OnBoardActivityModule {
@@ -101,4 +104,10 @@ abstract class OnBoardActivityModule {
     abstract fun userProfileRepository(
         userRepository: UserProfileRepositoryImpl
     ): UserProfileRepository
+
+    @Binds
+    @ActivityScope
+    abstract fun commentRepository(
+        commentRepository: CommentRepositoryImpl
+    ): CommentRepository
 }

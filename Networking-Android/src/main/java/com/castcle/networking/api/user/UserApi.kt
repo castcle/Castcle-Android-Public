@@ -1,12 +1,9 @@
 package com.castcle.networking.api.user
 
+import com.castcle.common_model.model.feed.api.response.ContentResponse
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.networking.service.common.*
-import com.castcle.networking.service.common.EXCLUDE
-import com.castcle.networking.service.common.MODE
-import com.castcle.networking.service.common.PAGE_NUMBER
-import com.castcle.networking.service.common.PAGE_SIZE
 import io.reactivex.Flowable
 import io.reactivex.Single
 import retrofit2.Response
@@ -43,22 +40,23 @@ interface UserApi {
 
     @GET("users/{castcleId}")
     fun getUserViewProfileId(
-        @Query("castcleId") castcleId: String
+        @Path("castcleId") castcleId: String
     ): Single<Response<UserProfileResponse>>
 
     @GET("users/me/contents")
     suspend fun getUserProfileContent(
+        @Query(FILTER_TYPE) filterType: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<FeedResponse>
+    ): Response<ContentResponse>
 
     @GET("users/{castcleId}/contents")
     suspend fun getUserViewProfileContent(
-        @Query(EXCLUDE) exclude: String,
-        @Query(MODE) mode: String,
+        @Path("castcleId") castcleId: String,
+        @Query(FILTER_TYPE) filterType: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<FeedResponse>
+    ): Response<ContentResponse>
 
     @PUT("users/me")
     fun updateUserProfile(

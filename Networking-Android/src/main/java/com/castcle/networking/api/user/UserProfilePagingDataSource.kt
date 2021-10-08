@@ -31,6 +31,7 @@ import com.castcle.common_model.model.feed.*
 
 class UserProfilePagingDataSource(
     private val userApi: UserApi,
+    private val contentRequestHeader: FeedRequestHeader
 ) : PagingSource<Int, ContentUiModel>() {
 
 
@@ -40,10 +41,11 @@ class UserProfilePagingDataSource(
         return try {
             val response = userApi.getUserProfileContent(
                 pageNumber = pageNumber,
-                pageSize = pageSize
+                pageSize = pageSize,
+                filterType = contentRequestHeader.type
             )
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toContentFeedUiModel()
+            val data = pagedResponse?.payload?.toContentUiModel()
             var nextPageNumber: Int? = null
             if (pagedResponse?.pagination?.next != null) {
                 val uri = Uri.parse(pagedResponse.pagination.next.toString())

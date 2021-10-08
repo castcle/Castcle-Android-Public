@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/black_light"
     tools:context="com.castcle.ui.feed.FeedFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -24,6 +24,7 @@
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="@dimen/_45sdp"
+                app:whatYouMind_input="@string/feed_what_you_mind_bar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +39,7 @@
             android:id="@+id/clFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_4sdp">
+            android:background="@color/black_nero">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcFeedFillter"
@@ -82,6 +83,8 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingBottom="60dp"
+            tools:itemCount="3"
+            tools:listitem="@layout/layout_feed_template_short"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"

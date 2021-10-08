@@ -1,7 +1,6 @@
 package com.castcle.common_model.model.userprofile
 
-import com.castcle.common_model.model.feed.api.response.Author
-import com.castcle.common_model.model.feed.api.response.PayloadContent
+import com.castcle.common_model.model.feed.api.response.*
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -29,7 +28,5 @@ import com.google.gson.annotations.SerializedName
 //  Created by sklim on 13/9/2021 AD at 11:26.
 
 data class CreateCastResponse(
-    @SerializedName("type") var type: String,
-    @SerializedName("payload") var payload: PayloadContent,
-    @SerializedName("author") var author: Author? = null,
+    @SerializedName("payload") var payload: PayloadResponse,
 )

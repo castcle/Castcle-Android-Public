@@ -78,6 +78,22 @@ class OnBoardViewModelImpl @Inject constructor(
     override val preferredLanguageSelected: LiveData<MutableList<LanguageUiModel>>
         get() = _preferredLanguageSelected
 
+    private var _isContentTypeMe = MutableLiveData<Boolean>()
+    override val isContentTypeMe: LiveData<Boolean>
+        get() = _isContentTypeMe
+
+    override fun setContentTypeMe(isContent: Boolean) {
+        _isContentTypeMe.value = isContent
+    }
+
+    private var _isContentTypeYouId = MutableLiveData<String>()
+    override val isContentTypeYouId: LiveData<String>
+        get() = _isContentTypeYouId
+
+    override fun setContentTypeYouId(isContentId: String) {
+        _isContentTypeYouId.value = isContentId
+    }
+
     override fun onRefreshProfile() {
         userProfileSingleUseCase.execute(Unit)
             .subscribeBy(

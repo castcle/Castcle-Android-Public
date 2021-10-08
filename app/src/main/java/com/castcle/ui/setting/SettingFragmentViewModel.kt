@@ -85,6 +85,8 @@ class SettingFragmentViewModelImpl @Inject constructor(
             .ignoreElement()
 
     private fun setUserProfileData(user: Optional<User>) {
-        _userProfile.value = user.get()
+        if (user.isPresent) {
+            _userProfile.value = user.get()
+        }
     }
 }

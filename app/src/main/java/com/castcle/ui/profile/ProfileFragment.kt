@@ -13,6 +13,7 @@ import com.castcle.data.staticmodel.ContentType
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.adapter.ContentPageAdapter
 import com.castcle.ui.profile.viewholder.UserProfileAdapter
@@ -73,13 +74,16 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(ProfileFragmentViewModel::class.java)
 
-    override fun initViewModel() {
-        if (isProfileIsMe()) {
-            viewModel.fetachUserProfileContent()
-        }
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
     }
 
+    override fun initViewModel() = Unit
+
     private fun isProfileIsMe(): Boolean {
+        activityViewModel.setContentTypeMe(profileType == PROFILE_TYPE_ME)
+        activityViewModel.setContentTypeYouId(profileId)
         return profileType == PROFILE_TYPE_ME
     }
 
@@ -122,22 +126,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     override fun bindViewEvents() {
 
-//        with(viewModel) {
-//            launchOnLifecycleScope {
-//                userProfileContentRes.collectLatest {
-//                    userProfileAdapter.submitData(it)
-//                }
-//            }
-//        }
-
-//        lifecycleScope.launchWhenCreated {
-//            userProfileAdapter.loadStateFlow.collectLatest { loadStates ->
-//                val refresher = loadStates.refresh
-//                val displayEmptyMessage = (refresher is LoadState.NotLoading &&
-//                    refresher.endOfPaginationReached && userProfileAdapter.itemCount == 0)
-//                binding.tvMessageError.visibleOrGone(displayEmptyMessage)
-//            }
-//        }
     }
 
     override fun bindViewModel() {
@@ -197,4 +185,3 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 }
 
 private const val PROFILE_TYPE_ME = "me"
-private const val PROFILE_TYPE_YOU = "you"

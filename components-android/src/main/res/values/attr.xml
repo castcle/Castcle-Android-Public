@@ -53,9 +53,14 @@
         <attr name="mentionTextView_selectedColor" format="color" />
 
         <attr name="linkType" format="flags">
-            <flag name="hashtag" value="1"/>
-            <flag name="mention" value="2"/>
-            <flag name="url" value="4"/>
+            <flag name="hashtag" value="1" />
+            <flag name="mention" value="2" />
+            <flag name="url" value="4" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="WhatYouMindOption">
+        <attr name="whatYouMind_input" format="string" />
+        <attr name="whatYouMind_show_avatar" format="boolean" />
     </declare-styleable>
 </resources>

@@ -2,6 +2,7 @@ package com.castcle.networking.api.feed.datasource
 
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
@@ -36,6 +37,14 @@ interface FeedRepository {
         feedRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>>
 
+    suspend fun getCommented(
+        commentRequest: CommentRequest
+    ): Flow<PagingData<ContentUiModel>>
+
+    fun createComment(
+        commentRequest: CommentRequest
+    ): Single<ContentUiModel>
+
     fun likeContent(
         contentId: String,
         likeStatus: Boolean
@@ -48,4 +57,13 @@ interface FeedRepository {
     fun quoteCastContentPost(
         recastRequest: RecastRequest
     ): Single<ContentUiModel>
+
+    fun likeComment(
+        likeCommentRequest: LikeCommentRequest,
+        likeStatus: Boolean
+    ): Completable
+
+    fun deleteComment(
+        likeCommentRequest: LikeCommentRequest,
+    ): Completable
 }

@@ -155,4 +155,18 @@
     <string name="setting_create_password_error">Your password is follow a condition</string>
     <string name="setting_complete_change_title">Your password already changed</string>
     <string name="setting_complete_change_button">Back to menu</string>
+    <string name="comment_title_hint">Add a comment</string>
+    <string name="comment_title">Replying to %s</string>
+    <string name="comment_item_reply">Reply</string>
+    <string name="comment_item_like">Like</string>
+    <string name="comment_footer_retweets"><font color="#FFFFFF">"%s"</font> Retweets</string>
+    <string name="comment_footer_quote"><font color="#FFFFFF">"%s"</font> Quote Tweets</string>
+    <string name="comment_footer_liked"><font color="#FFFFFF">"%s"</font> Likes</string>
+    <string name="empty_state_comment">No Comments yet</string>
+    <string name="empty_state_comment_subtitle">Be the first to comment.</string>
+    <string name="search_title_bar">Search</string>
+    <string name="search_title_bar_search">World trends search</string>
+    <string name="search_title_rank">Top 10 World Trends</string>
+    <string name="search_loading_status">On Search by %s</string>
+    <string name="search_is_trend">Trends</string>
 </resources>

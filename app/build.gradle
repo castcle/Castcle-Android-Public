@@ -125,6 +125,7 @@ dependencies {
             "androidx.navigation:navigation-fragment-ktx:$navigation_version",
             "androidx.navigation:navigation-ui-ktx:$navigation_version",
             "androidx.room:room-runtime:$room_version",
+            "androidx.room:room-ktx:$room_version",
             "androidx.room:room-rxjava2:$room_version",
             "androidx.viewpager2:viewpager2:$android_view_pager2_version",
             "androidx.work:work-runtime-ktx:$androidx_worker_version",

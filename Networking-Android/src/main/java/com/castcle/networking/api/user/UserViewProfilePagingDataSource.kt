@@ -39,13 +39,13 @@ class UserViewProfilePagingDataSource(
         val pageSize = params.loadSize
         return try {
             val response = userApi.getUserViewProfileContent(
-                exclude = feedRequestHeader.exclude,
-                mode = feedRequestHeader.mode,
                 pageNumber = pageNumber,
-                pageSize = pageSize
+                pageSize = pageSize,
+                filterType = feedRequestHeader.type,
+                castcleId = feedRequestHeader.castcleId
             )
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toContentFeedUiModel()
+            val data = pagedResponse?.payload?.toContentUiModel()
             var nextPageNumber: Int? = null
             if (pagedResponse?.pagination?.next != null) {
                 val uri = Uri.parse(pagedResponse.pagination.next.toString())

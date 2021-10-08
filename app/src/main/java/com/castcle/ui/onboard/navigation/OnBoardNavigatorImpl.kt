@@ -17,6 +17,7 @@ import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
 import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
+import com.castcle.ui.feed.feeddetail.FeedDetailFragmentArgs
 import com.castcle.ui.setting.applanguage.AppLanguageFragmentArgs
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragmentArgs
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
@@ -61,12 +62,27 @@ class OnBoardNavigatorImpl @Inject constructor(
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
-                if (navController.currentDestination?.id == R.id.feedFragment) {
-                    navController.navigate(
-                        R.id.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
-                    )
-                } else {
-                    unsupportedNavigation()
+                when (navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.searchFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchFragmentToNotiflyLoginDialoginDialogFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
                 }
             }
             else -> {
@@ -430,12 +446,18 @@ class OnBoardNavigatorImpl @Inject constructor(
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
-                if (navController.currentDestination?.id == R.id.feedFragment) {
-                    navController.navigate(
-                        R.id.actionFeedFragmentToCreateBlogFragment
-                    )
-                } else {
-                    unsupportedNavigation()
+                when (navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToCreateBlogFragment
+                        )
+                    }
+                    R.id.searchFragment -> {
+
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
                 }
             }
             else -> {
@@ -628,6 +650,55 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.createPasswordFragment -> {
                         navController.navigate(
                             R.id.actionCreatePasswordToCompleteFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToFeedDetailFragment,
+                            FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
+                        )
+                    }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToFeedDetailFragment,
+                            FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToSearchTrendFragmrnt() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.searchFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchFragmentToSearchTrendFragment
                         )
                     }
                     else -> {

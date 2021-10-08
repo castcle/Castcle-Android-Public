@@ -77,6 +77,14 @@ class FeedContentBlogViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.CommentClick -> {
+                click.invoke(
+                    FeedItemClick.FeedCommentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }

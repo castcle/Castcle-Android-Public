@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbarGreetingCommon"
     android:layout_width="match_parent"
     android:layout_height="@dimen/action_bar_height"
@@ -25,13 +24,13 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
+        android:text="@string/setting_language_title"
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToolbarProfileButton"
         app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/setting_language_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivToolbarProfileButton"

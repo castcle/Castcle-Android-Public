@@ -19,6 +19,8 @@
     <color name="gray_header">#838587</color>
     <color name="gray_light">#9E9E9E</color>
     <color name="light">#CDD4D9</color>
+    <color name="light_t01">#C4C4C4</color>
+    <color name="light_t02">#E4E4E4</color>
     <color name="gray_medium">#6A6C6F</color>
     <color name="dark_gray">#4B4E53</color>
     <color name="light_gray">#888F99</color>

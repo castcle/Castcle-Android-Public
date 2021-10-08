@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.Small"
+        android:id="@+id/tvLiked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@drawable/bg_clickable_item"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/comment_footer_retweets" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.Small"
+        android:id="@+id/tvCommented"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/tvReCasted"
+        app:layout_constraintStart_toEndOf="@id/tvLiked"
+        app:layout_constraintTop_toTopOf="@id/tvLiked"
+        tools:text="@string/comment_footer_quote" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitExLight.Small"
+        android:id="@+id/tvReCasted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_24sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvLiked"
+        tools:text="@string/comment_footer_liked" />
+</androidx.constraintlayout.widget.ConstraintLayout>

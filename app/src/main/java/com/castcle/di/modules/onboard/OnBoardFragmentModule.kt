@@ -4,10 +4,11 @@ import com.castcle.di.modules.blog.CreateBlogFragmentViewModelModule
 import com.castcle.di.modules.blog.CreateQuoteFragmentViewModelModule
 import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
 import com.castcle.di.modules.common.dialog.RecastDialogFragmentModule
+import com.castcle.di.modules.feed.FeedDetailFragmentViewModelModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.login.*
 import com.castcle.di.modules.profile.ProfileFragmentViewModelModule
-import com.castcle.di.modules.search.SearchFragmentViewModelModule
+import com.castcle.di.modules.search.*
 import com.castcle.di.modules.setting.*
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
@@ -17,13 +18,16 @@ import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.createbloc.CreateQuoteFragment
 import com.castcle.ui.feed.FeedFragment
 import com.castcle.ui.feed.FeedMockFragment
+import com.castcle.ui.feed.feeddetail.FeedDetailFragment
 import com.castcle.ui.login.LoginFragment
 import com.castcle.ui.profile.ProfileFragment
 import com.castcle.ui.profile.childview.all.ContentAllFragment
 import com.castcle.ui.profile.childview.blog.ContentPostFragment
 import com.castcle.ui.profile.childview.photo.ContentBlogFragment
 import com.castcle.ui.profile.childview.post.ContentPhotoFragment
-import com.castcle.ui.search.SearchFragment
+import com.castcle.ui.search.TrendSearchFragment
+import com.castcle.ui.search.onsearch.SearchFragment
+import com.castcle.ui.search.trend.TrendFragment
 import com.castcle.ui.setting.SettingFragment
 import com.castcle.ui.setting.applanguage.AppLanguageFragment
 import com.castcle.ui.setting.changepassword.ChangePasswordFragment
@@ -159,8 +163,8 @@ interface OnBoardFragmentModule {
     fun createQuoteFragment(): CreateQuoteFragment
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = [SearchFragmentViewModelModule::class])
-    fun searchFragment(): SearchFragment
+    @ContributesAndroidInjector(modules = [TrendSearchFragmentViewModelModule::class])
+    fun trendSearchFragment(): TrendSearchFragment
 
     @FragmentScope
     @ContributesAndroidInjector(modules = [LanguageFragmentViewModelModule::class])
@@ -185,4 +189,16 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [CompleteFragmentViewModelModule::class])
     fun completeFragment(): CompleteFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [FeedDetailFragmentViewModelModule::class])
+    fun feedDetailFragment(): FeedDetailFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [SearchFragmentViewModelModule::class])
+    fun searchFragment(): SearchFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
+    fun trendFragment(): TrendFragment
 }

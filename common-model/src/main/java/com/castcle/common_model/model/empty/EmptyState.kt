@@ -28,5 +28,6 @@ enum class EmptyState {
     FEED_EMPTY,
     NOTIFICATION_EMPTY,
     PAGE_EMPTY,
+    COMMENT_EMPTY,
     SEARCH_EMPTY
 }

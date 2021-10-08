@@ -30,7 +30,30 @@
             android:id="@+id/actionFeedFragmentToCreateBlogFragment"
             app:destination="@id/bloc_nav_graph" />
 
+        <action
+            android:id="@+id/actionFeedFragmentToFeedDetailFragment"
+            app:destination="@id/feedDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <deepLink app:uri="@string/nav_deep_link_feed" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/feedDetailFragment"
+        android:name="com.castcle.ui.feed.feeddetail.FeedDetailFragment"
+        tools:layout="@layout/fragment_feed_detail">
+
+        <argument
+            android:name="contentUiModel"
+            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+
+        <argument
+            android:name="isContent"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -276,6 +299,14 @@
             android:defaultValue=""
             app:argType="string" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToFeedDetailFragment"
+            app:destination="@id/feedDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
@@ -348,8 +379,7 @@
             app:popUpTo="@id/completeFragment"
             app:popUpToInclusive="true" />
 
-        <deepLink
-            app:uri="castcle-dev://change-mock"/>
+        <deepLink app:uri="castcle-dev://change-mock" />
     </fragment>
 
     <fragment

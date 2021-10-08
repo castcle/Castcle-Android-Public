@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.LayoutUserFooterTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.extensions.getColorResource
 import com.castcle.extensions.toCount
 import io.reactivex.subjects.BehaviorSubject
 
@@ -82,12 +84,23 @@ class FeedFooterTemplate(
         with(binding) {
             with(itemUiModel.payLoadUiModel) {
                 tvLiked.text = likedUiModel.count.toCount()
+                tvLiked.setTextColor(colorActivated(likedUiModel.liked))
                 tvLiked.isActivated = likedUiModel.liked
                 tvCommented.text = commentedUiModel.count.toCount()
+                tvCommented.setTextColor(colorActivated(commentedUiModel.commented))
                 tvCommented.isActivated = commentedUiModel.commented
                 tvReCasted.text = reCastedUiModel.count.toCount()
+                tvReCasted.setTextColor(colorActivated(reCastedUiModel.recasted))
                 tvReCasted.isActivated = reCastedUiModel.recasted
             }
+        }
+    }
+
+    private fun colorActivated(status: Boolean): Int {
+        return if (status) {
+            context.getColorResource(R.color.blue)
+        } else {
+            context.getColorResource(R.color.white)
         }
     }
 

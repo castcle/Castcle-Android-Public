@@ -5,16 +5,18 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
 import com.castcle.android.R
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.ViewProfileRequest
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.data.staticmodel.ContentType
+import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import com.castcle.usecase.userprofile.GetUserViewProfileSingleUseCase
 import com.google.gson.Gson
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
@@ -50,10 +52,9 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val appContext: Context,
     private val getUserProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val getUserViewProfileSingleUseCase: GetUserViewProfileSingleUseCase,
+    private val feedNonAuthRepository: FeedRepository,
     private val userProfileDataSouce: UserProfileRepository
 ) : ProfileFragmentViewModel() {
-
-    private val _error = PublishSubject.create<Throwable>()
 
     private lateinit var _userProfileContentRes: Flow<PagingData<ContentUiModel>>
 
@@ -61,6 +62,26 @@ class ProfileFragmentViewModelImpl @Inject constructor(
 
     override val userProfileRes: Observable<User>
         get() = fetchUserProfile()
+
+    private lateinit var _feedContent: Flow<PagingData<ContentUiModel>>
+    override val feedContentPage: Flow<PagingData<ContentUiModel>>
+        get() = _feedContent
+
+    private val _userProfileContentMock = BehaviorSubject.create<List<ContentUiModel>>()
+    override val userProfileContentMock: Observable<List<ContentUiModel>>
+        get() = _userProfileContentMock
+
+    private val _userProfileYouContentMock = BehaviorSubject.create<User>()
+    override val userProfileYouRes: Observable<User>
+        get() = _userProfileYouContentMock
+
+    private val _showLoading = BehaviorSubject.create<Boolean>()
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
+
+    private val _error = PublishSubject.create<Throwable>()
+    override val onError: Observable<Throwable>
+        get() = _error
 
     private fun fetchUserProfile(): Observable<User> {
         return getUserProfileSingleUseCase
@@ -79,50 +100,28 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override val userProfileContentRes: Flow<PagingData<ContentUiModel>>
         get() = _userProfileContentRes
 
-    override fun fetachUserProfileContent() {
+    override fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader) {
         launchPagingAsync({
-            userProfileDataSouce.getUserPofileContent()
+            userProfileDataSouce.getUserPofileContent(contentRequestHeader)
         }, onSuccess = {
             _userProfileContentRes = it
         })
     }
 
-    private val _userProfileContentMock = BehaviorSubject.create<List<ContentUiModel>>()
-    override val userProfileContentMock: Observable<List<ContentUiModel>>
-        get() = _userProfileContentMock
-
-    private val _userProfileYouContentMock = BehaviorSubject.create<User>()
-    override val userProfileYouRes: Observable<User>
-        get() = _userProfileYouContentMock
+    override fun fetachUserViewProfileContent(contentRequestHeader: FeedRequestHeader) {
+        launchPagingAsync({
+            userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+        }, onSuccess = {
+            _userProfileContentRes = it
+        })
+    }
 
     override fun getUserViewProfileMock(castcleId: String) {
-        val mockData = Gson().fromJson(
-            JSONObject(readJSONFromAsset() ?: "").toString(),
-            FeedResponse::class.java
-        ).payload.toContentFeedUiModel().feedContentUiModel.find {
-            it.payLoadUiModel.author.displayName == castcleId
-        }
-
-        val userMock = User(
-            castcleId = mockData?.payLoadUiModel?.author?.id ?: "",
-            displayName = mockData?.payLoadUiModel?.author?.displayName ?: "",
-            id = mockData?.payLoadUiModel?.author?.id ?: "",
-            dob = "",
-            email = "",
-            avatar = mockData?.payLoadUiModel?.author?.avatar ?: "",
-            cover = "",
-            followed = true,
-            followersCount = 999,
-            followingCount = 1991,
-            overview = "",
-            verified = true,
-            facebookLinks = "",
-            mediumLinks = "",
-            twitterLinks = "",
-            websiteLinks = "",
-            youtubeLinks = ""
-        )
-        _userProfileYouContentMock.onNext(userMock)
+        getUserViewProfileSingleUseCase.execute(
+            ViewProfileRequest(castcleId = castcleId)
+        ).subscribeBy {
+            _userProfileYouContentMock.onNext(it)
+        }.addToDisposables()
     }
 
     override fun getFeedResponse(contentType: ContentType) {

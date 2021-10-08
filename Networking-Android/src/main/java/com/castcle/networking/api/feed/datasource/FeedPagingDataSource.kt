@@ -5,7 +5,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.castcle.common_model.model.feed.*
 import com.castcle.networking.api.feed.FeedApi
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

@@ -2,6 +2,7 @@ package com.castcle.ui.profile
 
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.ui.base.BaseViewCoroutinesModel
@@ -36,7 +37,9 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val userProfileContentRes: Flow<PagingData<ContentUiModel>>
 
-    abstract fun fetachUserProfileContent()
+    abstract fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader)
+
+    abstract fun fetachUserViewProfileContent(contentRequestHeader: FeedRequestHeader)
 
     abstract fun getFeedResponse(contentType: ContentType)
 
@@ -47,4 +50,10 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
     abstract val userProfileYouRes: Observable<User>
 
     abstract val userProfileContentMock: Observable<List<ContentUiModel>>
+
+    abstract val feedContentPage: Flow<PagingData<ContentUiModel>>
+
+    abstract val showLoading: Observable<Boolean>
+
+    abstract val onError: Observable<Throwable>
 }

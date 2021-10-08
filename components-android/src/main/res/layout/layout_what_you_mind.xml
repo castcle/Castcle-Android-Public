@@ -26,6 +26,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="What's in your mind?" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSearchWold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@drawable/bg_round_corner"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="@dimen/_8sdp"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/gray_light"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ivAvatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="What's in your mind?" />
+
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
         android:layout_width="@dimen/_40sdp"

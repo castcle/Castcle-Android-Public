@@ -37,6 +37,14 @@ abstract class OnBoardViewModel : BaseViewModel() {
 
     abstract val isGuestMode: Boolean
 
+    abstract val isContentTypeMe: LiveData<Boolean>
+
+    abstract val isContentTypeYouId: LiveData<String>
+
+    abstract fun setContentTypeMe(isContent: Boolean)
+
+    abstract fun setContentTypeYouId(isContentId: String)
+
     abstract val onSetLanguageSuccess: Observable<Unit>
 
     abstract val preferredLanguage: LiveData<List<LanguageUiModel>>

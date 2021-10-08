@@ -3,15 +3,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.castcle.ui.search.SearchFragment">
+    android:background="@color/black_light"
+    tools:context="com.castcle.ui.search.TrendSearchFragment">
 
 
     <com.castcle.components_android.ui.EmptyStateTemplate
         android:id="@+id/empState"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.castcle.components_android.ui.WhatYouMindTemplate
+        android:id="@+id/clTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_48sdp"
+        app:whatYouMind_input="@string/search_title_bar_search"
+        app:whatYouMind_show_avatar="false"
+        android:background="@drawable/bg_round_corner"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Medium"
+        android:id="@+id/tvRank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:drawableStart="@drawable/ic_rank"
+        android:drawablePadding="@dimen/_8sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        android:text="@string/search_title_rank"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clTextInputLayout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRank"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingBottom="60dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRank"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_rank" />
 </androidx.constraintlayout.widget.ConstraintLayout>

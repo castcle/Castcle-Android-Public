@@ -50,7 +50,7 @@ data class UserProfileResponse(
     @SerializedName("overview")
     val overview: String? = null,
     @SerializedName("verified")
-    val verified: Verified
+    val verified: Verified? = null
 )
 
 data class Followers(

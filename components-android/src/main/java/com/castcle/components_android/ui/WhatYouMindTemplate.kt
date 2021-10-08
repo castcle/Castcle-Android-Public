@@ -1,5 +1,6 @@
 package com.castcle.components_android.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.extensions.loadCircleImage
+import com.castcle.extensions.visibleOrGone
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -52,10 +54,28 @@ class WhatYouMindTemplate(
         )
     }
 
+    init {
+        initTemplate(context, attrs)
+    }
+
+    @SuppressLint("Recycle", "CustomViewStyleable")
+    private fun initTemplate(context: Context, attrs: AttributeSet) {
+        val styles = context.obtainStyledAttributes(attrs, R.styleable.WhatYouMindOption)
+        val inputMessage = styles.getString(R.styleable.WhatYouMindOption_whatYouMind_input)
+        val showAvatar =
+            styles.getBoolean(R.styleable.WhatYouMindOption_whatYouMind_show_avatar, true)
+        with(binding) {
+            ivAvatar.visibleOrGone(showAvatar)
+            tvWathYouMind.text = inputMessage
+            tvWathYouMind.visibleOrGone(showAvatar)
+            tvSearchWold.text = inputMessage
+            tvSearchWold.visibleOrGone(!showAvatar)
+        }
+    }
+
     fun bindUiModel(itemUiModel: ContentUiModel) {
         with(binding) {
             with(itemUiModel.payLoadUiModel) {
-                tvWathYouMind.text = context.getString(R.string.feed_what_you_mind_bar)
                 ivAvatar.run {
                     loadCircleImage(author.avatar)
                     subscribeOnClick {

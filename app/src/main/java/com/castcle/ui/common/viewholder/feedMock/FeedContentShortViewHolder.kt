@@ -75,6 +75,14 @@ class FeedContentShortMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.CommentClick -> {
+                click.invoke(
+                    FeedItemClick.FeedCommentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -86,28 +94,37 @@ class FeedContentShortMockViewHolder(
         with(binding) {
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentFeed
+                tvFeedContent.text = contentMessage
                 ftFooter.bindUiModel(uiModel)
-                if (link.isNotEmpty()) {
-                    groupPreview.visible()
-                    link.firstOrNull()?.url?.let {
-                        PreViewLinkUrl(it, object : PreViewLinkCallBack {
-                            override fun onComplete(urlInfo: UrlInfoUiModel) {
-                                with(urlInfo) {
-                                    ivPerviewUrl.loadGranularRoundedCornersImage(image)
-                                    tvPreviewUrl.text = url
-                                    tvPreviewHeader.text = title
-                                    tvFeedContent.text = description
-                                }
-                            }
-
-                            override fun onFailed(throwable: Throwable) {
-
-                            }
-                        }).fetchUrlPreview()
+                when {
+                    link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
+                        group2.gone()
+                        vCover.gone()
+                        icImageContent.visible()
+                        icImageContent.bindImageContent(uiModel, true)
                     }
-                } else {
-                    groupPreview.gone()
+                    link.isNotEmpty() -> {
+                        clPreviewContent.visible()
+                        link.firstOrNull()?.url?.let {
+                            PreViewLinkUrl(it, object : PreViewLinkCallBack {
+                                override fun onComplete(urlInfo: UrlInfoUiModel) {
+                                    with(urlInfo) {
+                                        ivPerviewUrl.loadGranularRoundedCornersImage(image)
+                                        tvPreviewUrl.text = url
+                                        tvPreviewHeader.text = title
+                                        tvPreviewContent.text = description
+                                    }
+                                }
+
+                                override fun onFailed(throwable: Throwable) {
+                                    clPreviewContent.gone()
+                                }
+                            }).fetchUrlPreview()
+                        }
+                    }
+                    else -> {
+                        clPreviewContent.gone()
+                    }
                 }
             }
         }

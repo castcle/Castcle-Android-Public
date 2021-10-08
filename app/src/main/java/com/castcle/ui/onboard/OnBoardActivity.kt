@@ -174,6 +174,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.createPasswordFragment,
                 R.id.changePasswordFragment,
                 R.id.completeFragment,
+                R.id.feedDetailFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

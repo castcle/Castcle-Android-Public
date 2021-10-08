@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Regular"
             android:id="@+id/tvLoginWithTelegram"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/clLoginWithTelegram">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Regular"
             android:id="@+id/tvLoginWithFackbook"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
         app:layout_constraintTop_toBottomOf="@+id/clLoginWithFackbook">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Regular"
             android:id="@+id/tvLoginWithTwitter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
         app:layout_constraintTop_toBottomOf="@+id/clLoginWithTwitter">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Regular"
             android:id="@+id/tvLoginWithGoogle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -176,7 +176,7 @@
         app:layout_constraintTop_toBottomOf="@+id/clLoginWithGoogle">
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Regular"
             android:id="@+id/tvLoginWithEmail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

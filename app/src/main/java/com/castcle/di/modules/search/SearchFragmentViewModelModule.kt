@@ -3,10 +3,8 @@ package com.castcle.di.modules.search
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.feed.FeedFragmentViewModel
-import com.castcle.ui.feed.FeedFragmentViewModelImpl
-import com.castcle.ui.search.SearchViewModel
-import com.castcle.ui.search.SearchViewModelImpl
+import com.castcle.ui.search.onsearch.SearchFragmentViewModel
+import com.castcle.ui.search.onsearch.SearchFragmentViewModelImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -41,6 +39,6 @@ interface SearchFragmentViewModelModule {
     @FragmentScope
     @Binds
     @IntoMap
-    @ViewModelKey(SearchViewModel::class)
-    fun searchViewModel(viewModel: SearchViewModelImpl): ViewModel
+    @ViewModelKey(SearchFragmentViewModel::class)
+    fun searchViewModel(viewModel: SearchFragmentViewModelImpl): ViewModel
 }

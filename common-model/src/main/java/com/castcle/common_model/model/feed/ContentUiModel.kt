@@ -38,6 +38,16 @@ fun List<FeedContentResponse>.toContentFeedUiModel(): ContentFeedUiModel {
     )
 }
 
+fun List<PayloadResponse>.toContentUiModel(): ContentFeedUiModel {
+    return ContentFeedUiModel(
+        feedContentUiModel = map {
+            ContentUiModel(
+                payLoadUiModel = it.toPayloadUiModel()
+            )
+        }.toMutableList()
+    )
+}
+
 @Parcelize
 data class ContentUiModel(
     val id: String = "",
@@ -54,7 +64,7 @@ fun FeedContentResponse.toContentUiModel(): ContentUiModel {
     return ContentUiModel(
         id = id,
         featureSlug = feature.slug,
-        circleSlug = circle.slug,
+        circleSlug = circle?.slug ?: "",
         contentType = payload.type,
         created = created,
         updated = updated,
@@ -67,6 +77,7 @@ data class PayLoadUiModel(
     val contentId: String = "",
     val headerFeed: String = "",
     val contentFeed: String = "",
+    val contentMessage: String = "",
     val photo: PhotoUiModel = PhotoUiModel(),
     val created: String = "",
     val updated: String = "",
@@ -74,27 +85,86 @@ data class PayLoadUiModel(
     val likedUiModel: LikedUiModel = LikedUiModel(),
     val commentedUiModel: CommentedUiModel = CommentedUiModel(),
     val reCastedUiModel: RecastedUiModel = RecastedUiModel(),
-    val author: AuthorUiModel = AuthorUiModel()
+    val author: AuthorUiModel = AuthorUiModel(),
+    val featureContent: FeatureUiModel? = null,
+    val replyUiModel: List<ReplyUiModel>? = null,
+    val replyedUiModel: ReplyUiModel? = null
 ) : Parcelable
 
 fun PayloadResponse.toPayloadUiModel(): PayLoadUiModel {
     return PayLoadUiModel(
         contentId = id,
         headerFeed = payload.header ?: "",
-        contentFeed = payload.content,
-        photo = payload.photo.toPhotoUiMode(),
+        contentFeed = payload.content ?: "",
+        photo = payload.photo?.toPhotoUiMode() ?: PhotoUiModel(),
+        contentMessage = payload.message ?: "",
         created = created,
         updated = updated,
-        link = payload.linkResponse.map {
+        link = payload.linkResponse?.map {
             it.toLinkUiModel()
-        },
-        likedUiModel = likedResponse.toLikedUiModel(),
-        commentedUiModel = commentedResponse.toCommentedUiModel(),
-        reCastedUiModel = recastedResponse.toRecastedUiModel(),
-        author = author.toAuthorUiModel()
+        } ?: emptyList(),
+        likedUiModel = likedResponse?.toLikedUiModel() ?: LikedUiModel(),
+        commentedUiModel = commentedResponse?.toCommentedUiModel() ?: CommentedUiModel(),
+        reCastedUiModel = recastedResponse?.toRecastedUiModel() ?: RecastedUiModel(),
+        author = author.toAuthorUiModel(),
+        featureContent = feature?.toFeatureUiModel(),
+        replyUiModel = reply?.let { it ->
+            it.map {
+                it.toReplyUiModel()
+            }
+        }
     )
 }
 
+@Parcelize
+data class PayloadContentUiModel(
+    var header: String? = null,
+    var message: String? = null,
+    var content: String? = null,
+    var photo: PhotoUiModel? = null,
+    var link: List<LinkUiModel>? = null
+) : Parcelable
+
+fun PayloadContent.toPayloadContentUiModel(): PayloadContentUiModel {
+    return PayloadContentUiModel(
+        header = header,
+        message = message,
+        content = content,
+        photo = photo?.toPhotoUiMode(),
+        link = linkResponse?.map {
+            it.toLinkUiModel()
+        } ?: emptyList(),
+    )
+}
+
+fun Feature.toFeatureUiModel() = FeatureUiModel(
+    slug = slug,
+    name = name,
+    key = key
+)
+
+@Parcelize
+data class FeatureUiModel(
+    var slug: String? = null,
+    var name: String? = null,
+    var key: String? = null
+) : Parcelable
+
+@Parcelize
+data class ReplyUiModel(
+    var id: String,
+    var created: String,
+    var message: String,
+    var author: AuthorUiModel
+) : Parcelable
+
+fun ReplyResponse.toReplyUiModel() =
+    ReplyUiModel(
+        id = id,
+        created = created,
+        message = message,
+        author = author.toAuthorUiModel()
+    )
 
 @Parcelize
 data class PhotoUiModel(
@@ -104,7 +174,7 @@ data class PhotoUiModel(
 
 fun PhotoResponse.toPhotoUiMode() =
     PhotoUiModel(
-        imageCover = cover?.url,
+        imageCover = cover?.url ?: "",
         imageContent = contents?.map {
             it.url
         } ?: emptyList()
@@ -134,9 +204,9 @@ fun LikedResponse.toLikedUiModel() =
     LikedUiModel(
         count = count,
         liked = liked,
-        participantUiModel = participant.map {
+        participantUiModel = participant?.map {
             it.toParticipantUiModel()
-        }
+        } ?: emptyList()
     )
 
 @Parcelize
@@ -150,9 +220,9 @@ fun CommentedResponse.toCommentedUiModel() =
     CommentedUiModel(
         count = count,
         commented = commented,
-        participantUiModel = participant.map {
+        participantUiModel = participant?.map {
             it.toParticipantUiModel()
-        }
+        } ?: emptyList()
 
     )
 
@@ -167,9 +237,9 @@ fun RecastedResponse.toRecastedUiModel() =
     RecastedUiModel(
         count = count,
         recasted = recasted,
-        participantUiModel = participant.map {
+        participantUiModel = participant?.map {
             it.toParticipantUiModel()
-        }
+        } ?: emptyList()
     )
 
 @Parcelize
@@ -196,6 +266,7 @@ data class QuoteCast(
 @Parcelize
 data class AuthorUiModel(
     val avatar: String = "",
+    val castcleId: String = "",
     val displayName: String = "",
     val followed: Boolean = false,
     val id: String = "",
@@ -207,6 +278,7 @@ fun Author.toAuthorUiModel() =
     AuthorUiModel(
         avatar = avatar ?: "",
         displayName = displayName ?: "",
+        castcleId = castcleId ?: "",
         followed = followed ?: false,
         id = id,
         type = type,

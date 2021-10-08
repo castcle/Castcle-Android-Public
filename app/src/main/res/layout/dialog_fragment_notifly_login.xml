@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/dialog_login_title"
+            android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/_21sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/dialog_login_sub_title"
+            android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,11 +43,12 @@
             android:id="@+id/tvActionLinkUserAgreement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_64sdp"
             android:layout_marginTop="@dimen/_8sdp"
             android:text="@string/dialog_login_user_agreement"
+            android:textAlignment="center"
             android:textColor="@color/blue"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvAnd"
+            app:layout_constraintStart_toStartOf="@id/tvSubTitle"
             app:layout_constraintTop_toBottomOf="@id/tvSubTitle" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -56,20 +58,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
             android:text="@string/dialog_login_and"
+            android:textAlignment="center"
             android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@id/tvActionLinkPrivacy"
             app:layout_constraintStart_toEndOf="@id/tvActionLinkUserAgreement"
-            app:layout_constraintTop_toTopOf="@+id/tvActionLinkUserAgreement" />
+            app:layout_constraintTop_toTopOf="@id/tvActionLinkUserAgreement" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/AppTextKanitLight.Small"
             android:id="@+id/tvActionLinkPrivacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_4sdp"
             android:text="@string/dialog_login_privacy_policy"
+            android:textAlignment="center"
             android:textColor="@color/blue"
+            app:layout_constraintEnd_toEndOf="@id/tvSubTitle"
             app:layout_constraintStart_toEndOf="@id/tvAnd"
-            app:layout_constraintTop_toTopOf="@+id/tvActionLinkUserAgreement" />
+            app:layout_constraintTop_toTopOf="@id/tvActionLinkUserAgreement" />
 
         <include
             android:id="@+id/layoutLogin"
@@ -82,24 +88,29 @@
             app:layout_constraintTop_toBottomOf="@id/tvActionLinkUserAgreement" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Small"
             android:id="@+id/tvHaveAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/dialog_login_footer_title"
+            android:textAlignment="center"
             android:textColor="@color/red_gray"
-            app:layout_constraintStart_toStartOf="@+id/tvTitle"
+            app:layout_constraintEnd_toStartOf="@id/tvHaveAccountLogin"
+            app:layout_constraintStart_toStartOf="@id/tvTitle"
             app:layout_constraintTop_toBottomOf="@id/layoutLogin"
             tools:text="Already have a Castcle account ?" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Medium"
+            style="@style/AppTextKanitLight.Small"
             android:id="@+id/tvHaveAccountLogin"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
             android:text="@string/dialog_login"
+            android:textAlignment="textStart"
             android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="@+id/tvHaveAccount"
             app:layout_constraintEnd_toEndOf="@+id/tvTitle"
             app:layout_constraintStart_toEndOf="@id/tvHaveAccount"
             app:layout_constraintTop_toTopOf="@id/tvHaveAccount"
@@ -162,6 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:text="@string/dialog_login_footer_whitepaper"
                 android:textColor="@color/white"
                 tools:text="Whitepaper" />
 
@@ -172,9 +184,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/_8sdp"
-                android:text="@string/dialog_login_footer_whitepaper"
-                android:textColor="@color/gray"
-                tools:text="V.1" />
+                android:text="@string/version_app"
+                android:textColor="@color/gray" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

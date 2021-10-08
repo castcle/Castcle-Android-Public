@@ -5,8 +5,28 @@
     android:id="@+id/search_nav_graph"
     app:startDestination="@id/searchFragment">
 
+    <include app:graph="@navigation/dialog_login_nav_graph" />
+    <include app:graph="@navigation/dialog_recast_nav_graph" />
+    <include app:graph="@navigation/bloc_nav_graph" />
+
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.castcle.ui.search.SearchFragment"
-        tools:layout="@layout/fragment_search" />
+        android:name="com.castcle.ui.search.TrendSearchFragment"
+        tools:layout="@layout/fragment_search">
+
+        <action
+            android:id="@+id/actionSearchFragmentToNotiflyLoginDialoginDialogFragment"
+            app:destination="@id/dialog_login_nav_graph" />
+
+        <action
+            android:id="@+id/actionSearchFragmentToSearchTrendFragment"
+            app:destination="@id/searchTrendFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchTrendFragment"
+        android:name="com.castcle.ui.search.onsearch.SearchFragment"
+        tools:layout="@layout/fragment_search_trend">
+
+    </fragment>
 </navigation>

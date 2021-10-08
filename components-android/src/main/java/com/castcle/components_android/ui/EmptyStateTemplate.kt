@@ -78,8 +78,6 @@ class EmptyStateTemplate(
                 tvEmptySubTitleAction.subscribeOnClick {
                     _itemClick.onNext(TemplateEventClick.ReTryClick())
                 }.addToDisposables()
-            } else {
-                tvEmptySubTitle.gone()
             }
             tvEmptySubTitle.text = subtitle
         }
@@ -113,6 +111,13 @@ class EmptyStateTemplate(
                     context.getDrawableRes(R.drawable.ic_search_empty_state),
                     context.getString(R.string.empty_state_search),
                     context.getString(R.string.empty_state_search_subtitle)
+                )
+            }
+            COMMENT_EMPTY->{
+                Triple(
+                    context.getDrawableRes(R.drawable.ic_empty_comment),
+                    context.getString(R.string.empty_state_comment),
+                    context.getString(R.string.empty_state_comment_subtitle)
                 )
             }
         }

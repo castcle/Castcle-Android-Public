@@ -5,7 +5,7 @@ import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.userprofile.*
-import com.castcle.data.model.dao.UserDao
+import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.*
 import com.castcle.networking.service.operators.ApiOperators
@@ -48,7 +48,9 @@ interface UserProfileRepository {
 
     fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
 
-    fun getUserPofileContent(): Flow<PagingData<ContentUiModel>>
+    fun getUserPofileContent(
+        contentRequestHeader: FeedRequestHeader
+    ): Flow<PagingData<ContentUiModel>>
 
     fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentUiModel>>
@@ -68,7 +70,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         get() = getUserProfile()
 
     override fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User> {
-        val idRequest = if (viewProfileRequest.castcleId.isBlank()) {
+        val idRequest = if (viewProfileRequest.castcleId.isNotBlank()) {
             viewProfileRequest.castcleId
         } else {
             viewProfileRequest.uuid
@@ -103,13 +105,14 @@ class UserProfileRepositoryImpl @Inject constructor(
             .firstOrError()
     }
 
-    override fun getUserPofileContent()
-        : Flow<PagingData<ContentUiModel>> = Pager(config =
+    override fun getUserPofileContent(
+        contentRequestHeader: FeedRequestHeader
+    ): Flow<PagingData<ContentUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
-        UserProfilePagingDataSource(userApi)
+        UserProfilePagingDataSource(userApi, contentRequestHeader)
     }).flow
 
     override fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader)
@@ -189,5 +192,5 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 }
 
-private const val DEFAULT_PAGE_SIZE = 25
-private const val DEFAULT_PREFETCH = 2
+internal const val DEFAULT_PAGE_SIZE = 25
+internal const val DEFAULT_PREFETCH = 2

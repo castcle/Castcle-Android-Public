@@ -1,8 +1,9 @@
 package com.castcle.networking.api.feed
 
+import com.castcle.common_model.model.feed.CommentRequest
 import com.castcle.common_model.model.feed.RecastRequest
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
-import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.feed.api.response.*
+import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
 import retrofit2.Response
@@ -74,4 +75,44 @@ interface FeedApi {
         @Path("id") id: String,
         @Body recastRequest: RecastRequest,
     ): Flowable<Response<FeedContentResponse>>
+
+    @GET("contents/{id}/comments")
+    suspend fun getComments(
+        @Path("id") id: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<ContentCommentResponse>
+
+    @POST("contents/{contentId}/comments")
+    fun sentComments(
+        @Path("contentId") contentId: String,
+        @Body commentRequest: CommentRequest,
+    ): Flowable<Response<ContentCommentedResponse>>
+
+    @PUT("contents/{contentId}/comments/{contentIdChild}")
+    fun sentCommentChild(
+        @Path("contentId") contentId: String,
+        @Path("contentIdChild") contentIdChild: String,
+        @Body commentRequest: CommentRequest,
+    ): Flowable<Response<ContentCommentedResponse>>
+
+    @DELETE("contents/{contentId}/comments/{commentId}")
+    fun deleteComment(
+        @Path("contentId") contentId: String,
+        @Path("commentId") contentIdChild: String,
+    ): Flowable<Response<ContentCommentedResponse>>
+
+    @PUT("contents/{contentId}/comments/{commentId}/{likeStatus}")
+    fun likeComment(
+        @Path("contentId") contentId: String,
+        @Path("commentId") commentId: String,
+        @Path("likeStatus") likeStatus: String,
+        @Body likedRequest: LikeCommentRequest,
+    ): Flowable<Response<ContentCommentedResponse>>
+
+    @PUT("contents/{contentId}/comments/{contentIdChild}/unliked")
+    fun unlikeComment(
+        @Path("contentId") contentId: String,
+        @Body commentRequest: CommentRequest,
+    ): Flowable<Response<ContentCommentedResponse>>
 }

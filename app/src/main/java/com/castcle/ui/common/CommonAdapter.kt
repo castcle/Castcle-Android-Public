@@ -65,6 +65,7 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
         val index = snapshot().indexOf(contentUiModel)
         val likeUiModel = snapshot()[index]?.payLoadUiModel?.likedUiModel
         likeUiModel?.liked = !likeUiModel?.liked!!
+        likeUiModel.count.plus(1)
         notifyItemChanged(index)
     }
 

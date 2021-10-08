@@ -51,16 +51,16 @@ data class Pagination(
 data class FeedContentResponse(
     @SerializedName("id") var id: String,
     @SerializedName("feature") var feature: Feature,
-    @SerializedName("circle") var circle: Circle,
+    @SerializedName("circle") var circle: Circle? = null,
     @SerializedName("aggregator") var aggregator: Aggregator,
     @SerializedName("type") var type: String,
     @SerializedName("payload") var payload: PayloadResponse,
     @SerializedName("created") var created: String,
-    @SerializedName("updated") var updated: String
+    @SerializedName("updated") var updated: String,
 )
 
 data class Feature(
-    @SerializedName("id") var id: String,
+    @SerializedName("id") var id: String? = null,
     @SerializedName("slug") var slug: String,
     @SerializedName("name") var name: String,
     @SerializedName("key") var key: String
@@ -84,21 +84,30 @@ data class PayloadResponse(
     @SerializedName("id") var id: String,
     @SerializedName("type") var type: String,
     @SerializedName("payload") var payload: PayloadContent,
-    @SerializedName("feature") var feature: Feature,
-    @SerializedName("liked") var likedResponse: LikedResponse,
-    @SerializedName("commented") var commentedResponse: CommentedResponse,
-    @SerializedName("recasted") var recastedResponse: RecastedResponse,
+    @SerializedName("feature") var feature: Feature? = null,
+    @SerializedName("liked") var likedResponse: LikedResponse? = null,
+    @SerializedName("commented") var commentedResponse: CommentedResponse? = null,
+    @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: Author,
     @SerializedName("created") var created: String,
-    @SerializedName("updated") var updated: String
+    @SerializedName("updated") var updated: String,
+    @SerializedName("reply") var reply: List<ReplyResponse>? = null
+)
+
+data class ReplyResponse(
+    @SerializedName("id") var id: String,
+    @SerializedName("message") var message: String,
+    @SerializedName("created") var created: String,
+    @SerializedName("author") var author: Author,
 )
 
 data class PayloadContent(
     @SerializedName("header") var header: String? = null,
-    @SerializedName("content") var content: String,
-    @SerializedName("photo") var photo: PhotoResponse,
-    @SerializedName("link") var linkResponse: List<LinkResponse>
+    @SerializedName("message") var message: String? = null,
+    @SerializedName("content") var content: String? = null,
+    @SerializedName("photo") var photo: PhotoResponse? = null,
+    @SerializedName("link") var linkResponse: List<LinkResponse>? = null
 )
 
 data class Participant(
@@ -112,6 +121,7 @@ data class Author(
     @SerializedName("id") var id: String,
     @SerializedName("type") var type: String,
     @SerializedName("displayName") var displayName: String? = null,
+    @SerializedName("castcleId") var castcleId: String? = null,
     @SerializedName("avatar") var avatar: String? = null,
     @SerializedName("verified") var verified: Boolean? = null,
     @SerializedName("followed") var followed: Boolean? = null
@@ -129,19 +139,19 @@ data class LinkResponse(
 data class LikedResponse(
     @SerializedName("count") var count: Int,
     @SerializedName("liked") var liked: Boolean,
-    @SerializedName("participant") var participant: List<Participant>
+    @SerializedName("participant") var participant: List<Participant>? = null
 )
 
 data class CommentedResponse(
     @SerializedName("count") var count: Int,
     @SerializedName("commented") var commented: Boolean,
-    @SerializedName("participant") var participant: List<Participant>
+    @SerializedName("participant") var participant: List<Participant>? = null
 )
 
 data class RecastedResponse(
     @SerializedName("count") var count: Int,
     @SerializedName("recasted") var recasted: Boolean,
-    @SerializedName("participant") var participant: List<Participant>
+    @SerializedName("participant") var participant: List<Participant>? = null
 )
 
 data class PhotoResponse(
