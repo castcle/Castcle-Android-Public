@@ -9,8 +9,8 @@ import com.castcle.components_android.ui.custom.timeago.TimeAgo
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
-import com.castcle.ui.feed.feeddetail.CommentAdapter
-import com.castcle.ui.feed.feeddetail.CommentedAdapter
+import com.castcle.ui.feed.feeddetail.CommentedPagingAdapter
+import com.castcle.ui.feed.feeddetail.CommentedChildAdapter
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -36,18 +36,18 @@ import com.castcle.ui.feed.feeddetail.CommentedAdapter
 //
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
-class CommentItemViewHolder(
+class CommentedItemPageingViewHolder(
     val binding: ItemCommentHeaderTemplateBinding,
     private val click: (Click) -> Unit
-) : CommentAdapter.ViewHolder<ContentDbModel>(binding.root) {
+) : CommentedPagingAdapter.ViewHolder<ContentDbModel>(binding.root) {
 
     private lateinit var contentDbModel: ContentDbModel
 
-    private var commentedAdapter: CommentedAdapter
+    private var commentedAdapter: CommentedChildAdapter
 
     init {
         binding.rvChildComment.run {
-            adapter = CommentedAdapter().also {
+            adapter = CommentedChildAdapter().also {
                 commentedAdapter = it
             }
         }
@@ -65,9 +65,9 @@ class CommentItemViewHolder(
 
     private fun handleCommentedClick(it: Click?) {
         when (it) {
-            is CommentItemClick.CommentedLikeClick -> {
+            is CommentItemClick.CommentedLikeChildClick -> {
                 click.invoke(
-                    CommentItemClick.CommentedLikeClick(
+                    CommentItemClick.CommentedLikeChildClick(
                         it.position,
                         it.replyId,
                         contentDbModel.id
@@ -103,10 +103,10 @@ class CommentItemViewHolder(
         fun newInstance(
             parent: ViewGroup,
             clickItem: (Click) -> Unit
-        ): CommentItemViewHolder {
+        ): CommentedItemPageingViewHolder {
             val inflate = LayoutInflater.from(parent.context)
             val binding = ItemCommentHeaderTemplateBinding.inflate(inflate, parent, false)
-            return CommentItemViewHolder(binding, clickItem)
+            return CommentedItemPageingViewHolder(binding, clickItem)
         }
     }
 }

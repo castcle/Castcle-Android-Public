@@ -1,7 +1,9 @@
 package com.castcle.authen_android.data.encryption
 
+import android.security.keystore.KeyProperties
 import android.util.Base64
 import javax.crypto.Cipher
+import javax.crypto.CipherOutputStream
 import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 
@@ -39,4 +41,4 @@ class EncryptorImpl @Inject constructor(
 
 private const val TRANSFORMATION = "AES/GCM/NoPadding"
 private const val AUTHENTICATION_TAG_LENGTH = 128
-private val ENCRYPTION_IV = "TheOneCrypto".toByteArray()
+private val ENCRYPTION_IV = "CastcleCryto".toByteArray()

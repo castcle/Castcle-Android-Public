@@ -3,12 +3,17 @@ package com.castcle.ui.search
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSearchBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
+import com.castcle.common_model.model.search.SearchUiModel
+import com.castcle.extensions.getDrawableRes
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
+import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.SearchItemClick
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
 
@@ -49,6 +54,7 @@ class TrendSearchFragment : BaseFragment<TrendSearchViewModel>(),
     }
 
     override fun setupView() {
+        setupToolbar(viewModel.isGuestMode)
         binding.empState.bindUiState(EmptyState.SEARCH_EMPTY)
 
         binding.rvRank.run {
@@ -58,14 +64,55 @@ class TrendSearchFragment : BaseFragment<TrendSearchViewModel>(),
         }
     }
 
+    private fun setupToolbar(guestMode: Boolean) {
+        with(toolbarBinding) {
+            tvToolbarTitle.text =
+                localizedResources.getString(com.castcle.android.R.string.feed_title_toolbar)
+            if (guestMode) {
+                ivToolbarProfileButton.subscribeOnClick {
+                    navigateToNotiflyLoginDialog()
+                }
+            } else {
+                ivToolbarProfileButton.setImageDrawable(
+                    context?.getDrawableRes(
+                        R.drawable.ic_hamburger
+                    )
+                )
+                ivToolbarProfileButton.subscribeOnClick {
+                    navigateToSettingFragment()
+                }
+            }
+        }
+    }
+
+    private fun navigateToNotiflyLoginDialog() {
+        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+    }
+
+    private fun navigateToSettingFragment() {
+        onBoardNavigator.navigateToSettingFragment()
+    }
+
     override fun bindViewEvents() {
         searchAdapter.itemClick.subscribe {
-
+            handleItemClick(it)
         }.addToDisposables()
 
         binding.clTextInputLayout.subscribeOnClick {
             navigateToSearchTrend()
         }.addToDisposables()
+    }
+
+    private fun handleItemClick(it: Click?) {
+        if (it is SearchItemClick.HasTagItemClick) {
+            if (it.searchUiModel is SearchUiModel.SearchHasTagUiModel) {
+                navigateToTrendFragment(it.searchUiModel.slug)
+            }
+        }
+    }
+
+    private fun navigateToTrendFragment(trendContent: String) {
+        onBoardNavigator.navigateToTrendFragment(trendContent)
     }
 
     private fun navigateToSearchTrend() {

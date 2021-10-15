@@ -30,9 +30,11 @@ import org.jsoup.nodes.Document
 //  Created by sklim on 25/8/2021 AD at 17:23.
 
 private const val ELEMENT_TAG_META = "meta"
+private const val DOC_SELECT_QUERY = "meta[property^=og:]"
 private const val ATTRIBUTE_VALUE_PROPERTY = "property"
 private const val ATTRIBUTE_VALUE_NAME = "name"
 private const val ATTRIBUTE_VALUE_ITEMPROP = "itemprop"
+private const val AGENT = "Mozilla"
 
 /* for <meta property="og:" to get title */
 private val META_OG_TITLE = arrayOf("og:title", "\"og:title\"", "'og:title'")
@@ -43,6 +45,8 @@ private val META_OG_DESCRIPTION =
 
 /* for <meta property="og:" to get image */
 private val META_OG_IMAGE = arrayOf("og:image", "\"og:image\"", "'og:image'")
+
+private val META_OG_IMAGE_ICON = arrayOf("href", "\"href\"", "'href'")
 
 /*for <meta name=... to get title */
 private val META_NAME_TITLE = arrayOf(
@@ -80,48 +84,83 @@ private val META_ITEMPROP_DESCRIPTION = arrayOf("description", "\"description\""
 private val META_ITEMPROP_IMAGE = arrayOf("image", "\"image\"", "'image'")
 
 private const val CONTENT = "content"
+private const val CONTENT_HREF = "href"
+private const val CONTENT_ICON = "mask-icon"
+private const val CONTENT_SHORT_ICON = "shortcut icon"
+private const val CONTENT_REL = "rel"
+private const val CONTENT_COLOR = "color"
+private const val LINK_TYPE_TWITTER = "twitter"
 
 suspend fun getDocument(url: String, timeOut: Int = 300): Document =
     withContext(Dispatchers.IO) {
         return@withContext Jsoup.connect(url)
+            .userAgent(AGENT)
+            .ignoreContentType(true)
+            .followRedirects(true)
             .timeout(timeOut)
             .get()
     }
 
-suspend fun parseHtml(document: Document): UrlInfoUiModel =
+suspend fun parseHtml(document: Document, linkType: String): UrlInfoUiModel =
     withContext(Dispatchers.IO) {
         val metaTags = document.getElementsByTag(ELEMENT_TAG_META)
         val urlInfo = UrlInfoUiModel()
-        metaTags.forEach {
-            when (it.attr(ATTRIBUTE_VALUE_PROPERTY)) {
-                in META_OG_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title = it.attr(CONTENT)
-                in META_OG_DESCRIPTION -> if (urlInfo.description.isEmpty()) urlInfo.description =
-                    it.attr(CONTENT)
-                in META_OG_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image = it.attr(CONTENT)
+
+        if (linkType.equals(LINK_TYPE_TWITTER, false)) {
+            val metaTwitter = metaTags.find {
+                it.hasAttr(ATTRIBUTE_VALUE_PROPERTY)
             }
 
-            when (it.attr(ATTRIBUTE_VALUE_NAME)) {
-                in META_NAME_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title = it.attr(CONTENT)
-                in META_NAME_DESCRIPTION -> if (urlInfo.description.isEmpty()) urlInfo.description =
-                    it.attr(CONTENT)
-                in META_OG_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image = it.attr(CONTENT)
+            metaTwitter?.let { it ->
+                it.parentNode()?.childNodes()?.find {
+                    it.attr(CONTENT_REL) == CONTENT_ICON
+                }?.let {
+                    urlInfo.imageIcon = it.attr(CONTENT_HREF)
+                    urlInfo.bgColotIcon = it.attr(CONTENT_COLOR)
+                }
             }
+        } else {
+            metaTags.forEach { it ->
+                when (it.attr(ATTRIBUTE_VALUE_PROPERTY)) {
+                    in META_NAME_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title =
+                        it.attr(CONTENT)
+                    in META_OG_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title =
+                        it.attr(CONTENT)
+                    in META_OG_DESCRIPTION -> if (urlInfo.description.isEmpty()) urlInfo.description =
+                        it.attr(CONTENT)
+                    in META_NAME_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image =
+                        it.attr(CONTENT)
+                    in META_OG_IMAGE_ICON -> if (urlInfo.image.isEmpty()) urlInfo.image =
+                        it.attr(CONTENT_HREF)
+                }
 
-            when (it.attr(ATTRIBUTE_VALUE_ITEMPROP)) {
-                in META_ITEMPROP_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title =
-                    it.attr(CONTENT)
-                in META_ITEMPROP_DESCRIPTION -> if (urlInfo.description.isEmpty()) urlInfo.description =
-                    it.attr(
+                when (it.attr(ATTRIBUTE_VALUE_NAME)) {
+                    in META_NAME_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title =
+                        it.attr(CONTENT)
+                    in META_NAME_DESCRIPTION -> if (urlInfo.description.isEmpty()) urlInfo.description =
+                        it.attr(CONTENT)
+                    in META_OG_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image =
+                        it.attr(CONTENT)
+                    in META_NAME_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image =
+                        it.attr(CONTENT)
+                }
+
+                when (it.attr(ATTRIBUTE_VALUE_ITEMPROP)) {
+                    in META_ITEMPROP_TITLE -> if (urlInfo.title.isEmpty()) urlInfo.title =
+                        it.attr(CONTENT)
+                    in META_ITEMPROP_DESCRIPTION -> if (urlInfo.description.isEmpty()) urlInfo.description =
+                        it.attr(
+                            CONTENT
+                        )
+                    in META_ITEMPROP_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image = it.attr(
                         CONTENT
                     )
-                in META_ITEMPROP_IMAGE -> if (urlInfo.image.isEmpty()) urlInfo.image = it.attr(
-                    CONTENT
-                )
-            }
-            if (urlInfo.allFetchComplete()) {
-                return@withContext urlInfo
-            }
+                }
+                if (urlInfo.allFetchComplete()) {
+                    return@withContext urlInfo
+                }
 
+            }
         }
         return@withContext urlInfo
     }

@@ -43,4 +43,8 @@ sealed class SettingsError(
     class SetLanguageError(cause: Throwable?) : SettingsError(
         cause, R.string.error_set_language
     )
+
+    class LogoutError(cause: Throwable?) : SettingsError(
+        cause, R.string.error_logout
+    )
 }

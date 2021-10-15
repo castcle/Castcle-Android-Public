@@ -77,7 +77,7 @@ data class Hashtag(
     @SerializedName("slug")
     val slug: String,
     @SerializedName("trends")
-    val trends: String,
+    val trends: String?="",
     @SerializedName("isTrending")
     val isTrending: Boolean? = null
 )

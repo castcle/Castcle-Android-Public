@@ -4,7 +4,7 @@ import android.os.Build.VERSION_CODES.M
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties.*
 import androidx.annotation.RequiresApi
-import com.co.the1.the1app.common.rx.BuildConfig
+import com.castcle.android.common.rx.BuildConfig
 import java.security.KeyStore
 import java.security.KeyStore.SecretKeyEntry
 import java.security.KeyStore.getInstance

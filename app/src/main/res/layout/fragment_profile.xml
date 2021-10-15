@@ -3,14 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black_night">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayoutProfile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="com.castcle.ui.profile.FlingBehavior">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -34,6 +32,7 @@
                     app:srcCompat="@drawable/ic_img_placeholder" />
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAddCover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|top"
@@ -77,13 +76,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_2sdp"
-            android:background="@color/black_drak" />
+            android:background="@color/black_light" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_night"
+        android:background="@color/black_light"
         android:fillViewport="true"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -96,28 +95,29 @@
                 android:id="@+id/vpPageContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_1sdp"
                 android:layout_marginBottom="@dimen/_6sdp"
                 android:layout_weight="1"
-                android:background="@color/black_drak"
+                android:background="@color/black_light"
                 android:elevation="@dimen/_5sdp"
                 android:translationZ="@dimen/_4sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/AppTextKanit.Medium"
-                android:id="@+id/tvMessageError"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_error_message"
-                android:textColor="@color/white"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/vpPageContent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <FrameLayout
+        android:id="@+id/flCoverLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_night_tranparent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

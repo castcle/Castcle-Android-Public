@@ -50,4 +50,27 @@ object TabContentStatic {
             featureSlug = "photo"
         )
     )
+
+    val tabTrend = mutableListOf(
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.trend_tab_top,
+            featureSlug = "top"
+        ),
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.trend_tab_lastest,
+            featureSlug = "lastest"
+        ),
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.trend_tab_people,
+            featureSlug = "people"
+        ),
+        TabContentUiModel(
+            tabName = "",
+            tabNameRes = R.string.trend_tab_photo,
+            featureSlug = "photo"
+        )
+    )
 }

@@ -42,6 +42,6 @@ class GetCachedUserProfileSingleUseCase @Inject constructor(
     ::GetUserProfileError
 ) {
     override fun create(input: Unit): Flowable<Optional<User>> {
-        return userRepository.cachedUser
+        return userRepository.currentCachedUser
     }
 }

@@ -85,9 +85,9 @@ data class Links(
 
 data class Verified(
     @SerializedName("email")
-    val email: Boolean,
+    val email: Boolean? = false,
     @SerializedName("mobile")
-    val mobile: Boolean,
+    val mobile: Boolean? = false,
     @SerializedName("official")
-    val official: Boolean
+    val official: Boolean? = false
 )

@@ -6,6 +6,7 @@ import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,11 +35,19 @@ import kotlinx.coroutines.flow.Flow
 interface FeedRepository {
 
     suspend fun getFeed(
-        feedRequestHeader: FeedRequestHeader
+        feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentUiModel>>
 
     suspend fun getCommented(
         commentRequest: CommentRequest
+    ): Flow<PagingData<ContentUiModel>>
+
+    fun getCommentedPaging(
+        commentRequest: CommentRequest
+    ): Single<CommentedModel>
+
+    suspend fun getTrend(
+        feedRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>>
 
     fun createComment(

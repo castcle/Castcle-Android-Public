@@ -55,6 +55,12 @@ abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val onSentCommentResponse: Observable<ContentUiModel>
 
+    abstract val commentedResponses: Observable<List<ContentUiModel>>
+
+    abstract fun fetachCommentedPage(feedContentId: String)
+
+    abstract fun fetachNextCommentedPage()
+
     abstract fun likedComment(
         conntentId: String,
         commentId: String,
@@ -77,7 +83,8 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val sentCommentSingleUseCase: SentCommentSingleUseCase,
     private val commentRepository: CommentRepository,
     private val likeCommentCompletableUseCase: LikeCommentCompletableUseCase,
-    private val deleteCommentCompletableUseCase: DeleteCommentCompletableUseCase
+    private val deleteCommentCompletableUseCase: DeleteCommentCompletableUseCase,
+    private val getCommentedPagingSingleUseCase: GetCommentedPagingSingleUseCase
 ) : FeedDetailFragmentViewModel(), FeedDetailFragmentViewModel.Input {
 
     override val input: Input
@@ -103,9 +110,19 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     override val onRefreshComment: Observable<Unit>
         get() = _onRefreshComment
 
+    private var _commentedId = BehaviorSubject.create<CommentRequest>()
+
+    private var _commentedResponses =
+        BehaviorSubject.create<List<ContentUiModel>>()
+    override val commentedResponses: Observable<List<ContentUiModel>>
+        get() = _commentedResponses
+
     override fun getCommented(feedContentId: String) {
         getCommentedPaging(CommentRequest(feedItemId = feedContentId))
     }
+
+    private var totalPages: Int = 1
+    private var nextPage: Int = 1
 
     private fun getCommentedPaging(commentRequest: CommentRequest) = launchPagingAsync({
         _showLoading.onNext(true)
@@ -149,11 +166,67 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
                 displayName = "Test",
                 castcleId = "Rx",
                 followed = true,
-                verified = true
+                verifiedEmail = true
             )
         )
         viewModelScope.launch {
             commentRepository.addCommentMediator(commented)
+        }
+    }
+
+    override fun fetachCommentedPage(feedContentId: String) {
+        _commentedId.onNext(
+            CommentRequest(
+                feedItemId = feedContentId,
+                paginationModel = PaginationModel(
+                    limit = PAGE_SIZE_DEFAULT,
+                    next = PAGE_NUMBER_DEFAULT
+                )
+            )
+        )
+
+        getCommentedPagingSingleUseCase.execute(_commentedId.blockingFirst())
+            .doOnSubscribe {
+                _showLoading.onNext(true)
+            }.doOnError {
+                _error.onNext(it)
+            }.subscribeBy(
+                onSuccess = {
+                    onBindContentUiModel(it)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    override fun fetachNextCommentedPage() {
+        if(_commentedId.blockingFirst().paginationModel.next == 0) return
+        getCommentedPagingSingleUseCase.execute(_commentedId.blockingFirst())
+            .doOnSubscribe {
+                _showLoading.onNext(true)
+            }.doOnError {
+                _error.onNext(it)
+            }.subscribeBy(
+                onSuccess = {
+                    onBindContentUiModel(it)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    private fun onBindContentUiModel(item: CommentedModel) {
+        val oldData = _commentedResponses.value ?: emptyList()
+        val commentedValue = oldData.toMutableList().apply {
+            addAll(item.contentUiModel.feedContentUiModel)
+        }
+        _commentedResponses.onNext(commentedValue)
+        _commentedId.value.apply {
+            nextPage = item.paginationModel.next ?: 0
+        }?.let {
+            _commentedId.onNext(it)
         }
     }
 
@@ -164,7 +237,9 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
             _showLoading.onNext(true)
         }.subscribeBy(
             onComplete = {},
-            onError = {}
+            onError = {
+                _error.onNext(it)
+            }
         ).addToDisposables()
     }
 
@@ -183,3 +258,6 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
         ).addToDisposables()
     }
 }
+
+private const val PAGE_NUMBER_DEFAULT = 1
+private const val PAGE_SIZE_DEFAULT = 25

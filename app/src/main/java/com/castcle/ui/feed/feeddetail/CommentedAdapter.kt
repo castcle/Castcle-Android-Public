@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
-import com.castcle.common_model.model.feed.ReplyUiModel
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.ui.common.events.*
 import com.castcle.ui.feed.feeddetail.viewholder.CommentedItemViewHolder
@@ -36,9 +36,9 @@ import kotlin.properties.Delegates
 //  or have any questions.
 //
 //
-//  Created by sklim on 24/8/2021 AD at 15:04.
+//  Created by sklim on 12/10/2021 AD at 12:34.
 
-class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<ReplyUiModel>>(),
+class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<ContentUiModel>>(),
     DiffUpdateAdapter,
     ItemClickable<Click> by ItemClickableImpl() {
 
@@ -46,7 +46,7 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<ReplyU
         notifyItemClick(it)
     }
 
-    var uiModels: List<ReplyUiModel> by Delegates.observable(emptyList()) { _, old, new ->
+    var uiModels: List<ContentUiModel> by Delegates.observable(emptyList()) { _, old, new ->
         autoNotify(
             old,
             new,
@@ -54,7 +54,7 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<ReplyU
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<ReplyUiModel>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
         holder.bindUiModel(uiModels[position])
     }
 
@@ -62,11 +62,11 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<ReplyU
         return uiModels.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ReplyUiModel> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentUiModel> {
         return CommentedItemViewHolder.newInstance(parent, click)
     }
 
-    abstract class ViewHolder<UiModel : ReplyUiModel>(itemView: View) :
+    abstract class ViewHolder<UiModel : ContentUiModel>(itemView: View) :
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
         lateinit var uiModel: UiModel

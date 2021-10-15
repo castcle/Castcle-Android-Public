@@ -39,18 +39,20 @@ interface FeedApi {
     suspend fun getFeed(
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
+        @Query(MODE) mode: String,
+        @Query(HAS_TAG) hasTag: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<FeedResponse>
 
     @GET("feeds/{feature_slug}/{circle_slug}")
-    fun getFeedByMode(
+    suspend fun getFeedByMode(
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
-        @Query(MODE) mode: String,
-        @Query(PAGE_NUMBER) pageNuber: String,
-        @Query(PAGE_SIZE) pageSize: String,
-    ): Flowable<Response<List<FeedResponse>>>
+        @Query(HAS_TAG) mode: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<FeedResponse>
 
     @PUT("contents/{contentId}/{likeStatus}")
     fun likeFeedContent(
@@ -82,6 +84,13 @@ interface FeedApi {
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<ContentCommentResponse>
+
+    @GET("contents/{id}/comments")
+    fun getCommented(
+        @Path("id") id: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Flowable<Response<ContentCommentResponse>>
 
     @POST("contents/{contentId}/comments")
     fun sentComments(

@@ -2,8 +2,8 @@ package com.castcle.ui.search.onsearch
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.castcle.android.R
@@ -16,8 +16,9 @@ import com.castcle.extensions.gone
 import com.castcle.extensions.visibleOrGone
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
+import com.castcle.ui.common.events.Click
+import com.castcle.ui.common.events.SearchItemClick
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.castcle.ui.search.SearchAdapter
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -85,25 +86,50 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
 
     override fun setupView() {
         setupToolBar()
-        binding.etTextInputPrimary.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        with(binding.etTextInputPrimary) {
+            viewModel.getResentSearch()
 
+            setOnEditorActionListener { _, actionId, keyEven ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    onSearchByKeyword(text.toString())
+                    true
+                } else {
+                    false
+                }
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
-            }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
 
-            override fun afterTextChanged(s: Editable?) {
-                onSearchByKeyword(s.toString())
-            }
-        })
+                override fun afterTextChanged(s: Editable?) {
+                    onSearchByKeyword(s.toString())
+                }
+            })
+        }
+
+        binding.ivCancel.subscribeOnClick {
+            binding.etTextInputPrimary.setText("")
+            onBindClose(false)
+        }
 
         binding.rvRank.run {
             adapter = SearchTrendAdapter().also {
                 searchTrendAdapter = it
             }
         }
+    }
+
+    private fun onBindClose(show: Boolean) {
+        binding.ivCancel.visibleOrGone(show)
     }
 
     private fun setupToolBar() {
@@ -121,11 +147,76 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
             viewModel.onClearCache()
             _cacheKeyword = keyword
         }
-        viewModel.input.getSearch(keyword)
+
+        onBindClose(keyword.isNotEmpty())
+        if (keyword.isNotEmpty()) {
+            viewModel.input.getSearch(keyword)
+        } else {
+            viewModel.getResentSearch()
+        }
     }
 
     override fun bindViewEvents() {
+        searchTrendAdapter.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+    }
 
+    private fun handleItemClick(itemClick: Click) {
+        when (itemClick) {
+            is SearchItemClick.HasTagItemClick -> {
+                handlerHasTag(itemClick)
+            }
+            is SearchItemClick.PersonItemClick -> {
+                handlerPerson(itemClick)
+            }
+            is SearchItemClick.SuggestionItemClick -> {
+                handlerSuggested(itemClick)
+            }
+            is SearchItemClick.SuggestionClearClick -> {
+                handleClearRecentSearch()
+            }
+        }
+    }
+
+    private fun handleClearRecentSearch() {
+        viewModel.onClearRecentSearch()
+    }
+
+    private fun handlerHasTag(itemClick: SearchItemClick.HasTagItemClick) {
+        if (itemClick.searchUiModel is SearchUiModel.SearchHasTagUiModel) {
+            navigateToTrendFragment(itemClick.searchUiModel.slug)
+        }
+    }
+
+    private fun navigateToTrendFragment(trendSlug: String) {
+        onBoardNavigator.navigateToTrendFragment(trendSlug)
+    }
+
+    private fun handlerPerson(itemClick: SearchItemClick.PersonItemClick) {
+        if (itemClick.searchUiModel is SearchUiModel.SearchFollowUiModel) {
+            val profileType = itemClick.searchUiModel.type
+            val castcleId = itemClick.searchUiModel.castcleId
+
+            navigateToProfile(castcleId, profileType)
+        }
+    }
+
+    private fun navigateToProfile(castcleId: String, type: String) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, type)
+    }
+
+    private fun handlerSuggested(itemClick: SearchItemClick.SuggestionItemClick) {
+        when (itemClick.searchUiModel) {
+            is SearchUiModel.SearchKeywordUiModel -> {
+                binding.etTextInputPrimary.setText(itemClick.searchUiModel.text)
+            }
+            is SearchUiModel.SearchResentUiModel -> {
+                binding.etTextInputPrimary.setText(itemClick.searchUiModel.keyword)
+            }
+            else -> {
+            }
+        }
     }
 
     override fun bindViewModel() {
@@ -140,6 +231,14 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
         viewModel.onError.subscribe {
             onBindEmptyState(true)
         }.addToDisposables()
+
+        viewModel.resentSearchResponse.observe(this, {
+            it.toMutableList().apply {
+                if (isNotEmpty()) {
+                    add(0, SearchUiModel.SearchResentHeaderUiModel)
+                }
+            }.run(::onBindSearchItem)
+        })
     }
 
     private fun onBindSearchItem(list: List<SearchUiModel>) {
@@ -167,5 +266,3 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
         binding.rvRank.visibleOrGone(!showError)
     }
 }
-
-private const val LIMIT_SEARCH = 3

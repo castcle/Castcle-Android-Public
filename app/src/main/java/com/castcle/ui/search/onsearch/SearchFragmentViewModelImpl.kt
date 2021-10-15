@@ -9,9 +9,10 @@ import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.localization.LocalizedResources
 import com.castcle.networking.service.common.TIMEOUT_SEARCH_REQUEST
 import com.castcle.networking.service.common.TIMEOUT_SHOWING_SPINNER
-import com.castcle.usecase.search.GetSearchTrendsSingleUseCase
+import com.castcle.usecase.search.*
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.*
@@ -44,7 +45,9 @@ import javax.inject.Inject
 class SearchFragmentViewModelImpl @Inject constructor(
     private val rxSchedulerProvider: RxSchedulerProvider,
     private val localizedResources: LocalizedResources,
-    private val getSearchTrendsSingleUseCase: GetSearchTrendsSingleUseCase
+    private val getSearchTrendsSingleUseCase: GetSearchTrendsSingleUseCase,
+    private val setResentSearchCompletableUseCase: SetResentSearchCompletableUseCase,
+    private val getResentSearchSingleUseCase: GetResentSearchSingleUseCase
 ) : SearchFragmentViewModel(), SearchFragmentViewModel.Input {
     override val input: Input
         get() = this
@@ -60,6 +63,10 @@ class SearchFragmentViewModelImpl @Inject constructor(
     private val _searchResponse = MutableLiveData<List<SearchUiModel>>()
     override val searchResponse: LiveData<List<SearchUiModel>>
         get() = _searchResponse
+
+    private val _resentSearchResponse = MutableLiveData<List<SearchUiModel>>()
+    override val resentSearchResponse: LiveData<List<SearchUiModel>>
+        get() = _resentSearchResponse
 
     private var _cacheSearchUiModel = MutableLiveData<List<SearchUiModel>>()
     private val _keyword = BehaviorSubject.create<String>()
@@ -103,6 +110,8 @@ class SearchFragmentViewModelImpl @Inject constructor(
             ).map {
                 _cacheSearchUiModel.value = it
                 it
+            }.doOnSuccess {
+                saveOnKeywordSearch(keyword)
             }.doOnError {
                 _showLoading.onNext("")
                 _error.onNext(it)
@@ -110,6 +119,46 @@ class SearchFragmentViewModelImpl @Inject constructor(
         } else {
             Single.just(_cacheSearchUiModel.value)
         }
+    }
+
+    private fun saveOnKeywordSearch(keyword: String) {
+        getResentSearchSingleUseCase.execute(Unit)
+            .doOnSuccess {
+                saveResentSearch(it, keyword)
+            }.subscribe().addToDisposables()
+    }
+
+    private fun saveResentSearch(list: List<SearchUiModel>, keyword: String) {
+
+        list.toMutableList().apply {
+            val cacheKeyword = find {
+                (it as SearchUiModel.SearchResentUiModel).keyword == keyword
+            }
+            if (cacheKeyword != null) {
+                this.sortByDescending {
+                    (it as SearchUiModel.SearchResentUiModel).keyword == keyword
+                }
+            } else {
+                add(SearchUiModel.SearchResentUiModel(keyword = keyword))
+            }
+        }.run {
+            setResentSearchCompletableUseCase.execute(this).subscribe().addToDisposables()
+        }
+    }
+
+    override fun getResentSearch() {
+        getResentSearchSingleUseCase.execute(Unit).subscribeBy(
+            onSuccess = {
+                _resentSearchResponse.value = it
+            }, onError = {
+                _error.onNext(it)
+            }
+        ).addToDisposables()
+    }
+
+    override fun onClearRecentSearch() {
+        _resentSearchResponse.value = emptyList()
+        setResentSearchCompletableUseCase.execute(emptyList()).subscribe().addToDisposables()
     }
 
     override fun onClearItem() {

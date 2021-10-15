@@ -35,7 +35,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
-        android:text="@string/search_is_trend"
         android:textColor="@color/gray_light"
         android:layout_marginBottom="@dimen/_12sdp"
         app:layout_constraintEnd_toStartOf="@id/ivArrowRight"

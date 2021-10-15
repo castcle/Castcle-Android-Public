@@ -90,8 +90,8 @@ class FeedContentShortViewHolder(
                 tvFeedContent.text = contentFeed
                 if (link.isNotEmpty()) {
                     groupPreview.visible()
-                    link.firstOrNull()?.url?.let {
-                        PreViewLinkUrl(it, object : PreViewLinkCallBack {
+                    link.firstOrNull()?.let {
+                        PreViewLinkUrl(it.url, it.type, object : PreViewLinkCallBack {
                             override fun onComplete(urlInfo: UrlInfoUiModel) {
                                 with(urlInfo) {
                                     ivPerviewUrl.loadGranularRoundedCornersImage(image)

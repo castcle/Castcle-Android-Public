@@ -10,7 +10,6 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.setting.toPageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
@@ -18,11 +17,10 @@ import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.StaticSeetingMenu
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
+import com.castcle.networking.api.user.PROFILE_TYPE_ME
 import com.castcle.ui.base.*
-import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.castcle.ui.splashscreen.SplashScreenActivity
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
@@ -157,9 +155,9 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
 
     override fun bindViewEvents() {
         binding.btContinue.subscribeOnClick {
-            viewModel.onLogOut().subscribeBy(
-                onComplete = {
-                    logoutToSplashScreen()
+            viewModel.onLogOut(requireActivity()).subscribeBy(
+                onError = {
+                    handleError(it)
                 }
             ).addToDisposables()
         }
@@ -169,24 +167,16 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         }.addToDisposables()
     }
 
+    private fun handleError(it: Throwable) {
+        displayError(it)
+    }
+
     private fun handleNavigateAvatarClick() {
-        val deepLink = makeDeepLinkUrl(
-            requireContext(), Input(
-                type = DeepLinkTarget.USER_PROFILE_ME,
-                contentData = ""
-            )
-        ).toString()
-        navigateByDeepLink(deepLink)
+        navigateToProfile(type = PROFILE_TYPE_ME)
     }
 
-    private fun navigateByDeepLink(url: String) {
-        onBoardNavigator.navigateByDeepLink(url.toUri())
-    }
-
-    private fun logoutToSplashScreen() {
-        SplashScreenActivity.start(requireContext())
-        (context as OnBoardActivity).finish()
-        findNavController().navigateUp()
+    private fun navigateToProfile(castcleId: String = "", type: String) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, type)
     }
 
     override fun bindViewModel() {

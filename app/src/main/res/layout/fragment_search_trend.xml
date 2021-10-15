@@ -15,26 +15,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_8sdp"
+            android:background="@drawable/bg_round_corner"
             app:layout_constraintBottom_toTopOf="@id/rvRank"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 style="@style/TextInput.Text"
                 android:id="@+id/etTextInputPrimary"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_round_corner"
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="@dimen/_8sdp"
-                android:hint="@string/search_title_bar_search" />
-        </FrameLayout>
+                android:hint="@string/search_title_bar_search"
+                android:paddingEnd="@dimen/_8sdp"
+                android:imeOptions="actionSearch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivCancel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivCancel"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/etTextInputPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/etTextInputPrimary"
+                app:srcCompat="@drawable/ic_close" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
     <com.castcle.components_android.ui.EmptyStateTemplate

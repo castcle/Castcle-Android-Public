@@ -2,7 +2,6 @@ package com.castcle.ui.profile.childview.all
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -10,8 +9,9 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.data.staticmodel.ContentType
-import com.castcle.extensions.*
+import com.castcle.extensions.getNavigationResult
+import com.castcle.extensions.visibleOrGone
+import com.castcle.networking.api.user.PROFILE_TYPE_ME
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
@@ -73,19 +73,17 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun initViewModel() {
-        if (activityViewModel.isContentTypeMe.value == true) {
-            val feedRequestHeader = FeedRequestHeader(isMe = true)
-            viewModel.fetachUserProfileContent(feedRequestHeader)
+        val feedRequestHeader = if (activityViewModel.isContentTypeMe.value == true) {
+            FeedRequestHeader(isMe = true)
         } else {
-            val feedRequestHeader = FeedRequestHeader(
-                castcleId = activityViewModel.isContentTypeYouId.value ?: ""
+            FeedRequestHeader(
+                castcleId = activityViewModel.isContentTypeYouId.value ?: "",
             )
-            viewModel.fetachUserViewProfileContent(feedRequestHeader)
         }
+        viewModel.fetachUserProfileContent(feedRequestHeader)
     }
 
     override fun setupView() {
-        viewModel.getFeedResponse(ContentType.CONTENT)
         with(binding) {
             rvContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
@@ -128,21 +126,21 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
-        val deepLink = makeDeepLinkUrl(
-            requireContext(), Input(
-                type = DeepLinkTarget.USER_PROFILE_YOU,
-                contentData = contentUiModel.payLoadUiModel.author.displayName
-            )
-        ).toString()
-        navigateByDeepLink(deepLink)
+        val profileType = if (activityViewModel.isContentTypeMe.value == true) {
+            PROFILE_TYPE_ME
+        } else {
+            contentUiModel.payLoadUiModel.author.type
+        }
+
+        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, profileType)
     }
 
-    private fun navigateByDeepLink(url: String) {
-        onBoardNavigator.navigateByDeepLink(url.toUri())
+    private fun navigateToProfile(castcleId: String, type: String) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, type)
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
-
+        viewModel
     }
 
     private fun handleRecastClick(contentUiModel: ContentUiModel) {
@@ -183,7 +181,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
         with(viewModel) {
             launchOnLifecycleScope {
                 userProfileContentRes.collectLatest {
-                    adapterPagingCommon.submitData(lifecycle, it)
+                    adapterPagingCommon.submitData(it)
                 }
             }
         }

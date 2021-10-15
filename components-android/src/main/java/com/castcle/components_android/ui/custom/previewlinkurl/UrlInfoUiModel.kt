@@ -32,7 +32,9 @@ data class UrlInfoUiModel(
     var url: String = "",
     var title: String = "",
     var description: String = "",
-    var image: String = ""
+    var image: String = "",
+    var imageIcon: String = "",
+    var bgColotIcon: String = ""
 ) : Parcelable {
 
     fun allFetchComplete(): Boolean {

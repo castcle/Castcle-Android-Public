@@ -108,8 +108,6 @@ class FeedMockFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
-        adapterFilterAdapter.items = feedFilter
-        adapterFilterAdapter.itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
 
         with(adapterMockCommon) {
             itemClick.subscribe {
@@ -167,10 +165,6 @@ class FeedMockFragment : BaseFragment<FeedFragmentViewModel>(),
             onResult = {
                 adapterMockCommon.onUpdateRecastItem(it)
             })
-    }
-
-    private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
-        adapterFilterAdapter.selectedFilter(itemFilter)
     }
 
     override fun bindViewModel() {

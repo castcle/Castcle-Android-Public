@@ -66,6 +66,7 @@ fun UserProfileResponse.toUserProfile(): User {
         mediumLinks = links?.medium ?: "",
         twitterLinks = links?.twitter ?: "",
         websiteLinks = links?.website ?: "",
-        youtubeLinks = links?.youtube ?: ""
+        youtubeLinks = links?.youtube ?: "",
+        verified = verified?.email ?: false
     )
 }

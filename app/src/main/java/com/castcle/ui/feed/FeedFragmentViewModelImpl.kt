@@ -9,11 +9,13 @@ import com.castcle.android.R
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.ModeType
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
+import com.castcle.usecase.search.GetTopTrendsSingleUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import com.google.gson.Gson
@@ -23,6 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 import java.io.InputStream
 import javax.inject.Inject
@@ -56,7 +59,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val feedNonAuthRepository: FeedRepository,
-    private val likeContentCompletableUseCase: LikeContentCompletableUseCase
+    private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
+    private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -87,13 +91,29 @@ class FeedFragmentViewModelImpl @Inject constructor(
         }
     }
 
+    private val defaultFeedRequestHeader = FeedRequestHeader(
+        featureSlug = FeedContentType.FEED_SLUG.type,
+        circleSlug = FeedContentType.CIRCLE_SLUG_FORYOU.type,
+        mode = ModeType.MODE_CURRENT.type
+    )
+
+    private var _queryFeedRequest = MutableStateFlow(defaultFeedRequestHeader)
+
     init {
-        getAllFeedContent()
+        getAllFeedContent(_queryFeedRequest)
     }
 
     private val _feedContentMock = MutableLiveData<List<ContentUiModel>>()
     override val feedContentMock: LiveData<List<ContentUiModel>>
         get() = _feedContentMock
+
+    override fun setDefaultFeedRequestHeader() {
+        setFetchFeedContent(defaultFeedRequestHeader)
+    }
+
+    override fun setFetchFeedContent(feedRequest: FeedRequestHeader) {
+        _queryFeedRequest.value = feedRequest
+    }
 
     override fun fetchUserProfile(): Completable =
         cachedUserProfileSingleUseCase
@@ -104,18 +124,14 @@ class FeedFragmentViewModelImpl @Inject constructor(
             .doOnError(_error::onNext).firstOrError()
             .ignoreElement()
 
-    override fun getAllFeedContent() = launchPagingAsync({
-        val feedRequestHeader = FeedRequestHeader(
-            featureSlug = FeedContentType.FEED_SLUG.type,
-            circleSlug = FeedContentType.CIRCLE_SLUG.type,
-            mode = ModeType.MODE_CURRENT.type
-        )
-        _showLoading.onNext(true)
-        feedNonAuthRepository.getFeed(feedRequestHeader).cachedIn(viewModelScope)
-    }, {
-        _showLoading.onNext(false)
-        _feedUiMode = it
-    })
+    override fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
+        launchPagingAsync({
+            _showLoading.onNext(true)
+            feedNonAuthRepository.getFeed(feedRequest).cachedIn(viewModelScope)
+        }, {
+            _showLoading.onNext(false)
+            _feedUiMode = it
+        })
 
     private var _onUpdateContentLike = BehaviorSubject.create<ContentUiModel>()
     override val onUpdateContentLike: Observable<ContentUiModel>
@@ -144,6 +160,29 @@ class FeedFragmentViewModelImpl @Inject constructor(
             ).doOnError {
                 _error.onNext(it)
             }
+    }
+
+    private var _trendsResponse = MutableLiveData<List<SearchUiModel>>()
+    override val trendsResponse: LiveData<List<SearchUiModel>>
+        get() = _trendsResponse
+
+    override fun getTopTrends() {
+        getTopTrendsSingleUseCase.execute(Unit)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doFinally { _showLoading.onNext(false) }
+            .subscribeBy(
+                onSuccess = {
+                    setTrendResponse(it)
+                },
+                onError = {
+                    _showLoading.onNext(false)
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    private fun setTrendResponse(list: List<SearchUiModel>) {
+        _trendsResponse.value = list
     }
 
     override fun getFeedResponseMock() {

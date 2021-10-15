@@ -1,6 +1,7 @@
 package com.castcle.ui.common.events
 
 import com.castcle.common_model.model.feed.ContentDbModel
+import com.castcle.common_model.model.feed.ContentUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -50,14 +51,25 @@ sealed class CommentItemClick(
         val contentDbModel: ContentDbModel
     ) : CommentItemClick(position)
 
-    class CommentedLikeClick(
+    class CommentedLikedItemClick(
+        position: Int,
+        val contentUiModel: ContentUiModel
+    ) : CommentItemClick(position)
+
+    class CommentedLikeChildClick(
         position: Int,
         val replyId: String,
-        val commentedid: String ="",
+        val commentedId: String = "",
+        val likeStatus: Boolean = false
     ) : CommentItemClick(position)
 
     class CommentReplyClick(
         position: Int,
         val contentDbModel: ContentDbModel
+    ) : CommentItemClick(position)
+
+    class CommentReplyItemClick(
+        position: Int,
+        val contentUiModel: ContentUiModel
     ) : CommentItemClick(position)
 }

@@ -2,6 +2,7 @@ package com.castcle.ui.profile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -9,7 +10,6 @@ import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.staticmodel.ContentType
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
@@ -18,6 +18,7 @@ import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.adapter.ContentPageAdapter
 import com.castcle.ui.profile.viewholder.UserProfileAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -129,12 +130,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-        viewModel.getFeedResponse(ContentType.SHORT)
         viewModel.errorMessage.observe(this, {
-            binding.tvMessageError.run {
-                visible()
-                text = it
-            }
         })
 
         if (isProfileIsMe()) {
@@ -149,6 +145,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         viewModel.userProfileYouRes.subscribe {
             onBindViewProfile(it)
         }.addToDisposables()
+
+        viewModel.showLoading.subscribe {
+            handlerShowLoading(it)
+        }.addToDisposables()
+    }
+
+    private fun handlerShowLoading(it: Boolean) {
+        binding.flCoverLoading.visibleOrGone(it)
     }
 
     private fun onBindProfile(user: User) {
@@ -168,8 +172,9 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun onBindViewProfile(user: User) {
+        binding.ivAddCover.gone()
         with(binding.profileYou) {
-            tvFollowingCount.text = user.followersCount.toCount()
+            tvFollowingCount.text = user.followingCount.toCount()
             tvFollowersCount.text = user.followersCount.toCount()
             tvProfileName.text = user.displayName
             tvProfileCastcleId.text = user.castcleId
@@ -178,9 +183,37 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 tvProfileOverView.text = this
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
+
+            btFollow.visibleOrGone(!user.followed)
+            if (btFollow.isVisible) {
+                btFollow.subscribeOnClick {
+                    handlerFollow(user.castcleId)
+                }.addToDisposables()
+            }
         }
         binding.ivProfileCover.loadImageWithCache(user.cover)
         binding.tbProfile.tvToolbarTitle.text = user.castcleId
+    }
+
+    private fun handlerFollow(castcleId: String) {
+        viewModel.putToFollowUser(castcleId).subscribeBy(
+            onComplete = {
+                onBindFollowedComplete()
+            }, onError = {
+                handlerShowLoading(false)
+                handlerOnShowMessageError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handlerOnShowMessageError(error: Throwable) {
+        displayError(error)
+    }
+
+    private fun onBindFollowedComplete() {
+        with(binding.profileYou) {
+            btFollow.visibleOrGone(false)
+        }
     }
 }
 

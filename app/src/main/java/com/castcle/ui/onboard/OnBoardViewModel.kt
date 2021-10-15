@@ -70,4 +70,12 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract fun setCurrentAppLanguage(languageList: List<LanguageUiModel>)
 
     abstract fun filterSearchLanguage(display: String)
+
+    abstract val trendSlug: LiveData<String>
+
+    abstract fun setTrendSlugData(slug: String)
+
+    abstract val onLogoutActive: Observable<Boolean>
+
+    abstract fun onLogoutDialog(isActive: Boolean)
 }

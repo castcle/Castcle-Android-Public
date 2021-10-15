@@ -200,4 +200,20 @@ class OnBoardViewModelImpl @Inject constructor(
             _preferredLanguage.value = cache
         }
     }
+
+    private var _trendSlug = MutableLiveData<String>()
+    override val trendSlug: LiveData<String>
+        get() = _trendSlug
+
+    override fun setTrendSlugData(slug: String) {
+        _trendSlug.value = slug
+    }
+
+    private val _onLogoutActive = BehaviorSubject.create<Boolean>()
+    override val onLogoutActive: Observable<Boolean>
+        get() = _onLogoutActive
+
+    override fun onLogoutDialog(isActive: Boolean) {
+        _onLogoutActive.onNext(isActive)
+    }
 }

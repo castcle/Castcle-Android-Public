@@ -8,6 +8,7 @@ import com.castcle.android.databinding.ItemRankBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.extensions.getDrawableRes
+import com.castcle.extensions.toCount
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.SearchItemClick
 import com.castcle.ui.search.SearchAdapter
@@ -45,8 +46,14 @@ class SearchTrendViewHolder(
         super.bindUiModel(uiModel)
         if (uiModel is SearchUiModel.SearchHasTagUiModel) {
             with(binding) {
-                ivRank.background = getIconRank(uiModel.trends)
-                tvTrend.text = uiModel.name
+                tvTrend.text = binding.root.context
+                    .getString(R.string.search_is_trend).format(
+                        uiModel.rank.plus(1)
+                    )
+                tvTrendCount.text = binding.root.context
+                    .getString(R.string.search_cast_count).format(
+                        uiModel.count.toCount()
+                    )
                 tvHastag.text = uiModel.slug
             }
             onBindClick(uiModel)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.usecase.search.GetTopTrendsSingleUseCase
+import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -35,6 +36,7 @@ import javax.inject.Inject
 //  Created by sklim on 28/9/2021 AD at 08:53.
 
 class TrendSearchViewModelImpl @Inject constructor(
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase
 ) : TrendSearchViewModel(), TrendSearchViewModel.Input {
     override val input: Input
@@ -51,6 +53,9 @@ class TrendSearchViewModelImpl @Inject constructor(
     private val _searchResponse = MutableLiveData<List<SearchUiModel>>()
     override val searchResponse: LiveData<List<SearchUiModel>>
         get() = _searchResponse
+
+    override val isGuestMode: Boolean
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     override fun getTopTrends() {
         getTopTrendsSingleUseCase.execute(Unit)

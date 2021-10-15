@@ -3,12 +3,14 @@ package com.castcle.ui.feed
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.api.response.FeedContentResponse
+import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -40,9 +42,9 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val feedContentMock: LiveData<List<ContentUiModel>>
 
-    abstract val showLoading:Observable<Boolean>
+    abstract val showLoading: Observable<Boolean>
 
-    abstract val onError:Observable<Throwable>
+    abstract val onError: Observable<Throwable>
 
     abstract fun getFeedResponseMock()
 
@@ -54,12 +56,20 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun fetchUserProfile(): Completable
 
-    abstract fun getAllFeedContent()
+    abstract fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>)
 
     abstract val input: Input
+
+    abstract fun setFetchFeedContent(feedRequest: FeedRequestHeader)
+
+    abstract fun getTopTrends()
+
+    abstract val trendsResponse:LiveData<List<SearchUiModel>>
 
     interface Input {
 
         fun updateLikeContent(contentUiModel: ContentUiModel)
+
+        fun setDefaultFeedRequestHeader()
     }
 }

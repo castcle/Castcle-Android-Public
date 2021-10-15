@@ -125,6 +125,8 @@ buildscript {
         collage_version = "2.0.2"
         gravitysnaphelper_version = "2.2.0"
         rximagepicker_version = "2.5.6"
+        svg_android_version="1.4"
+        coil_version="1.4.0"
     }
 
     repositories {

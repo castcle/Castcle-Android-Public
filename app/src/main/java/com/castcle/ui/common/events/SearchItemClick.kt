@@ -39,4 +39,11 @@ sealed class SearchItemClick(
         position: Int,
         val searchUiModel: SearchUiModel
     ) : SearchItemClick(position)
+
+    class SuggestionItemClick(
+        position: Int,
+        val searchUiModel: SearchUiModel
+    ) : SearchItemClick(position)
+
+    object SuggestionClearClick : SearchItemClick(0)
 }

@@ -50,9 +50,15 @@ sealed class SearchUiModel {
         val name: String,
         val rank: Int,
         val slug: String,
-        val trends: String,
+        val trends: String? = "",
         val isTrending: Boolean = false
     ) : SearchUiModel()
+
+    data class SearchResentUiModel(
+        val keyword: String
+    ) : SearchUiModel()
+
+    object SearchResentHeaderUiModel : SearchUiModel()
 }
 
 fun List<Hashtag>.toSearchHasTagUiModels(): List<SearchUiModel> {
@@ -88,7 +94,7 @@ fun Hashtag.toSearchHasTagUiModel(): SearchUiModel {
         name = name,
         rank = rank,
         slug = slug,
-        trends = trends,
+        trends = trends ?: "",
         isTrending = isTrending ?: false
     )
 }
@@ -121,3 +127,5 @@ fun Aggregator.toAggregatorUiModel() =
         message = message,
         type = type
     )
+
+const val FOLLOW_PERSON = "person"

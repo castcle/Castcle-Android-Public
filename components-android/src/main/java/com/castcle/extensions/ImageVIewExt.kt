@@ -10,6 +10,10 @@ import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.*
@@ -18,6 +22,7 @@ import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.castcle.android.components_android.R
+
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -52,6 +57,22 @@ fun ImageView.loadRoundedCornersImage(
         .error(R.drawable.ic_img_placeholder)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
         .into(this)
+}
+
+fun ImageView.loadIconImage(
+    url: String,
+    @Px roundRadius: Int = context.resources.getDimensionPixelSize(R.dimen.default_round_radius)
+) {
+    val imageLoader = ImageLoader.Builder(context)
+        .componentRegistry {
+            add(SvgDecoder(context))
+        }
+        .build()
+    this.load(url, imageLoader) {
+        crossfade(true)
+        crossfade(500)
+        transformations(RoundedCornersTransformation(roundRadius.toFloat()))
+    }
 }
 
 fun ImageView.loadRoundedCornersImageUri(

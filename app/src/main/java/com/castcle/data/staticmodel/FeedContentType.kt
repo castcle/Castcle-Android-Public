@@ -29,5 +29,5 @@ enum class FeedContentType(val type: String) {
     SHORT("short"),
     BLOG("blog"),
     FEED_SLUG("feed"),
-    CIRCLE_SLUG("forYou")
+    CIRCLE_SLUG_FORYOU("forYou")
 }

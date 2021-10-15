@@ -71,6 +71,9 @@ class SearchTrendAdapter : RecyclerView.Adapter<SearchTrendAdapter.ViewHolder<Se
                 SearchPersonViewHolder.newInstance(parent, click)
             R.layout.item_search_suggestion ->
                 SearchSuggestionViewHolder.newInstance(parent, click)
+            R.layout.item_search_recent_search->{
+                SearchRecentHeadViewHolder.newInstance(parent, click)
+            }
             else -> throw UnsupportedOperationException()
         }
     }
@@ -84,11 +87,17 @@ class SearchTrendAdapter : RecyclerView.Adapter<SearchTrendAdapter.ViewHolder<Se
             is SearchUiModel.SearchHasTagUiModel -> {
                 R.layout.item_search_has_tag
             }
+            is SearchUiModel.SearchResentUiModel -> {
+                R.layout.item_search_suggestion
+            }
             is SearchUiModel.SearchFollowUiModel -> {
                 R.layout.item_search_person
             }
             is SearchUiModel.SearchKeywordUiModel -> {
                 R.layout.item_search_suggestion
+            }
+            is SearchUiModel.SearchResentHeaderUiModel -> {
+                R.layout.item_search_recent_search
             }
             else -> 0
         }

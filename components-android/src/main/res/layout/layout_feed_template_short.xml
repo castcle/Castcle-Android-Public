@@ -19,8 +19,8 @@
         style="@style/AppTextKanitExLight.Small"
         android:id="@+id/tvFeedContent"
         android:layout_width="0dp"
-        android:bufferType="spannable"
         android:layout_height="wrap_content"
+        android:bufferType="spannable"
         android:maxLines="3"
         android:paddingStart="@dimen/_12sdp"
         android:paddingTop="@dimen/_4sdp"
@@ -49,6 +49,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_12sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/ftFooter"
         app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
         tools:layout_editor_absoluteX="16dp">
 
@@ -119,6 +121,155 @@
             app:constraint_referenced_ids="ivPerviewUrl,tvPreviewUrl,tvPreviewHeader,tvPreviewContent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <View
+        android:id="@+id/vCoverIcon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_cover_round"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="@id/clPreviewIconContent"
+        app:layout_constraintEnd_toEndOf="@id/clPreviewIconContent"
+        app:layout_constraintStart_toStartOf="@id/clPreviewIconContent"
+        app:layout_constraintTop_toTopOf="@id/clPreviewIconContent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPreviewIconContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/ftFooter"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        tools:layout_editor_absoluteX="16dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPerviewIconUrl"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:background="@drawable/bg_cover_round_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_img_placeholder" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Small"
+            android:id="@+id/tvIconPreview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/gray_light"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivPerviewIconUrl"
+            app:layout_constraintTop_toTopOf="@id/ivPerviewIconUrl"
+            tools:text="Youtube.com" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Regular"
+            android:id="@+id/tvPreviewIconHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/tvIconPreview"
+            app:layout_constraintStart_toStartOf="@id/tvIconPreview"
+            app:layout_constraintTop_toBottomOf="@id/tvIconPreview"
+            tools:text="How does a blockchain work - Simply Explained" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Small"
+            android:id="@+id/tvPreviewIconContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/_12sdp"
+            android:textColor="@color/gray_light"
+            app:layout_constraintEnd_toEndOf="@id/tvIconPreview"
+            app:layout_constraintStart_toStartOf="@id/tvIconPreview"
+            app:layout_constraintTop_toBottomOf="@id/tvPreviewIconHeader"
+            tools:text="How does a blockchain work - Simply Explained" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/vCoverLoading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_cover_round"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="@id/clPreviewLoadingContent"
+        app:layout_constraintEnd_toEndOf="@id/clPreviewLoadingContent"
+        app:layout_constraintStart_toStartOf="@id/clPreviewLoadingContent"
+        app:layout_constraintTop_toTopOf="@id/clPreviewLoadingContent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPreviewLoadingContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/ftFooter"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        tools:layout_editor_absoluteX="16dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPerviewLoadingUrl"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:background="@drawable/bg_cover_round_icon_loading"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            style="@style/AppTextKanitLight.Small"
+            android:id="@+id/tvLoadingPreview"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:background="@color/dark_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivPerviewLoadingUrl"
+            app:layout_constraintTop_toTopOf="@id/ivPerviewLoadingUrl"
+            tools:text="Youtube.com" />
+
+        <FrameLayout
+            style="@style/AppTextKanitLight.Regular"
+            android:id="@+id/tvPreviewLoadingHeader"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_20sdp"
+            android:ellipsize="end"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:background="@color/dark_gray"
+            app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
+            app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
+            app:layout_constraintTop_toBottomOf="@id/tvLoadingPreview"
+            tools:text="How does a blockchain work - Simply Explained" />
+
+        <FrameLayout
+            style="@style/AppTextKanitLight.Small"
+            android:id="@+id/tvPreviewLoadingContent"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@color/dark_gray"
+            android:paddingBottom="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
+            app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
+            app:layout_constraintTop_toBottomOf="@id/tvPreviewLoadingHeader" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.castcle.components_android.ui.FeedFooterTemplate
         android:id="@+id/ftFooter"
         android:layout_width="match_parent"
@@ -127,7 +278,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/clPreviewContent"
         tools:text="3k" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

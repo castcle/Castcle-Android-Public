@@ -2,14 +2,17 @@ package com.castcle.ui.feed.feeddetail.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.castcle.android.components_android.databinding.ItemCommentChildTemplateBinding
+import com.castcle.android.R
+import com.castcle.android.components_android.databinding.ItemCommentHeaderTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ReplyUiModel
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.LikedUiModel
 import com.castcle.components_android.ui.custom.timeago.TimeAgo
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.feed.feeddetail.CommentedAdapter
+import com.castcle.ui.feed.feeddetail.CommentedChildAdapter
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -36,28 +39,61 @@ import com.castcle.ui.feed.feeddetail.CommentedAdapter
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
 class CommentedItemViewHolder(
-    val binding: ItemCommentChildTemplateBinding,
+    val binding: ItemCommentHeaderTemplateBinding,
     private val click: (Click) -> Unit
-) : CommentedAdapter.ViewHolder<ReplyUiModel>(binding.root) {
+) : CommentedAdapter.ViewHolder<ContentUiModel>(binding.root) {
 
-    private lateinit var replyUiModel: ReplyUiModel
+    private lateinit var contentUiModel: ContentUiModel
+
+    private var commentedAdapter: CommentedChildAdapter
 
     init {
+        binding.rvChildComment.run {
+            adapter = CommentedChildAdapter().also {
+                commentedAdapter = it
+            }
+        }
+        commentedAdapter.itemClick.subscribe {
+            handleCommentedClick(it)
+        }.addToDisposables()
+
         binding.tvLiked.subscribeOnClick {
             click.invoke(
-                CommentItemClick.CommentedLikeClick(
+                CommentItemClick.CommentedLikedItemClick(
                     bindingAdapterPosition,
-                    replyUiModel.id
+                    contentUiModel
                 )
             )
+        }.addToDisposables()
+
+        binding.tvReply.subscribeOnClick {
+            CommentItemClick.CommentReplyItemClick(
+                bindingAdapterPosition,
+                contentUiModel
+            )
+        }.addToDisposables()
+    }
+
+    private fun handleCommentedClick(it: Click?) {
+        when (it) {
+            is CommentItemClick.CommentedLikeChildClick -> {
+                click.invoke(
+                    CommentItemClick.CommentedLikeChildClick(
+                        it.position,
+                        it.replyId,
+                        contentUiModel.id,
+                        contentUiModel.payLoadUiModel.likedUiModel.liked
+                    )
+                )
+            }
         }
     }
 
-    override fun bindUiModel(uiModel: ReplyUiModel) {
+    override fun bindUiModel(uiModel: ContentUiModel) {
         super.bindUiModel(uiModel)
-        replyUiModel = uiModel
+        contentUiModel = uiModel
         with(binding) {
-            with(uiModel) {
+            with(uiModel.payLoadUiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
                 tvUserName.text = author.displayName
                 val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
@@ -65,9 +101,22 @@ class CommentedItemViewHolder(
                 } else {
                     TimeAgo.using(created.toTime())
                 }
+                onBindLikeComment(likedUiModel)
                 tvDataTime.text = dateTime
-                tvCommentMessage.text = message
+                tvCommentMessage.text = contentMessage
+                replyUiModel?.let {
+                    rvChildComment.visible()
+                    commentedAdapter.uiModels = it
+                }
             }
+        }
+    }
+
+    private fun onBindLikeComment(likedUiModel: LikedUiModel) {
+        with(binding) {
+            tvLiked.text = binding.root.context.getString(
+                R.string.comment_item_like
+            ).format(likedUiModel.count)
         }
     }
 
@@ -77,7 +126,7 @@ class CommentedItemViewHolder(
             clickItem: (Click) -> Unit
         ): CommentedItemViewHolder {
             val inflate = LayoutInflater.from(parent.context)
-            val binding = ItemCommentChildTemplateBinding.inflate(inflate, parent, false)
+            val binding = ItemCommentHeaderTemplateBinding.inflate(inflate, parent, false)
             return CommentedItemViewHolder(binding, clickItem)
         }
     }

@@ -35,6 +35,8 @@ abstract class SearchFragmentViewModel : BaseViewModel() {
 
     abstract val searchResponse: LiveData<List<SearchUiModel>>
 
+    abstract val resentSearchResponse: LiveData<List<SearchUiModel>>
+
     abstract val showLoading: Observable<String>
 
     abstract val onError: Observable<Throwable>
@@ -44,6 +46,10 @@ abstract class SearchFragmentViewModel : BaseViewModel() {
     abstract fun onClearCache()
 
     abstract fun onClearItem()
+
+    abstract fun onClearRecentSearch()
+
+    abstract fun getResentSearch()
 
     interface Input {
         fun getSearch(keyword: String)

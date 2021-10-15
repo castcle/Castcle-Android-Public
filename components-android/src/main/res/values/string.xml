@@ -158,7 +158,7 @@
     <string name="comment_title_hint">Add a comment</string>
     <string name="comment_title">Replying to %s</string>
     <string name="comment_item_reply">Reply</string>
-    <string name="comment_item_like">Like</string>
+    <string name="comment_item_like">%s Like</string>
     <string name="comment_footer_retweets"><font color="#FFFFFF">"%s"</font> Retweets</string>
     <string name="comment_footer_quote"><font color="#FFFFFF">"%s"</font> Quote Tweets</string>
     <string name="comment_footer_liked"><font color="#FFFFFF">"%s"</font> Likes</string>
@@ -168,5 +168,12 @@
     <string name="search_title_bar_search">World trends search</string>
     <string name="search_title_rank">Top 10 World Trends</string>
     <string name="search_loading_status">On Search by %s</string>
-    <string name="search_is_trend">Trends</string>
+    <string name="search_is_trend">%s Trends</string>
+    <string name="trend_tab_top">Top</string>
+    <string name="trend_tab_lastest">Lastest</string>
+    <string name="trend_tab_people">People</string>
+    <string name="trend_tab_photo">Photo</string>
+    <string name="error_logout">Failed to log out. Please try again.</string>
+    <string name="search_recent_search">Recent searches</string>
+    <string name="search_cast_count">%s Cast</string>
 </resources>

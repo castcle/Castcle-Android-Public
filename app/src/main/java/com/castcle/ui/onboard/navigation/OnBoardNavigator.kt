@@ -88,4 +88,8 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean = false)
 
     fun navigateToSearchTrendFragmrnt()
+
+    fun navigateToTrendFragment(trendSlug: String)
+
+    fun navigateToProfileFragment(castcle: String, isMe: String)
 }

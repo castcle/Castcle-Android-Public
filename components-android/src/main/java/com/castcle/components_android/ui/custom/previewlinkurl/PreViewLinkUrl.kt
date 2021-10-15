@@ -28,7 +28,11 @@ import java.util.*
 //
 //  Created by sklim on 25/8/2021 AD at 17:21.
 
-class PreViewLinkUrl(val url: String, var callback: PreViewLinkCallBack?) {
+class PreViewLinkUrl(
+    val url: String,
+    private val linkType: String = "",
+    private var callback: PreViewLinkCallBack?
+) {
     val scope = CoroutineScope(Job() + Dispatchers.Main)
     private val imageExtensionArray = arrayOf(".gif", ".png", ".jpg", ".jpeg", ".bmp", ".webp")
 
@@ -47,7 +51,7 @@ class PreViewLinkUrl(val url: String, var callback: PreViewLinkCallBack?) {
             urlInfoItem = UrlInfoUiModel(url = url, image = url)
         } else {
             val document = getDocument(url, timeOut)
-            urlInfoItem = parseHtml(document)
+            urlInfoItem = parseHtml(document, linkType)
             urlInfoItem.url = url
         }
         callback?.onComplete(urlInfoItem)

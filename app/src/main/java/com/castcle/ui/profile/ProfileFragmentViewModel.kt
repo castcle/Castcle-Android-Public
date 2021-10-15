@@ -6,6 +6,7 @@ import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.ui.base.BaseViewCoroutinesModel
+import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
@@ -37,6 +38,8 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val userProfileContentRes: Flow<PagingData<ContentUiModel>>
 
+    abstract val userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
+
     abstract fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader)
 
     abstract fun fetachUserViewProfileContent(contentRequestHeader: FeedRequestHeader)
@@ -56,4 +59,6 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
     abstract val showLoading: Observable<Boolean>
 
     abstract val onError: Observable<Throwable>
+
+    abstract fun putToFollowUser(castcleId: String): Completable
 }

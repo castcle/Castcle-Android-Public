@@ -1,6 +1,10 @@
 package com.castcle.ui.search.trend
 
-import com.castcle.ui.base.BaseViewModel
+import androidx.paging.PagingData
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.ui.base.BaseViewCoroutinesModel
+import kotlinx.coroutines.flow.Flow
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -26,5 +30,9 @@ import com.castcle.ui.base.BaseViewModel
 //
 //  Created by sklim on 7/10/2021 AD at 18:39.
 
-abstract class TrendFragmentViewModel : BaseViewModel() {
+abstract class TrendFragmentViewModel : BaseViewCoroutinesModel() {
+
+    abstract fun getTesnds(contentRequestHeader: FeedRequestHeader)
+
+    abstract val feedTrendResponse: Flow<PagingData<ContentUiModel>>
 }

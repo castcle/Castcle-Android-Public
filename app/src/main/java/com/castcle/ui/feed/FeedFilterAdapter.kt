@@ -5,6 +5,7 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
 import com.castcle.android.components_android.databinding.ItemFeedFilterBinding
+import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.extensions.getColorResource
 import com.castcle.ui.common.events.ItemClickable
@@ -36,11 +37,11 @@ import kotlinx.android.extensions.LayoutContainer
 //  Created by sklim on 30/8/2021 AD at 19:46.
 
 class FeedFilterAdapter : RecyclerView.Adapter<FeedFilterAdapter.FilterViewHolder>(),
-    ItemClickable<FilterUiModel> by ItemClickableImpl(), DiffUpdateAdapter {
+    ItemClickable<SearchUiModel> by ItemClickableImpl(), DiffUpdateAdapter {
 
     private var selectedPosition = 0
 
-    var items: List<FilterUiModel> = emptyList()
+    var items: List<SearchUiModel> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
@@ -58,11 +59,17 @@ class FeedFilterAdapter : RecyclerView.Adapter<FeedFilterAdapter.FilterViewHolde
         holder.onBindFeed(items[position])
     }
 
-    fun selectedFilter(itemFeedFilter: FilterUiModel) {
+    fun selectedFilter(itemFeedFilter: SearchUiModel) {
         val adapterPosition = items.indexOf(itemFeedFilter)
         notifyItemChanged(selectedPosition)
         notifyItemChanged(adapterPosition)
         selectedPosition = adapterPosition
+    }
+
+    fun selectedFilterDefault() {
+        notifyItemChanged(selectedPosition)
+        notifyItemChanged(0)
+        selectedPosition = 0
     }
 
     override fun getItemCount(): Int = items.size
@@ -73,14 +80,14 @@ class FeedFilterAdapter : RecyclerView.Adapter<FeedFilterAdapter.FilterViewHolde
         override val containerView: View
             get() = itemView
 
-        fun onBindFeed(feedItem: FilterUiModel) {
+        fun onBindFeed(feedItem: SearchUiModel) {
             when (feedItem) {
-                is FilterUiModel.FeedFilterUiModel -> feedItem.run(::bindFeed)
+                is SearchUiModel.SearchHasTagUiModel -> feedItem.run(::bindFeed)
             }
             bindOnClick(feedItem)
         }
 
-        private fun bindOnClick(feedItem: FilterUiModel.FeedFilterUiModel) {
+        private fun bindOnClick(feedItem: SearchUiModel) {
             itemView.setOnClickListener {
                 if (selectedPosition != bindingAdapterPosition) {
                     notifyItemClick(feedItem)
@@ -88,8 +95,8 @@ class FeedFilterAdapter : RecyclerView.Adapter<FeedFilterAdapter.FilterViewHolde
             }
         }
 
-        private fun bindFeed(filter: FilterUiModel.FeedFilterUiModel) {
-            binding.tvFilterName.text = filter.hashTagName
+        private fun bindFeed(filter: SearchUiModel.SearchHasTagUiModel) {
+            binding.tvFilterName.text = filter.slug
             binding.tvFilterName.isActivated = selectedPosition == bindingAdapterPosition
             if (selectedPosition == bindingAdapterPosition) {
                 bindActivate()

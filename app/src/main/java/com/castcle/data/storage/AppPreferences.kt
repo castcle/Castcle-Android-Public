@@ -16,10 +16,13 @@ interface AppPreferences {
     var bottomNavigation: String?
     var castcleId: String?
     var email: String?
+    var resentSearch: String?
 
     fun clearAll() = Completable.fromAction {
         castcleId = null
         preferredLanguage = null
+        email = null
+        resentSearch = null
     }
 }
 
@@ -66,6 +69,10 @@ class AppPreferencesImpl @Inject constructor(
     override var email: String?
         get() = getString(KEY_EMAIL)
         set(value) = setOrRemove(KEY_EMAIL, value)
+
+    override var resentSearch: String?
+        get() = getString(KEY_RESENT_SEARCH)
+        set(value) = setOrRemove(KEY_RESENT_SEARCH, value)
 
     private fun getString(key: String): String? {
         return preferences.getString(key, null)
@@ -117,6 +124,7 @@ private const val KEY_GALLERY_PERMISSION = "gallery_permission"
 private const val KEY_LOCATION_PERMISSION = "location_permission"
 private const val KEY_MEMBER_ID = "member_id"
 private const val KEY_EMAIL = "email_id"
+private const val KEY_RESENT_SEARCH = "resent_search"
 const val KEY_APP_VERSION = "app_version"
 const val KEY_BOTTOM_NAVIGATION = "bottom_navigation"
 const val KEY_CALL_ALLOWED_MAIN_ACTIVITY = "call_allowed"

@@ -102,15 +102,16 @@ class FeedContentShortViewHolder(
                         icImageContent.bindImageContent(uiModel, true)
                     }
                     link.isNotEmpty() -> {
-                        clPreviewContent.visible()
-                        link.firstOrNull()?.url?.let {
-                            PreViewLinkUrl(it, object : PreViewLinkCallBack {
+                        clPreviewLoadingContent.visible()
+                        link.firstOrNull()?.let {
+                            PreViewLinkUrl(it.url, it.type, object : PreViewLinkCallBack {
                                 override fun onComplete(urlInfo: UrlInfoUiModel) {
                                     with(urlInfo) {
-                                        ivPerviewUrl.loadGranularRoundedCornersImage(image)
-                                        tvPreviewUrl.text = url
-                                        tvPreviewHeader.text = title
-                                        tvPreviewContent.text = description
+                                        if (image.isEmpty()) {
+                                            onBindContentIcon(urlInfo)
+                                        } else {
+                                            onBindContentImage(urlInfo)
+                                        }
                                     }
                                 }
 
@@ -125,6 +126,34 @@ class FeedContentShortViewHolder(
                     }
                 }
 
+            }
+        }
+    }
+
+    private fun onBindContentIcon(linkUiModel: UrlInfoUiModel) {
+        with(binding) {
+            clPreviewLoadingContent.gone()
+            clPreviewContent.gone()
+            clPreviewIconContent.visible()
+            with(linkUiModel) {
+                ivPerviewIconUrl.loadIconImage(imageIcon)
+                tvIconPreview.text = url
+                tvPreviewIconHeader.text = title
+                tvPreviewIconContent.text = description
+            }
+        }
+    }
+
+    private fun onBindContentImage(linkUiModel: UrlInfoUiModel) {
+        with(binding) {
+            clPreviewLoadingContent.gone()
+            clPreviewContent.visible()
+            clPreviewIconContent.gone()
+            with(linkUiModel) {
+                ivPerviewUrl.loadGranularRoundedCornersImage(image)
+                tvPreviewUrl.text = url
+                tvPreviewHeader.text = title
+                tvPreviewContent.text = description
             }
         }
     }

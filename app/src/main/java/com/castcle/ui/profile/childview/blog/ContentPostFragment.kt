@@ -14,14 +14,12 @@ import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
-import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
-import com.castcle.ui.profile.adapter.VerticalDecoration
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -76,18 +74,18 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun initViewModel() {
-        if (activityViewModel.isContentTypeMe.value == true) {
-            val feedRequestHeader = FeedRequestHeader(
-                type = ContentType.BLOG.type,
+        val feedRequestHeader = if (activityViewModel.isContentTypeMe.value == true) {
+            FeedRequestHeader(
+                type = ContentType.RECAST.type,
                 isMe = true
             )
-            viewModel.fetachUserProfileContent(feedRequestHeader)
         } else {
-            val feedRequestHeader = FeedRequestHeader(
+            FeedRequestHeader(
+                type = ContentType.RECAST.type,
                 castcleId = activityViewModel.isContentTypeYouId.value ?: ""
             )
-            viewModel.fetachUserViewProfileContent(feedRequestHeader)
         }
+        viewModel.fetachUserProfileContent(feedRequestHeader)
     }
 
     override fun setupView() {

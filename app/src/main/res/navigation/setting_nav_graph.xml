@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setting_nav_graph"
+    app:startDestination="@id/settingFragment">
+
+    <include app:graph="@navigation/profile_nav_graph" />
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.castcle.ui.setting.SettingFragment"
+        tools:layout="@layout/fragment_setting">
+
+        <action
+            android:id="@+id/actionSettingFragmentToResentVerifyFragment"
+            app:destination="@id/resentVerifyFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionSettingFragmentToLanguageFragment"
+            app:destination="@id/languageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionSettingFragmentToSettingProfileFragment"
+            app:destination="@id/settingProfileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionSettingFragmentToProfileFragment"
+            app:destination="@id/profile_nav_graph"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <deepLink app:uri="@string/nav_deep_link_setting" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resentVerifyFragment"
+        android:name="com.castcle.ui.signin.verifyemail.ResentVerifyEmailFragment"
+        tools:layout="@layout/fragment_sent_verify_email">
+
+        <argument
+            android:name="email"
+            android:defaultValue=""
+            app:argType="string"
+            app:nullable="false" />
+
+        <deepLink app:uri="@string/deep_link_path_https_resent_verify_email" />
+        <deepLink app:uri="@string/nav_deep_link_resent_verify_email_input" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="com.castcle.ui.setting.language.LanguageAppFragment"
+        tools:layout="@layout/fragment_language">
+
+        <action
+            android:id="@+id/actionLanguageFragmentToAppLanguageFragment"
+            app:destination="@id/languageAppFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/languageAppFragment"
+        android:name="com.castcle.ui.setting.applanguage.AppLanguageFragment"
+        tools:layout="@layout/item_app_language">
+
+        <argument
+            android:name="isAppLanguage"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingProfileFragment"
+        android:name="com.castcle.ui.setting.profile.SettingProfileFragment"
+        tools:layout="@layout/fragment_profile_setting">
+
+        <action
+            android:id="@+id/actionSettingProfileFragmentToChangePasswordFragment"
+            app:destination="@id/changePasswordFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.castcle.ui.setting.changepassword.ChangePasswordFragment"
+        tools:layout="@layout/fragment_change_password">
+
+        <action
+            android:id="@+id/actionChangePasswordFragmentToCreatePasswordFragment"
+            app:destination="@id/createPasswordFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createPasswordFragment"
+        android:name="com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragment"
+        tools:layout="@layout/fragment_create_password">
+
+        <argument
+            android:name="veificationUiModel"
+            app:argType="com.castcle.common_model.model.setting.VerificationUiModel" />
+
+        <action
+            android:id="@+id/actionCreatePasswordToCompleteFragment"
+            app:destination="@id/completeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/completeFragment"
+            app:popUpToInclusive="true" />
+
+        <deepLink app:uri="castcle-dev://change-mock" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/completeFragment"
+        android:name="com.castcle.ui.setting.changepassword.complete.CompleteFragment"
+        tools:layout="@layout/fragment_completed">
+
+        <action
+            android:id="@+id/actionCompleteFragmentToSettingFragment"
+            app:destination="@id/settingFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/settingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

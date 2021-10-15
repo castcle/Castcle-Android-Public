@@ -28,6 +28,7 @@ import com.castcle.ui.profile.childview.post.ContentPhotoFragment
 import com.castcle.ui.search.TrendSearchFragment
 import com.castcle.ui.search.onsearch.SearchFragment
 import com.castcle.ui.search.trend.TrendFragment
+import com.castcle.ui.search.trend.childview.*
 import com.castcle.ui.setting.SettingFragment
 import com.castcle.ui.setting.applanguage.AppLanguageFragment
 import com.castcle.ui.setting.changepassword.ChangePasswordFragment
@@ -201,4 +202,24 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
     fun trendFragment(): TrendFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
+    fun topFragment(): TopFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
+    fun peopleFragment(): PeopleFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
+    fun photoFragment(): PhotoFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
+    fun lastestFragment(): LastestFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
+    fun videoFragment(): VideoFragment
 }

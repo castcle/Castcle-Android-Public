@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.feed.api.response
 
 import com.castcle.common_model.model.feed.QuoteCast
+import com.castcle.common_model.model.userprofile.Verified
 import com.google.gson.annotations.SerializedName
 
 
@@ -32,14 +33,14 @@ data class FeedResponse(
     @SerializedName("message")
     val message: String,
     @SerializedName("payload")
-    val payload: List<FeedContentResponse>,
+    val payload: List<FeedViewContentResponse>,
     @SerializedName("pagination")
     val pagination: Pagination
 )
 
 data class Pagination(
     @SerializedName("limit")
-    val limit: Int,
+    val limit: Int? = null,
     @SerializedName("next")
     val next: Int,
     @SerializedName("previous")
@@ -55,6 +56,17 @@ data class FeedContentResponse(
     @SerializedName("aggregator") var aggregator: Aggregator,
     @SerializedName("type") var type: String,
     @SerializedName("payload") var payload: PayloadResponse,
+    @SerializedName("created") var created: String,
+    @SerializedName("updated") var updated: String,
+)
+
+data class FeedViewContentResponse(
+    @SerializedName("id") var id: String,
+    @SerializedName("feature") var feature: Feature,
+    @SerializedName("circle") var circle: Circle? = null,
+    @SerializedName("aggregator") var aggregator: Aggregator,
+    @SerializedName("type") var type: String,
+    @SerializedName("payload") var payload: ViewPayloadResponse,
     @SerializedName("created") var created: String,
     @SerializedName("updated") var updated: String,
 )
@@ -95,6 +107,21 @@ data class PayloadResponse(
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 
+data class ViewPayloadResponse(
+    @SerializedName("id") var id: String,
+    @SerializedName("type") var type: String,
+    @SerializedName("payload") var payload: PayloadContent,
+    @SerializedName("feature") var feature: Feature? = null,
+    @SerializedName("liked") var likedResponse: LikedResponse? = null,
+    @SerializedName("commented") var commentedResponse: CommentedResponse? = null,
+    @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
+    @SerializedName("quoteCast") var quoteCast: QuoteCast,
+    @SerializedName("author") var author: ViewAuthor,
+    @SerializedName("created") var created: String,
+    @SerializedName("updated") var updated: String,
+    @SerializedName("reply") var reply: List<ReplyResponse>? = null
+)
+
 data class ReplyResponse(
     @SerializedName("id") var id: String,
     @SerializedName("message") var message: String,
@@ -123,7 +150,17 @@ data class Author(
     @SerializedName("displayName") var displayName: String? = null,
     @SerializedName("castcleId") var castcleId: String? = null,
     @SerializedName("avatar") var avatar: String? = null,
-    @SerializedName("verified") var verified: Boolean? = null,
+    @SerializedName("verified") var verified: Verified? = null,
+    @SerializedName("followed") var followed: Boolean? = null
+)
+
+data class ViewAuthor(
+    @SerializedName("id") var id: String,
+    @SerializedName("type") var type: String,
+    @SerializedName("displayName") var displayName: String? = null,
+    @SerializedName("castcleId") var castcleId: String? = null,
+    @SerializedName("avatar") var avatar: String? = null,
+    @SerializedName("verified") var verified: Verified? = null,
     @SerializedName("followed") var followed: Boolean? = null
 )
 
@@ -133,7 +170,8 @@ data class Contents(
 
 data class LinkResponse(
     @SerializedName("type") var type: String,
-    @SerializedName("url") var url: String
+    @SerializedName("url") var url: String,
+    @SerializedName("imagePreview") var imagePreview: String? = null
 )
 
 data class LikedResponse(

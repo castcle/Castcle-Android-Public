@@ -10,11 +10,12 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.toContentUiModel
+import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
@@ -63,6 +64,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 .subscribe()
                 .addToDisposables()
         }
+        viewModel.getTopTrends()
     }
 
     override fun setupView() {
@@ -114,7 +116,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     override fun bindViewEvents() {
         with(adapterFilterAdapter) {
-            items = feedFilter
             itemClick.subscribe(::onSelectedFilterClick)?.addToDisposables()
         }
 
@@ -127,7 +128,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(viewModel) {
             launchOnLifecycleScope {
                 feedContentPage.collectLatest {
-                    adapterPagingCommon.submitData(lifecycle, it)
+                    adapterPagingCommon.submitData(it)
                 }
             }
         }
@@ -165,7 +166,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleRefreshFeed(it: TemplateEventClick?) {
         if (it is TemplateEventClick.ReTryClick) {
-            adapterPagingCommon.refresh()
+            viewModel.input.setDefaultFeedRequestHeader()
+            adapterFilterAdapter.selectedFilterDefault()
         }
     }
 
@@ -173,9 +175,9 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         val deeplinkType = if (contentUiModel.payLoadUiModel.author.castcleId ==
             viewModel.userProfile.value?.castcleId
         ) {
-            DeepLinkTarget.USER_PROFILE_ME
-        } else {
             DeepLinkTarget.USER_PROFILE_YOU
+        } else {
+            DeepLinkTarget.USER_PROFILE_PAGE
         }
         val deepLink = makeDeepLinkUrl(
             requireContext(), Input(
@@ -220,8 +222,16 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
     }
 
-    private fun onSelectedFilterClick(itemFilter: FilterUiModel) {
+    private fun onSelectedFilterClick(itemFilter: SearchUiModel) {
         adapterFilterAdapter.selectedFilter(itemFilter)
+        if (itemFilter is SearchUiModel.SearchHasTagUiModel) {
+            val feedRequestHeader = FeedRequestHeader(
+                featureSlug = FeedContentType.FEED_SLUG.type,
+                circleSlug = FeedContentType.CIRCLE_SLUG_FORYOU.type,
+                hashtag = itemFilter.slug
+            )
+            viewModel.setFetchFeedContent(feedRequestHeader)
+        }
     }
 
     override fun bindViewModel() {
@@ -236,6 +246,14 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         viewModel.onError.subscribe {
             handleOnError(it)
         }.addToDisposables()
+
+        viewModel.trendsResponse.observe(this, {
+            onBindFilterItem(it)
+        })
+    }
+
+    private fun onBindFilterItem(filterItems: List<SearchUiModel>) {
+        adapterFilterAdapter.items = filterItems
     }
 
     private fun handleOnError(throwable: Throwable) {

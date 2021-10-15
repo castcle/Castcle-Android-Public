@@ -1,6 +1,5 @@
 package com.castcle.ui.feed.feeddetail
 
-import com.castcle.ui.feed.feeddetail.viewholder.CommentItemViewHolder
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.common_model.model.feed.ContentDbModel
 import com.castcle.ui.common.events.*
+import com.castcle.ui.feed.feeddetail.viewholder.CommentedItemPageingViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -38,9 +38,10 @@ import kotlinx.android.extensions.LayoutContainer
 //
 //  Created by sklim on 24/8/2021 AD at 15:04.
 
-class CommentAdapter : PagingDataAdapter<ContentDbModel, CommentAdapter.ViewHolder<ContentDbModel>>(
-    ContentUiModelPagedListDiffCallBack
-), ItemClickable<Click> by ItemClickableImpl() {
+class CommentedPagingAdapter :
+    PagingDataAdapter<ContentDbModel, CommentedPagingAdapter.ViewHolder<ContentDbModel>>(
+        ContentUiModelPagedListDiffCallBack
+    ), ItemClickable<Click> by ItemClickableImpl() {
 
     private val click: (Click) -> Unit = {
         notifyItemClick(it)
@@ -51,7 +52,7 @@ class CommentAdapter : PagingDataAdapter<ContentDbModel, CommentAdapter.ViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentDbModel> {
-        return CommentItemViewHolder.newInstance(parent, click)
+        return CommentedItemPageingViewHolder.newInstance(parent, click)
     }
 
     abstract class ViewHolder<UiModel : ContentDbModel>(itemView: View) :

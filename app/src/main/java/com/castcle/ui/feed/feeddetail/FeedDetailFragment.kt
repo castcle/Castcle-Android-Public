@@ -21,7 +21,6 @@ import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.jakewharton.rxbinding3.view.focusChanges
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -61,7 +60,8 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private lateinit var adapterMockCommon: CommonMockAdapter
 
-    private lateinit var adapterComment: CommentAdapter
+    private lateinit var adapterCommentPaging: CommentedPagingAdapter
+    private lateinit var adapterComment: CommentedAdapter
 
     private var softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
 
@@ -96,7 +96,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             .get(FeedDetailFragmentViewModel::class.java)
 
     override fun initViewModel() {
-        viewModel.input.getCommented(contentUiModel.payLoadUiModel.contentId)
+        viewModel.fetachCommentedPage(contentUiModel.payLoadUiModel.contentId)
     }
 
     override fun onResume() {
@@ -126,16 +126,24 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
 
         binding.rvViewComment.run {
-            adapter = CommentAdapter().also {
+            adapter = CommentedAdapter().also {
                 adapterComment = it
+            }
+        }
+    }
+
+    private fun onBindPageingLoad() {
+        binding.rvViewComment.run {
+            adapter = CommentedPagingAdapter().also {
+                adapterCommentPaging = it
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            adapterComment.loadStateFlow.collectLatest { loadStates ->
+            adapterCommentPaging.loadStateFlow.collectLatest { loadStates ->
                 val refresher = loadStates.refresh
                 val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterComment.itemCount == 0)
+                    !refresher.endOfPaginationReached && adapterCommentPaging.itemCount == 0)
                 handleEmptyState(displayEmpty)
             }
         }
@@ -161,10 +169,10 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
-    private fun handleEmptyState(show: Boolean) {
+    private fun handleEmptyState(isEmpty: Boolean) {
         with(binding) {
-            rvViewComment.visibleOrGone(!show)
-            empState.visibleOrGone(true)
+            rvViewComment.visibleOrGone(!isEmpty)
+            empState.visibleOrGone(isEmpty)
             empState.bindUiState(EmptyState.COMMENT_EMPTY)
         }
     }
@@ -215,10 +223,34 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             is CommentItemClick.CommentReplyClick -> {
                 handlerReplyClickItem(it)
             }
-            is CommentItemClick.CommentedLikeClick -> {
-
+            is CommentItemClick.CommentedLikeChildClick -> {
+                handlerCommentedLike(it)
+            }
+            is CommentItemClick.CommentedLikedItemClick -> {
+                handlerCommentedLike(it)
             }
         }
+    }
+
+    private fun handlerCommentedLike(item: CommentItemClick) {
+        when (item) {
+            is CommentItemClick.CommentedLikeChildClick -> {
+                onLikeingComment(item.commentedId, item.replyId, item.likeStatus)
+            }
+            is CommentItemClick.CommentedLikedItemClick -> {
+                onLikeingComment(
+                    contentUiModel.payLoadUiModel.contentId,
+                    item.contentUiModel.payLoadUiModel.contentId,
+                    item.contentUiModel.payLoadUiModel.likedUiModel.liked
+                )
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun onLikeingComment(contentId: String, commentId: String, likeStatus: Boolean) {
+        viewModel.likedComment(contentId, commentId, likeStatus)
     }
 
     private fun handlerReplyClickItem(it: CommentItemClick.CommentReplyClick) {
@@ -253,10 +285,24 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     override fun bindViewModel() {
         onBindFeedContent()
 
+        viewModel.commentedResponses.subscribe {
+            onBindCommentedItem(it)
+        }.addToDisposables()
+    }
+
+    private fun onBindCommentedItem(list: List<ContentUiModel>) {
+        if (list.isNotEmpty()) {
+            adapterComment.uiModels = list
+        } else {
+            handleEmptyState(true)
+        }
+    }
+
+    private fun onObserverPaging() {
         with(viewModel) {
             launchOnLifecycleScope {
                 commentedResponse.collectLatest {
-                    adapterComment.submitData(lifecycle, it)
+                    adapterCommentPaging.submitData(lifecycle, it)
                 }
             }
 
@@ -265,7 +311,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             }.addToDisposables()
 
             onRefreshComment.subscribe {
-                adapterComment.refresh()
+                adapterCommentPaging.refresh()
             }.addToDisposables()
         }
     }

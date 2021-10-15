@@ -7,7 +7,8 @@ import com.castcle.networking.api.feed.FeedApi
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -38,11 +39,28 @@ class FeedRepositoryImpl @Inject constructor(
     private val feedApi: FeedApi,
 ) : FeedRepository {
 
+    @ExperimentalCoroutinesApi
     override suspend fun getFeed(
+        feedRequestHeader: MutableStateFlow<FeedRequestHeader>
+    ): Flow<PagingData<ContentUiModel>> {
+        return feedRequestHeader.flatMapLatest {
+            Pager(
+                config = PagingConfig(
+                    pageSize = DEFAULT_PAGE_SIZE,
+                    prefetchDistance = DEFAULT_PREFETCH
+                ),
+                pagingSourceFactory = {
+                    FeedPagingDataSource(feedApi, it)
+                }
+            ).flow
+        }
+    }
+
+    override suspend fun getTrend(
         feedRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>> = Pager(
         config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
-        pagingSourceFactory = { FeedPagingDataSource(feedApi, feedRequestHeader) }
+        pagingSourceFactory = { TrendPagingDataSource(feedApi, feedRequestHeader) }
     ).flow
 
     override fun createComment(commentRequest: CommentRequest): Single<ContentUiModel> {
@@ -66,6 +84,17 @@ class FeedRepositoryImpl @Inject constructor(
         config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
         pagingSourceFactory = { CommentPagingDataSource(feedApi, commentRequest) }
     ).flow
+
+    override fun getCommentedPaging(commentRequest: CommentRequest): Single<CommentedModel> {
+        return feedApi.getCommented(
+            id = commentRequest.feedItemId,
+            pageSize = commentRequest.paginationModel.limit,
+            pageNumber = commentRequest.paginationModel.next ?: 0,
+        ).lift(ApiOperators.mobileApiError())
+            .map {
+                it.toCommentModel()
+            }.firstOrError()
+    }
 
     suspend fun insertCommented(
         commentRequest: CommentRequest

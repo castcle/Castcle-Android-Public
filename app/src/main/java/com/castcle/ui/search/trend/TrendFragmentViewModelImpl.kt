@@ -1,5 +1,10 @@
 package com.castcle.ui.search.trend
 
+import androidx.paging.PagingData
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.networking.api.feed.datasource.FeedRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -26,5 +31,18 @@ import javax.inject.Inject
 //
 //  Created by sklim on 7/10/2021 AD at 18:39.
 
-class TrendFragmentViewModelImpl @Inject constructor() : TrendFragmentViewModel() {
+class TrendFragmentViewModelImpl @Inject constructor(
+    private val trendRepository: FeedRepository,
+) : TrendFragmentViewModel() {
+
+    private lateinit var _feedTrendResponse: Flow<PagingData<ContentUiModel>>
+    override val feedTrendResponse: Flow<PagingData<ContentUiModel>>
+        get() = _feedTrendResponse
+
+    override fun getTesnds(contentRequestHeader: FeedRequestHeader) =
+        launchPagingAsync({
+            trendRepository.getTrend(contentRequestHeader)
+        }, onSuccess = {
+            _feedTrendResponse = it
+        })
 }

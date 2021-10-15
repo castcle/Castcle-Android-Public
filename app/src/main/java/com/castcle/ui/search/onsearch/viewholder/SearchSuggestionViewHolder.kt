@@ -43,7 +43,7 @@ class SearchSuggestionViewHolder(
     init {
         itemView.subscribeOnClick {
             click.invoke(
-                SearchItemClick.HasTagItemClick(
+                SearchItemClick.SuggestionItemClick(
                     bindingAdapterPosition,
                     searchUiModel
                 )
@@ -54,9 +54,13 @@ class SearchSuggestionViewHolder(
     override fun bindUiModel(uiModel: SearchUiModel) {
         super.bindUiModel(uiModel)
         searchUiModel = uiModel
-        if (uiModel is SearchUiModel.SearchHasTagUiModel)
+        if (uiModel is SearchUiModel.SearchKeywordUiModel)
             with(binding) {
-                tvHastag.text = uiModel.name
+                tvHastag.text = uiModel.text
+            }
+        if (uiModel is SearchUiModel.SearchResentUiModel)
+            with(binding) {
+                tvHastag.text = uiModel.keyword
             }
     }
 

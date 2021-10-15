@@ -73,18 +73,18 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun initViewModel() {
-        if (activityViewModel.isContentTypeMe.value == true) {
-            val feedRequestHeader = FeedRequestHeader(
-                type = ContentType.RECAST.type,
+        val feedRequestHeader = if (activityViewModel.isContentTypeMe.value == true) {
+            FeedRequestHeader(
+                type = ContentType.IMAGE.type,
                 isMe = true
             )
-            viewModel.fetachUserProfileContent(feedRequestHeader)
         } else {
-            val feedRequestHeader = FeedRequestHeader(
+            FeedRequestHeader(
+                type = ContentType.IMAGE.type,
                 castcleId = activityViewModel.isContentTypeYouId.value ?: ""
             )
-            viewModel.fetachUserViewProfileContent(feedRequestHeader)
         }
+        viewModel.fetachUserProfileContent(feedRequestHeader)
     }
 
     override fun setupView() {

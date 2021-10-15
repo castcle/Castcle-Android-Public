@@ -65,3 +65,6 @@ class UserProfilePagingDataSource(
 
     override fun getRefreshKey(state: PagingState<Int, ContentUiModel>): Int = 1
 }
+
+const val PROFILE_TYPE_ME = "me"
+const val PROFILE_TYPE_PEOPLE = "people"

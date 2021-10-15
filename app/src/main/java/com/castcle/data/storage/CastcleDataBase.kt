@@ -37,7 +37,7 @@ import com.castcle.data.model.dao.user.UserDao
         User::class,
         ContentDbModel::class,
         PageKey::class
-    ], version = 2
+    ], version = 3
 )
 abstract class CastcleDataBase : RoomDatabase() {
     abstract fun userDao(): UserDao

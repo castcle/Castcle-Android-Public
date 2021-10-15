@@ -63,7 +63,10 @@ dependencies {
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:$corotines_version",
             "com.mikhaellopez:circularimageview:$circle_image_version",
             "com.google.android.flexbox:flexbox:$flexbox_lib_version",
-            "com.github.rubensousa:gravitysnaphelper:$gravitysnaphelper_version"
+            "com.github.rubensousa:gravitysnaphelper:$gravitysnaphelper_version",
+            "com.caverock:androidsvg-aar:$svg_android_version",
+            "io.coil-kt:coil:$coil_version",
+            "io.coil-kt:coil-svg:$coil_version"
     )
 
     implementation("com.github.bumptech.glide:glide:$glide_version") {

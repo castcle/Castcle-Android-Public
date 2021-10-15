@@ -33,6 +33,8 @@ abstract class TrendSearchViewModel : BaseViewModel() {
 
     abstract val input:Input
 
+    abstract val isGuestMode: Boolean
+
     abstract val searchResponse:LiveData<List<SearchUiModel>>
 
     abstract val showLoading: Observable<Boolean>

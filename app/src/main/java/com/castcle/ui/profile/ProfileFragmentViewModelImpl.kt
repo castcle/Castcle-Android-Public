@@ -7,14 +7,12 @@ import androidx.paging.PagingData
 import com.castcle.android.R
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.castcle.common_model.model.userprofile.User
-import com.castcle.common_model.model.userprofile.ViewProfileRequest
+import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.data.staticmodel.ContentType
-import com.castcle.networking.api.feed.datasource.FeedRepository
-import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.GetUserViewProfileSingleUseCase
+import com.castcle.usecase.userprofile.*
 import com.google.gson.Gson
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
@@ -52,11 +50,13 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val appContext: Context,
     private val getUserProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val getUserViewProfileSingleUseCase: GetUserViewProfileSingleUseCase,
-    private val feedNonAuthRepository: FeedRepository,
-    private val userProfileDataSouce: UserProfileRepository
+    private val userProfileDataSouce: UserProfileRepository,
+    private val putToFollowUserCompletableUseCase: PutToFollowUserCompletableUseCase
 ) : ProfileFragmentViewModel() {
 
     private lateinit var _userProfileContentRes: Flow<PagingData<ContentUiModel>>
+
+    private lateinit var _userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
 
     private var _userProfileData = MutableLiveData<User>()
 
@@ -100,9 +100,16 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override val userProfileContentRes: Flow<PagingData<ContentUiModel>>
         get() = _userProfileContentRes
 
+    override val userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
+        get() = _userViewProfileContentRes
+
     override fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader) {
         launchPagingAsync({
-            userProfileDataSouce.getUserPofileContent(contentRequestHeader)
+            if (contentRequestHeader.isMe) {
+                userProfileDataSouce.getUserPofileContent(contentRequestHeader)
+            } else {
+                userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+            }
         }, onSuccess = {
             _userProfileContentRes = it
         })
@@ -119,9 +126,29 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override fun getUserViewProfileMock(castcleId: String) {
         getUserViewProfileSingleUseCase.execute(
             ViewProfileRequest(castcleId = castcleId)
-        ).subscribeBy {
-            _userProfileYouContentMock.onNext(it)
-        }.addToDisposables()
+        ).firstOrError()
+            .subscribeBy(
+                onSuccess = {
+                    _userProfileYouContentMock.onNext(it)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    override fun putToFollowUser(castcleId: String): Completable {
+        val castcleIdMe = _userProfileData.value?.castcleId ?: ""
+        return putToFollowUserCompletableUseCase.execute(
+            FollowRequest(
+                castcleIdFollower = castcleId,
+                castcleId = castcleIdMe
+            )
+        ).doOnSubscribe {
+            _showLoading.onNext(true)
+        }.doFinally {
+            _showLoading.onNext(false)
+        }
     }
 
     override fun getFeedResponse(contentType: ContentType) {

@@ -1,13 +1,12 @@
 package com.castcle.ui.setting
 
+import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.storage.AppPreferences
-import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.setting.LogoutCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import io.reactivex.Completable
 import io.reactivex.subjects.BehaviorSubject
@@ -42,16 +41,14 @@ abstract class SettingFragmentViewModel : BaseViewModel() {
 
     abstract val userProfile: LiveData<User>
 
-    abstract fun onLogOut(): Completable
+    abstract fun onLogOut(activity: Activity): Completable
 
     abstract fun fetchCachedUserProfile(): Completable
 }
 
 class SettingFragmentViewModelImpl @Inject constructor(
-    private val appPreferences: AppPreferences,
-    private val secureStorage: SecureStorage,
-    private val sessionManagerRepository: SessionManagerRepository,
-    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
+    private val logoutCompletableUseCase: LogoutCompletableUseCase,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase
 ) : SettingFragmentViewModel() {
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
@@ -62,17 +59,8 @@ class SettingFragmentViewModelImpl @Inject constructor(
     override val userProfile: LiveData<User>
         get() = _userProfile
 
-    override fun onLogOut(): Completable {
-        appPreferences.clearAll()
-            .subscribe()
-            .addToDisposables()
-        sessionManagerRepository.clearSession()
-        with(secureStorage) {
-            userTokenType = null
-            userAccessToken = null
-            userRefreshToken = null
-        }
-        return Completable.complete()
+    override fun onLogOut(activity: Activity): Completable {
+        return logoutCompletableUseCase.execute(activity)
     }
 
     override fun fetchCachedUserProfile(): Completable =

@@ -18,6 +18,8 @@ import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
 import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
 import com.castcle.ui.feed.feeddetail.FeedDetailFragmentArgs
+import com.castcle.ui.profile.ProfileFragmentArgs
+import com.castcle.ui.search.trend.TrendFragmentArgs
 import com.castcle.ui.setting.applanguage.AppLanguageFragmentArgs
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragmentArgs
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
@@ -299,6 +301,18 @@ class OnBoardNavigatorImpl @Inject constructor(
                     }
                 }
             }
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.searchFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchFragmentToSettingFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
             else -> {
                 unsupportedNavigation()
             }
@@ -469,7 +483,7 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToResentVerifyEmail(email: String) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
                 if (navController.currentDestination?.id == R.id.settingFragment) {
                     navController.navigate(
                         R.id.actionSettingFragmentToResentVerifyFragment,
@@ -538,7 +552,7 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToLanguageFragment() {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.settingFragment -> {
                         navController.navigate(
@@ -581,7 +595,7 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToSettingProfileFragment() {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.settingFragment -> {
                         navController.navigate(
@@ -699,6 +713,100 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.searchFragment -> {
                         navController.navigate(
                             R.id.actionSearchFragmentToSearchTrendFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToTrendFragment(trendSlug: String) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.searchFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchFragmentToTrendFragment,
+                            TrendFragmentArgs(trendSlug).toBundle()
+                        )
+                    }
+                    R.id.searchTrendFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchTrendFragmentToTrendFragment,
+                            TrendFragmentArgs(trendSlug).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToProfileFragment(castcle: String, isMe: String) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.searchTrendFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchTrendFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, isMe).toBundle()
+                        )
+                    }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, isMe).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, isMe).toBundle()
+                        )
+                    }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, isMe).toBundle()
+                        )
+                    }
+                    R.id.settingFragment->{
+                        navController.navigate(
+                            R.id.actionSettingFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, isMe).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            R.id.profile_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, isMe).toBundle()
                         )
                     }
                     else -> {

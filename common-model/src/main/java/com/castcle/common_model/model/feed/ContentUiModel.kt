@@ -30,10 +30,10 @@ import kotlinx.parcelize.Parcelize
 //
 //  Created by sklim on 24/8/2021 AD at 17:07.
 
-fun List<FeedContentResponse>.toContentFeedUiModel(): ContentFeedUiModel {
+fun List<FeedViewContentResponse>.toContentFeedUiModel(): ContentFeedUiModel {
     return ContentFeedUiModel(
         feedContentUiModel = map {
-            it.toContentUiModel()
+            it.toViewContentUiModel()
         }.toMutableList()
     )
 }
@@ -42,9 +42,48 @@ fun List<PayloadResponse>.toContentUiModel(): ContentFeedUiModel {
     return ContentFeedUiModel(
         feedContentUiModel = map {
             ContentUiModel(
+                contentType = it.type,
+                featureSlug = it.feature?.slug ?: "",
+                created = it.created,
+                updated = it.updated,
                 payLoadUiModel = it.toPayloadUiModel()
             )
         }.toMutableList()
+    )
+}
+
+fun List<ViewPayloadResponse>.toViewContentUiModel(): ContentFeedUiModel {
+    return ContentFeedUiModel(
+        feedContentUiModel = map {
+            ContentUiModel(
+                payLoadUiModel = it.toPayloadUiModel()
+            )
+        }.toMutableList()
+    )
+}
+
+fun ViewPayloadResponse.toPayloadUiModel(): PayLoadUiModel {
+    return PayLoadUiModel(
+        contentId = id,
+        headerFeed = payload.header ?: "",
+        contentFeed = payload.content ?: "",
+        photo = payload.photo?.toPhotoUiMode() ?: PhotoUiModel(),
+        contentMessage = payload.message ?: "",
+        created = created,
+        updated = updated,
+        link = payload.linkResponse?.map {
+            it.toLinkUiModel()
+        } ?: emptyList(),
+        likedUiModel = likedResponse?.toLikedUiModel() ?: LikedUiModel(),
+        commentedUiModel = commentedResponse?.toCommentedUiModel() ?: CommentedUiModel(),
+        reCastedUiModel = recastedResponse?.toRecastedUiModel() ?: RecastedUiModel(),
+        author = author.toAuthorUiModel(),
+        featureContent = feature?.toFeatureUiModel(),
+        replyUiModel = reply?.let { it ->
+            it.map {
+                it.toReplyUiModel()
+            }
+        }
     )
 }
 
@@ -61,6 +100,18 @@ data class ContentUiModel(
 ) : Parcelable
 
 fun FeedContentResponse.toContentUiModel(): ContentUiModel {
+    return ContentUiModel(
+        id = id,
+        featureSlug = feature.slug,
+        circleSlug = circle?.slug ?: "",
+        contentType = payload.type,
+        created = created,
+        updated = updated,
+        payLoadUiModel = payload.toPayloadUiModel()
+    )
+}
+
+fun FeedViewContentResponse.toViewContentUiModel(): ContentUiModel {
     return ContentUiModel(
         id = id,
         featureSlug = feature.slug,
@@ -183,13 +234,15 @@ fun PhotoResponse.toPhotoUiMode() =
 @Parcelize
 data class LinkUiModel(
     val type: String,
-    val url: String
+    val url: String,
+    val imagePreview: String
 ) : Parcelable
 
 fun LinkResponse.toLinkUiModel(): LinkUiModel {
     return LinkUiModel(
         type = type,
-        url = url
+        url = url,
+        imagePreview = imagePreview ?: ""
     )
 }
 
@@ -271,7 +324,9 @@ data class AuthorUiModel(
     val followed: Boolean = false,
     val id: String = "",
     val type: String = "",
-    val verified: Boolean = false
+    val verifiedEmail: Boolean = false,
+    val verifiedMobile: Boolean = false,
+    val verifiedOfficial: Boolean = false
 ) : Parcelable
 
 fun Author.toAuthorUiModel() =
@@ -282,7 +337,20 @@ fun Author.toAuthorUiModel() =
         followed = followed ?: false,
         id = id,
         type = type,
-        verified = verified ?: false
+        verifiedEmail = verified?.email ?: false
+    )
+
+fun ViewAuthor.toAuthorUiModel() =
+    AuthorUiModel(
+        avatar = avatar ?: "",
+        displayName = displayName ?: "",
+        castcleId = castcleId ?: "",
+        followed = followed ?: false,
+        id = id,
+        type = type,
+        verifiedEmail = verified?.email ?: false,
+        verifiedMobile = verified?.mobile ?: false,
+        verifiedOfficial = verified?.official ?: false,
     )
 
 fun User.toContentUiModel(): ContentUiModel {

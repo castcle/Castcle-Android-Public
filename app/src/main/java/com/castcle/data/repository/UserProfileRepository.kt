@@ -44,7 +44,7 @@ interface UserProfileRepository {
 
     fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User>
 
-    val cachedUser: Flowable<Optional<User>>
+    val currentCachedUser: Flowable<Optional<User>>
 
     fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
 
@@ -56,6 +56,8 @@ interface UserProfileRepository {
         Flow<PagingData<ContentUiModel>>
 
     fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
+
+    fun putToFollowUser(followRequest: FollowRequest): Completable
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -68,6 +70,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override val currentUser: Flowable<User>
         get() = getUserProfile()
+
+    override val currentCachedUser: Flowable<Optional<User>>
+        get() = getCachedUserProfile()
 
     override fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User> {
         val idRequest = if (viewProfileRequest.castcleId.isNotBlank()) {
@@ -82,9 +87,6 @@ class UserProfileRepositoryImpl @Inject constructor(
             .doFinally { _isLoadingUser = false }
             .toFlowable()
     }
-
-    override val cachedUser: Flowable<Optional<User>>
-        get() = getCachedUserProfile()
 
     override fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable {
         return userApi.updateUserProfile(userUpdateRequest)
@@ -105,6 +107,12 @@ class UserProfileRepositoryImpl @Inject constructor(
             .firstOrError()
     }
 
+    override fun putToFollowUser(followRequest: FollowRequest): Completable {
+        return userApi.createFollowUser(followRequest.castcleIdFollower, followRequest)
+            .lift(ApiOperators.mobileApiError())
+            .ignoreElements()
+    }
+
     override fun getUserPofileContent(
         contentRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>> = Pager(config =
@@ -120,11 +128,9 @@ class UserProfileRepositoryImpl @Inject constructor(
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
         prefetchDistance = DEFAULT_PREFETCH
-    ), pagingSourceFactory =
-    {
+    ), pagingSourceFactory = {
         UserViewProfilePagingDataSource(userApi, feedRequestHeader)
     }).flow
-
 
     private val _remoteUser = BehaviorSubject.create<User>()
 

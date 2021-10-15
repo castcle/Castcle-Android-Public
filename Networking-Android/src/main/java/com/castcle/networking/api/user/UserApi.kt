@@ -1,7 +1,7 @@
 package com.castcle.networking.api.user
 
 import com.castcle.common_model.model.feed.api.response.ContentResponse
-import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.feed.api.response.ContentViewResponse
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
@@ -56,7 +56,7 @@ interface UserApi {
         @Query(FILTER_TYPE) filterType: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<ContentResponse>
+    ): Response<ContentViewResponse>
 
     @PUT("users/me")
     fun updateUserProfile(
@@ -68,4 +68,10 @@ interface UserApi {
         @Path("feature_slug") featureSlug: String,
         @Body createContentRequest: CreateContentRequest
     ): Flowable<Response<CreateCastResponse>>
+
+    @PUT("users/{castcleId}/follow")
+    fun createFollowUser(
+        @Path("castcleId") castcleId: String,
+        @Body followRequest: FollowRequest,
+    ): Flowable<Response<Unit>>
 }

@@ -1,6 +1,5 @@
 package com.castcle.networking.api.feed.datasource
 
-import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.castcle.common_model.model.feed.*
@@ -35,6 +34,7 @@ class FeedPagingDataSource(
     private val feedRequestHeader: FeedRequestHeader
 ) : PagingSource<Int, ContentUiModel>() {
 
+    private var nextPage: Int = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentUiModel> {
         val pageNumber = params.key ?: 1
@@ -44,16 +44,21 @@ class FeedPagingDataSource(
                 featureSlug = feedRequestHeader.featureSlug,
                 circleSlug = feedRequestHeader.circleSlug,
                 pageNumber = pageNumber,
-                pageSize = pageSize
+                pageSize = pageSize,
+                hasTag = feedRequestHeader.hashtag,
+                mode = feedRequestHeader.mode
             )
+            nextPage = pageNumber
+
             val pagedResponse = response.body()
             val data = pagedResponse?.payload?.toContentFeedUiModel()
-
             var nextPageNumber: Int? = null
-            if (pagedResponse?.pagination?.next != null) {
-                val uri = Uri.parse(pagedResponse.pagination.next.toString())
-                val nextPageQuery = uri.getQueryParameter("page")
-                nextPageNumber = nextPageQuery?.toInt()
+
+            if (pagedResponse?.pagination?.next != null &&
+                pagedResponse.pagination.next != 0 &&
+                pagedResponse.pagination.next != nextPage
+            ) {
+                nextPageNumber = pagedResponse.pagination.next
             }
 
             LoadResult.Page(

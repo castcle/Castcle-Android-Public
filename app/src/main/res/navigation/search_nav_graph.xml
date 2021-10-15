@@ -8,6 +8,8 @@
     <include app:graph="@navigation/dialog_login_nav_graph" />
     <include app:graph="@navigation/dialog_recast_nav_graph" />
     <include app:graph="@navigation/bloc_nav_graph" />
+    <include app:graph="@navigation/setting_nav_graph" />
+    <include app:graph="@navigation/profile_nav_graph" />
 
     <fragment
         android:id="@+id/searchFragment"
@@ -21,6 +23,14 @@
         <action
             android:id="@+id/actionSearchFragmentToSearchTrendFragment"
             app:destination="@id/searchTrendFragment" />
+
+        <action
+            android:id="@+id/actionSearchFragmentToSettingFragment"
+            app:destination="@id/setting_nav_graph" />
+
+        <action
+            android:id="@+id/actionSearchFragmentToTrendFragment"
+            app:destination="@id/trendFragment" />
     </fragment>
 
     <fragment
@@ -28,5 +38,23 @@
         android:name="com.castcle.ui.search.onsearch.SearchFragment"
         tools:layout="@layout/fragment_search_trend">
 
+        <action
+            android:id="@+id/actionSearchTrendFragmentToTrendFragment"
+            app:destination="@id/trendFragment" />
+
+        <action
+            android:id="@+id/actionSearchTrendFragmentToProfileFragment"
+            app:destination="@id/profile_nav_graph" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/trendFragment"
+        android:name="com.castcle.ui.search.trend.TrendFragment"
+        tools:layout="@layout/fragment_trend">
+
+        <argument
+            android:name="trendSlug"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 </navigation>

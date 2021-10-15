@@ -24,7 +24,6 @@
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_8sdp"
-        android:text="@string/search_title_rank"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

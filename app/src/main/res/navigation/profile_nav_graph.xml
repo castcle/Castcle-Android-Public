@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_nav_graph"
+    app:startDestination="@id/profileFragment">
+
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.castcle.ui.profile.ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="me"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToFeedDetailFragment"
+            app:destination="@id/feedDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToProfileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <deepLink app:uri="@string/deep_link_path_https_profile" />
+        <deepLink app:uri="@string/nav_deep_link_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/feedDetailFragment"
+        android:name="com.castcle.ui.feed.feeddetail.FeedDetailFragment"
+        tools:layout="@layout/fragment_feed_detail">
+
+        <argument
+            android:name="contentUiModel"
+            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+
+        <argument
+            android:name="isContent"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+</navigation>

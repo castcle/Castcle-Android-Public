@@ -3,12 +3,17 @@ package com.castcle.ui.search.trend
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.castcle.android.databinding.FragmentSearchBinding
-import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
+import androidx.navigation.fragment.navArgs
+import com.castcle.android.R
+import com.castcle.android.databinding.*
+import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.data.staticmodel.TabContentStatic
+import com.castcle.extensions.getDrawableRes
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.castcle.ui.search.SearchAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -37,43 +42,75 @@ import javax.inject.Inject
 
 class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
     BaseFragmentCallbacks,
-    ViewBindingInflater<FragmentSearchBinding>,
-    ToolbarBindingInflater<ToolbarCastcleLanguageBinding> {
+    ViewBindingInflater<FragmentTrendBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     @Inject lateinit var localizedResources: LocalizedResources
 
-    private lateinit var searchAdapter: SearchAdapter
+    private lateinit var contentTrendAdapter: ContentTrendAdapter
+
+    private val trendFragmentArgs: TrendFragmentArgs by navArgs()
+
+    private val trendSlug: String
+        get() = trendFragmentArgs.trendSlug
 
     override val bindingInflater:
-            (LayoutInflater, ViewGroup?, Boolean) -> FragmentSearchBinding
+            (LayoutInflater, ViewGroup?, Boolean) -> FragmentTrendBinding
         get() = { inflater, container, attachToRoot ->
-            FragmentSearchBinding.inflate(inflater, container, attachToRoot)
+            FragmentTrendBinding.inflate(inflater, container, attachToRoot)
         }
 
-    override val binding: FragmentSearchBinding
-        get() = viewBinding as FragmentSearchBinding
-
-    override val toolbarBindingInflater:
-            (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleLanguageBinding
-        get() = { inflater, container, attachToRoot ->
-            ToolbarCastcleLanguageBinding.inflate(inflater, container, attachToRoot)
-        }
-
-    override val toolbarBinding: ToolbarCastcleLanguageBinding
-        get() = toolbarViewBinding as ToolbarCastcleLanguageBinding
+    override val binding: FragmentTrendBinding
+        get() = viewBinding as FragmentTrendBinding
 
     override fun viewModel(): TrendFragmentViewModel =
         ViewModelProvider(this, viewModelFactory)
             .get(TrendFragmentViewModel::class.java)
 
-    override fun initViewModel() {
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
 
+    override fun initViewModel() {
+        activityViewModel.setTrendSlugData(trendSlug)
     }
 
     override fun setupView() {
+        setupToolbar()
+        with(binding.vpPageContent) {
+            adapter = ContentTrendAdapter(this@TrendFragment).also {
+                contentTrendAdapter = it
+            }
+        }
 
+        TabLayoutMediator(
+            binding.tabs,
+            binding.vpPageContent
+        ) { Tab, position ->
+            Tab.text = requireContext().getString(TabContentStatic.tabTrend[position].tabNameRes)
+        }.attach()
+
+        with(binding.tbTrendSearch) {
+            tvToolbarTitle.text = trendSlug
+            ivToolbarLogoButton.subscribeOnClick {
+                onBoardNavigator.findNavController().navigateUp()
+            }.addToDisposables()
+        }
+    }
+
+    private fun setupToolbar() {
+        with(binding.tbToolBar) {
+            tvToolbarTitle.text = localizedResources.getString(R.string.feed_title_toolbar)
+            ivToolbarProfileButton.setImageDrawable(
+                context?.getDrawableRes(
+                    R.drawable.ic_hamburger
+                )
+            )
+            ivToolbarProfileButton.subscribeOnClick {
+            }
+        }
     }
 
     override fun bindViewEvents() {
