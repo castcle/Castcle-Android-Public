@@ -16,9 +16,9 @@ import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.data.staticmodel.FeedContentType
-import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
+import com.castcle.networking.api.user.PROFILE_TYPE_ME
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
@@ -162,6 +162,17 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             visibleOrGone(show)
             bindUiState(EmptyState.FEED_EMPTY)
         }
+        stopLoadingShimmer()
+    }
+
+    private fun stopLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
     }
 
     private fun handleRefreshFeed(it: TemplateEventClick?) {
@@ -288,8 +299,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }.run(binding.wtWhatYouMind::bindUiModel)
 
         binding.wtWhatYouMind.clickStatus.subscribe {
-            handleNavigateOnClick(it)
+            navigateToProfile(user.castcleId, PROFILE_TYPE_ME)
         }.addToDisposables()
+    }
+
+    private fun navigateToProfile(castcleId: String, profileType: String) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, profileType)
     }
 
     private fun guestEnable(disable: () -> Unit, enable: () -> Unit) {

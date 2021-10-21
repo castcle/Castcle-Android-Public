@@ -13,8 +13,8 @@
     <string name="deep_link_path_prefix_recast_dialog" translatable="false">/recast-dialog</string>
 
     <!-- Https Deep Link with path -->
-    <string name="deep_link_path_https_feed" translatable="false">.*/feed</string>
-    <string name="deep_link_path_https_blog" translatable="false">.*/blog</string>
+    <string name="deep_link_path_https_feed" translatable="false">/feed</string>
+    <string name="deep_link_path_https_blog" translatable="false">/blog</string>
     <string name="deep_link_path_https_search" translatable="false">.*/search</string>
     <string name="deep_link_path_https_choose_profile" translatable="false">.*/choose-profile</string>
     <string name="deep_link_path_https_verify_email" translatable="false">.*/verify-email</string>

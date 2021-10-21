@@ -45,12 +45,16 @@ fun Fragment.addOnBackPressedCallback(block: () -> Unit) {
 }
 
 fun Fragment.displayError(error: Throwable) {
-    val message = if(error.userReadableMessage(this.requireContext()).isBlank()){
+    val message = if (error.userReadableMessage(this.requireContext()).isBlank()) {
         error.cause?.message
-    }else{
+    } else {
         error.userReadableMessage(this.requireContext())
     }
     Toast.makeText(this.requireContext(), message, Toast.LENGTH_LONG).also { it.show() }
+}
+
+fun Fragment.displayErrorMessage(error: String) {
+    Toast.makeText(this.requireContext(), error, Toast.LENGTH_LONG).also { it.show() }
 }
 
 fun <T> Fragment.setNavigationResult(
@@ -65,10 +69,11 @@ fun <T> Fragment.setNavigationResult(
 
 fun <T> Fragment.getNavigationResult(
     onBoardNavigator: OnBoardNavigator,
-    @IdRes id: Int, key: String,
+    @IdRes idOwner: Int,
+    key: String,
     onResult: (result: T) -> Unit
 ) {
-    val navBackStackEntry = onBoardNavigator.findNavController().getBackStackEntry(id)
+    val navBackStackEntry = onBoardNavigator.findNavController().getBackStackEntry(idOwner)
 
     val observer = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_RESUME

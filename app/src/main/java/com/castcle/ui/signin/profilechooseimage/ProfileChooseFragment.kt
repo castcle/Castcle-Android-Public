@@ -14,6 +14,7 @@ import com.castcle.android.databinding.FragmentCreateProfileChooseBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.ProfileBundle
+import com.castcle.common_model.model.setting.CreatePageRequest
 import com.castcle.common_model.model.userprofile.ImagesRequest
 import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import com.castcle.extensions.*
@@ -64,6 +65,9 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
     private val emailBundle: ProfileBundle
         get() = authBundle.profileBundle
 
+    private val isCreatePage: Boolean
+        get() = authBundle.isCreatePage
+
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
         get() = { inflater, container, attachToRoot ->
@@ -96,7 +100,7 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
                 visible()
                 text = context.getString(R.string.tool_bar_skip)
                 subscribeOnClick {
-                    navigateToVerifyEmail()
+                    handlerSkipAction()
                 }.addToDisposables()
             }
             tvToolbarTitle.gone()
@@ -104,6 +108,15 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
                 .subscribeOnClick {
                     findNavController().navigateUp()
                 }.addToDisposables()
+        }
+    }
+
+    private fun handlerSkipAction() {
+        if (isCreatePage) {
+            val profileBundle = emailBundle as ProfileBundle.ProfileWithEmail
+            navigateToAboutMe(profileBundle)
+        } else {
+            navigateToVerifyEmail()
         }
     }
 
@@ -210,17 +223,49 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
 
     private fun applyImageProfile() {
         val profileBundle = emailBundle as ProfileBundle.ProfileWithEmail
-        val image = binding.cvCropImage.croppedBitmap.toBase62String()
+        val image = binding.cvCropImage.croppedBitmap.toBase64String()
+
+        if (isCreatePage) {
+            updatePageAvatar(image, profileBundle)
+        } else {
+            updateProfileAvatar(image, profileBundle)
+        }
+    }
+
+    private fun updatePageAvatar(image: String, profileBundle: ProfileBundle.ProfileWithEmail) {
+        viewModel.requestUpdatePage(
+            CreatePageRequest(
+                avatar = image,
+                displayName = profileBundle.displayName ?: "",
+                castcleId = profileBundle.castcleId
+            )
+        ).subscribeBy(
+            onSuccess = {
+                profileBundle.apply {
+                    imageAvatar = it.images.avatar?.original ?: ""
+                }.run(::navigateToAboutMe)
+            },
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun navigateToAboutMe(profileBundle: ProfileBundle.ProfileWithEmail) {
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle, true)
+    }
+
+    private fun updateProfileAvatar(image: String, profileBundle: ProfileBundle.ProfileWithEmail) {
         viewModel.requestUpdateProfile(
             UserUpdateRequest(
                 images = ImagesRequest(avatar = image)
             )
         ).subscribeBy(onComplete = {
-            navigateToAboutMe(image, profileBundle.email)
+            navigateToVerifyEmailFragment(image, profileBundle.email)
         }).addToDisposables()
     }
 
-    private fun navigateToAboutMe(image: String, email: String) {
+    private fun navigateToVerifyEmailFragment(image: String, email: String) {
         onBoardNavigator.naivgetToProfileVerifyEmailFragment(
             ProfileBundle.ProfileWithEmail(
                 email = email,

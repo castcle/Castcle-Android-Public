@@ -3,12 +3,15 @@ package com.castcle.ui.signin.createdisplayname
 import com.castcle.common.lib.extension.doIfTakeLongerThan
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.login.RegisterBundle
+import com.castcle.common_model.model.setting.CreatePageRequest
+import com.castcle.common_model.model.setting.CreatePageResponse
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.CastcleIdVerifyUiModel
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.DisplayNameVerifyUiModel
 import com.castcle.common_model.model.signin.reuquest.*
 import com.castcle.networking.service.common.TIMEOUT_SHOWING_SPINNER
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.setting.CreatePageSingleUseCase
 import com.castcle.usecase.signin.*
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import io.reactivex.*
@@ -63,6 +66,11 @@ abstract class CreateDisplayNameFragmentViewModel : BaseViewModel() {
             displayName: String,
             castcleId: String
         ): Completable
+
+        fun createPage(
+            displayName: String,
+            castcleId: String
+        ): Single<CreatePageResponse>
     }
 }
 
@@ -71,7 +79,8 @@ class CreateDisplayNameFragmentViewModelImpl @Inject constructor(
     private val registerCompletableUseCase: AuthenticationRegisterCompletableUseCase,
     private val suggestDisplayNameSingleUseCase: SuggestDisplayNameSingleUseCase,
     private val checkCastcleIdExsitSingleUseCase: CheckCastcleIdExsitSingleUseCase,
-    private val getUserProfileSingleUseCase: GetUserProfileSingleUseCase
+    private val getUserProfileSingleUseCase: GetUserProfileSingleUseCase,
+    private val createPageSingleUseCase: CreatePageSingleUseCase
 ) : CreateDisplayNameFragmentViewModel(), CreateDisplayNameFragmentViewModel.Input {
 
     override val showLoading: Observable<Boolean>
@@ -213,6 +222,18 @@ class CreateDisplayNameFragmentViewModelImpl @Inject constructor(
         }
     }
 
+    override fun createPage(displayName: String, castcleId: String): Single<CreatePageResponse> {
+        return createPageSingleUseCase.execute(
+            CreatePageRequest(
+                displayName = displayName,
+                castcleId = castcleId
+            )
+        ).doOnError {
+            _showLoading.onNext(false)
+        }.doOnSubscribe {
+            _showLoading.onNext(true)
+        }
+    }
 }
 
 private const val TIMEOUT_SEARCH_REQUEST = 500L

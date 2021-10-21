@@ -67,4 +67,5 @@ class UserProfilePagingDataSource(
 }
 
 const val PROFILE_TYPE_ME = "me"
+const val PROFILE_TYPE_PAGE = "page"
 const val PROFILE_TYPE_PEOPLE = "people"

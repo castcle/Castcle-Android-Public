@@ -1,7 +1,9 @@
 package com.castcle.ui.onboard
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.setting.LanguageUiModel
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.Completable
@@ -37,11 +39,11 @@ abstract class OnBoardViewModel : BaseViewModel() {
 
     abstract val isGuestMode: Boolean
 
-    abstract val isContentTypeMe: LiveData<Boolean>
+    abstract val isContentProfileType: LiveData<ProfileType>
 
     abstract val isContentTypeYouId: LiveData<String>
 
-    abstract fun setContentTypeMe(isContent: Boolean)
+    abstract fun setProfileType(isProfileType: ProfileType)
 
     abstract fun setContentTypeYouId(isContentId: String)
 
@@ -78,4 +80,12 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract val onLogoutActive: Observable<Boolean>
 
     abstract fun onLogoutDialog(isActive: Boolean)
+
+    abstract val imageResponse: LiveData<Uri>
+
+    abstract fun setImageResponse(imagePath: Uri)
+
+    abstract val onBackToFeed: Observable<Unit>
+
+    abstract fun onBackToHomeFeed()
 }

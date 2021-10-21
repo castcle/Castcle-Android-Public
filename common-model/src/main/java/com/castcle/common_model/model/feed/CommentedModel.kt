@@ -43,7 +43,7 @@ fun ContentCommentResponse.toCommentModel(): CommentedModel {
 fun Pagination.toPaginationModel(): PaginationModel {
     return PaginationModel(
         limit = limit ?: 0,
-        next = next,
+        next = next ?: 0,
         previous = previous,
         self = self
     )

@@ -9,9 +9,8 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.extensions.getNavigationResult
-import com.castcle.extensions.visibleOrGone
-import com.castcle.networking.api.user.PROFILE_TYPE_ME
+import com.castcle.common_model.model.setting.ProfileType
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
@@ -20,6 +19,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -73,14 +73,48 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun initViewModel() {
-        val feedRequestHeader = if (activityViewModel.isContentTypeMe.value == true) {
-            FeedRequestHeader(isMe = true)
-        } else {
-            FeedRequestHeader(
-                castcleId = activityViewModel.isContentTypeYouId.value ?: "",
-            )
+        isProfileType(
+            onPage = {
+                viewModel.fetachUserProfileContent(
+                    FeedRequestHeader(
+                        castcleId = activityViewModel.isContentTypeYouId.value ?: "",
+                        viewType = ProfileType.PROFILE_TYPE_PAGE.type
+                    )
+                )
+            },
+            onProfileMe = {
+                viewModel.fetachUserProfileContent(
+                    FeedRequestHeader(
+                        viewType = ProfileType.PROFILE_TYPE_ME.type
+                    )
+                )
+            },
+            onProfileYou = {
+                viewModel.fetachUserProfileContent(
+                    FeedRequestHeader(
+                        castcleId = activityViewModel.isContentTypeYouId.value ?: "",
+                        viewType = ProfileType.PROFILE_TYPE_ME.type
+                    )
+                )
+            })
+    }
+
+    private fun isProfileType(
+        onProfileMe: () -> Unit,
+        onProfileYou: () -> Unit,
+        onPage: () -> Unit
+    ) {
+        when (activityViewModel.isContentProfileType.value) {
+            ProfileType.PROFILE_TYPE_ME -> {
+                onProfileMe.invoke()
+            }
+            ProfileType.PROFILE_TYPE_YOU -> {
+                onProfileYou.invoke()
+            }
+            ProfileType.PROFILE_TYPE_PAGE -> {
+                onPage.invoke()
+            }
         }
-        viewModel.fetachUserProfileContent(feedRequestHeader)
     }
 
     override fun setupView() {
@@ -126,8 +160,10 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
-        val profileType = if (activityViewModel.isContentTypeMe.value == true) {
-            PROFILE_TYPE_ME
+        val profileType = if (activityViewModel.isContentProfileType.value
+            == ProfileType.PROFILE_TYPE_ME
+        ) {
+            ProfileType.PROFILE_TYPE_ME.type
         } else {
             contentUiModel.payLoadUiModel.author.type
         }
@@ -140,7 +176,14 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
-        viewModel
+        viewModel.likedContent(
+            contentUiModel.payLoadUiModel.contentId,
+            contentUiModel.payLoadUiModel.likedUiModel.liked
+        ).subscribeBy(onComplete = {
+            adapterPagingCommon.updateStateItemLike(contentUiModel)
+        }, onError = {
+            displayError(it)
+        }).addToDisposables()
     }
 
     private fun handleRecastClick(contentUiModel: ContentUiModel) {

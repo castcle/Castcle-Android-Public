@@ -31,8 +31,12 @@ data class PageHeaderUiModel(
 )
 
 data class PageUiModel(
-    val avatarUrl: String,
-    val verifyEmail: Boolean = false
+    val id: String = "",
+    val avatarUrl: String = "",
+    val castcleId: String = "",
+    val pageType: String = "",
+    val verifyEmail: Boolean = false,
+    val addPage: Boolean = false
 )
 
 fun User.toPageHeaderUiModel() =
@@ -40,7 +44,8 @@ fun User.toPageHeaderUiModel() =
         pageUiItem = listOf(
             PageUiModel(
                 avatarUrl = avatar,
-                verifyEmail = verified
+                verifyEmail = verified,
+                pageType = ProfileType.PROFILE_TYPE_ME.type
             )
         )
     )

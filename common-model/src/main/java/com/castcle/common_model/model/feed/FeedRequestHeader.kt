@@ -25,12 +25,12 @@ package com.castcle.common_model.model.feed
 //  Created by sklim on 25/8/2021 AD at 08:49.
 
 data class FeedRequestHeader(
-    val isMe: Boolean = false,
     val castcleId: String = "",
     val featureSlug: String = "",
     val circleSlug: String = "",
     val mode: String = "",
     val type: String = "",
+    val viewType: String = "",
     val exclude: String = "",
     val hashtag: String = ""
 )

@@ -17,12 +17,12 @@ import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
-import com.castcle.data.error.userReadableMessage
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.createbloc.adapter.ImageFloxBoxAdapter
 import com.castcle.ui.createbloc.adapter.ImageGalleryAdapter
 import com.castcle.ui.onboard.OnBoardActivity
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.android.flexbox.*
 import com.google.gson.Gson
@@ -72,6 +72,11 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     override val binding: FragmentCreateBlocBinding
         get() = viewBinding as FragmentCreateBlocBinding
 
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
+
     override fun viewModel(): CreateBlogFragmentViewModel =
         ViewModelProvider(this, viewModelFactory)
             .get(CreateBlogFragmentViewModel::class.java)
@@ -103,7 +108,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         (context as OnBoardActivity).onGoneBottomNavigate()
 
         addOnBackPressedCallback {
-            navigateToFeed()
+            onBackToHomeFeed()
         }
     }
 
@@ -116,7 +121,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             }
             ivToolbarLogoButton
                 .subscribeOnClick {
-                    navigateToFeed()
+                    onBackToHomeFeed()
                 }.addToDisposables()
         }
     }
@@ -130,6 +135,10 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun navigateByDeepLink(url: Uri) {
         onBoardNavigator.navigateByDeepLink(url, true)
+    }
+
+    private fun onBackToHomeFeed() {
+        activityViewModel.onBackToHomeFeed()
     }
 
     override fun bindViewEvents() {
@@ -377,7 +386,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
                 it.show()
             }
         } else {
-            navigateToFeed()
+            onBackToHomeFeed()
         }
     }
 

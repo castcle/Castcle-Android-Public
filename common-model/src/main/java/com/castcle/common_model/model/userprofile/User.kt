@@ -1,6 +1,8 @@
 package com.castcle.common_model.model.userprofile
 
 import androidx.room.*
+import com.castcle.common_model.model.setting.CreatePageResponse
+import com.google.gson.Gson
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -53,11 +55,11 @@ fun UserProfileResponse.toUserProfile(): User {
     return User(
         castcleId = castcleId,
         displayName = displayName ?: "",
-        id = id,
+        id = id ?: "",
         dob = dob ?: "",
-        email = email,
-        avatar = images.avatar,
-        cover = images.cover,
+        email = email ?: "",
+        avatar = images.avatar.original,
+        cover = images.cover.original,
         followed = followed,
         followersCount = followers.count,
         followingCount = following.count,
@@ -68,5 +70,35 @@ fun UserProfileResponse.toUserProfile(): User {
         websiteLinks = links?.website ?: "",
         youtubeLinks = links?.youtube ?: "",
         verified = verified?.email ?: false
+    )
+}
+
+fun User.toStringModel(): String {
+    return Gson().toJson(this)
+}
+
+fun String.toUserModel(): User {
+    return Gson().fromJson(this, User::class.java)
+}
+
+fun CreatePageResponse.toUserPage(): User {
+    return User(
+        castcleId = castcleId,
+        displayName = displayName ?: "",
+        id = id ?: "",
+        dob = "",
+        email = "",
+        avatar = images.avatar?.original ?: "",
+        cover = images.cover?.original ?: "",
+        followed = false,
+        followersCount = 0,
+        followingCount = 0,
+        overview = overview ?: "",
+        facebookLinks = links?.facebook ?: "",
+        mediumLinks = links?.medium ?: "",
+        twitterLinks = links?.twitter ?: "",
+        websiteLinks = links?.website ?: "",
+        youtubeLinks = links?.youtube ?: "",
+        verified = false
     )
 }

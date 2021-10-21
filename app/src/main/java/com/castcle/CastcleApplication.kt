@@ -1,5 +1,6 @@
 package com.castcle
 
+import androidx.work.Configuration
 import com.castcle.analytics.appcenter.AppCenterAnalytics
 import com.castcle.authen_android.di.components.DaggerAuthenticateComponent
 import com.castcle.di.component.DaggerAppComponent
@@ -13,9 +14,11 @@ import java.io.IOException
 import java.net.SocketException
 import javax.inject.Inject
 
-class CastcleApplication : DaggerApplication() {
+class CastcleApplication : DaggerApplication(), Configuration.Provider {
 
     @Inject lateinit var appCenterAnalytics: AppCenterAnalytics
+
+    @Inject lateinit var workerConfiguration: Configuration
 
     override fun onCreate() {
         super.onCreate()
@@ -66,5 +69,9 @@ class CastcleApplication : DaggerApplication() {
 
             Timber.e(e, "Undeliverable exception received, not sure what to do")
         }
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration {
+        return workerConfiguration
     }
 }

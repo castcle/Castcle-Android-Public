@@ -3,8 +3,7 @@ package com.castcle.extensions
 import android.graphics.Bitmap
 import android.os.Build
 import android.util.Base64
-import java.io.ByteArrayOutputStream
-import java.io.File
+import java.io.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -30,7 +29,7 @@ import java.io.File
 //
 //  Created by sklim on 9/9/2021 AD at 12:35.
 
-fun Bitmap.toBase62String(): String {
+fun Bitmap.toBase64String(): String {
     ByteArrayOutputStream().apply {
         compress(Bitmap.CompressFormat.JPEG, 10, this)
         return Base64.encodeToString(toByteArray(), Base64.DEFAULT)
@@ -42,7 +41,28 @@ fun File.toBase64String(): String {
 }
 
 inline fun <T> sdk29AndUp(onSdk29: () -> T): T? {
-    return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         onSdk29()
     } else null
+}
+
+fun copyInputStreamToFile(`in`: InputStream, file: File) {
+    var out: OutputStream? = null
+    try {
+        out = FileOutputStream(file)
+        val buf = ByteArray(1024)
+        var len: Int
+        while (`in`.read(buf).also { len = it } > 0) {
+            out.write(buf, 0, len)
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        try {
+            out?.close()
+            `in`.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 }

@@ -32,7 +32,7 @@ sealed class RegisterBundle : Parcelable {
 
     @Parcelize
     data class RegisterWithEmail(
-        var email: String,
+        var email: String = "",
         var password: String? = "",
     ) : RegisterBundle()
 }

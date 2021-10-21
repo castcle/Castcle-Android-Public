@@ -1,7 +1,12 @@
 package com.castcle.ui.profile
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -9,17 +14,27 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.setting.ProfileType
+import com.castcle.common_model.model.setting.UpLoadType
+import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
+import com.castcle.networking.api.user.PROFILE_TYPE_PAGE
 import com.castcle.ui.base.*
+import com.castcle.ui.common.dialog.chooseimage.KEY_CHOOSE_REQUEST
+import com.castcle.ui.common.dialog.chooseimage.PhotoSelectedState
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.adapter.ContentPageAdapter
-import com.castcle.ui.profile.viewholder.UserProfileAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.lyrebirdstudio.croppylib.Croppy
+import com.lyrebirdstudio.croppylib.main.CropRequest
+import com.permissionx.guolindev.PermissionMediator
 import io.reactivex.rxkotlin.subscribeBy
+import pl.aprilapps.easyphotopicker.*
 import javax.inject.Inject
+
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -51,17 +66,28 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
-    private lateinit var userProfileAdapter: UserProfileAdapter
+    @Inject lateinit var localizedResources: LocalizedResources
+
+    @Inject lateinit var easyImage: EasyImage
+
+    @Inject lateinit var rxPermissions: PermissionMediator
 
     private lateinit var contentPageAdapter: ContentPageAdapter
 
     private val argsBundle: ProfileFragmentArgs by navArgs()
 
     private val profileType: String
-        get() = argsBundle.me
+        get() = argsBundle.profileType
 
     private val profileId: String
         get() = argsBundle.id
+
+    private val isMe: Boolean
+        get() = argsBundle.isMe
+
+    private var photoSelectedState: PhotoSelectedState = PhotoSelectedState.NON
+
+    private lateinit var userProfile: User
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentProfileBinding
@@ -80,12 +106,34 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             .get(OnBoardViewModel::class.java)
     }
 
-    override fun initViewModel() = Unit
+    override fun initViewModel() {
+        viewModel.checkAvatarUploading().subscribe { it ->
+            if (it) {
+                displayErrorMessage("Up Load Image Success")
+            }
+        }.addToDisposables()
+    }
 
-    private fun isProfileIsMe(): Boolean {
-        activityViewModel.setContentTypeMe(profileType == PROFILE_TYPE_ME)
+    private fun profileType(
+        onProfileMe: () -> Unit,
+        onProfileYou: () -> Unit,
+        onPage: () -> Unit
+    ) {
+        when (profileType) {
+            PROFILE_TYPE_ME -> {
+                onProfileMe.invoke()
+                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_ME)
+            }
+            PROFILE_TYPE_PAGE -> {
+                onPage.invoke()
+                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_PAGE)
+            }
+            else -> {
+                onProfileYou.invoke()
+                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_YOU)
+            }
+        }
         activityViewModel.setContentTypeYouId(profileId)
-        return profileType == PROFILE_TYPE_ME
     }
 
     override fun setupView() {
@@ -103,13 +151,17 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             Tab.text = requireContext().getString(tabContent[position].tabNameRes)
         }.attach()
 
-        if (isProfileIsMe()) {
-            binding.profileMe.clMainContent.visible()
-            binding.profileYou.clMainContent.gone()
-        } else {
-            binding.profileMe.clMainContent.gone()
-            binding.profileYou.clMainContent.visible()
-        }
+        profileType(
+            onPage = {
+                binding.profileMe.clMainContent.gone()
+                binding.profileYou.clMainContent.visible()
+            }, onProfileMe = {
+                binding.profileMe.clMainContent.visible()
+                binding.profileYou.clMainContent.gone()
+            }, onProfileYou = {
+                binding.profileMe.clMainContent.gone()
+                binding.profileYou.clMainContent.visible()
+            })
     }
 
     private fun setupToolBar() {
@@ -126,21 +178,58 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
+        getNavigationResult<PhotoSelectedState>(
+            onBoardNavigator,
+            R.id.profileFragment,
+            KEY_CHOOSE_REQUEST,
+            onResult = {
+                onHandlerStatePhoto(it)
+            })
+    }
 
+    private fun onHandlerStatePhoto(state: PhotoSelectedState) {
+        when (state) {
+            PhotoSelectedState.SELECT_TAKE_CAMERA -> {
+                requestCameraPermission(action = {
+                    openCamera()
+                })
+            }
+            PhotoSelectedState.SELECT_CHOOSE -> {
+                requestGalleryPermission(action = {
+                    openGallery()
+                })
+            }
+            else -> {
+            }
+        }
     }
 
     override fun bindViewModel() {
         viewModel.errorMessage.observe(this, {
+            displayErrorMessage(it)
         })
 
-        if (isProfileIsMe()) {
-            viewModel.userProfileRes
-                .subscribe {
-                    onBindProfile(it)
-                }.addToDisposables()
-        } else {
-            viewModel.getUserViewProfileMock(profileId)
-        }
+        profileType(
+            onProfileMe = {
+                viewModel.userProfileRes
+                    .subscribe {
+                        onBindProfile(it)
+                    }.addToDisposables()
+            }, onProfileYou = {
+                viewModel.getUserViewProfile(profileId)
+
+            }, onPage = {
+                viewModel.getViewPage(profileId)
+            })
+
+        viewModel.userUpLoadRes.observe(this, {
+            when (photoSelectedState) {
+                PhotoSelectedState.COVER_PAGE_SELECT, PhotoSelectedState.AVATAR_PAGE_SELECT -> {
+                    onBindViewProfile(it)
+                }
+                else -> onBindProfile(it)
+            }
+        })
 
         viewModel.userProfileYouRes.subscribe {
             onBindViewProfile(it)
@@ -149,6 +238,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         viewModel.showLoading.subscribe {
             handlerShowLoading(it)
         }.addToDisposables()
+
+        viewModel.viewPageRes.subscribe {
+            onBindViewProfile(it)
+        }.addToDisposables()
+
+        activityViewModel.imageResponse.observe(this, {
+            handlerUpLoadImage(it)
+        })
     }
 
     private fun handlerShowLoading(it: Boolean) {
@@ -165,14 +262,26 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 tvProfileOverView.visibleOrInvisible(!isEmpty())
                 tvProfileOverView.text = this
             }
+            ivAddAvatar.subscribeOnClick {
+                onNavigateToDialogChooseFragment(
+                    PhotoSelectedState.AVATAR_SELECT
+                )
+            }.addToDisposables()
             ivAvatarProfile.loadCircleImage(user.avatar)
         }
-        binding.ivProfileCover.loadImageWithCache(user.cover)
-        binding.tbProfile.tvToolbarTitle.text = user.castcleId
+        with(binding) {
+            ivAddCover.subscribeOnClick {
+                onNavigateToDialogChooseFragment(
+                    PhotoSelectedState.COVER_SELECT
+                )
+            }.addToDisposables()
+            ivProfileCover.loadImageWithCache(user.cover)
+            tbProfile.tvToolbarTitle.text = user.castcleId
+        }
     }
 
     private fun onBindViewProfile(user: User) {
-        binding.ivAddCover.gone()
+        userProfile = user
         with(binding.profileYou) {
             tvFollowingCount.text = user.followingCount.toCount()
             tvFollowersCount.text = user.followersCount.toCount()
@@ -184,15 +293,54 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
 
-            btFollow.visibleOrGone(!user.followed)
-            if (btFollow.isVisible) {
-                btFollow.subscribeOnClick {
-                    handlerFollow(user.castcleId)
-                }.addToDisposables()
+            if (isMe) {
+                onBindEditImagePage()
+            } else {
+                binding.ivAddCover.gone()
+                btFollow.visibleOrGone(!user.followed)
+                if (btFollow.isVisible) {
+                    btFollow.subscribeOnClick {
+                        handlerFollow(user.castcleId)
+                    }.addToDisposables()
+                }
             }
         }
-        binding.ivProfileCover.loadImageWithCache(user.cover)
-        binding.tbProfile.tvToolbarTitle.text = user.castcleId
+        with(binding) {
+            ivAddCover.subscribeOnClick {
+                onNavigateToDialogChooseFragment(
+                    PhotoSelectedState.COVER_PAGE_SELECT
+                )
+            }.addToDisposables()
+            ivProfileCover.loadImageWithCache(user.cover)
+            tbProfile.tvToolbarTitle.text = user.castcleId
+        }
+    }
+
+    private fun onBindEditImagePage() {
+        binding.ivAddCover.visible()
+        with(binding.profileYou) {
+            btViewProfile.gone()
+            ivAddAvatar.visible()
+            btFollow.text = localizedResources.getString(R.string.profile_edit_profile)
+            btFollow.subscribeOnClick {
+                onViewPageDetail()
+            }.addToDisposables()
+
+            ivAddAvatar.subscribeOnClick {
+                onNavigateToDialogChooseFragment(
+                    PhotoSelectedState.AVATAR_PAGE_SELECT
+                )
+            }.addToDisposables()
+        }
+    }
+
+    private fun onNavigateToDialogChooseFragment(photoSelectedState: PhotoSelectedState) {
+        this.photoSelectedState = photoSelectedState
+        onBoardNavigator.navigateToDialogChooseFragment()
+    }
+
+    private fun onViewPageDetail() {
+
     }
 
     private fun handlerFollow(castcleId: String) {
@@ -215,6 +363,143 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             btFollow.visibleOrGone(false)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        easyImage.handleActivityResult(requestCode, resultCode, data, requireActivity(),
+            object : DefaultCallback() {
+                override fun onMediaFilesPicked(imageFiles: Array<MediaFile>, source: MediaSource) {
+                    imageFiles
+                        .firstOrNull()?.let(::handlerCorpImage)
+                }
+
+                override fun onImagePickerError(error: Throwable, source: MediaSource) {
+                }
+            })
+    }
+
+    private fun handleCropError(data: Throwable?) {
+        data?.let { displayError(it) }
+    }
+
+    private fun openCamera() {
+        easyImage.openCameraForImage(this)
+    }
+
+    private fun openGallery() {
+        easyImage.openGallery(this)
+    }
+
+    private fun requestCameraPermission(action: () -> Unit) {
+        rxPermissions.permissions(Manifest.permission.CAMERA)
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(
+                    deniedList,
+                    "Core fundamental are based on these permissions",
+                    "OK", "Cancel"
+                )
+            }.request { allGranted, _, deniedList ->
+                if (allGranted) {
+                    action.invoke()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "These permissions are denied: $deniedList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun requestGalleryPermission(action: () -> Unit) {
+        rxPermissions.permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(
+                    deniedList,
+                    "Core fundamental are based on these permissions",
+                    "OK", "Cancel"
+                )
+            }.request { allGranted, _, deniedList ->
+                if (allGranted) {
+                    action.invoke()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "These permissions are denied: $deniedList",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+    }
+
+    private fun handlerUpLoadImage(mediaFile: Uri?) {
+        when (photoSelectedState) {
+            PhotoSelectedState.AVATAR_SELECT -> {
+                if (mediaFile != null) {
+                    onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_AVATAR)
+                }
+            }
+            PhotoSelectedState.COVER_SELECT -> {
+                if (mediaFile != null) {
+                    onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_COVER)
+                }
+            }
+            PhotoSelectedState.COVER_PAGE_SELECT -> {
+                if (mediaFile != null) {
+                    onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_PAGE_COVER)
+                }
+            }
+            PhotoSelectedState.AVATAR_PAGE_SELECT -> {
+                if (mediaFile != null) {
+                    onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_PAGE_AVATAR)
+                }
+            }
+        }
+    }
+
+    private fun onHandlerUpLoadAvatar(image: Uri, uploadAvatar: UpLoadType) {
+        val imageRequest = when (uploadAvatar) {
+            UpLoadType.UPLOAD_AVATAR -> {
+                ImagesRequest(
+                    avatar = image.toString(),
+                    upLoadType = uploadAvatar.type
+                )
+            }
+            UpLoadType.UPLOAD_COVER -> {
+                ImagesRequest(
+                    cover = image.toString(),
+                    upLoadType = uploadAvatar.type
+                )
+            }
+            UpLoadType.UPLOAD_PAGE_COVER -> {
+                ImagesRequest(
+                    cover = image.toString(),
+                    upLoadType = uploadAvatar.type,
+                    castcleId = userProfile.castcleId
+                )
+            }
+            UpLoadType.UPLOAD_PAGE_AVATAR -> {
+                ImagesRequest(
+                    avatar = image.toString(),
+                    upLoadType = uploadAvatar.type,
+                    castcleId = userProfile.castcleId
+                )
+            }
+        }
+        viewModel.upLoadAvatar(imageRequest).subscribe().addToDisposables()
+    }
+
+    private fun handlerCorpImage(mediaFile: MediaFile) {
+        onNavigateToCropAvatarImageFragment(mediaFile.file.toUri())
+    }
+
+    private fun onNavigateToCropAvatarImageFragment(imageUri: Uri) {
+        val cropRequest = CropRequest.Auto(
+            sourceUri = imageUri,
+            requestCode = RC_CROP_IMAGE
+        )
+        Croppy.start(requireActivity(), cropRequest)
+    }
 }
 
 private const val PROFILE_TYPE_ME = "me"
+const val RC_CROP_IMAGE = 191

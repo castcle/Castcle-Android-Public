@@ -1,10 +1,12 @@
 package com.castcle.ui.signin.profilechooseimage
 
+import com.castcle.common_model.model.setting.CreatePageRequest
+import com.castcle.common_model.model.setting.CreatePageResponse
 import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.setting.UpdatePageSingleUseCase
 import com.castcle.usecase.userprofile.UpdateUserProfileCompletableUseCase
-import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
@@ -37,10 +39,13 @@ abstract class ProfileChooseFragmentViewModel : BaseViewModel() {
     abstract val showLoading: Observable<Boolean>
 
     abstract fun requestUpdateProfile(userRequest: UserUpdateRequest): Completable
+
+    abstract fun requestUpdatePage(createPageRequest: CreatePageRequest): Single<CreatePageResponse>
 }
 
 class ProfileChooseFragmentViewModelImpl @Inject constructor(
-    private val updateUserProfileCompletableUseCase: UpdateUserProfileCompletableUseCase
+    private val updateUserProfileCompletableUseCase: UpdateUserProfileCompletableUseCase,
+    private val updatePageSingleUseCase: UpdatePageSingleUseCase
 ) : ProfileChooseFragmentViewModel() {
 
     override val showLoading: Observable<Boolean>
@@ -54,4 +59,10 @@ class ProfileChooseFragmentViewModelImpl @Inject constructor(
             .doOnError { _showLoading.onNext(false) }
     }
 
+    override fun requestUpdatePage(createPageRequest: CreatePageRequest): Single<CreatePageResponse> {
+        return updatePageSingleUseCase
+            .execute(createPageRequest)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+    }
 }

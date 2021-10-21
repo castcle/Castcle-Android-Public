@@ -1,9 +1,7 @@
 package com.castcle.authen_android.data.encryption
 
-import android.security.keystore.KeyProperties
 import android.util.Base64
 import javax.crypto.Cipher
-import javax.crypto.CipherOutputStream
 import javax.crypto.spec.GCMParameterSpec
 import javax.inject.Inject
 

@@ -2,14 +2,18 @@ package com.castcle.ui.profile
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
 import com.castcle.android.R
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.data.staticmodel.ContentType
+import com.castcle.usecase.feed.LikeCommentCompletableUseCase
+import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.userprofile.*
 import com.google.gson.Gson
 import io.reactivex.Completable
@@ -51,7 +55,12 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val getUserProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val getUserViewProfileSingleUseCase: GetUserViewProfileSingleUseCase,
     private val userProfileDataSouce: UserProfileRepository,
-    private val putToFollowUserCompletableUseCase: PutToFollowUserCompletableUseCase
+    private val putToFollowUserCompletableUseCase: PutToFollowUserCompletableUseCase,
+    private val getViewPageSingleUseCase: GetViewPageFlowableUseCase,
+    private val uploadProfileAvatarCompletableUseCase: UploadProfileAvatarCompletableUseCase,
+    private val checkAvatarUpLoadingFlowableCase: CheckAvatarUpLoadingFlowableCase,
+    private val likedCommentCompletableUseCase: LikeCommentCompletableUseCase,
+    private val likeContentCompletableUseCase: LikeContentCompletableUseCase
 ) : ProfileFragmentViewModel() {
 
     private lateinit var _userProfileContentRes: Flow<PagingData<ContentUiModel>>
@@ -59,6 +68,9 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private lateinit var _userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
 
     private var _userProfileData = MutableLiveData<User>()
+
+    override val userUpLoadRes: LiveData<User>
+        get() = _userProfileData
 
     override val userProfileRes: Observable<User>
         get() = fetchUserProfile()
@@ -105,10 +117,17 @@ class ProfileFragmentViewModelImpl @Inject constructor(
 
     override fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader) {
         launchPagingAsync({
-            if (contentRequestHeader.isMe) {
-                userProfileDataSouce.getUserPofileContent(contentRequestHeader)
-            } else {
-                userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+            when (contentRequestHeader.viewType) {
+                ProfileType.PROFILE_TYPE_ME.type -> {
+                    userProfileDataSouce.getUserPofileContent(contentRequestHeader)
+                }
+                ProfileType.PROFILE_TYPE_YOU.type -> {
+                    userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+                }
+                ProfileType.PROFILE_TYPE_PAGE.type -> {
+                    userProfileDataSouce.getViewPagePofileContent(contentRequestHeader)
+                }
+                else -> userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
             }
         }, onSuccess = {
             _userProfileContentRes = it
@@ -123,7 +142,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         })
     }
 
-    override fun getUserViewProfileMock(castcleId: String) {
+    override fun getUserViewProfile(castcleId: String) {
         getUserViewProfileSingleUseCase.execute(
             ViewProfileRequest(castcleId = castcleId)
         ).firstOrError()
@@ -149,6 +168,64 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         }.doFinally {
             _showLoading.onNext(false)
         }
+    }
+
+    private var _viewPageRes = BehaviorSubject.create<User>()
+    override val viewPageRes: Observable<User>
+        get() = _viewPageRes
+
+    override fun getViewPage(castcleId: String) {
+        getViewPageSingleUseCase.execute(castcleId)
+            .doOnSubscribe {
+                _showLoading.onNext(true)
+            }.doFinally {
+                _showLoading.onNext(false)
+            }.firstOrError()
+            .subscribeBy(
+                onSuccess = {
+                    _viewPageRes.onNext(it)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    override fun upLoadAvatar(imageUri: ImagesRequest): Completable {
+        return uploadProfileAvatarCompletableUseCase.execute(imageUri.toStringImageRequest())
+    }
+
+    override fun checkAvatarUploading(): Observable<Boolean> {
+        return checkAvatarUpLoadingFlowableCase.execute(Unit)
+            .map { (status, userResponse) ->
+                userResponse.takeIf {
+                    it.isNotBlank()
+                }.let {
+                    checkUserResponse(userResponse)
+                }
+                status
+            }.doOnError {
+                _error.onNext(it)
+            }.toObservable()
+    }
+
+    private fun checkUserResponse(userResponse: String) {
+        if (userResponse.isNotBlank()) {
+            val userData = userResponse.toUserModel()
+            setUserProfileData(userData)
+        }
+    }
+
+    override fun likedContent(
+        contentId: String,
+        likedStatus: Boolean
+    ): Completable {
+        return likeContentCompletableUseCase.execute(
+            LikeContentCompletableUseCase.Input(
+                contentId = contentId,
+                likeStatus = likedStatus
+            )
+        )
     }
 
     override fun getFeedResponse(contentType: ContentType) {

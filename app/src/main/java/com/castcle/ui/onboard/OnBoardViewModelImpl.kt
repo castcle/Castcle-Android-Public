@@ -1,8 +1,10 @@
 package com.castcle.ui.onboard
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.setting.LanguageUiModel
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.setting.*
@@ -77,14 +79,6 @@ class OnBoardViewModelImpl @Inject constructor(
     private val _preferredLanguageSelected = MutableLiveData<MutableList<LanguageUiModel>>()
     override val preferredLanguageSelected: LiveData<MutableList<LanguageUiModel>>
         get() = _preferredLanguageSelected
-
-    private var _isContentTypeMe = MutableLiveData<Boolean>()
-    override val isContentTypeMe: LiveData<Boolean>
-        get() = _isContentTypeMe
-
-    override fun setContentTypeMe(isContent: Boolean) {
-        _isContentTypeMe.value = isContent
-    }
 
     private var _isContentTypeYouId = MutableLiveData<String>()
     override val isContentTypeYouId: LiveData<String>
@@ -215,5 +209,29 @@ class OnBoardViewModelImpl @Inject constructor(
 
     override fun onLogoutDialog(isActive: Boolean) {
         _onLogoutActive.onNext(isActive)
+    }
+
+    private var _isContentProfileType = MutableLiveData<ProfileType>()
+    override val isContentProfileType: LiveData<ProfileType>
+        get() = _isContentProfileType
+
+    override fun setProfileType(isProfileType: ProfileType) {
+        _isContentProfileType.value = isProfileType
+    }
+
+    private var _imageResponse = MutableLiveData<Uri>()
+    override val imageResponse: LiveData<Uri>
+        get() = _imageResponse
+
+    override fun setImageResponse(imagePath: Uri) {
+        _imageResponse.value = imagePath
+    }
+
+    private var _onBackToFeed = BehaviorSubject.create<Unit>()
+    override val onBackToFeed: Observable<Unit>
+        get() = _onBackToFeed
+
+    override fun onBackToHomeFeed() {
+        _onBackToFeed.onNext(Unit)
     }
 }

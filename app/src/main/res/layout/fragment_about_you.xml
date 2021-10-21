@@ -6,7 +6,7 @@
     android:background="@color/black_light">
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanit.xxHeadline"
+        style="@style/AppTextKanit.MediumMedium"
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,8 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_6sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
         android:text="@string/about_you_overview"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/itOverView"
@@ -36,7 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
-        android:layout_marginTop="@dimen/_32sdp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColorHint="@color/gray_light"
         app:hintText="@string/about_you_field"
@@ -81,25 +81,43 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_6sdp"
         android:layout_marginTop="@dimen/_4sdp"
-        android:layout_marginBottom="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_2sdp"
         android:text="@string/about_you_link"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/itLinkFacebook"
-        app:layout_constraintStart_toStartOf="@id/itLinkFacebook"
+        app:layout_constraintBottom_toTopOf="@id/tvAddLinks"
+        app:layout_constraintStart_toStartOf="@id/tvAddLinks"
         app:layout_constraintTop_toBottomOf="@id/itBirthday" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Small"
+        android:id="@+id/tvAddLinks"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_cover_round_clickable"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:paddingEnd="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        android:text="@string/add_link_item"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="@id/itOverView"
+        app:layout_constraintStart_toStartOf="@id/itOverView"
+        app:layout_constraintTop_toBottomOf="@id/tvLinks" />
 
     <com.castcle.components_android.ui.custom.InputEditText
         android:id="@+id/itLinkFacebook"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColorHint="@color/gray_light"
+        android:visibility="invisible"
         app:hintText="@string/about_you_field_facebook"
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvLinks" />
+        app:layout_constraintTop_toBottomOf="@id/tvAddLinks" />
 
     <com.castcle.components_android.ui.custom.InputEditText
         android:id="@+id/itLinkTwitter"
@@ -109,6 +127,7 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColorHint="@color/gray_light"
+        android:visibility="invisible"
         app:hintText="@string/about_you_field_twitter"
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,6 +142,7 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColorHint="@color/gray_light"
+        android:visibility="invisible"
         app:hintText="@string/about_you_field_youtube"
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -137,11 +157,14 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColorHint="@color/gray_light"
+        android:visibility="invisible"
         app:hintText="@string/about_you_field_medium"
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itLinkYouTube" />
+        app:layout_constraintTop_toBottomOf="@id/itLinkYouTube">
+
+    </com.castcle.components_android.ui.custom.InputEditText>
 
     <com.castcle.components_android.ui.custom.InputEditText
         android:id="@+id/itLinkWebSite"
@@ -151,12 +174,12 @@
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColorHint="@color/gray_light"
+        android:visibility="invisible"
         app:hintText="@string/about_you_field_website"
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/itLinkMedium" />
-
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/AppTextKanitLight.Medium"
@@ -164,8 +187,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_12sdp"
-        android:layout_marginBottom="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
         android:background="@drawable/bg_bottom"
         android:clickable="true"
         android:focusable="true"
@@ -175,4 +199,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupIsCreatePage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvBirthday,itBirthday" />
 </androidx.constraintlayout.widget.ConstraintLayout>

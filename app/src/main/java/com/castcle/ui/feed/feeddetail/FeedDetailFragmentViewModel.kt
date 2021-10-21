@@ -13,7 +13,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -146,32 +145,41 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     }
 
     private fun addCommented(commentRequest: CommentRequest) {
-        val commented = ContentDbModel(
+        val commented = ContentUiModel(
             id = UUID.randomUUID().variant().toString(),
-            replyUiModel = listOf(
-                ReplyUiModel(
-                    id = UUID.randomUUID().variant().toString(),
-                    created = "",
-                    message = commentRequest.message ?: "",
-                    author = AuthorUiModel()
+            payLoadUiModel = PayLoadUiModel(
+                contentMessage = commentRequest.message ?: "",
+                replyUiModel = listOf(
+                    ReplyUiModel(
+                        id = UUID.randomUUID().variant().toString(),
+                        created = "",
+                        message = commentRequest.message ?: "",
+                        author = AuthorUiModel(
+                            displayName = "Child Test"
+                        )
+                    ), ReplyUiModel(
+                        id = UUID.randomUUID().variant().toString(),
+                        created = "",
+                        message = commentRequest.message ?: "",
+                        author = AuthorUiModel(
+                            displayName = "Child Test"
+                        )
+                    )
+
+                ),
+                author = AuthorUiModel(
+                    displayName = "Test",
+                    castcleId = "Rx",
+                    followed = true,
+                    verifiedEmail = true
                 )
-            ),
-            payloadContent = PayloadContentUiModel(
-                message = commentRequest.message
-            ),
-            liked = LikedUiModel(),
-            commented = CommentedUiModel(),
-            recasted = RecastedUiModel(),
-            author = AuthorUiModel(
-                displayName = "Test",
-                castcleId = "Rx",
-                followed = true,
-                verifiedEmail = true
             )
         )
-        viewModelScope.launch {
-            commentRepository.addCommentMediator(commented)
+        val oldData = _commentedResponses.value ?: emptyList()
+        val commentedValue = oldData.toMutableList().apply {
+            addAll(listOf(commented))
         }
+        _commentedResponses.onNext(commentedValue)
     }
 
     override fun fetachCommentedPage(feedContentId: String) {
@@ -201,7 +209,7 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     }
 
     override fun fetachNextCommentedPage() {
-        if(_commentedId.blockingFirst().paginationModel.next == 0) return
+        if (_commentedId.blockingFirst().paginationModel.next == 0) return
         getCommentedPagingSingleUseCase.execute(_commentedId.blockingFirst())
             .doOnSubscribe {
                 _showLoading.onNext(true)

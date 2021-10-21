@@ -54,6 +54,9 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
     private val resgisterBundle: RegisterBundle
         get() = authBundle.registerBundle
 
+    private val isCreatePage: Boolean
+        get() = authBundle.isCreatePage
+
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
         get() = { inflater, container, attachToRoot ->
@@ -99,7 +102,30 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
             viewModel.input.checkCastcleId(it)
         }
         binding.btNext.subscribeOnClick {
+            handleActionNext()
+        }
+    }
+
+    private fun handleActionNext() {
+        if (isCreatePage) {
+            onCreatePage()
+        } else {
             onRegister()
+        }
+    }
+
+    private fun onCreatePage() {
+        with(binding) {
+            viewModel.input.createPage(
+                itDisplatName.primaryText,
+                itCastcleId.primaryText
+            ).subscribeBy(
+                onSuccess = {
+                    navigateToChooseProfile()
+                }, onError = {
+                    handlerError(it)
+                }
+            ).addToDisposables()
         }
     }
 
@@ -120,7 +146,7 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
     }
 
     private fun handlerError(error: Throwable) {
-        if(error is RegisterErrorError && error.hasAuthenticationTokenExprierd()){
+        if (error is RegisterErrorError && error.hasAuthenticationTokenExprierd()) {
             binding.itCastcleId.setError(error = error.readableMessage)
         }
     }
@@ -133,7 +159,7 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
                     email = registerBundle.email,
                     displayName = itDisplatName.primaryText,
                     castcleId = itCastcleId.primaryText,
-                )
+                ),true
             )
         }
     }

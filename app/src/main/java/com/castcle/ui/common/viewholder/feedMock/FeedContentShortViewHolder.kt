@@ -92,6 +92,11 @@ class FeedContentShortMockViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentMessage
@@ -100,19 +105,21 @@ class FeedContentShortMockViewHolder(
                     link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
                         group2.gone()
                         vCover.gone()
+                        clPreviewContent.visible()
                         icImageContent.visible()
                         icImageContent.bindImageContent(uiModel, true)
+                        stopLoadingPreViewShimmer()
                     }
                     link.isNotEmpty() -> {
-                        clPreviewContent.visible()
                         link.firstOrNull()?.let {
                             PreViewLinkUrl(it.url, it.type, object : PreViewLinkCallBack {
                                 override fun onComplete(urlInfo: UrlInfoUiModel) {
                                     with(urlInfo) {
-                                        ivPerviewUrl.loadGranularRoundedCornersImage(image)
-                                        tvPreviewUrl.text = url
-                                        tvPreviewHeader.text = title
-                                        tvPreviewContent.text = description
+                                        if (image.isEmpty()) {
+                                            onBindContentIcon(urlInfo)
+                                        } else {
+                                            onBindContentImage(urlInfo)
+                                        }
                                     }
                                 }
 
@@ -123,9 +130,49 @@ class FeedContentShortMockViewHolder(
                         }
                     }
                     else -> {
+                        stopLoadingPreViewShimmer()
                         clPreviewContent.gone()
                     }
                 }
+
+            }
+        }
+    }
+
+    private fun onBindContentIcon(linkUiModel: UrlInfoUiModel) {
+        stopLoadingPreViewShimmer()
+        with(binding) {
+            clPreviewContent.gone()
+            clPreviewIconContent.visible()
+            with(linkUiModel) {
+                ivPerviewIconUrl.loadIconImage(imageIcon)
+                tvIconPreview.text = url
+                tvPreviewIconHeader.text = title
+                tvPreviewIconContent.text = description
+            }
+        }
+    }
+
+    private fun onBindContentImage(linkUiModel: UrlInfoUiModel) {
+        stopLoadingPreViewShimmer()
+        with(binding) {
+            clPreviewContent.visible()
+            clPreviewIconContent.gone()
+            with(linkUiModel) {
+                ivPerviewUrl.loadGranularRoundedCornersImage(image)
+                tvPreviewUrl.text = url
+                tvPreviewHeader.text = title
+                tvPreviewContent.text = description
+            }
+        }
+    }
+
+    private fun stopLoadingPreViewShimmer() {
+        with(binding) {
+            clPreviewLoadingContent.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
             }
         }
     }

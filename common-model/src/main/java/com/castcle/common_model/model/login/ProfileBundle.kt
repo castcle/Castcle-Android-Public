@@ -31,9 +31,9 @@ sealed class ProfileBundle : Parcelable {
 
     @Parcelize
     data class ProfileWithEmail(
-        var email: String,
+        var email: String = "",
         var displayName: String? = "",
-        var castcleId: String? = "",
+        var castcleId: String = "",
         var imageAvatar: String? = "",
         var imageCover: String? = ""
     ) : ProfileBundle()

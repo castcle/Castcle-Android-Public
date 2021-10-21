@@ -7,6 +7,7 @@ import com.castcle.di.modules.ActivityModule
 import com.castcle.di.modules.AppModule
 import com.castcle.di.modules.analytics.AppCenterAnalyticModule
 import com.castcle.di.scope.ApplicationScope
+import com.castcle.di.worker.WorkerModule
 import com.castcle.session_memory.SessionManagerModule
 import dagger.BindsInstance
 import dagger.Component
@@ -43,7 +44,8 @@ import dagger.android.AndroidInjector
         AppModule::class,
         ActivityModule::class,
         SessionManagerModule::class,
-        AppCenterAnalyticModule::class
+        AppCenterAnalyticModule::class,
+        WorkerModule::class
     ],
     dependencies = [
         AuthenticateComponent::class,

@@ -10,6 +10,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentPhotoBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
@@ -20,6 +21,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -73,18 +75,51 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun initViewModel() {
-        val feedRequestHeader = if (activityViewModel.isContentTypeMe.value == true) {
-            FeedRequestHeader(
-                type = ContentType.IMAGE.type,
-                isMe = true
-            )
-        } else {
-            FeedRequestHeader(
-                type = ContentType.IMAGE.type,
-                castcleId = activityViewModel.isContentTypeYouId.value ?: ""
-            )
+        isProfileType(
+            onPage = {
+                viewModel.fetachUserProfileContent(
+                    FeedRequestHeader(
+                        castcleId = activityViewModel.isContentTypeYouId.value ?: "",
+                        viewType = ProfileType.PROFILE_TYPE_PAGE.type,
+                        type = ContentType.IMAGE.type
+                    )
+                )
+            },
+            onProfileMe = {
+                viewModel.fetachUserProfileContent(
+                    FeedRequestHeader(
+                        viewType = ProfileType.PROFILE_TYPE_ME.type,
+                        type = ContentType.IMAGE.type
+                    )
+                )
+            },
+            onProfileYou = {
+                viewModel.fetachUserProfileContent(
+                    FeedRequestHeader(
+                        castcleId = activityViewModel.isContentTypeYouId.value ?: "",
+                        viewType = ProfileType.PROFILE_TYPE_ME.type,
+                        type = ContentType.IMAGE.type
+                    )
+                )
+            })
+    }
+
+    private fun isProfileType(
+        onProfileMe: () -> Unit,
+        onProfileYou: () -> Unit,
+        onPage: () -> Unit
+    ) {
+        when (activityViewModel.isContentProfileType.value) {
+            ProfileType.PROFILE_TYPE_ME -> {
+                onProfileMe.invoke()
+            }
+            ProfileType.PROFILE_TYPE_YOU -> {
+                onProfileYou.invoke()
+            }
+            ProfileType.PROFILE_TYPE_PAGE -> {
+                onPage.invoke()
+            }
         }
-        viewModel.fetachUserProfileContent(feedRequestHeader)
     }
 
     override fun setupView() {
@@ -133,7 +168,14 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
-
+        viewModel.likedContent(
+            contentUiModel.payLoadUiModel.contentId,
+            contentUiModel.payLoadUiModel.likedUiModel.liked
+        ).subscribeBy(onComplete = {
+            adapterPagingCommon.updateStateItemLike(contentUiModel)
+        }, onError = {
+            displayError(it)
+        }).addToDisposables()
     }
 
     private fun handleRecastClick(contentUiModel: ContentUiModel) {

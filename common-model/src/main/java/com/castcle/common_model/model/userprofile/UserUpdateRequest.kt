@@ -1,5 +1,6 @@
 package com.castcle.common_model.model.userprofile
 
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -55,7 +56,17 @@ data class LinksRequest(
 
 data class ImagesRequest(
     @SerializedName("avatar")
-    val avatar: String? = null,
+    var avatar: String? = null,
     @SerializedName("cover")
-    val cover: String? = null
+    var cover: String? = null,
+    var upLoadType: String = "",
+    var castcleId: String? = null
 )
+
+fun ImagesRequest.toStringImageRequest(): String {
+    return Gson().toJson(this)
+}
+
+fun String.toImageRequestModel(): ImagesRequest {
+    return Gson().fromJson(this, ImagesRequest::class.java)
+}

@@ -93,7 +93,7 @@ class GetImagePathMapUseCase @Inject constructor(
                     + MediaStore.Images.Media.MIME_TYPE + "=? or "
                     + MediaStore.Images.Media.MIME_TYPE + "=?",
                 arrayOf("image/jpeg", "image/png", "image/x-ms-bmp"),
-                MediaStore.Images.Media.DATE_MODIFIED + " desc"
+                MediaStore.Images.Media.DATE_ADDED
             )
 
             mCursor?.use { cursor ->

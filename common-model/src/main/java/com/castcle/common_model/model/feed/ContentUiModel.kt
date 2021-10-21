@@ -331,7 +331,7 @@ data class AuthorUiModel(
 
 fun Author.toAuthorUiModel() =
     AuthorUiModel(
-        avatar = avatar ?: "",
+        avatar = avatar?.original ?: "",
         displayName = displayName ?: "",
         castcleId = castcleId ?: "",
         followed = followed ?: false,

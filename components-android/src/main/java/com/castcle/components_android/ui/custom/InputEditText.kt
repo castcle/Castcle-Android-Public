@@ -151,7 +151,7 @@ class InputEditText(
                 }
                 addTextChangedListener(textWatcher)
 
-                setOnEditorActionListener { view, actionId, keyEvent ->
+                setOnEditorActionListener { _, actionId, keyEvent ->
                     onEditorActionListener?.invoke(actionId, keyEvent) ?: false
                 }
 
@@ -160,6 +160,12 @@ class InputEditText(
                     false
                 }
             }
+        }
+    }
+
+    fun setHintText(message: String) {
+        with(binding) {
+            etTextInputPrimary.hint = message
         }
     }
 

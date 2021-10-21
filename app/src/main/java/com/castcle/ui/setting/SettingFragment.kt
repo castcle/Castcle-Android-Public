@@ -2,7 +2,6 @@ package com.castcle.ui.setting
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -10,8 +9,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.setting.SettingMenuType
-import com.castcle.common_model.model.setting.toPageHeaderUiModel
+import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.StaticSeetingMenu
@@ -86,6 +84,8 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         viewModel.fetchCachedUserProfile()
             .subscribe()
             .addToDisposables()
+
+        viewModel.fetchUserPage()
     }
 
     override fun setupView() {
@@ -163,7 +163,11 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         }
 
         binding.ptPageContentList.clickPage.subscribe {
-            handleNavigateAvatarClick()
+            handlerPageClick(it)
+        }.addToDisposables()
+
+        binding.ptPageContentList.onNextPage.subscribe {
+            viewModel.fetchNextUserPage()
         }.addToDisposables()
     }
 
@@ -171,8 +175,36 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         displayError(it)
     }
 
+    private fun handlerPageClick(templateClicks: TemplateClicks) {
+        when (templateClicks) {
+            is TemplateClicks.AvatarClick -> {
+                handleNavigateAvatarClick()
+            }
+            is TemplateClicks.AddPageClick -> {
+                navigateToGreetingPageFragment()
+            }
+            is TemplateClicks.LikeClick -> {
+            }
+            is TemplateClicks.MenuClick -> {
+            }
+            is TemplateClicks.PageClick -> {
+                handlerPageItemClick(templateClicks)
+            }
+        }
+    }
+
+    private fun handlerPageItemClick(templateClicks: TemplateClicks.PageClick) {
+        val castcleId = templateClicks.pageUiModel.castcleId
+        val pageType = templateClicks.pageUiModel.pageType
+        navigateToProfile(castcleId, pageType)
+    }
+
     private fun handleNavigateAvatarClick() {
         navigateToProfile(type = PROFILE_TYPE_ME)
+    }
+
+    private fun navigateToGreetingPageFragment() {
+        onBoardNavigator.navigateToGreetingPageFragment()
     }
 
     private fun navigateToProfile(castcleId: String = "", type: String) {
@@ -183,13 +215,20 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         viewModel.userProfile.observe(this, {
             onBindUserData(it)
         })
+
+        viewModel.userPage.observe(this, {
+            onBindPageContent(it)
+        })
+    }
+
+    private fun onBindPageContent(list: List<PageUiModel>) {
+        list.toMutableList().apply {
+            this.add(PageUiModel(addPage = true))
+        }.run(binding.ptPageContentList::bindPage)
     }
 
     private fun onBindUserData(user: User) {
         with(binding) {
-            val pageHeaderList = user.toPageHeaderUiModel()
-            ptPageContentList.bindPage(pageHeaderList)
-
             with(layoutNotificationWarning) {
                 clWarningNoti.visibleOrGone(!user.verified)
                 if (clWarningNoti.isVisible) {

@@ -197,6 +197,7 @@ dependencies {
             "com.github.qingmei2:rximagepicker:$rximagepicker_version",
             "com.google.android.flexbox:flexbox:$flexbox_lib_version",
             "com.mikhaellopez:circularimageview:$circle_image_version",
+            "com.github.lyrebirdstudio:Croppy:0.2"
     )
 
     implementation("com.github.bumptech.glide:glide:$glide_version") {

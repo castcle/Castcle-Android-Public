@@ -5,7 +5,9 @@ import android.net.Uri
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.*
 import com.castcle.common_model.model.setting.VerificationUiModel
+import com.castcle.common_model.model.userprofile.LinksRequestUiModel
 import com.castcle.ui.base.BaseNavigator
+import pl.aprilapps.easyphotopicker.MediaFile
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -47,13 +49,16 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToPassword(authBundle: AuthBundle)
 
-    fun navigetToDisplayNameFragment(registerBundle: RegisterBundle)
+    fun navigetToDisplayNameFragment(registerBundle: RegisterBundle, isCreatePage: Boolean = false)
 
-    fun naivgetToProfileChooseImageFragment(profileBundle: ProfileBundle)
+    fun naivgetToProfileChooseImageFragment(
+        profileBundle: ProfileBundle,
+        isCreatePage: Boolean = false
+    )
 
     fun naivgetToProfileVerifyEmailFragment(profileBundle: ProfileBundle)
 
-    fun navigateToAboutYouFragment(profileBundle: ProfileBundle)
+    fun navigateToAboutYouFragment(profileBundle: ProfileBundle, isCreatePage: Boolean = false)
 
     fun navigateToSettingFragment()
 
@@ -91,5 +96,13 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToTrendFragment(trendSlug: String)
 
-    fun navigateToProfileFragment(castcle: String, isMe: String)
+    fun navigateToProfileFragment(castcle: String, profileType: String)
+
+    fun navigateToGreetingPageFragment()
+
+    fun navigateToAddLinksFragment(linksRequest: LinksRequestUiModel)
+
+    fun navigateToDialogChooseFragment()
+
+    fun naivgateToCropAvatarImage(mediaFile: MediaFile)
 }

@@ -1,7 +1,7 @@
 package com.castcle.common_model.model.feed.api.response
 
 import com.castcle.common_model.model.feed.QuoteCast
-import com.castcle.common_model.model.userprofile.Verified
+import com.castcle.common_model.model.userprofile.*
 import com.google.gson.annotations.SerializedName
 
 
@@ -42,7 +42,7 @@ data class Pagination(
     @SerializedName("limit")
     val limit: Int? = null,
     @SerializedName("next")
-    val next: Int,
+    val next: Int? = null,
     @SerializedName("previous")
     val previous: Int,
     @SerializedName("self")
@@ -149,7 +149,7 @@ data class Author(
     @SerializedName("type") var type: String,
     @SerializedName("displayName") var displayName: String? = null,
     @SerializedName("castcleId") var castcleId: String? = null,
-    @SerializedName("avatar") var avatar: String? = null,
+    @SerializedName("avatar") var avatar: ImageResponse? = null,
     @SerializedName("verified") var verified: Verified? = null,
     @SerializedName("followed") var followed: Boolean? = null
 )

@@ -4,11 +4,17 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common.lib.common.Optional
+import com.castcle.common_model.model.feed.PaginationModel
+import com.castcle.common_model.model.setting.PageUiModel
+import com.castcle.common_model.model.setting.toPageHeaderUiModel
+import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.setting.GetUerPageSingleUseCase
 import com.castcle.usecase.setting.LogoutCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import io.reactivex.Completable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -41,19 +47,28 @@ abstract class SettingFragmentViewModel : BaseViewModel() {
 
     abstract val userProfile: LiveData<User>
 
+    abstract val userPage: LiveData<List<PageUiModel>>
+
     abstract fun onLogOut(activity: Activity): Completable
 
     abstract fun fetchCachedUserProfile(): Completable
+
+    abstract fun fetchUserPage()
+
+    abstract fun fetchNextUserPage()
 }
 
 class SettingFragmentViewModelImpl @Inject constructor(
     private val logoutCompletableUseCase: LogoutCompletableUseCase,
-    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
+    private val getUerPageSingleUseCase: GetUerPageSingleUseCase
 ) : SettingFragmentViewModel() {
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
 
     private val _error = PublishSubject.create<Throwable>()
+
+    private var _pagination = MutableLiveData<PaginationModel>()
 
     private val _userProfile = MutableLiveData<User>()
     override val userProfile: LiveData<User>
@@ -62,6 +77,10 @@ class SettingFragmentViewModelImpl @Inject constructor(
     override fun onLogOut(activity: Activity): Completable {
         return logoutCompletableUseCase.execute(activity)
     }
+
+    private var _userPage = MutableLiveData<List<PageUiModel>>()
+    override val userPage: LiveData<List<PageUiModel>>
+        get() = _userPage
 
     override fun fetchCachedUserProfile(): Completable =
         cachedUserProfileSingleUseCase
@@ -72,9 +91,56 @@ class SettingFragmentViewModelImpl @Inject constructor(
             .doOnError(_error::onNext).firstOrError()
             .ignoreElement()
 
+    override fun fetchUserPage() {
+        val defaultPaginate = if (_pagination.value != null) {
+            _pagination.value
+        } else {
+            PaginationModel(
+                limit = PAGE_SIZE_DEFAULT,
+                next = PAGE_NUMBER_DEFAULT
+            )
+        }
+        defaultPaginate?.let { it ->
+            getUerPageSingleUseCase.execute(it)
+                .subscribeBy(
+                    onSuccess = {
+                        onBindPageModel(it)
+                    }, onError = {
+                        _error.onNext(it)
+                    }
+                ).addToDisposables()
+        }
+    }
+
+    override fun fetchNextUserPage() {
+        if (_showLoading.value == true) return
+        fetchUserPage()
+    }
+
+    private fun onBindPageModel(item: ViewPageUiModel) {
+        val userPage = _userProfile.value?.toPageHeaderUiModel()
+        item.pageHeaderUiModel.pageUiItem.toMutableList().apply {
+            add(0, userPage?.pageUiItem?.first() ?: PageUiModel())
+        }.let {
+            setUserPage(it)
+        }
+        setPaginationData(item.paginationModel)
+    }
+
     private fun setUserProfileData(user: Optional<User>) {
         if (user.isPresent) {
             _userProfile.value = user.get()
         }
     }
+
+    private fun setPaginationData(pagination: PaginationModel) {
+        _pagination.value = pagination
+    }
+
+    private fun setUserPage(pageitem: List<PageUiModel>) {
+        _userPage.value = pageitem
+    }
 }
+
+private const val PAGE_NUMBER_DEFAULT = 1
+private const val PAGE_SIZE_DEFAULT = 25

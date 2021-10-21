@@ -17,9 +17,14 @@
             app:argType="string" />
 
         <argument
-            android:name="me"
+            android:name="profileType"
             android:defaultValue=""
             app:argType="string" />
+
+        <argument
+            android:name="isMe"
+            android:defaultValue="false"
+            app:argType="boolean" />
 
         <action
             android:id="@+id/actionProfileFragmentToFeedDetailFragment"
@@ -37,9 +42,26 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToDialogChooseFragment"
+            app:destination="@id/dialogChooseFragment" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToCropAvatarImageFragment"
+            app:destination="@id/cropImageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
+
+    <dialog
+        android:id="@+id/dialogChooseFragment"
+        android:name="com.castcle.ui.common.dialog.chooseimage.ChooseDialogFragment"
+        tools:layout="@layout/dialog_fragment_choose" />
 
     <fragment
         android:id="@+id/feedDetailFragment"
@@ -55,4 +77,15 @@
             android:defaultValue="false"
             app:argType="boolean" />
     </fragment>
+
+    <fragment
+        android:id="@+id/cropImageFragment"
+        android:name="com.castcle.ui.profile.CropAvatarImageFragment"
+        tools:layout="@layout/fragment_create_profile_choose">
+
+        <argument
+            android:name="mediaFile"
+            app:argType="pl.aprilapps.easyphotopicker.MediaFile" />
+    </fragment>
+
 </navigation>

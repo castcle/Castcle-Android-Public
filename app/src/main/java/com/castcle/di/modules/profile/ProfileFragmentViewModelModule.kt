@@ -2,11 +2,12 @@ package com.castcle.di.modules.profile
 
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
+import com.castcle.di.modules.login.EasyImageModule
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.profile.ProfileFragmentViewModel
-import com.castcle.ui.profile.ProfileFragmentViewModelImpl
-import dagger.Binds
-import dagger.Module
+import com.castcle.ui.profile.*
+import com.permissionx.guolindev.PermissionMediator
+import com.permissionx.guolindev.PermissionX
+import dagger.*
 import dagger.multibindings.IntoMap
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -32,7 +33,12 @@ import dagger.multibindings.IntoMap
 //
 //
 //  Created by sklim on 10/9/2021 AD at 13:10.
-@Module
+@Module(
+    includes = [
+        EasyImageModule::class,
+        PermissionOnProfileFragment::class
+    ]
+)
 interface ProfileFragmentViewModelModule {
 
     @FragmentScope
@@ -40,4 +46,12 @@ interface ProfileFragmentViewModelModule {
     @IntoMap
     @ViewModelKey(ProfileFragmentViewModel::class)
     fun profileFragment(viewModel: ProfileFragmentViewModelImpl): ViewModel
+}
+
+@Module
+class PermissionOnProfileFragment {
+
+    @Provides
+    fun permissionX(fragment: ProfileFragment): PermissionMediator =
+        PermissionX.init(fragment)
 }

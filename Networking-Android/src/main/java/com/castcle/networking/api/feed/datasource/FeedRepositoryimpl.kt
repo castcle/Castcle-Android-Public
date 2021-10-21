@@ -67,8 +67,7 @@ class FeedRepositoryImpl @Inject constructor(
         return feedApi.sentComments(
             contentId = commentRequest.feedItemId,
             commentRequest = commentRequest
-        )
-            .lift(ApiOperators.mobileApiError())
+        ).lift(ApiOperators.mobileApiError())
             .map {
                 ContentUiModel(
                     payLoadUiModel = PayLoadUiModel(

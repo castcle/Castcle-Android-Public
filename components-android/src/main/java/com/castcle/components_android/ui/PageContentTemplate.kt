@@ -4,11 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.components_android.databinding.*
-import com.castcle.common_model.model.setting.PageHeaderUiModel
+import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.components_android.ui.adapter.PageHeaderTemplateAdapter
-import com.castcle.components_android.ui.base.OnItemClickListener
-import com.castcle.components_android.ui.base.TemplateClicks
+import com.castcle.components_android.ui.base.*
+import com.castcle.components_android.ui.custom.event.EndlessRecyclerViewScrollListener
+import com.castcle.extensions.gone
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -44,19 +48,38 @@ class PageContentTemplate(
     val clickPage: BehaviorSubject<TemplateClicks>
         get() = _clickPage
 
+    private val _onNextPage = BehaviorSubject.create<Unit>()
+    val onNextPage: BehaviorSubject<Unit>
+        get() = _onNextPage
+
     val binding: LayoutPageHeaderBinding by lazy {
         LayoutPageHeaderBinding.inflate(
             LayoutInflater.from(context), this, true
         )
     }
 
-    private var adapter: PageHeaderTemplateAdapter
+    private var adapterPage: PageHeaderTemplateAdapter
 
     init {
+        val linearLayoutManager = LinearLayoutManager(
+            context, LinearLayoutManager.VERTICAL, false
+        )
         with(binding) {
-            rvPageItem.adapter = PageHeaderTemplateAdapter(this@PageContentTemplate).also {
-                adapter = it
+            with(rvPageItem) {
+                addOnScrollListener(object :
+                    EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+                        _onNextPage.onNext(Unit)
+                    }
+                })
+                adapter = PageHeaderTemplateAdapter(this@PageContentTemplate).also {
+                    adapterPage = it
+                }
             }
+
+            tvAddPage.subscribeOnClick {
+                _clickPage.onNext(TemplateClicks.AddPageClick)
+            }.addToDisposables()
         }
     }
 
@@ -64,8 +87,14 @@ class PageContentTemplate(
         clickPage.onNext(templateClicks)
     }
 
-    fun bindPage(pageItem: PageHeaderUiModel) {
-        adapter.uiModels = pageItem.pageUiItem
+    fun bindPage(pageItem: List<PageUiModel>) {
+        adapterPage.uiModels = pageItem
+        with(binding.skeletonLoading) {
+            shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
     }
-
 }

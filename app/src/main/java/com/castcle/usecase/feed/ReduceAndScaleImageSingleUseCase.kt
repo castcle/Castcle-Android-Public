@@ -6,12 +6,10 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
-import com.bumptech.glide.request.target.Target
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.userprofile.Content
 import com.castcle.data.error.Ignored
-import com.castcle.di.modules.glide.GlideApp
-import com.castcle.extensions.toBase64String
+import com.castcle.extensions.*
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
 import java.io.File
@@ -63,6 +61,7 @@ class ReduceAndScaleImageSingleUseCase @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.P)
     private fun scaleAndCompressImageFile(uri: Uri): String {
         val source = ImageDecoder.createSource(context.contentResolver, uri)
+
         val bitMaps = ImageDecoder.decodeBitmap(
             source
         ) { decoder, _, _ ->
@@ -75,25 +74,6 @@ class ReduceAndScaleImageSingleUseCase @Inject constructor(
         return tempFile.toBase64String()
     }
 
-    private fun File.toBitmap(newWidth: Int, newHeight: Int): Bitmap {
-        return GlideApp.with(context)
-            .asBitmap()
-            .load(this)
-            .submit(newWidth, newHeight)
-            .get()
-    }
-
-    private fun File.calculateNewImageSize(): Pair<Int, Int> {
-        val options = calculateBitmapOptions()
-
-        return if (options.outWidth > MAX_IMAGE_WIDTH) {
-            val scaledHeight = options.outHeight * MAX_IMAGE_WIDTH / options.outWidth
-            MAX_IMAGE_WIDTH to scaledHeight
-        } else {
-            Target.SIZE_ORIGINAL to Target.SIZE_ORIGINAL
-        }
-    }
-
     private fun File.calculateBitmapOptions(): BitmapFactory.Options {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
@@ -103,8 +83,6 @@ class ReduceAndScaleImageSingleUseCase @Inject constructor(
     }
 }
 
-private const val TEMP_FILE_PREFIX = "scaled_"
-private const val TEMP_FILE_SUFFIX = ".jpeg"
-private const val MAX_IMAGE_WIDTH = 1080
-private const val MAX_IMAGE_HGIHT = 1920
-private const val JPEG_QUALITY = 80
+const val TEMP_FILE_PREFIX = "scaled_"
+const val TEMP_FILE_SUFFIX = ".jpeg"
+const val JPEG_QUALITY = 80

@@ -6,6 +6,8 @@ import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.*
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.*
 import com.castcle.common_model.model.signin.reuquest.*
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.toUserPage
 import com.castcle.networking.api.auth.network.AuthenticationApi
 import com.castcle.networking.api.response.toOAuthResponse
 import com.castcle.networking.service.operators.ApiOperators
@@ -57,6 +59,12 @@ interface AuthenticationsRepository {
     fun authVerificationPassword(password: String): Single<VerificationUiModel>
 
     fun authChangePasswordSubmit(changePassRequest: ChangePassRequest): Completable
+
+    fun createPage(createPageRequest: CreatePageRequest): Single<CreatePageResponse>
+
+    fun updatePage(createPageRequest: CreatePageRequest): Single<CreatePageResponse>
+
+    fun updatePageWorker(createPageRequest: CreatePageRequest): Single<User>
 }
 
 class AuthenticationsRepositoryImpl @Inject constructor(
@@ -84,6 +92,34 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .doOnSuccess {
                 updateAccessToken(it.toOAuthResponse())
             }.ignoreElement()
+    }
+
+    override fun createPage(createPageRequest: CreatePageRequest): Single<CreatePageResponse> {
+        return authenticationApi
+            .createPage(createPageRequest)
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+    }
+
+    override fun updatePage(createPageRequest: CreatePageRequest): Single<CreatePageResponse> {
+        return authenticationApi
+            .updatePage(
+                createPageRequest.castcleId,
+                createPageRequest
+            ).lift(ApiOperators.mobileApiError())
+            .firstOrError()
+    }
+
+    override fun updatePageWorker(createPageRequest: CreatePageRequest): Single<User> {
+        return authenticationApi
+            .updatePage(
+                createPageRequest.castcleId,
+                createPageRequest
+            ).lift(ApiOperators.mobileApiError())
+            .map {
+                it.toUserPage()
+            }
+            .firstOrError()
     }
 
     override fun authRequestLinkVerifyEmail(): Completable {

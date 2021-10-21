@@ -79,6 +79,17 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingConstraints" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivAddAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintCircle="@id/ivAvatarProfile"
+            app:layout_constraintCircleAngle="140"
+            app:layout_constraintCircleRadius="@dimen/_40sdp"
+            app:srcCompat="@drawable/ic_avatar_camera"
+            tools:ignore="MissingConstraints" />
+
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/AppTextKanitLight.Default"
             android:id="@+id/tvFollowingCount"
@@ -196,6 +207,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_12sdp"
             android:background="@drawable/bg_border_blue"
             android:text="@string/profile_follow"
@@ -204,7 +216,7 @@
             app:layout_constraintBottom_toBottomOf="@id/btViewProfile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btViewProfile"
-            app:layout_constraintTop_toTopOf="@id/btViewProfile" />
+            app:layout_constraintTop_toBottomOf="@id/tvProfileOverView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

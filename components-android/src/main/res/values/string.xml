@@ -176,4 +176,8 @@
     <string name="error_logout">Failed to log out. Please try again.</string>
     <string name="search_recent_search">Recent searches</string>
     <string name="search_cast_count">%s Cast</string>
+    <string name="page_weblcom_title">Welcome to Profile setting</string>
+    <string name="add_link_title">Add another channel for someone interesting on you can follow up.</string>
+    <string name="add_link_title_tool_bar">+ Add social media</string>
+    <string name="add_link_item">+ Add social media or website</string>
 </resources>

@@ -90,6 +90,11 @@ class FeedContentShortViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentMessage
@@ -98,11 +103,12 @@ class FeedContentShortViewHolder(
                     link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
                         group2.gone()
                         vCover.gone()
+                        clPreviewContent.visible()
                         icImageContent.visible()
                         icImageContent.bindImageContent(uiModel, true)
+                        stopLoadingPreViewShimmer()
                     }
                     link.isNotEmpty() -> {
-                        clPreviewLoadingContent.visible()
                         link.firstOrNull()?.let {
                             PreViewLinkUrl(it.url, it.type, object : PreViewLinkCallBack {
                                 override fun onComplete(urlInfo: UrlInfoUiModel) {
@@ -122,6 +128,7 @@ class FeedContentShortViewHolder(
                         }
                     }
                     else -> {
+                        stopLoadingPreViewShimmer()
                         clPreviewContent.gone()
                     }
                 }
@@ -131,8 +138,8 @@ class FeedContentShortViewHolder(
     }
 
     private fun onBindContentIcon(linkUiModel: UrlInfoUiModel) {
+        stopLoadingPreViewShimmer()
         with(binding) {
-            clPreviewLoadingContent.gone()
             clPreviewContent.gone()
             clPreviewIconContent.visible()
             with(linkUiModel) {
@@ -145,8 +152,8 @@ class FeedContentShortViewHolder(
     }
 
     private fun onBindContentImage(linkUiModel: UrlInfoUiModel) {
+        stopLoadingPreViewShimmer()
         with(binding) {
-            clPreviewLoadingContent.gone()
             clPreviewContent.visible()
             clPreviewIconContent.gone()
             with(linkUiModel) {
@@ -154,6 +161,16 @@ class FeedContentShortViewHolder(
                 tvPreviewUrl.text = url
                 tvPreviewHeader.text = title
                 tvPreviewContent.text = description
+            }
+        }
+    }
+
+    private fun stopLoadingPreViewShimmer() {
+        with(binding) {
+            clPreviewLoadingContent.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
             }
         }
     }

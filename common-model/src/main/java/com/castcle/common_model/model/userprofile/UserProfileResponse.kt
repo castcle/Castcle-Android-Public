@@ -34,7 +34,7 @@ data class UserProfileResponse(
     @SerializedName("dob")
     val dob: String? = null,
     @SerializedName("email")
-    val email: String,
+    val email: String? = null,
     @SerializedName("followed")
     val followed: Boolean,
     @SerializedName("followers")
@@ -42,7 +42,7 @@ data class UserProfileResponse(
     @SerializedName("following")
     val following: Following,
     @SerializedName("id")
-    val id: String,
+    val id: String? = null,
     @SerializedName("images")
     val images: Images,
     @SerializedName("links")
@@ -65,9 +65,20 @@ data class Following(
 
 data class Images(
     @SerializedName("avatar")
-    val avatar: String,
+    val avatar: ImageResponse,
     @SerializedName("cover")
-    val cover: String
+    val cover: ImageResponse
+)
+
+data class ImageResponse(
+    @SerializedName("original")
+    val original: String,
+    @SerializedName("large")
+    val large: String? = null,
+    @SerializedName("fullHd")
+    val fullHd: String? = null,
+    @SerializedName("thumbnail")
+    val thumbnail: String? = null
 )
 
 data class Links(

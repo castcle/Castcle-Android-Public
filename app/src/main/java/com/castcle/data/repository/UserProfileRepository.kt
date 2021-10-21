@@ -2,8 +2,9 @@ package com.castcle.data.repository
 
 import androidx.paging.*
 import com.castcle.common.lib.common.Optional
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.signin.ViewPageUiModel
+import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.storage.AppPreferences
@@ -48,6 +49,8 @@ interface UserProfileRepository {
 
     fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
 
+    fun uppdateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User>
+
     fun getUserPofileContent(
         contentRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>>
@@ -55,9 +58,16 @@ interface UserProfileRepository {
     fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentUiModel>>
 
+    fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader):
+        Flow<PagingData<ContentUiModel>>
+
     fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
 
     fun putToFollowUser(followRequest: FollowRequest): Completable
+
+    fun getViewPage(castcleId: String): Flowable<User>
+
+    fun getUserPage(paginationModel: PaginationModel): Single<ViewPageUiModel>
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -97,6 +107,15 @@ class UserProfileRepositoryImpl @Inject constructor(
             }.ignoreElements()
     }
 
+    override fun uppdateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User> {
+        return userApi.updateUserProfile(userUpdateRequest)
+            .map(userProfileMapper)
+            .map { it.toUserProfile() }
+            .doOnNext {
+                _onMemoryUser = it
+            }.firstOrError()
+    }
+
     override fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel> {
         return userApi
             .createContent(
@@ -132,6 +151,15 @@ class UserProfileRepositoryImpl @Inject constructor(
         UserViewProfilePagingDataSource(userApi, feedRequestHeader)
     }).flow
 
+    override fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader)
+        : Flow<PagingData<ContentUiModel>> = Pager(config =
+    PagingConfig(
+        pageSize = DEFAULT_PAGE_SIZE,
+        prefetchDistance = DEFAULT_PREFETCH
+    ), pagingSourceFactory = {
+        ViewPagePagingDataSource(userApi, feedRequestHeader)
+    }).flow
+
     private val _remoteUser = BehaviorSubject.create<User>()
 
     private var _onMemoryUserUpdatedDate: GregorianCalendar? = null
@@ -150,11 +178,31 @@ class UserProfileRepositoryImpl @Inject constructor(
             ?: true
         val shouldFetchRemote = fetchOnThisDay && _isLoadingUser.not()
 
-        return _onMemoryUser?.let { Flowable.just(it) }
-            ?: if (shouldFetchRemote) {
-                getUserRemoteProfile()
-            } else {
-                _remoteUser.toFlowable(BackpressureStrategy.LATEST)
+        return if (shouldFetchRemote) {
+            getUserRemoteProfile()
+        } else {
+            userDao.getUser().let {
+                it.toFlowable()
+            } ?: getUserRemoteProfile()
+        }
+    }
+
+    override fun getViewPage(castcleId: String): Flowable<User> {
+        return userApi.getViewPage(castcleId)
+            .map(userProfileMapper)
+            .map { it.toUserProfile() }
+            .doOnSubscribe { _isLoadingUser = true }
+            .doFinally { _isLoadingUser = false }
+    }
+
+    override fun getUserPage(paginationModel: PaginationModel): Single<ViewPageUiModel> {
+        return userApi.getUserPage(
+            pageNumber = paginationModel.next ?: 0,
+            pageSize = paginationModel.limit
+        ).lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .map {
+                it.toViewPageUiModel()
             }
     }
 
@@ -174,9 +222,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     private fun getCachedUserProfile(): Flowable<Optional<User>> {
         return Flowable.concat(
-            _onMemoryUser?.let {
-                Flowable.just(Optional.of(it))
-            } ?: userDao.getUser().map {
+            userDao.getUser().map {
                 Optional.of(it)
             }.onErrorReturn {
                 Optional.empty()
@@ -195,6 +241,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         return get(Calendar.YEAR) == date.get(Calendar.YEAR)
             && get(Calendar.MONTH) == date.get(Calendar.MONTH)
             && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
+            && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
     }
 }
 

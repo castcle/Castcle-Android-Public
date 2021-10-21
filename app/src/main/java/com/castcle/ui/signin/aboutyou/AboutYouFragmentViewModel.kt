@@ -1,7 +1,9 @@
 package com.castcle.ui.signin.aboutyou
 
+import com.castcle.common_model.model.setting.CreatePageRequest
 import com.castcle.common_model.model.userprofile.UserUpdateRequest
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.setting.UpdatePageSingleUseCase
 import com.castcle.usecase.userprofile.UpdateUserProfileCompletableUseCase
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -36,10 +38,13 @@ abstract class AboutYouFragmentViewModel : BaseViewModel() {
     abstract val showLoading: Observable<Boolean>
 
     abstract fun requestUpdateProfile(userRequest: UserUpdateRequest): Completable
+
+    abstract fun requestUpdatePage(createPageRequest: CreatePageRequest): Completable
 }
 
 class AboutYouFragmentViewModelImpl @Inject constructor(
-    private val updateUserProfileCompletableUseCase: UpdateUserProfileCompletableUseCase
+    private val updateUserProfileCompletableUseCase: UpdateUserProfileCompletableUseCase,
+    private val updatePageSingleUseCase: UpdatePageSingleUseCase
 ) : AboutYouFragmentViewModel() {
 
     override val showLoading: Observable<Boolean>
@@ -51,5 +56,13 @@ class AboutYouFragmentViewModelImpl @Inject constructor(
             .execute(userRequest)
             .doOnSubscribe { _showLoading.onNext(true) }
             .doOnError { _showLoading.onNext(false) }
+    }
+
+    override fun requestUpdatePage(createPageRequest: CreatePageRequest): Completable {
+        return updatePageSingleUseCase
+            .execute(createPageRequest)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .ignoreElement()
     }
 }

@@ -2,17 +2,17 @@ package com.castcle.di.modules.onboard
 
 import com.castcle.di.modules.blog.CreateBlogFragmentViewModelModule
 import com.castcle.di.modules.blog.CreateQuoteFragmentViewModelModule
-import com.castcle.di.modules.common.dialog.NotiflyLoginDialogFragmentModule
-import com.castcle.di.modules.common.dialog.RecastDialogFragmentModule
+import com.castcle.di.modules.common.dialog.*
 import com.castcle.di.modules.feed.FeedDetailFragmentViewModelModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.login.*
-import com.castcle.di.modules.profile.ProfileFragmentViewModelModule
+import com.castcle.di.modules.profile.*
 import com.castcle.di.modules.search.*
 import com.castcle.di.modules.setting.*
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
+import com.castcle.ui.common.dialog.chooseimage.ChooseDialogFragment
 import com.castcle.ui.common.dialog.recast.RecastDialogFragment
 import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.createbloc.CreateQuoteFragment
@@ -20,6 +20,7 @@ import com.castcle.ui.feed.FeedFragment
 import com.castcle.ui.feed.FeedMockFragment
 import com.castcle.ui.feed.feeddetail.FeedDetailFragment
 import com.castcle.ui.login.LoginFragment
+import com.castcle.ui.profile.CropAvatarImageFragment
 import com.castcle.ui.profile.ProfileFragment
 import com.castcle.ui.profile.childview.all.ContentAllFragment
 import com.castcle.ui.profile.childview.blog.ContentPostFragment
@@ -35,8 +36,10 @@ import com.castcle.ui.setting.changepassword.ChangePasswordFragment
 import com.castcle.ui.setting.changepassword.complete.CompleteFragment
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragment
 import com.castcle.ui.setting.language.LanguageAppFragment
+import com.castcle.ui.setting.page.GreetingPageFragment
 import com.castcle.ui.setting.profile.SettingProfileFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
+import com.castcle.ui.signin.aboutyou.addlink.AddLinksFragment
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
 import com.castcle.ui.signin.email.EmailFragment
 import com.castcle.ui.signin.geetingsignin.GreetingSignInFragment
@@ -222,4 +225,20 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [TrendFragmentViewModelModule::class])
     fun videoFragment(): VideoFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [GreetingPageFragmentViewModelModule::class])
+    fun greeingPageFragment(): GreetingPageFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [AddLinksFragmentViewModelModule::class])
+    fun addLinksFragment(): AddLinksFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ChooseDialogFragmentModule::class])
+    fun chooseDialogFragment(): ChooseDialogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CropAvatarImageViewModelModule::class])
+    fun cropAvatarImageFragment(): CropAvatarImageFragment
 }

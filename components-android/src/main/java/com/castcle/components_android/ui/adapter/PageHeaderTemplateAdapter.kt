@@ -7,9 +7,9 @@ import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.ItemPageHeaderBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.PageUiModel
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.components_android.ui.base.*
-import com.castcle.extensions.getColorResource
-import com.castcle.extensions.loadCircleImage
+import com.castcle.extensions.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -67,15 +67,32 @@ class PageHeaderTemplateAdapter(listener: OnItemClickListener) :
 
         override fun onBind(item: PageUiModel) {
             with(binding.ivAvatar) {
-                borderColor = binding.root.context.getColorResource(R.color.red_primary_warning)
-                loadCircleImage(item.avatarUrl)
-                itemView.subscribeOnClick {
-                    listener?.onItemClick(
-                        TemplateClicks.AvatarClick("")
-                    )
-                }.addToDisposables()
+                if (item.addPage) {
+                    background = binding.root.context.getDrawableRes(R.drawable.ic_add_page)
+                    itemView.subscribeOnClick {
+                        listener?.onItemClick(
+                            TemplateClicks.AddPageClick
+                        )
+                    }.addToDisposables()
+                } else {
+                    borderColor = binding.root.context.getColorResource(R.color.red_primary_warning)
+                    loadCircleImage(item.avatarUrl)
+                    itemView.subscribeOnClick {
+                        onBindItemClick(item)
+
+                    }.addToDisposables()
+                }
             }
         }
+    }
+
+    private fun onBindItemClick(item: PageUiModel) {
+        val itemClick = if (item.pageType == ProfileType.PROFILE_TYPE_ME.type) {
+            TemplateClicks.AvatarClick("")
+        } else {
+            TemplateClicks.PageClick(item)
+        }
+        listener.onItemClick(itemClick)
     }
 
     override fun onItemClick(templateClicks: TemplateClicks) {

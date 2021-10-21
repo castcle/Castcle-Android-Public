@@ -74,4 +74,23 @@ interface UserApi {
         @Path("castcleId") castcleId: String,
         @Body followRequest: FollowRequest,
     ): Flowable<Response<Unit>>
+
+    @GET("pages/{castcleId}")
+    fun getViewPage(
+        @Path("castcleId") castcleId: String,
+    ): Flowable<Response<UserProfileResponse>>
+
+    @GET("pages/{castcleId}/contents")
+    suspend fun getViewPageContent(
+        @Path("castcleId") castcleId: String,
+        @Query(FILTER_TYPE) filterType: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<ContentViewResponse>
+
+    @GET("/users/me/pages")
+    fun getUserPage(
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Flowable<Response<UserPageResponse>>
 }

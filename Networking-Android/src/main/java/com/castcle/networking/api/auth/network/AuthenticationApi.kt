@@ -7,8 +7,7 @@ import com.castcle.common_model.model.signin.reuquest.*
 import com.castcle.networking.api.response.TokenResponse
 import io.reactivex.Flowable
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -73,4 +72,15 @@ interface AuthenticationApi {
     fun changePasswordSubmit(
         @Body changePassRequest: ChangePassRequest
     ): Flowable<Response<Unit>>
+
+    @POST("/pages")
+    fun createPage(
+        @Body createPageRequest: CreatePageRequest
+    ): Flowable<Response<CreatePageResponse>>
+
+    @PUT("/pages/{castcleId}")
+    fun updatePage(
+        @Path("castcleId") castcleId: String,
+        @Body createPageRequest: CreatePageRequest
+    ): Flowable<Response<CreatePageResponse>>
 }

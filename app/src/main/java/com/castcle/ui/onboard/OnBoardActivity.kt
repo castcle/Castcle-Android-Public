@@ -22,6 +22,7 @@ import com.castcle.networking.service.interceptor.AppTokenExpiredDelegate
 import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.ui.profile.RC_CROP_IMAGE
 import com.castcle.usecase.OverrideLocaleAppImpl
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
@@ -147,6 +148,11 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
             currentNavController = controller
             itemIconTintList = null
             setOnApplyWindowInsetsListener(null)
+
+            viewModel.onBackToFeed.subscribe {
+                selectedItemId = R.id.onboard_nav_graph
+                binding.bottomNavView.visible()
+            }.addToDisposables()
         }
     }
 
@@ -175,6 +181,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.changePasswordFragment,
                 R.id.completeFragment,
                 R.id.feedDetailFragment,
+                R.id.greetingPageFragment,
+                R.id.dialogChooseFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }
@@ -212,6 +220,13 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     override fun onDestroy() {
         super.onDestroy()
         AppTokenExpiredDelegate.unbindAppTokenExpiredListener(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_CROP_IMAGE) {
+            data?.data?.let { viewModel.setImageResponse(it) }
+        }
     }
 
     companion object {

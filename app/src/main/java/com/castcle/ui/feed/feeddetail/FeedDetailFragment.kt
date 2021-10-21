@@ -132,7 +132,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
-    private fun onBindPageingLoad() {
+    private fun onBindPagingLoad() {
         binding.rvViewComment.run {
             adapter = CommentedPagingAdapter().also {
                 adapterCommentPaging = it
@@ -292,6 +292,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private fun onBindCommentedItem(list: List<ContentUiModel>) {
         if (list.isNotEmpty()) {
+            handleEmptyState(false)
             adapterComment.uiModels = list
         } else {
             handleEmptyState(true)
@@ -305,10 +306,6 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
                     adapterCommentPaging.submitData(lifecycle, it)
                 }
             }
-
-            onSentCommentResponse.subscribe {
-
-            }.addToDisposables()
 
             onRefreshComment.subscribe {
                 adapterCommentPaging.refresh()
