@@ -26,6 +26,9 @@ import com.castcle.ui.profile.RC_CROP_IMAGE
 import com.castcle.usecase.OverrideLocaleAppImpl
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.messaging.FirebaseMessaging
+import timber.log.Timber
 import javax.inject.Inject
 
 class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
@@ -48,6 +51,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     override val layoutResource: Int = 0
 
     override fun beforeLayoutInflated() {
+        initFirebaseToken()
         overrideLocaleApp.execute(this)
     }
 
@@ -183,6 +187,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.feedDetailFragment,
                 R.id.greetingPageFragment,
                 R.id.dialogChooseFragment,
+                R.id.deletePageFragment,
+                R.id.profileChooseDialogFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }
@@ -209,7 +215,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     private fun onTokenIsExpired() {
-        viewModel.onAccessTokenExpired().subscribe().addToDisposables()
+        displayMessage("on Section is Expired")
+        viewModel.onAccessTokenExpired(this).subscribe().addToDisposables()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -227,6 +234,25 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
         if (requestCode == RC_CROP_IMAGE) {
             data?.data?.let { viewModel.setImageResponse(it) }
         }
+    }
+
+    private fun initFirebaseToken() {
+        FirebaseMessaging
+            .getInstance()
+            .token
+            .addOnCompleteListener { task ->
+                try {
+                    val token = task.result.toString()
+                    Timber.i("====> Push notification token: $token")
+                } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance()
+                        .setCustomKey(
+                            LOG_FIREBASE_TOKEN_FAILED,
+                            e.message.toString()
+                        )
+                    e.printStackTrace()
+                }
+            }
     }
 
     companion object {
@@ -247,4 +273,5 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 }
 
+private const val LOG_FIREBASE_TOKEN_FAILED = "log-firebase-token-failed"
 private const val EXTRA_SHOULD_POP_STACK_TO_ENTRY = "shouldPopStackToEntry"

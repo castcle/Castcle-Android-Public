@@ -12,8 +12,6 @@ import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
@@ -25,14 +23,11 @@ import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.android.flexbox.*
-import com.google.gson.Gson
 import com.permissionx.guolindev.PermissionMediator
 import com.qingmei2.rximagepicker.core.RxImagePicker
 import com.qingmei2.rximagepicker_extension.MimeType
 import com.qingmei2.rximagepicker_extension_zhihu.ZhihuConfigurationBuilder
 import io.reactivex.rxkotlin.subscribeBy
-import org.json.JSONObject
-import java.io.InputStream
 import java.util.*
 import javax.inject.Inject
 
@@ -53,8 +48,6 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     private lateinit var imageFloxBoxAdapter: ImageFloxBoxAdapter
 
     private var stateOpenGallery = false
-
-    private var onPerviewImage = listOf<MediaItem>()
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -126,20 +119,16 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         }
     }
 
-    private fun navigateToFeed() {
-        makeDeepLinkUrl(
-            requireContext(),
-            Input("", DeepLinkTarget.HOME_FEED)
-        ).run(::navigateByDeepLink)
-    }
-
-    private fun navigateByDeepLink(url: Uri) {
-        onBoardNavigator.navigateByDeepLink(url, true)
-    }
-
     private fun onBackToHomeFeed() {
+        onClearState()
         activityViewModel.onBackToHomeFeed()
     }
+
+    private fun onClearState() {
+        viewModel.onClearState()
+        binding.etInputMessage.setText("")
+    }
+
 
     override fun bindViewEvents() {
         var mentionData = listOf<ContentUiModel>()
@@ -206,12 +195,20 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             onBindGallery(it)
         })
 
+        viewModel.mediaImageSelected.observe(this, {
+            addImagePerivew(it)
+        })
+
         viewModel.messageLength.subscribe {
             onBindMessageCount(it)
         }.addToDisposables()
 
         viewModel.onError.subscribe {
             displayError(it)
+        }.addToDisposables()
+
+        viewModel.showLoading.subscribe {
+            binding.groupLoading.visibleOrGone(it)
         }.addToDisposables()
     }
 
@@ -243,7 +240,6 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun onBindGallery(it: List<MediaItem>) {
         imageGalleryAdapter.items = it
-        addImagePerivew(it)
     }
 
     private fun activatButtonOpenGallery(isActivated: Boolean) {
@@ -300,14 +296,15 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun onUpdateImageSelected(imageMediaItem: MediaItem.ImageMediaItem) {
+        if (viewModel.mediaImageSelected.value?.size ?: 0 >= LIMIT_IMAGE_SELECTED) {
+            displayErrorMessage("Is maximum selected Image")
+            return
+        }
         viewModel.input.updateSelectedImage(imageMediaItem.id)
     }
 
     private fun addImagePerivew(imageMediaItem: List<MediaItem>) {
-        onPerviewImage = imageMediaItem.filter {
-            it.isSelected
-        }
-
+        enableButtonCast(imageMediaItem.isNotEmpty())
         val fbLayoutManager = FlexboxLayoutManager(
             context
         )
@@ -323,7 +320,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
                 imageFloxBoxAdapter = it
             }
         }
-        imageFloxBoxAdapter.items = onPerviewImage
+        imageFloxBoxAdapter.items = imageMediaItem
         imageFloxBoxAdapter.itemClick.subscribe {
             onImageClick(it)
         }.addToDisposables()
@@ -352,28 +349,10 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun fetchMentionUser(): MutableList<ContentUiModel> {
-        return getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
-    }
-
-    private fun getFeedResponse(): FeedResponse {
-        return Gson().fromJson(
-            JSONObject(readJSONFromAsset() ?: "").toString(),
-            FeedResponse::class.java
-        )
-    }
-
-    private fun readJSONFromAsset(): String? {
-        val json: String?
-        try {
-            val inputStream: InputStream? = context?.resources?.openRawResource(
-                R.raw.feed_mock
-            )
-            json = inputStream?.bufferedReader().use { it?.readText() }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
+        /**
+         * It for implement API  fetch Mention
+         * */
+        return mutableListOf()
     }
 
     private fun handleOnError(case: Throwable) {

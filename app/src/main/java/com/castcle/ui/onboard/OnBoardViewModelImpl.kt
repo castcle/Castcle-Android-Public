@@ -1,5 +1,6 @@
 package com.castcle.ui.onboard
 
+import android.app.Activity
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -96,8 +97,8 @@ class OnBoardViewModelImpl @Inject constructor(
             ).addToDisposables()
     }
 
-    override fun onAccessTokenExpired(): Completable {
-        return logoutCompletableUseCase.execute(Unit)
+    override fun onAccessTokenExpired(onActivity: Activity): Completable {
+        return logoutCompletableUseCase.execute(onActivity)
     }
 
     override fun getCurrentAppLanguage(): Completable {

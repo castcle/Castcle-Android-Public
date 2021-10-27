@@ -7,12 +7,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.INTERACT_ACROSS_PROFILES"
+    <uses-permission
+        android:name="android.permission.INTERACT_ACROSS_PROFILES"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -30,10 +32,10 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:preserveLegacyExternalStorage="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
-        android:preserveLegacyExternalStorage="true"
         android:theme="@style/Theme.Castcle"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:replace="android:theme,android:label,android:icon,android:roundIcon,android:allowBackup"
@@ -54,6 +56,7 @@
             android:name="com.castcle.ui.onboard.OnBoardActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter android:autoVerify="true">
@@ -102,6 +105,22 @@
             android:exported="false"
             tools:node="remove" />
 
+        <service
+            android:name="com.castcle.service.CastcleFirebaseMessagingService"
+            android:exported="false"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_logo_castcle_noti" />
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
     </application>
 
 </manifest>

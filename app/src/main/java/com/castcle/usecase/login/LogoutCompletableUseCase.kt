@@ -1,6 +1,6 @@
 package com.castcle.usecase.login
 
-import android.content.Context
+import android.app.Activity
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.components_android.ui.base.addToDisposables
@@ -40,17 +40,16 @@ import javax.inject.Inject
 
 class LogoutCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
-    private val context: Context,
     private val appPreferences: AppPreferences,
     private val secureStorage: SecureStorage,
     private val sessionManagerRepository: SessionManagerRepository,
     private val onBoardNavigator: OnBoardNavigator
-) : CompletableUseCase<Unit>(
+) : CompletableUseCase<Activity>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::LoginError
 ) {
-    override fun create(input: Unit): Completable {
+    override fun create(input: Activity): Completable {
         appPreferences.clearAll()
             .subscribe()
             .addToDisposables()
@@ -60,8 +59,10 @@ class LogoutCompletableUseCase @Inject constructor(
             userAccessToken = null
             userRefreshToken = null
         }
-        SplashScreenActivity.start(context)
-        (context as OnBoardActivity).finish()
+        (input as OnBoardActivity).run {
+            SplashScreenActivity.start(this)
+            finish()
+        }
         onBoardNavigator.navigateBack()
         return Completable.complete()
     }

@@ -43,6 +43,8 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract val mediaItemImage: LiveData<MutableList<MediaItem>>
 
+    abstract val mediaImageSelected: LiveData<MutableList<MediaItem>>
+
     abstract val messageLength: Observable<Pair<Int, Int>>
 
     abstract fun createContent(): Single<CreateContentUiModel>
@@ -55,10 +57,12 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract val onError: Observable<Throwable>
 
+    abstract val showLoading:Observable<Boolean>
+
+    abstract fun onClearState()
+
     interface Input {
         fun validateMessage(message: String): Completable
-
-        fun validateImageContent(imageList: List<String>?)
 
         fun validateImageCover(imageCover: String)
 

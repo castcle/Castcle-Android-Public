@@ -242,6 +242,16 @@
             app:argType="boolean" />
 
         <argument
+            android:name="onEditProfile"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
+            android:name="onEditPage"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
             android:name="profileBundle"
             app:argType="com.castcle.common_model.model.login.ProfileBundle" />
 
@@ -313,5 +323,31 @@
         <argument
             android:name="linkUiModel"
             app:argType="com.castcle.common_model.model.userprofile.LinksRequestUiModel" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/completeFragment"
+        android:name="com.castcle.ui.setting.changepassword.complete.CompleteFragment"
+        tools:layout="@layout/fragment_completed">
+
+        <argument
+            android:name="onDeletePage"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
+            android:name="onDeleteAccount"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <action
+            android:id="@+id/actionCompleteFragmentToSettingFragment"
+            app:destination="@id/setting_nav_graph"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/setting_nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

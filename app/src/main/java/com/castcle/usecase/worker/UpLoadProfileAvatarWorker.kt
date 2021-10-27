@@ -76,18 +76,18 @@ class UpLoadProfileAvatarWorker(
         val imageRequest = when (upLoadType.upLoadType) {
             UpLoadType.UPLOAD_PAGE_AVATAR.type -> {
                 CreatePageRequest(
-                    avatar = image.url,
+                    avatar = image.image,
                     castcleId = upLoadType.castcleId ?: ""
                 )
             }
             UpLoadType.UPLOAD_PAGE_COVER.type -> {
                 CreatePageRequest(
-                    cover = image.url,
+                    cover = image.image,
                     castcleId = upLoadType.castcleId ?: ""
                 )
             }
             else -> CreatePageRequest(
-                avatar = image.url,
+                avatar = image.image,
                 castcleId = upLoadType.castcleId ?: ""
             )
         }
@@ -97,12 +97,12 @@ class UpLoadProfileAvatarWorker(
     private fun upLoadImage(image: Content, upLoadType: String): Single<User> {
         val imageRequest = when (upLoadType) {
             UpLoadType.UPLOAD_AVATAR.type -> {
-                ImagesRequest(avatar = image.url)
+                ImagesRequest(avatar = image.image)
             }
             UpLoadType.UPLOAD_COVER.type -> {
-                ImagesRequest(cover = image.url)
+                ImagesRequest(cover = image.image)
             }
-            else -> ImagesRequest(avatar = image.url)
+            else -> ImagesRequest(avatar = image.image)
         }
         return uploadProfileAvatarWorkerCompletableUseCase.execute(
             UserUpdateRequest(images = imageRequest)

@@ -160,4 +160,36 @@
     <string name="comment_footer_retweets"><font color="#FFFFFF">"%s"</font> Retweets</string>
     <string name="comment_footer_quote"><font color="#FFFFFF">"%s"</font> Quote Tweets</string>
     <string name="comment_footer_liked"><font color="#FFFFFF">"%s"</font> Likes</string>
+    <string name="empty_state_comment">No Comments yet</string>
+    <string name="empty_state_comment_subtitle">Be the first to comment.</string>
+    <string name="search_title_bar">Search</string>
+    <string name="search_title_bar_search">World trends search</string>
+    <string name="search_title_rank">Top 10 World Trends</string>
+    <string name="search_loading_status">On Search by %s</string>
+    <string name="search_is_trend">%s Trends</string>
+    <string name="trend_tab_top">Top</string>
+    <string name="trend_tab_lastest">Lastest</string>
+    <string name="trend_tab_people">People</string>
+    <string name="trend_tab_photo">Photo</string>
+    <string name="error_logout">Failed to log out. Please try again.</string>
+    <string name="search_recent_search">Recent searches</string>
+    <string name="search_cast_count">%s Cast</string>
+    <string name="page_weblcom_title">Welcome to Profile setting</string>
+    <string name="add_link_title">Add another channel for someone interesting on you can follow up.</string>
+    <string name="add_link_title_tool_bar">+ Add social media</string>
+    <string name="add_link_item">+ Add social media or website</string>
+    <string name="edite_profile_save">Save</string>
+    <string name="edite_profile_success_message">Update Profile success</string>
+    <string name="dialog_fragement_profile_edit_sync">Sync social media</string>
+    <string name="dialog_fragement_profile_edit_delete">Delete page</string>
+    <string name="dialog_fragement_profile_edit_share">Share</string>
+    <string name="delete_page_fragment_title">Delete page</string>
+    <string name="delete_page_fragment_description">การลบเพจไม่สามารถยกเลิกได้</string>
+    <string name="delete_page_fragment_description_on_delete_page">Confirm that this is your Page</string>
+    <string name="delete_page_fragment_sub_description">เมื่อคุณลบเพจ คุณจะไม่สามารถเรียกกลับคืนมาได้</string>
+    <string name="delete_page_fragment_warning">แน่ใจหรือไม่ว่าคุณต้องการลบ</string>
+    <string name="delete_page_fragment_delete">ลบเพจ</string>
+    <string name="delete_page_fragment_continue">Continue</string>
+    <string name="complete_message_delete_page">ระบบได้ลบเพจของคุณทิ้งโดยถาวรแล้ว</string>
+    <string name="complete_message_delete_account">ระบบได้ลบบัญชีของคุณทิ้งโดยถาวรแล้ว</string>
 </resources>

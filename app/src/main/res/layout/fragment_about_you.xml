@@ -43,7 +43,8 @@
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:maxLine="3" />
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanitLight.Regular"
@@ -205,4 +206,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="tvBirthday,itBirthday" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupAddLinks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tvLinks,tvAddLinks" />
 </androidx.constraintlayout.widget.ConstraintLayout>

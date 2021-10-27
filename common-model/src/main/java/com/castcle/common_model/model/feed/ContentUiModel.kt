@@ -227,7 +227,7 @@ fun PhotoResponse.toPhotoUiMode() =
     PhotoUiModel(
         imageCover = cover?.url ?: "",
         imageContent = contents?.map {
-            it.url
+            it.original
         } ?: emptyList()
     )
 

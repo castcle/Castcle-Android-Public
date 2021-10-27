@@ -1,5 +1,6 @@
 package com.castcle.ui.onboard
 
+import android.app.Activity
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.setting.LanguageUiModel
@@ -61,7 +62,7 @@ abstract class OnBoardViewModel : BaseViewModel() {
 
     abstract fun setPreferredLanguageData(language: List<LanguageUiModel>)
 
-    abstract fun onAccessTokenExpired(): Completable
+    abstract fun onAccessTokenExpired(onActivity: Activity): Completable
 
     abstract fun onRefreshProfile()
 

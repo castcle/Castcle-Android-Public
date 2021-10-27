@@ -3,7 +3,7 @@ package com.castcle.usecase.setting
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.setting.CreatePageRequest
 import com.castcle.common_model.model.setting.CreatePageResponse
-import com.castcle.data.error.CommentError
+import com.castcle.data.error.CommonError
 import com.castcle.networking.api.auth.AuthenticationsRepository
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
@@ -39,7 +39,7 @@ class UpdatePageSingleUseCase @Inject constructor(
 ) : SingleUseCase<CreatePageRequest, CreatePageResponse>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
-    CommentError::Error
+    CommonError::Error
 ) {
     override fun create(input: CreatePageRequest): Single<CreatePageResponse> {
         return authenticationsRepository.updatePage(input)

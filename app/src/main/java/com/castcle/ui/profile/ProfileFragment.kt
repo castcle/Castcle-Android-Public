@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.login.ProfileBundle
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.setting.UpLoadType
 import com.castcle.common_model.model.userprofile.*
@@ -24,6 +25,8 @@ import com.castcle.networking.api.user.PROFILE_TYPE_PAGE
 import com.castcle.ui.base.*
 import com.castcle.ui.common.dialog.chooseimage.KEY_CHOOSE_REQUEST
 import com.castcle.ui.common.dialog.chooseimage.PhotoSelectedState
+import com.castcle.ui.common.dialog.profilechoose.KEY_PROFILE_CHOOSE_REQUEST
+import com.castcle.ui.common.dialog.profilechoose.ProfileEditState
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.adapter.ContentPageAdapter
@@ -86,6 +89,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         get() = argsBundle.isMe
 
     private var photoSelectedState: PhotoSelectedState = PhotoSelectedState.NON
+
+    private var profileTypeState: ProfileType = ProfileType.NON
 
     private lateinit var userProfile: User
 
@@ -185,6 +190,42 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             onResult = {
                 onHandlerStatePhoto(it)
             })
+
+        getNavigationResult<ProfileEditState>(
+            onBoardNavigator,
+            R.id.profileFragment,
+            KEY_PROFILE_CHOOSE_REQUEST,
+            onResult = {
+                onHandlerProfileChoose(it)
+            })
+    }
+
+    private fun onHandlerProfileChoose(state: ProfileEditState) {
+        when (state) {
+            ProfileEditState.SYNC_SOCIAL_MEDIA -> {
+
+            }
+            ProfileEditState.DELETE_PAGE -> {
+                onNavigateToDeleteProfile()
+            }
+            ProfileEditState.SHARE -> {
+
+            }
+        }
+    }
+
+    private fun onNavigateToDeleteProfile() {
+        val profileEditBundle = getProfileEditBundle(profileTypeState)
+        onBoardNavigator.navigateToProfileDeletePageFragment(profileEditBundle)
+    }
+
+    private fun getProfileEditBundle(profileType: ProfileType): ProfileBundle {
+        return ProfileBundle.ProfileDelete(
+            castcleId = userProfile.castcleId,
+            avatar = userProfile.avatar,
+            profileType = profileType.type,
+            displayName = userProfile.displayName
+        )
     }
 
     private fun onHandlerStatePhoto(state: PhotoSelectedState) {
@@ -212,9 +253,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         profileType(
             onProfileMe = {
                 viewModel.userProfileRes
-                    .subscribe {
-                        onBindProfile(it)
-                    }.addToDisposables()
+                    .subscribeBy(
+                        onError = {
+                            displayError(it)
+                        }
+                    ).addToDisposables()
             }, onProfileYou = {
                 viewModel.getUserViewProfile(profileId)
 
@@ -253,11 +296,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun onBindProfile(user: User) {
+        profileTypeState = ProfileType.PROFILE_TYPE_ME
+        userProfile = user
         with(binding.profileMe) {
             tvFollowingCount.text = user.followersCount.toCount()
             tvFollowersCount.text = user.followersCount.toCount()
             tvProfileName.text = user.displayName
             tvProfileCastcleId.text = user.castcleId
+
             with(user.overview) {
                 tvProfileOverView.visibleOrInvisible(!isEmpty())
                 tvProfileOverView.text = this
@@ -267,7 +313,16 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                     PhotoSelectedState.AVATAR_SELECT
                 )
             }.addToDisposables()
+
             ivAvatarProfile.loadCircleImage(user.avatar)
+
+            btViewProfile.subscribeOnClick {
+                onNavigateToEditProfile()
+            }.addToDisposables()
+
+            ivEditProfile.subscribeOnClick {
+                onNavigateToChooseProfileEdit()
+            }.addToDisposables()
         }
         with(binding) {
             ivAddCover.subscribeOnClick {
@@ -275,9 +330,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                     PhotoSelectedState.COVER_SELECT
                 )
             }.addToDisposables()
+
             ivProfileCover.loadImageWithCache(user.cover)
             tbProfile.tvToolbarTitle.text = user.castcleId
         }
+    }
+
+    private fun onNavigateToChooseProfileEdit() {
+        onBoardNavigator.navigateToProfileChooseDialogFragment()
     }
 
     private fun onBindViewProfile(user: User) {
@@ -293,9 +353,15 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
 
+            ivEditProfile.subscribeOnClick {
+                onNavigateToChooseProfileEdit()
+            }.addToDisposables()
+
             if (isMe) {
+                profileTypeState = ProfileType.PROFILE_TYPE_PAGE
                 onBindEditImagePage()
             } else {
+                profileTypeState = ProfileType.PROFILE_TYPE_YOU
                 binding.ivAddCover.gone()
                 btFollow.visibleOrGone(!user.followed)
                 if (btFollow.isVisible) {
@@ -322,8 +388,9 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             btViewProfile.gone()
             ivAddAvatar.visible()
             btFollow.text = localizedResources.getString(R.string.profile_edit_profile)
+
             btFollow.subscribeOnClick {
-                onViewPageDetail()
+                onNavigateToEditPage()
             }.addToDisposables()
 
             ivAddAvatar.subscribeOnClick {
@@ -334,13 +401,32 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
     }
 
+    private fun onNavigateToEditPage() {
+        val profileBundle = getProfileBundle()
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle, onEditPage = true)
+    }
+
+    private fun onNavigateToEditProfile() {
+        val profileBundle = getProfileBundle()
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle, onEditProfile = true)
+    }
+
+    private fun getProfileBundle(): ProfileBundle {
+        return ProfileBundle.ProfileEdit(
+            castcleId = userProfile.castcleId,
+            overview = userProfile.overview,
+            dob = userProfile.dob,
+            facebookLinks = userProfile.facebookLinks,
+            twitterLinks = userProfile.twitterLinks,
+            youtubeLinks = userProfile.youtubeLinks,
+            mediumLinks = userProfile.mediumLinks,
+            websiteLinks = userProfile.websiteLinks
+        )
+    }
+
     private fun onNavigateToDialogChooseFragment(photoSelectedState: PhotoSelectedState) {
         this.photoSelectedState = photoSelectedState
         onBoardNavigator.navigateToDialogChooseFragment()
-    }
-
-    private fun onViewPageDetail() {
-
     }
 
     private fun handlerFollow(castcleId: String) {

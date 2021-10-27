@@ -34,4 +34,6 @@ abstract class SplashScreenViewModel : BaseViewModel() {
     abstract val isGuestMode: Boolean
 
     abstract fun requestGuestLogin(): Completable
+
+    abstract fun onTackStartSession():Completable
 }

@@ -1,9 +1,9 @@
 package com.castcle.ui.setting.changepassword
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.ui.util.SingleLiveEvent
 import com.castcle.usecase.auth.GetVerificationPassSingleUseCase
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
@@ -36,15 +36,13 @@ import javax.inject.Inject
 
 abstract class ChangePasswordViewModel : BaseViewModel() {
 
-    abstract val onVerificationResponse: LiveData<VerificationUiModel>
+    abstract val onVerificationResponse: SingleLiveEvent<VerificationUiModel>
 
     abstract val onError: Observable<Throwable>
 
     abstract val showLoading: Observable<Boolean>
 
     abstract val input: Input
-
-    abstract fun clearVerificationResponse()
 
     interface Input {
         fun verificationPassword(pass: String)
@@ -59,8 +57,8 @@ class ChangePasswordViewModelImpl @Inject constructor(
     override val input: Input
         get() = this
 
-    private val _onVerificationResponse = MutableLiveData<VerificationUiModel>()
-    override val onVerificationResponse: LiveData<VerificationUiModel>
+    private val _onVerificationResponse = SingleLiveEvent<VerificationUiModel>()
+    override val onVerificationResponse: SingleLiveEvent<VerificationUiModel>
         get() = _onVerificationResponse
 
     private val _onError = BehaviorSubject.create<Throwable>()
@@ -81,15 +79,11 @@ class ChangePasswordViewModelImpl @Inject constructor(
             .doFinally { _showLoading.onNext(false) }
             .subscribeBy(
                 onSuccess = {
-                    _onVerificationResponse.value = it
+                    _onVerificationResponse.postValue(it)
                 },
                 onError = {
                     _showLoading.onNext(false)
                     _onError.onNext(it)
                 }).addToDisposables()
-    }
-
-    override fun clearVerificationResponse() {
-        _onVerificationResponse.value = null
     }
 }

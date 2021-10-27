@@ -144,7 +144,6 @@ class ChangePasswordFragment : BaseFragment<ChangePasswordViewModel>(),
     }
 
     private fun navigateToChangePassword(verificationUiModel: VerificationUiModel) {
-        viewModel.onVerificationResponse
         requireActivity().hideSoftKeyboard()
         onBoardNavigator.navigateToCreatePasswordFragment(verificationUiModel)
     }

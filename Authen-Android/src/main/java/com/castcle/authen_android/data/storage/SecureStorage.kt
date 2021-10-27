@@ -11,6 +11,8 @@ interface SecureStorage {
     var userAccessTokenExpiresAt: Long?
     var userTokenType: String?
     var userRefreshToken: String?
+    var tokenId: String?
+    var uxSessionId: String?
 }
 
 class SecureStorageImpl @Inject constructor(
@@ -29,6 +31,14 @@ class SecureStorageImpl @Inject constructor(
     override var userRefreshToken: String?
         get() = get(USER_REFRESH_TOKEN_KEY)
         set(refreshToken) = setOrRemove(USER_REFRESH_TOKEN_KEY, refreshToken)
+
+    override var tokenId: String?
+        get() = get(USER_REFRESH_TOKEN_ID_KEY)
+        set(tokenId) = setOrRemove(USER_REFRESH_TOKEN_ID_KEY, tokenId)
+
+    override var uxSessionId: String?
+        get() = get(USER_REFRESH_UX_SESSION_ID_KEY)
+        set(uxSessionId) = setOrRemove(USER_REFRESH_UX_SESSION_ID_KEY, uxSessionId)
 
     override var userAccessTokenExpiresAt: Long?
         get() = get(USER_ACCESS_TOKEN_EXPIRES_AT_KEY)?.toLong()
@@ -63,5 +73,7 @@ class SecureStorageImpl @Inject constructor(
         const val USER_ACCESS_TOKEN_EXPIRES_AT_KEY = "user_access_token_expires_at"
         const val USER_TOKEN_TYPE_KEY = "user_token_type"
         const val USER_REFRESH_TOKEN_KEY = "user_refresh_token"
+        const val USER_REFRESH_TOKEN_ID_KEY = "user_token_id"
+        const val USER_REFRESH_UX_SESSION_ID_KEY = "user_ux_session_id"
     }
 }

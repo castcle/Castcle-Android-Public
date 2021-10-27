@@ -28,8 +28,8 @@ import com.google.gson.annotations.SerializedName
 //  Created by sklim on 13/9/2021 AD at 11:33.
 
 data class CreateContentRequest(
-    @SerializedName("authorId")
-    val authorId: String = "",
+    @SerializedName("castcleId")
+    val castcleId: String = "",
 
     @SerializedName("payload")
     val payload: Payload = Payload(),
@@ -65,14 +65,14 @@ data class Photo(
 fun List<MediaItem>.toRequestPhoto(): List<Content> {
     return map {
         Content(
-            url = it.uri.toString()
+            image = it.uri.toString()
         )
     }
 }
 
 data class Content(
-    @SerializedName("url")
-    val url: String? = ""
+    @SerializedName("image")
+    val image: String? = ""
 )
 
 data class Link(

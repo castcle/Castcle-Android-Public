@@ -56,8 +56,8 @@ data class FeedContentResponse(
     @SerializedName("aggregator") var aggregator: Aggregator,
     @SerializedName("type") var type: String,
     @SerializedName("payload") var payload: PayloadResponse,
-    @SerializedName("created") var created: String,
-    @SerializedName("updated") var updated: String,
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
 )
 
 data class FeedViewContentResponse(
@@ -102,8 +102,8 @@ data class PayloadResponse(
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: Author,
-    @SerializedName("created") var created: String,
-    @SerializedName("updated") var updated: String,
+    @SerializedName("createAt") var created: String,
+    @SerializedName("updateAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 
@@ -117,15 +117,15 @@ data class ViewPayloadResponse(
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: ViewAuthor,
-    @SerializedName("created") var created: String,
-    @SerializedName("updated") var updated: String,
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 
 data class ReplyResponse(
     @SerializedName("id") var id: String,
     @SerializedName("message") var message: String,
-    @SerializedName("created") var created: String,
+    @SerializedName("createdAt") var created: String,
     @SerializedName("author") var author: Author,
 )
 
@@ -193,6 +193,6 @@ data class RecastedResponse(
 )
 
 data class PhotoResponse(
-    @SerializedName("contents") var contents: List<Contents>? = null,
+    @SerializedName("contents") var contents: List<ImageResponse>? = null,
     @SerializedName("cover") var cover: Contents? = null
 )

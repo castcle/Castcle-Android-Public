@@ -35,11 +35,11 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:gravity="top"
                 android:hint="@string/create_blog_status"
+                android:inputType="textMultiLine"
                 android:maxLines="280"
                 android:scrollbars="vertical"
                 android:textAlignment="gravity"
                 android:textColorHint="@color/gray_light"
-                android:inputType="textMultiLine"
                 app:layout_constraintBottom_toTopOf="@id/tvCountChar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -52,12 +52,12 @@
                 android:id="@+id/rvImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:clipToPadding="false"
                 android:paddingBottom="@dimen/_50sdp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_marginStart="@dimen/_10sdp"
                 app:layout_constraintTop_toBottomOf="@id/tvCountChar" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -79,8 +79,9 @@
         android:id="@+id/rvImagePickger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/clToolBarCast"
         app:layout_constraintEnd_toEndOf="parent"
@@ -125,4 +126,45 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <View
+        android:id="@+id/vLoading"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:background="@drawable/bg_cover_round"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tvMessageLoading"
+        app:layout_constraintStart_toStartOf="@id/pbLoading"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMessageLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:text="@string/message_loading_create_cast"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/pbLoading"
+        app:layout_constraintEnd_toEndOf="@id/vLoading"
+        app:layout_constraintStart_toEndOf="@id/pbLoading"
+        app:layout_constraintTop_toTopOf="@id/pbLoading" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="vLoading,pbLoading,tvMessageLoading" />
 </androidx.constraintlayout.widget.ConstraintLayout>

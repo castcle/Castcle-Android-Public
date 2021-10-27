@@ -1,5 +1,6 @@
 package com.castcle.networking.api.auth.network
 
+import com.castcle.common_model.model.engagement.EngagementRequest
 import com.castcle.common_model.model.login.LoginRequest
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.response.AuthExsitResponse
@@ -83,4 +84,9 @@ interface AuthenticationApi {
         @Path("castcleId") castcleId: String,
         @Body createPageRequest: CreatePageRequest
     ): Flowable<Response<CreatePageResponse>>
+
+    @POST("/engagements")
+    fun onEngagements(
+        @Body engagementRequest: EngagementRequest
+    ): Flowable<Response<Unit>>
 }

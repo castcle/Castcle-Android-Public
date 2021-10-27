@@ -7,8 +7,7 @@ import com.castcle.android.databinding.ItemImageGalleryBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
-import com.castcle.extensions.loadRoundedCornersImageUri
-import com.castcle.extensions.visible
+import com.castcle.extensions.*
 import com.castcle.ui.common.events.ItemClickable
 import com.castcle.ui.common.events.ItemClickableImpl
 import kotlinx.android.extensions.LayoutContainer
@@ -91,10 +90,13 @@ class ImageGalleryAdapter : RecyclerView.Adapter<ImageGalleryAdapter.FilterViewH
         private fun bindOpenImage(mediaItemCamera: MediaItem.ImageMediaItem) {
             binding.clBackground.isActivated = mediaItemCamera.isSelected
             binding.ivImage.loadRoundedCornersImageUri(mediaItemCamera.uri)
+            binding.ivImageAction.gone()
         }
 
         private fun bindOpenCamera(itemCamera: MediaItem.OpenCamera) {
             binding.ivImageAction.visible()
+            binding.ivImage.invisible()
+            binding.clBackground.isActivated = false
         }
     }
 }

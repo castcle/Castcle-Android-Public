@@ -1,9 +1,14 @@
 package com.castcle.ui.splashscreen
 
 import android.annotation.SuppressLint
+import com.castcle.common_model.model.engagement.*
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.extensions.getDateTimeStamp
+import com.castcle.usecase.EngagementTackingCompletableUseCase
 import com.castcle.usecase.GuestLoginCompletableUseCase
 import com.castcle.usecase.setting.GetCurrentLocalSingleUseCase
 import com.castcle.usecase.setting.SetAppLanguageUseCase
+import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -39,7 +44,9 @@ class SplashScreenViewModelImpl @Inject constructor(
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase,
     private val getCurrentLocalSingleUseCase: GetCurrentLocalSingleUseCase,
-    private val setAppLanguageUseCase: SetAppLanguageUseCase
+    private val setAppLanguageUseCase: SetAppLanguageUseCase,
+    private val engagementTackingCompletableUseCase: EngagementTackingCompletableUseCase,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
 ) : SplashScreenViewModel() {
 
     init {
@@ -70,5 +77,33 @@ class SplashScreenViewModelImpl @Inject constructor(
 
     private fun getCurrentLocaleApp(): Single<String> {
         return getCurrentLocalSingleUseCase.execute(Unit)
+    }
+
+    override fun onTackStartSession(): Completable {
+        if (isGuestMode) {
+            return Completable.complete()
+        }
+        return cachedUserProfileSingleUseCase.execute(Unit)
+            .firstOrError()
+            .flatMapCompletable {
+                var user: User? = null
+                if (it.isPresent) {
+                    user = it.get()
+                }
+
+                val engagementRequest = EngagementRequest(
+                    accountId = user?.id ?: "",
+                    timestamp = getDateTimeStamp().toString(),
+                    screenId = ScreenStateId.SPLASH_SCREEN.screenId,
+                    eventType = EventStateType.START_SESSION.eventType,
+                    target = EventStateType.SESSION.eventType,
+                    onStartSession = true
+                )
+                engagementTacking(engagementRequest)
+            }
+    }
+
+    private fun engagementTacking(engagementRequest: EngagementRequest): Completable {
+        return engagementTackingCompletableUseCase.execute(engagementRequest)
     }
 }

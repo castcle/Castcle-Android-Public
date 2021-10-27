@@ -180,4 +180,32 @@
     <string name="add_link_title">Add another channel for someone interesting on you can follow up.</string>
     <string name="add_link_title_tool_bar">+ Add social media</string>
     <string name="add_link_item">+ Add social media or website</string>
+    <string name="edite_profile_save">Save</string>
+    <string name="edite_profile_success_message">Update Profile success</string>
+    <string name="dialog_fragement_profile_edit_sync">Sync social media</string>
+    <string name="dialog_fragement_profile_edit_delete">Delete page</string>
+    <string name="dialog_fragement_profile_edit_share">Share</string>
+    <string name="delete_page_fragment_title">Delete page</string>
+    <string name="delete_page_fragment_description">Deleting the Account can\'t cancel</string>
+    <string name="delete_page_fragment_sub_description">When you delete a page You will not be able to retrieve it.</string>
+    <string name="delete_page_fragment_description_on_delete_page">Before you permanently delete your Page,
+please enter your password.</string>
+    <string name="delete_page_fragment_warning">Are you sure you want to delete?</string>
+    <string name="delete_page_fragment_delete">Delete Page</string>
+    <string name="delete_page_fragment_continue">Continue</string>
+    <string name="complete_message_delete_page">Your page has been permanently deleted.</string>
+    <string name="complete_message_delete_account">Your Account has been permanently deleted.</string>
+    <string name="delete_page_fragment_title_confirm">Confirm Delete Account</string>
+    <string name="delete_page_fragment_title_confirm_page">Confirm Delete Page</string>
+    <string name="delete_page_fragment_description_page">Deleting the page can\'t cancel</string>
+    <string name="delete_page_fragment_title_on_delete">Confirm that this is your Account</string>
+    <string name="delete_page_fragment_title_on_delete_page">Confirm that this is your Page</string>
+    <string name="delete_page_fragment_description_on_delete">Before you permanently delete your Account,
+        please enter your password.</string>
+    <string name="complete_message_delete_button">Back To Home Feed</string>
+    <string name="complete_message_delete_button_setting">Back To Setting</string>
+    <string name="delete_page_fragment_sub_description_account">When you delete a Account You will not be able to retrieve it.</string>
+    <string name="general_notification_channel_name">Castcle</string>
+    <string name="general_notification_channel_description">General</string>
+    <string name="message_loading_create_cast">On post loading…</string>
 </resources>

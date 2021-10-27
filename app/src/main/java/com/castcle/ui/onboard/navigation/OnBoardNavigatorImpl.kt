@@ -19,10 +19,13 @@ import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
 import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
 import com.castcle.ui.feed.feeddetail.FeedDetailFragmentArgs
-import com.castcle.ui.profile.*
+import com.castcle.ui.profile.CropAvatarImageFragmentArgs
+import com.castcle.ui.profile.ProfileFragmentArgs
 import com.castcle.ui.search.trend.TrendFragmentArgs
 import com.castcle.ui.setting.applanguage.AppLanguageFragmentArgs
+import com.castcle.ui.setting.changepassword.complete.CompleteFragmentArgs
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragmentArgs
+import com.castcle.ui.setting.deleteaccount.DeletePageFragmentArgs
 import com.castcle.ui.signin.aboutyou.AboutYouFragmentArgs
 import com.castcle.ui.signin.aboutyou.addlink.AddLinksFragmentArgs
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
@@ -284,7 +287,12 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToAboutYouFragment(profileBundle: ProfileBundle, isCreatePage: Boolean) {
+    override fun navigateToAboutYouFragment(
+        profileBundle: ProfileBundle,
+        isCreatePage: Boolean,
+        onEditProfile: Boolean,
+        onEditPage: Boolean
+    ) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
@@ -292,13 +300,32 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.verifyEmailFragment -> {
                         navController.navigate(
                             R.id.verifyEmailFragmentToAboutYouFragment,
-                            AboutYouFragmentArgs(isCreatePage, profileBundle).toBundle()
+                            AboutYouFragmentArgs(
+                                isCreatePage = isCreatePage,
+                                profileBundle = profileBundle,
+                                onEditProfile = onEditProfile
+                            ).toBundle()
                         )
                     }
                     R.id.profileChooseFragment -> {
                         navController.navigate(
                             R.id.actionProfileChooseFragmentToAboutYouFragment,
-                            AboutYouFragmentArgs(isCreatePage, profileBundle).toBundle()
+                            AboutYouFragmentArgs(
+                                isCreatePage = isCreatePage,
+                                profileBundle = profileBundle,
+                                onEditProfile = onEditProfile
+                            ).toBundle()
+                        )
+                    }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToAboutYouFragment,
+                            AboutYouFragmentArgs(
+                                isCreatePage = isCreatePage,
+                                profileBundle = profileBundle,
+                                onEditProfile = onEditProfile,
+                                onEditPage = onEditPage
+                            ).toBundle()
                         )
                     }
                     else -> {
@@ -476,7 +503,7 @@ class OnBoardNavigatorImpl @Inject constructor(
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> navController.popBackStack(
-                R.id.feedFragment,false
+                R.id.feedFragment, false
             )
             R.id.bloc_nav_graph -> navController.popBackStack()
             R.id.search_nav_graph -> navController.popBackStack(
@@ -686,7 +713,7 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToCompleteFragment() {
+    override fun navigateToCompleteFragment(onDeletePage: Boolean, onAccountPage: Boolean) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
@@ -694,6 +721,15 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.createPasswordFragment -> {
                         navController.navigate(
                             R.id.actionCreatePasswordToCompleteFragment
+                        )
+                    }
+                    R.id.deletePageFragment -> {
+                        navController.navigate(
+                            R.id.actionDeletePageFragmentToCompleteFragment,
+                            CompleteFragmentArgs(
+                                onDeletePage = onAccountPage,
+                                onDeleteAccount = onAccountPage
+                            ).toBundle()
                         )
                     }
                     else -> {
@@ -835,7 +871,7 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.aboutYouFragment -> {
                         navController.navigate(
                             R.id.actionAboutYouFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType,true).toBundle()
+                            ProfileFragmentArgs(castcle, profileType, true).toBundle()
                         )
                     }
                     else -> {
@@ -926,7 +962,7 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun naivgateToCropAvatarImage(mediaFile: MediaFile) {
+    override fun navigateToCropAvatarImage(mediaFile: MediaFile) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph -> {
@@ -935,6 +971,49 @@ class OnBoardNavigatorImpl @Inject constructor(
                         navController.navigate(
                             R.id.actionProfileFragmentToCropAvatarImageFragment,
                             CropAvatarImageFragmentArgs(mediaFile).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToProfileChooseDialogFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToProfileChooseDialogFragment,
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToDeletePageFragment,
+                            DeletePageFragmentArgs(profileEditBundle).toBundle()
                         )
                     }
                     else -> {

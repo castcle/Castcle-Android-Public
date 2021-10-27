@@ -1,6 +1,9 @@
 package com.castcle.ui.setting.changepassword.complete
 
+import android.app.Activity
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.usecase.login.LogoutCompletableUseCase
+import io.reactivex.Completable
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,6 +30,15 @@ import javax.inject.Inject
 //
 //  Created by sklim on 1/10/2021 AD at 13:20.
 
-abstract class CompleteViewModel : BaseViewModel()
+abstract class CompleteViewModel : BaseViewModel() {
+    abstract fun onLogout(onActivity: Activity): Completable
+}
 
-class CompleteViewModelImpl @Inject constructor() : CompleteViewModel()
+class CompleteViewModelImpl @Inject constructor(
+    private val logoutCompletableUseCase: LogoutCompletableUseCase
+) : CompleteViewModel() {
+
+    override fun onLogout(onActivity: Activity): Completable {
+        return logoutCompletableUseCase.execute(onActivity)
+    }
+}

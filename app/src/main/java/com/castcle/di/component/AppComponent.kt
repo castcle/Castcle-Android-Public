@@ -7,6 +7,7 @@ import com.castcle.di.modules.ActivityModule
 import com.castcle.di.modules.AppModule
 import com.castcle.di.modules.analytics.AppCenterAnalyticModule
 import com.castcle.di.scope.ApplicationScope
+import com.castcle.di.service.ServiceModule
 import com.castcle.di.worker.WorkerModule
 import com.castcle.session_memory.SessionManagerModule
 import dagger.BindsInstance
@@ -42,6 +43,7 @@ import dagger.android.AndroidInjector
     modules = [
         AndroidInjectionModule::class,
         AppModule::class,
+        ServiceModule::class,
         ActivityModule::class,
         SessionManagerModule::class,
         AppCenterAnalyticModule::class,

@@ -63,6 +63,17 @@ interface UserApi {
         @Body userUpdateRequest: UserUpdateRequest
     ): Flowable<Response<UserProfileResponse>>
 
+    @HTTP(method = "DELETE", path = "/users/me", hasBody = true)
+    fun onDeleteAccount(
+        @Body deletePageRequest: DeletePageRequest,
+    ): Flowable<Response<Unit>>
+
+    @HTTP(method = "DELETE", path = "/pages/{castcleId}", hasBody = true)
+    fun onDeletePage(
+        @Body deletePageRequest: DeletePageRequest,
+        @Path("castcleId") castcleId: String,
+    ): Flowable<Response<Unit>>
+
     @POST("contents/{feature_slug}")
     fun createContent(
         @Path("feature_slug") featureSlug: String,

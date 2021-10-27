@@ -1,8 +1,12 @@
-package com.castcle.data.error
+package com.castcle.usecase.userprofile
 
-import androidx.annotation.StringRes
-import com.castcle.android.R
-import com.castcle.networking.service.exception.ApiException
+import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.userprofile.DeletePageRequest
+import com.castcle.data.error.CommonError
+import com.castcle.data.repository.UserProfileRepository
+import com.castcle.usecase.base.CompletableUseCase
+import io.reactivex.Completable
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -26,13 +30,20 @@ import com.castcle.networking.service.exception.ApiException
 //  or have any questions.
 //
 //
-//  Created by sklim on 1/9/2021 AD at 10:30.
+//  Created by sklim on 20/10/2021 AD at 13:27.
 
-sealed class CommentError(
-    cause: Throwable?,
-    @StringRes readableMessageRes: Int? = null
-) : AppError(cause, (cause as? ApiException)?.error, readableMessageRes) {
+class DeleteAccountCompletableUseCase @Inject constructor(
+    rxSchedulerProvider: RxSchedulerProvider,
+    private val userRepository: UserProfileRepository
+) : CompletableUseCase<DeletePageRequest>(
+    rxSchedulerProvider.io(),
+    rxSchedulerProvider.main(),
+    CommonError::Error
+) {
 
-    class Error(cause: Throwable?) :
-        CommentError(cause, R.string.error_get_member)
+    override fun create(input: DeletePageRequest): Completable {
+        return Completable.fromAction {
+            userRepository.onDeleteAccount(input)
+        }
+    }
 }

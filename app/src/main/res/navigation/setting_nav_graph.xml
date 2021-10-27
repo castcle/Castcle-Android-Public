@@ -146,6 +146,16 @@
         android:name="com.castcle.ui.setting.changepassword.complete.CompleteFragment"
         tools:layout="@layout/fragment_completed">
 
+        <argument
+            android:name="onDeletePage"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
+            android:name="onDeleteAccount"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/actionCompleteFragmentToSettingFragment"
             app:destination="@id/settingFragment"

@@ -3,7 +3,7 @@ package com.castcle.usecase.setting
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.feed.PaginationModel
 import com.castcle.common_model.model.signin.ViewPageUiModel
-import com.castcle.data.error.CommentError
+import com.castcle.data.error.CommonError
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
@@ -39,7 +39,7 @@ class GetUerPageSingleUseCase @Inject constructor(
 ) : SingleUseCase<PaginationModel, ViewPageUiModel>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
-    CommentError::Error
+    CommonError::Error
 ) {
 
     override fun create(input: PaginationModel): Single<ViewPageUiModel> {

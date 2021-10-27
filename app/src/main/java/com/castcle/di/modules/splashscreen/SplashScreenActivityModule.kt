@@ -3,11 +3,15 @@ package com.castcle.di.modules.splashscreen
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.lifecycle.ViewModel
+import com.castcle.data.datasource.UserProfileDataSourceModule
+import com.castcle.data.repository.UserProfileRepository
+import com.castcle.data.repository.UserProfileRepositoryImpl
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.ActivityScope
 import com.castcle.localization.LocalizedResources
 import com.castcle.localization.LocalizedResourcesImpl
 import com.castcle.networking.NetworkModule
+import com.castcle.networking.api.auth.AuthenticationDataSourceModule
 import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.ui.splashscreen.*
@@ -44,7 +48,9 @@ import dagger.multibindings.IntoMap
     includes = [
         NetworkModule::class,
         NonAuthenticationDataSourceModule::class,
-        AuthRefreshTokenDataSourceModule::class
+        AuthRefreshTokenDataSourceModule::class,
+        AuthenticationDataSourceModule::class,
+        UserProfileDataSourceModule::class
     ]
 )
 interface SplashScreenActivityModule {
@@ -62,4 +68,10 @@ interface SplashScreenActivityModule {
     @ActivityScope
     @ViewModelKey(SplashScreenViewModel::class)
     fun splashScreenViewModel(viewModel: SplashScreenViewModelImpl): ViewModel
+
+    @Binds
+    @ActivityScope
+    abstract fun userProfileRepository(
+        userRepository: UserProfileRepositoryImpl
+    ): UserProfileRepository
 }

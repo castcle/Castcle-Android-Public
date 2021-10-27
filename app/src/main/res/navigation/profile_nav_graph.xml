@@ -5,7 +5,6 @@
     android:id="@+id/profile_nav_graph"
     app:startDestination="@id/profileFragment">
 
-
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.castcle.ui.profile.ProfileFragment"
@@ -54,6 +53,27 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
+
+        <action
+            android:id="@+id/actionProfileFragmentToAboutYouFragment"
+            app:destination="@id/aboutYouFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToDeletePageFragment"
+            app:destination="@id/deletePageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToProfileChooseDialogFragment"
+            app:destination="@id/profileChooseDialogFragment" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
@@ -88,4 +108,26 @@
             app:argType="pl.aprilapps.easyphotopicker.MediaFile" />
     </fragment>
 
+    <fragment
+        android:id="@+id/deletePageFragment"
+        android:name="com.castcle.ui.setting.deleteaccount.DeletePageFragment"
+        tools:layout="@layout/fragment_delete_page">
+
+        <action
+            android:id="@+id/actionDeletePageFragmentToCompleteFragment"
+            app:destination="@id/completeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.ProfileBundle" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/profileChooseDialogFragment"
+        android:name="com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment"
+        tools:layout="@layout/dialog_fragment_profile_choose_edit" />
 </navigation>

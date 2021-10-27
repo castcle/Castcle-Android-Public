@@ -1,6 +1,11 @@
 package com.castcle.networking.api.auth
 
+import android.util.Log
+import com.auth0.jwt.JWT
+import com.auth0.jwt.exceptions.JWTDecodeException
+import com.auth0.jwt.interfaces.DecodedJWT
 import com.castcle.authen_android.data.storage.SecureStorage
+import com.castcle.common_model.model.engagement.EngagementRequest
 import com.castcle.common_model.model.login.LoginRequest
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.*
@@ -65,6 +70,8 @@ interface AuthenticationsRepository {
     fun updatePage(createPageRequest: CreatePageRequest): Single<CreatePageResponse>
 
     fun updatePageWorker(createPageRequest: CreatePageRequest): Single<User>
+
+    fun engagementsTacking(engagementRequest: EngagementRequest): Completable
 }
 
 class AuthenticationsRepositoryImpl @Inject constructor(
@@ -161,7 +168,24 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             userAccessToken = oAuthResponse.accessToken
             userRefreshToken = oAuthResponse.refreshToken
         }
+        getDataFromAccessToken(oAuthResponse.accessToken)
         updateSessionToken(oAuthResponse)
+    }
+
+    private fun getDataFromAccessToken(accessToken: String) {
+        val tokenId = decodeHS256(accessToken)?.getClaim("id")?.asString() ?: ""
+        secureStorage.apply {
+            this.tokenId = tokenId
+        }
+    }
+
+    private fun decodeHS256(encodeToken: String): DecodedJWT? {
+        try {
+            return JWT.decode(encodeToken)
+        } catch (e: JWTDecodeException) {
+            Log.e("Decode HS256", e.message ?: "")
+        }
+        return null
     }
 
     private fun updateSessionToken(response: OAuthResponse) {
@@ -194,6 +218,14 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .changePasswordSubmit(
                 changePassRequest
             ).lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
+    override fun engagementsTacking(engagementRequest: EngagementRequest): Completable {
+        return authenticationApi
+            .onEngagements(engagementRequest)
+            .lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()
     }

@@ -71,7 +71,15 @@ abstract class BaseActivity<VM : BaseViewModel> : DaggerAppCompatActivity(), Inj
     }
 
     fun displayError(error: Throwable) {
-        val message = error.userReadableMessage(this)
+        val message = if (error.cause?.message?.isNotBlank() == true) {
+            error.cause?.message ?: ""
+        } else {
+            error.userReadableMessage(this)
+        }
+        toaster.display(message)
+    }
+
+    fun displayMessage(message: String) {
         toaster.display(message)
     }
 }

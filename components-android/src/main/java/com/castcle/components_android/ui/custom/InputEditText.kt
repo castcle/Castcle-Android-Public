@@ -99,18 +99,24 @@ class InputEditText(
                 if (inputType == InputType.TEXT_PASSWORD.get()) {
                     tilTextInputLayout.endIconMode = END_ICON_PASSWORD_TOGGLE
                 }
-                etTextInputPrimary.inputType = inputType
-                etTextInputPrimary.filters = arrayOf<InputFilter>(
-                    InputFilter.LengthFilter(
-                        styles.getInteger(
-                            R.styleable.TextInput_maxLength,
-                            Integer.MAX_VALUE
+                with(etTextInputPrimary) {
+                    inputType = inputType
+                    filters = arrayOf<InputFilter>(
+                        InputFilter.LengthFilter(
+                            styles.getInteger(
+                                R.styleable.TextInput_maxLength,
+                                Integer.MAX_VALUE
+                            )
                         )
                     )
-                )
-                etTextInputPrimary.imeOptions = styles.getInt(
-                    R.styleable.TextInput_imeOptions, 0
-                )
+                    imeOptions = styles.getInt(
+                        R.styleable.TextInput_imeOptions, 0
+                    )
+                    maxLines = styles.getInteger(
+                        R.styleable.TextInput_maxLine,
+                        0
+                    )
+                }
                 setupDrawableEnd(styles)
                 setupDrawableStart(styles)
                 isEditable = styles.getBoolean(R.styleable.TextInput_editable, true)

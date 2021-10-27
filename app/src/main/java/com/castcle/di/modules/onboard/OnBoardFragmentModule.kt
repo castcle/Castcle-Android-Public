@@ -13,6 +13,7 @@ import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
 import com.castcle.ui.common.dialog.chooseimage.ChooseDialogFragment
+import com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment
 import com.castcle.ui.common.dialog.recast.RecastDialogFragment
 import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.createbloc.CreateQuoteFragment
@@ -35,6 +36,7 @@ import com.castcle.ui.setting.applanguage.AppLanguageFragment
 import com.castcle.ui.setting.changepassword.ChangePasswordFragment
 import com.castcle.ui.setting.changepassword.complete.CompleteFragment
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragment
+import com.castcle.ui.setting.deleteaccount.DeletePageFragment
 import com.castcle.ui.setting.language.LanguageAppFragment
 import com.castcle.ui.setting.page.GreetingPageFragment
 import com.castcle.ui.setting.profile.SettingProfileFragment
@@ -241,4 +243,12 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [CropAvatarImageViewModelModule::class])
     fun cropAvatarImageFragment(): CropAvatarImageFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [DeleteFragmentViewModelModule::class])
+    fun deletePageFragment(): DeletePageFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileChooseDialogViewModelModule::class])
+    fun profileChooseDialogFragment(): ProfileChooseDialogFragment
 }

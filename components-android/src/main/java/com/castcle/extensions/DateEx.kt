@@ -1,5 +1,6 @@
 package com.castcle.extensions
 
+import android.annotation.SuppressLint
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.chrono.ChronoLocalDateTime
@@ -101,6 +102,9 @@ fun Int.getMonthName(language: String = LANGUAGE_CODE_EN): String {
     }
     return month
 }
+
+@SuppressLint("SimpleDateFormat")
+fun getDateTimeStamp(): Long = Date().time
 
 const val COMMON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 const val SOURCE_DATE_FORMAT = "MMM dd,yyyy"

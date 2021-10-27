@@ -23,6 +23,15 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
         requestLogin()
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.onTackStartSession().subscribeBy(
+            onError = {
+//                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
     private fun requestLogin() {
         viewModel.requestGuestLogin()
             .subscribeBy(
@@ -76,6 +85,7 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
     companion object {
         fun start(context: Context, bundle: Bundle? = null) {
             val intent = Intent(context, SplashScreenActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             bundle?.let { intent.putExtras(it) }
             context.startActivity(intent)
         }

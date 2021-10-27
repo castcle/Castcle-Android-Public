@@ -1,5 +1,6 @@
 package com.castcle.extensions
 
+import java.security.MessageDigest
 import java.text.DecimalFormat
 import java.util.regex.*
 import kotlin.math.ln
@@ -68,3 +69,12 @@ private val PASSWORD_PATTERN: Pattern = Pattern.compile(
         ".{8,}" +  // at least c characters
         "$"
 )
+
+fun String.toMD5Hex(): String {
+    val bytes = MessageDigest.getInstance("MD5").digest(this.toByteArray())
+    return bytes.toHex()
+}
+
+fun ByteArray.toHex(): String {
+    return joinToString("") { "%02x".format(it) }
+}

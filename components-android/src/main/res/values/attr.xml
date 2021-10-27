@@ -23,6 +23,7 @@
         <attr name="hintText" format="string" />
         <attr name="hintTextEnd" format="string" />
         <attr name="maxLength" format="integer" />
+        <attr name="maxLine" format="integer" />
         <attr name="drawableStart" format="reference" />
         <attr name="drawableEnd" format="reference" />
         <attr name="editable" format="boolean" />

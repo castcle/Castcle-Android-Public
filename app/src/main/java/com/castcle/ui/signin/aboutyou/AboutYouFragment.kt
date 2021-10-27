@@ -15,6 +15,7 @@ import com.castcle.common_model.model.login.ProfileBundle
 import com.castcle.common_model.model.setting.CreatePageRequest
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.networking.api.user.PROFILE_TYPE_PAGE
 import com.castcle.ui.base.*
 import com.castcle.ui.common.dialog.DatePickerDialogFragment
@@ -55,6 +56,8 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+
     private var linksRequest = MutableLiveData<LinksRequestUiModel>()
 
     private lateinit var linkAdapter: LinksAdapter
@@ -66,6 +69,12 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     private val isCreatePage: Boolean
         get() = profileBundle.isCreatePage
+
+    private val onEditProfile: Boolean
+        get() = profileBundle.onEditProfile
+
+    private val onEditPage: Boolean
+        get() = profileBundle.onEditPage
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -95,7 +104,6 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
     override fun initViewModel() = Unit
 
     override fun setupView() {
-        setupToolBar()
         getNavigationResult<LinksRequestUiModel>(
             onBoardNavigator,
             R.id.aboutYouFragment,
@@ -106,13 +114,49 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
         if (isCreatePage) {
             binding.groupIsCreatePage.gone()
         }
+        if (onEditProfile || onEditPage) {
+            onBindEditProfile()
+        } else {
+            setupToolBar()
+        }
+    }
+
+    private fun onBindEditProfile() {
+        setupEditProfileToolBar()
+        with(binding) {
+            val profileEdit = profile as ProfileBundle.ProfileEdit
+            groupAddLinks.gone()
+            groupIsCreatePage.visible()
+            itOverView.primaryText = profileEdit.overview
+            itOverView.onTextChanged = {
+                onActiveButton(true)
+            }
+            itBirthday.primaryText = profileEdit.dob ?: ""
+            itBirthday.onTextChanged = {
+                onActiveButton(true)
+            }
+            onBindLinksEditProfile(profileEdit)
+            btDone.text = localizedResources.getString(R.string.edite_profile_save)
+        }
+    }
+
+    private fun setupEditProfileToolBar() {
+        with(toolbarBinding) {
+            tvToolbarTitleAction.gone()
+            tvToolbarTitle.text = localizedResources.getString(R.string.profile_edit_profile)
+            tvToolbarTitle.setTextColor(requireContext().getColorResource(R.color.white))
+            ivToolbarLogoButton
+                .subscribeOnClick {
+                    findNavController().navigateUp()
+                }.addToDisposables()
+        }
     }
 
     private fun setupToolBar() {
         with(toolbarBinding) {
             tvToolbarTitleAction.apply {
                 visible()
-                text = context.getString(R.string.tool_bar_skip)
+                text = localizedResources.getString(R.string.tool_bar_skip)
             }.run {
                 subscribeOnClick {
                     handlerSkip()
@@ -137,10 +181,10 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
             btDone.subscribeOnClick {
                 onHandlerUpdate(
                     onPage = {
-                        onRequestUpdateProfile()
+                        onUpdatePage()
                     },
                     onProfile = {
-                        onUpdatePage()
+                        onRequestUpdateProfile()
                     }
                 )
             }
@@ -171,9 +215,8 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
     }
 
     private fun onUpdatePage() {
-        val profileBundle = profile as ProfileBundle.ProfileWithEmail
+        val profileBundle = profile as ProfileBundle.ProfileEdit
         val requestUpdate = CreatePageRequest(
-            avatar = profileBundle.imageAvatar,
             overview = binding.itOverView.primaryText,
             castcleId = profileBundle.castcleId,
             links = LinksRequest(
@@ -216,9 +259,20 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
             viewModel.requestUpdateProfile(requestUpdate)
                 .subscribeBy(
                     onComplete = {
-                        onNavigateToFeedFragment()
+                        handleOnEditeProfile()
                     }
                 ).addToDisposables()
+        }
+    }
+
+    private fun handleOnEditeProfile() {
+        if (onEditProfile) {
+            displayErrorMessage(
+                localizedResources.getString(R.string.edite_profile_success_message)
+            )
+            onActiveButton(false)
+        } else {
+            onNavigateToFeedFragment()
         }
     }
 
@@ -226,6 +280,56 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
         onBoardNavigator.navigateToAddLinksFragment(
             linksRequest.value ?: LinksRequestUiModel()
         )
+    }
+
+    private fun onBindLinksEditProfile(profileBundle: ProfileBundle.ProfileEdit) {
+        with(binding) {
+            profileBundle.facebookLinks.isNotEmpty().run {
+                itLinkFacebook.visibleOrGone(true)
+                if (this) {
+                    itLinkFacebook.primaryText = profileBundle.facebookLinks
+                }
+                itLinkFacebook.onTextChanged = {
+                    onActiveButton(true)
+                }
+            }
+            profileBundle.twitterLinks.isNotEmpty().run {
+                itLinkTwitter.visibleOrGone(true)
+                if (this) {
+                    itLinkTwitter.primaryText = profileBundle.twitterLinks
+                }
+                itLinkTwitter.onTextChanged = {
+                    onActiveButton(true)
+                }
+            }
+            profileBundle.youtubeLinks.isNotEmpty().run {
+                itLinkYouTube.visibleOrGone(true)
+                if (this) {
+                    itLinkYouTube.primaryText = profileBundle.youtubeLinks
+                }
+                itLinkYouTube.onTextChanged = {
+                    onActiveButton(true)
+                }
+            }
+            profileBundle.mediumLinks.isNotEmpty().run {
+                itLinkMedium.visibleOrGone(true)
+                if (this) {
+                    itLinkMedium.primaryText = profileBundle.mediumLinks
+                }
+                itLinkWebSite.onTextChanged = {
+                    onActiveButton(true)
+                }
+            }
+            profileBundle.websiteLinks.isNotEmpty().run {
+                itLinkWebSite.visibleOrGone(true)
+                if (this) {
+                    itLinkWebSite.primaryText = profileBundle.websiteLinks
+                }
+                itLinkWebSite.onTextChanged = {
+                    onActiveButton(true)
+                }
+            }
+        }
     }
 
     private fun onBindLinksItem(linksRequest: LinksRequestUiModel) {

@@ -102,7 +102,7 @@ buildscript {
         //firebase
         firebase_version = "27.0.0"
         firebase_crashlytics_gradle = "2.7.1"
-        firebase_bom = "28.3.1"
+        firebase_bom = "28.4.2"
 
         jetpack_ktx_version = '1.6.0'
         jetpack_lifecycle_version = "2.2.0"

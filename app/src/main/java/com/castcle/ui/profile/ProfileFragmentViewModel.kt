@@ -6,7 +6,6 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.userprofile.ImagesRequest
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.staticmodel.ContentType
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -45,8 +44,6 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
     abstract fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader)
 
     abstract fun fetachUserViewProfileContent(contentRequestHeader: FeedRequestHeader)
-
-    abstract fun getFeedResponse(contentType: ContentType)
 
     abstract fun getUserViewProfile(castcleId: String)
 

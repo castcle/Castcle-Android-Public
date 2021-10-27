@@ -58,7 +58,12 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun naivgetToProfileVerifyEmailFragment(profileBundle: ProfileBundle)
 
-    fun navigateToAboutYouFragment(profileBundle: ProfileBundle, isCreatePage: Boolean = false)
+    fun navigateToAboutYouFragment(
+        profileBundle: ProfileBundle,
+        isCreatePage: Boolean = false,
+        onEditProfile: Boolean = false,
+        onEditPage: Boolean = false
+    )
 
     fun navigateToSettingFragment()
 
@@ -88,7 +93,7 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToCreatePasswordFragment(verificationUiModel: VerificationUiModel)
 
-    fun navigateToCompleteFragment()
+    fun navigateToCompleteFragment(onDeletePage: Boolean = false, onAccountPage: Boolean = false)
 
     fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean = false)
 
@@ -104,5 +109,9 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToDialogChooseFragment()
 
-    fun naivgateToCropAvatarImage(mediaFile: MediaFile)
+    fun navigateToCropAvatarImage(mediaFile: MediaFile)
+
+    fun navigateToProfileChooseDialogFragment()
+
+    fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle)
 }

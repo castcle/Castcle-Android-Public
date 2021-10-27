@@ -47,18 +47,18 @@ interface UserProfileRepository {
 
     val currentCachedUser: Flowable<Optional<User>>
 
-    fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
+    fun upDateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
 
-    fun uppdateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User>
+    fun upDateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User>
 
-    fun getUserPofileContent(
+    fun getUserProfileContent(
         contentRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>>
 
-    fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader):
+    fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentUiModel>>
 
-    fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader):
+    fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentUiModel>>
 
     fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
@@ -68,6 +68,10 @@ interface UserProfileRepository {
     fun getViewPage(castcleId: String): Flowable<User>
 
     fun getUserPage(paginationModel: PaginationModel): Single<ViewPageUiModel>
+
+    fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable
+
+    fun onDeletePage(deletePageRequest: DeletePageRequest): Completable
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -98,7 +102,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             .toFlowable()
     }
 
-    override fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable {
+    override fun upDateUserProfile(userUpdateRequest: UserUpdateRequest): Completable {
         return userApi.updateUserProfile(userUpdateRequest)
             .map(userProfileMapper)
             .map { it.toUserProfile() }
@@ -107,7 +111,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             }.ignoreElements()
     }
 
-    override fun uppdateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User> {
+    override fun upDateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User> {
         return userApi.updateUserProfile(userUpdateRequest)
             .map(userProfileMapper)
             .map { it.toUserProfile() }
@@ -132,7 +136,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             .ignoreElements()
     }
 
-    override fun getUserPofileContent(
+    override fun getUserProfileContent(
         contentRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>> = Pager(config =
     PagingConfig(
@@ -142,7 +146,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         UserProfilePagingDataSource(userApi, contentRequestHeader)
     }).flow
 
-    override fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader)
+    override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
@@ -151,7 +155,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         UserViewProfilePagingDataSource(userApi, feedRequestHeader)
     }).flow
 
-    override fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader)
+    override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
@@ -214,8 +218,7 @@ class UserProfileRepositoryImpl @Inject constructor(
                 setCastcleId(it)
                 _onMemoryUser = it
                 _remoteUser.onNext(it)
-            }
-            .doOnSubscribe { _isLoadingUser = true }
+            }.doOnSubscribe { _isLoadingUser = true }
             .doFinally { _isLoadingUser = false }
             .toFlowable()
     }
@@ -242,6 +245,24 @@ class UserProfileRepositoryImpl @Inject constructor(
             && get(Calendar.MONTH) == date.get(Calendar.MONTH)
             && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
             && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
+    }
+
+    override fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable {
+        return userApi
+            .onDeleteAccount(deletePageRequest)
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
+    override fun onDeletePage(deletePageRequest: DeletePageRequest): Completable {
+        return userApi
+            .onDeletePage(
+                castcleId = deletePageRequest.castcleId,
+                deletePageRequest = deletePageRequest
+            ).lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
     }
 }
 

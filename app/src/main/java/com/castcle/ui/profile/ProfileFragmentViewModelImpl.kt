@@ -100,9 +100,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
             .execute(Unit)
             .doOnNext {
                 setUserProfileData(it)
-            }
-            .doOnError(_error::onNext)
-            .toObservable()
+            }.toObservable()
     }
 
     private fun setUserProfileData(userData: User) {
@@ -119,15 +117,15 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         launchPagingAsync({
             when (contentRequestHeader.viewType) {
                 ProfileType.PROFILE_TYPE_ME.type -> {
-                    userProfileDataSouce.getUserPofileContent(contentRequestHeader)
+                    userProfileDataSouce.getUserProfileContent(contentRequestHeader)
                 }
                 ProfileType.PROFILE_TYPE_YOU.type -> {
-                    userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+                    userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
                 }
                 ProfileType.PROFILE_TYPE_PAGE.type -> {
-                    userProfileDataSouce.getViewPagePofileContent(contentRequestHeader)
+                    userProfileDataSouce.getViewPageProfileContent(contentRequestHeader)
                 }
-                else -> userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+                else -> userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
             }
         }, onSuccess = {
             _userProfileContentRes = it
@@ -136,7 +134,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
 
     override fun fetachUserViewProfileContent(contentRequestHeader: FeedRequestHeader) {
         launchPagingAsync({
-            userProfileDataSouce.getUserViewPofileContent(contentRequestHeader)
+            userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
         }, onSuccess = {
             _userProfileContentRes = it
         })
@@ -226,36 +224,5 @@ class ProfileFragmentViewModelImpl @Inject constructor(
                 likeStatus = likedStatus
             )
         )
-    }
-
-    override fun getFeedResponse(contentType: ContentType) {
-        val mockData = Gson().fromJson(
-            JSONObject(readJSONFromAsset() ?: "").toString(),
-            FeedResponse::class.java
-        ).payload.toContentFeedUiModel()
-
-        if (contentType == ContentType.CONTENT) {
-            _userProfileContentMock.onNext(mockData.feedContentUiModel)
-        } else {
-            mockData.feedContentUiModel.filter {
-                it.contentType == contentType.type
-            }.let {
-                _userProfileContentMock.onNext(it)
-            }
-        }
-    }
-
-    private fun readJSONFromAsset(): String? {
-        val json: String?
-        try {
-            val inputStream: InputStream? = appContext.resources?.openRawResource(
-                R.raw.feed_mock
-            )
-            json = inputStream?.bufferedReader().use { it?.readText() }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
     }
 }

@@ -152,7 +152,7 @@ dependencies {
             "com.google.firebase:firebase-analytics",
             "com.google.firebase:firebase-perf",
             "com.google.firebase:firebase-core",
-            "com.google.firebase:firebase-messaging",
+            "com.google.firebase:firebase-messaging-ktx",
             "com.google.firebase:firebase-database-ktx",
             "com.google.firebase:firebase-auth-ktx",
             "com.google.firebase:firebase-crashlytics-ktx",

@@ -58,6 +58,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private var _castUserProfile = MutableLiveData<User>()
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
 
     private val _error = PublishSubject.create<Throwable>()
     override val onError: Observable<Throwable>
@@ -85,6 +87,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private var _mediaItemImage = MutableLiveData<MutableList<MediaItem>>()
     override val mediaItemImage: LiveData<MutableList<MediaItem>>
         get() = _mediaItemImage
+
+    private var _mediaImageSelected = MutableLiveData<MutableList<MediaItem>>()
+    override val mediaImageSelected: LiveData<MutableList<MediaItem>>
+        get() = _mediaImageSelected
 
     override val onSuccess: Observable<Boolean>
         get() = _onSuccess
@@ -123,23 +129,26 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private fun postCreateContent(imageList: List<Content>): Single<CreateContentUiModel> {
         return createContentSingleUseCase.execute(
             CreateContentRequest(
-                type = contentType.blockingFirst().type,
+                type = ContentType.SHORT.type,
                 payload = Payload(
-                    message = _message.blockingFirst(),
+                    message = _message.value ?: "",
                     photo = Photo(
                         contents = imageList
                     )
                 ),
-                authorId = _castUserProfile.value?.castcleId ?: "",
+                castcleId = _castUserProfile.value?.castcleId ?: "",
                 createType = ContentType.FEED.type
             )
         ).doOnSubscribe {
             _showLoading.onNext(true)
         }.doOnSuccess {
-            _showLoading.onNext(true)
+            _showLoading.onNext(false)
         }.onErrorReturn {
+            _showLoading.onNext(false)
             _error.onNext(it)
             CreateContentUiModel()
+        }.doFinally {
+            _showLoading.onNext(false)
         }
     }
 
@@ -153,13 +162,15 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
                         contents = _mediaItemImage.value?.toRequestPhoto() ?: emptyList()
                     )
                 ),
-                authorId = _castUserProfile.value?.castcleId ?: "",
+                castcleId = _castUserProfile.value?.castcleId ?: "",
                 createType = ContentType.FEED.type
             )
         ).doOnSubscribe {
             _showLoading.onNext(true)
         }.doOnSuccess {
-            _showLoading.onNext(true)
+            _showLoading.onNext(false)
+        }.doFinally {
+            _showLoading.onNext(false)
         }
     }
 
@@ -189,22 +200,16 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
                 _imageCover.onNext("")
             }
 
-    override fun validateImageContent(imageList: List<String>?) {
-    }
-
     override fun validateImageCover(imageCover: String) {
     }
 
     override fun fetchCastUserProfile(): Completable {
         return cachedUserProfileSingleUseCase
             .execute(Unit)
-            .doOnSubscribe { _showLoading.onNext(true) }
             .doOnNext {
                 _castUserProfile.value = it.get()
                 _userProfileUiModel.value = it.get().toContentUiModel()
-            }
-            .doFinally { _showLoading.onNext(false) }
-            .doOnError(_error::onNext).firstOrError()
+            }.doOnError(_error::onNext).firstOrError()
             .ignoreElement()
     }
 
@@ -214,12 +219,9 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         } else {
             getImagePathMapUseCase.execute(Unit)
                 .doOnError { _error.onNext(it) }
-                .doOnSubscribe { _showLoading.onNext(true) }
                 .doOnSuccess {
                     setMediaItem(it)
-                }
-                .doFinally { _showLoading.onNext(false) }
-                .ignoreElement()
+                }.ignoreElement()
         }
     }
 
@@ -260,20 +262,23 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         }?.apply {
             isSelected = !isSelected
         }?.let {
-            if (it.isSelected) {
-                _imageContent.onNext(listOf(Content(id)))
-            } else {
-                _imageContent.onNext(emptyList())
-            }
             setMediaItem(updateImage.toList())
+            setImageSelected()
+        }
+    }
+
+    private fun setImageSelected() {
+        val updateImage = _mediaItemImage.value
+        updateImage?.filter {
+            it.isSelected
+        }?.let {
+            _mediaImageSelected.value = it.toMutableList()
         }
     }
 
     private fun takeImageSelected(): List<String> {
-        val updateImage = _mediaItemImage.value
-        return updateImage?.filter {
-            it.isSelected
-        }?.toListUri() ?: emptyList()
+        val updateImage = _mediaImageSelected.value
+        return updateImage?.toListUri() ?: emptyList()
     }
 
     override fun quoteCasteContent(contentUiModel: ContentUiModel) {
@@ -302,6 +307,12 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
             ContentUiModel()
         }.ignoreElement()
     }
+
+    override fun onClearState() {
+        _messageLength.onNext(Pair(0, MAX_LIGHTH))
+        setMediaItem(emptyList())
+    }
 }
 
 const val MAX_LIGHTH = 280
+const val LIMIT_IMAGE_SELECTED = 4

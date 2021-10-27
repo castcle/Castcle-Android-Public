@@ -3,8 +3,11 @@ package com.castcle.ui.setting.changepassword.complete
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
+import com.castcle.android.R
 import com.castcle.android.databinding.FragmentCompletedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
@@ -39,6 +42,16 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+
+    private val completeBundle: CompleteFragmentArgs by navArgs()
+
+    private val onDeletePage: Boolean
+        get() = completeBundle.onDeletePage
+
+    private val onDeleteAccount: Boolean
+        get() = completeBundle.onDeleteAccount
+
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentCompletedBinding
         get() = { inflater, container, attachToRoot ->
@@ -53,12 +66,51 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
 
     override fun initViewModel() = Unit
 
-    override fun setupView() = Unit
+    override fun setupView() {
+        with(binding) {
+            when {
+                onDeletePage -> {
+                    tvChangePasswrdTitle.text = localizedResources.getString(
+                        R.string.complete_message_delete_page
+                    )
+                    btNext.text = localizedResources.getString(
+                        R.string.complete_message_delete_button_setting
+                    )
+                }
+                onDeleteAccount -> {
+                    tvChangePasswrdTitle.text = localizedResources.getString(
+                        R.string.complete_message_delete_account
+                    )
+                    btNext.text = localizedResources.getString(
+                        R.string.complete_message_delete_button
+                    )
+                }
+                else -> {
+                }
+            }
+        }
+    }
 
     override fun bindViewEvents() {
         binding.btNext.isActivated = true
         binding.btNext.subscribeOnClick {
-            onBoardNavigator.navigateToSettingFragment()
+            handlerOnCompleteNavigate()
+        }
+    }
+
+    private fun handlerOnCompleteNavigate() {
+        when {
+            onDeletePage -> {
+                onBoardNavigator.navigateToSettingFragment()
+            }
+            onDeleteAccount -> {
+                viewModel.onLogout(requireActivity())
+                    .subscribe()
+                    .addToDisposables()
+            }
+            else -> {
+                onBoardNavigator.navigateToSettingFragment()
+            }
         }
     }
 

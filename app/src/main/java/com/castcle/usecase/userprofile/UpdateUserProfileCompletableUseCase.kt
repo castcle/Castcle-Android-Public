@@ -41,6 +41,6 @@ class UpdateUserProfileCompletableUseCase @Inject constructor(
     ::Ignored
 ) {
     override fun create(input: UserUpdateRequest): Completable {
-        return userProfileRepository.uppdateUserProfile(input)
+        return userProfileRepository.upDateUserProfile(input)
     }
 }
