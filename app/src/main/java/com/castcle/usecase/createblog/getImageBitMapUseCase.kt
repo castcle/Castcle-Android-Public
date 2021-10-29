@@ -1,7 +1,8 @@
 package com.castcle.usecase.createblog
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.ContentUris
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
@@ -65,10 +66,7 @@ class GetImagePathMapUseCase @Inject constructor(
     }
 
     private fun getPathStream(): List<MediaItem> {
-        var imagePath = queryPathImage(uriInternal, SELECT_PATH_DCMI)
-        if (imagePath.isEmpty()) {
-            imagePath = queryPathImage(uriExternal, SELECT_PATH)
-        }
+        val imagePath = queryPathImage()
         imagePath.add(
             0, MediaItem.OpenCamera(
                 id = "",
@@ -80,15 +78,21 @@ class GetImagePathMapUseCase @Inject constructor(
         return imagePath.toList()
     }
 
-    private fun queryPathImage(uriInternal: Uri, path: Array<String>): MutableList<MediaItem> {
+    @SuppressLint("Recycle")
+    private fun queryPathImage(): MutableList<MediaItem> {
         val allImagrPath = mutableListOf<MediaItem>()
-        val mCursor: Cursor?
 
         if (Build.VERSION.SDK_INT >= BUILD_VERSION_CODE_Q) {
+            val sourceUri = getSourceUri()
+            val queryString = getQuerySelection()
 
-            mCursor = appContext.contentResolver.query(
-                uriInternal,
-                null,
+//            val cursor = appContext.contentResolver.query(
+//                sourceUri, null,
+//                queryString, null, MediaStore.Images.Media.DATE_ADDED
+//            )
+            val cursor =appContext.contentResolver.query(
+                uriExternal,
+                projection,
                 MediaStore.Images.Media.MIME_TYPE + "=? or "
                     + MediaStore.Images.Media.MIME_TYPE + "=? or "
                     + MediaStore.Images.Media.MIME_TYPE + "=?",
@@ -96,39 +100,40 @@ class GetImagePathMapUseCase @Inject constructor(
                 MediaStore.Images.Media.DATE_ADDED
             )
 
-            mCursor?.use { cursor ->
-                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                val dateModifiedColumn =
-                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
-                val sizeColumn =
-                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
-                val displayName =
-                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+            if (cursor?.moveToLast() == true) {
+                do {
+                    val path = cursor.getString(cursor.getColumnIndex(projection[2]))
 
-                while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idColumn)
-                    val displayName = cursor.getString(displayName)
+                    val id = cursor.getLong(cursor.getColumnIndex(projection[0]))
+                    val name = cursor.getString(cursor.getColumnIndex(projection[1]))
+                    val dateModifiedColumn =
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
                     val dateModified =
                         Date(TimeUnit.SECONDS.toMillis(cursor.getLong(dateModifiedColumn)))
-                    val size = cursor.getLong(sizeColumn)
+
                     val contentUri = ContentUris.withAppendedId(
-                        uriInternal,
+                        uriExternal,
                         id
                     )
-                    val item = ImageMediaItem(
-                        0,
-                        id.toString(),
-                        contentUri.toString(),
-                        displayName,
-                        size,
-                        dateModified
-                    )
-                    allImagrPath.add(item)
+
+                    if (name != null) {
+                        val item = ImageMediaItem(
+                            0,
+                            id.toString(),
+                            contentUri.toString(),
+                            name,
+                            dateModified
+                        )
+                        allImagrPath.add(item)
+                    }
+
                     if (allImagrPath.size == LIMIT_QUERY) {
                         break
                     }
-                }
+
+                } while (cursor.moveToPrevious())
             }
+            cursor?.close()
         } else {
             val parentDir = appContext.getExternalFilesDir(
                 Environment.DIRECTORY_PICTURES
@@ -145,6 +150,34 @@ class GetImagePathMapUseCase @Inject constructor(
         return allImagrPath
     }
 
+    private fun makeSafeFile(path: String?): File? {
+        return if (path == null || path.isEmpty()) {
+            null
+        } else try {
+            File(path)
+        } catch (ignored: Exception) {
+            null
+        }
+    }
+
+    private val projection = arrayOf(
+        MediaStore.Images.Media._ID,
+        MediaStore.Images.Media.DISPLAY_NAME,
+        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+        MediaStore.Images.Media.DATE_ADDED
+    )
+
+    private fun getSourceUri(): Uri {
+        return MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    }
+
+    private fun getQuerySelection(): String? {
+        return (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE + " OR "
+            + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+            + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+    }
+
     @SuppressLint("SimpleDateFormat")
     private fun dateToTimestamp(day: Int, month: Int, year: Int): Long =
         SimpleDateFormat("dd.MM.yyyy").let { formatter ->
@@ -159,8 +192,6 @@ private val uriInternal = MediaStore.Images.Media.INTERNAL_CONTENT_URI
 private val uriExternal = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 private const val RECEIPT_SCREENSHOT_PREFIX_NAME = "Receipt-"
 private const val RECEIPT_SCREENSHOT_EXTENSION = ".png"
-private val SELECT_PATH = arrayOf("Pictures/%")
-private val SELECT_PATH_DCMI = arrayOf("%" + "/storage/emulated/0/" + "%")
-private const val SORT_ORDER = "${MediaStore.MediaColumns.DATE_ADDED} DESC"
 private const val BUILD_VERSION_CODE_Q = 29
-private const val LIMIT_QUERY = 15
+private const val LIMIT_QUERY = 30
+private const val DEFAULT_FOLDER_NAME = "SDCARD"

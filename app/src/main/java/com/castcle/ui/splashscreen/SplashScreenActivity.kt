@@ -10,6 +10,7 @@ import com.castcle.android.databinding.ActivitySplashScreenBinding
 import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.OnBoardActivity
+import com.google.firebase.FirebaseApp
 import io.reactivex.rxkotlin.subscribeBy
 
 @SuppressLint("CustomSplashScreen")
@@ -19,6 +20,7 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
 
         requestLogin()
     }

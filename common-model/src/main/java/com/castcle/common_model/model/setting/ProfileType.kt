@@ -26,7 +26,7 @@ package com.castcle.common_model.model.setting
 
 enum class ProfileType(val type: String) {
     PROFILE_TYPE_ME("me"),
-    PROFILE_TYPE_YOU("you"),
+    PROFILE_TYPE_PEOPLE("people"),
     PROFILE_TYPE_PAGE("page"),
     NON("")
 }

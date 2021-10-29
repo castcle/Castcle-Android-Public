@@ -97,7 +97,7 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
-                        viewType = ProfileType.PROFILE_TYPE_ME.type,
+                        viewType = ProfileType.PROFILE_TYPE_PEOPLE.type,
                         type = ContentType.BLOG.type
                     )
                 )
@@ -113,7 +113,7 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
             ProfileType.PROFILE_TYPE_ME -> {
                 onProfileMe.invoke()
             }
-            ProfileType.PROFILE_TYPE_YOU -> {
+            ProfileType.PROFILE_TYPE_PEOPLE -> {
                 onProfileYou.invoke()
             }
             ProfileType.PROFILE_TYPE_PAGE -> {

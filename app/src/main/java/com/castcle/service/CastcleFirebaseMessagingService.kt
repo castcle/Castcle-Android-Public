@@ -1,12 +1,12 @@
 package com.castcle.service
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.castcle.android.BuildConfig
 import com.castcle.service.notification.NotificationManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.android.AndroidInjection
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -37,6 +37,11 @@ import javax.inject.Inject
 class CastcleFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var notificationManager: NotificationManager
+
+    override fun onCreate() {
+        AndroidInjection.inject(this)
+        super.onCreate()
+    }
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)

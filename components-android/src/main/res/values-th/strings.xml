@@ -192,4 +192,22 @@
     <string name="delete_page_fragment_continue">Continue</string>
     <string name="complete_message_delete_page">ระบบได้ลบเพจของคุณทิ้งโดยถาวรแล้ว</string>
     <string name="complete_message_delete_account">ระบบได้ลบบัญชีของคุณทิ้งโดยถาวรแล้ว</string>
+    <string name="delete_page_fragment_title_confirm">Confirm Delete Account</string>
+    <string name="delete_page_fragment_title_confirm_page">Confirm Delete Page</string>
+    <string name="delete_page_fragment_description_page">Deleting the page can\'t cancel</string>
+    <string name="delete_page_fragment_title_on_delete">Confirm that this is your Account</string>
+    <string name="delete_page_fragment_title_on_delete_page">Confirm that this is your Page</string>
+    <string name="delete_page_fragment_description_on_delete">Before you permanently delete your Account,
+        please enter your password.</string>
+    <string name="complete_message_delete_button">Back To Home Feed</string>
+    <string name="complete_message_delete_button_setting">Back To Setting</string>
+    <string name="delete_page_fragment_sub_description_account">When you delete a Account You will not be able to retrieve it.</string>
+    <string name="general_notification_channel_name">Castcle</string>
+    <string name="general_notification_channel_description">General</string>
+    <string name="message_loading_create_cast">On post loading…</string>
+    <string name="notification_title_action">Clear All</string>
+    <string name="notification_title">Notifications</string>
+    <string name="notification_tab_profile">Profile</string>
+    <string name="notification_tab_page">Page</string>
+    <string name="notification_tab_system">System</string>
 </resources>

@@ -5,6 +5,7 @@ import com.castcle.analytics.appcenter.AppCenterAnalytics
 import com.castcle.authen_android.di.components.DaggerAuthenticateComponent
 import com.castcle.di.component.DaggerAppComponent
 import com.castcle.di.component.DaggerStorageComponent
+import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import io.reactivex.exceptions.UndeliverableException
@@ -22,7 +23,7 @@ class CastcleApplication : DaggerApplication(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-
+        AndroidThreeTen.init(this)
         appCenterAnalytics.start()
     }
 

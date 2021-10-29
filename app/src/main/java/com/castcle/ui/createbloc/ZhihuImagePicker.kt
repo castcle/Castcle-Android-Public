@@ -1,6 +1,8 @@
 package com.castcle.ui.createbloc
 
 import android.content.Context
+import com.castcle.common_model.model.createblog.MediaItem
+import com.esafirm.imagepicker.model.Image
 import com.qingmei2.rximagepicker.entity.Result
 import com.qingmei2.rximagepicker.entity.sources.Camera
 import com.qingmei2.rximagepicker.entity.sources.Gallery
@@ -54,4 +56,26 @@ interface ZhihuImagePicker {
 
     @Camera
     fun openCamera(context: Context): Observable<Result>
+}
+
+fun Image.toMediaItem(): MediaItem {
+    return MediaItem.ImageMediaItem(
+        imgRes = 0,
+        id = id.toString(),
+        uri = uri.toString(),
+        displayName = name,
+        isSelected = true
+    )
+}
+
+fun List<Image>.toMediaItemList(): List<MediaItem> {
+    return map {
+        MediaItem.ImageMediaItem(
+            imgRes = 0,
+            id = it.id.toString(),
+            uri = it.uri.toString(),
+            displayName = it.name,
+            isSelected = true
+        )
+    }
 }

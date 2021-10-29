@@ -52,6 +52,14 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
+        <action
+            android:id="@+id/actionSettingFragmentToNotificationFragment"
+            app:destination="@id/notificationFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <deepLink app:uri="@string/nav_deep_link_setting" />
     </fragment>
 
@@ -166,4 +174,9 @@
             app:popUpTo="@id/settingFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.castcle.ui.setting.notification.NotificationFragment"
+        tools:layout="@layout/fragment_notification" />
 </navigation>

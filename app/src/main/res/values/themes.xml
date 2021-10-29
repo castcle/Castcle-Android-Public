@@ -75,11 +75,19 @@
         <item name="android:background">@color/black_nero</item>
     </style>
 
-    <style name="ContentToolBarStyle" parent="Widget.MaterialComponents.Toolbar.Surface">
+    <style name="NotificationTabStyle" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/AppTheme.TextStyle</item>
         <item name="tabTextColor">@color/white</item>
         <item name="tabSelectedTextColor">@color/blue</item>
-        <item name="tabIndicatorColor">@color/blue</item>
+        <item name="tabIndicatorColor">@color/transparent</item>
+        <item name="android:background">@color/black_nero</item>
+    </style>
+
+    <style name="ContentToolBarStyle" parent="Widget.MaterialComponents.Toolbar.Surface">
+        <item name="tabTextAppearance">@style/AppTheme.TextStyle</item>
+        <item name="tabTextColor">@color/gray_light</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="indicatorInset">@color/transparent</item>
         <item name="tabIndicatorHeight">3dp</item>
         <item name="android:background">@color/transparent</item>
     </style>
@@ -87,6 +95,12 @@
     <style name="AppTheme.TextStyle" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
         <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="ImagePickerTheme" parent="ef_CustomToolbarTheme">
+        <item name="colorPrimary">#607D8B</item>
+        <item name="colorPrimaryDark">#455A64</item>
+        <item name="colorAccent">@color/ef_colorAccent</item>
     </style>
 
 </resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbarGreetingCommon"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/action_bar_height"
+    android:background="?attr/castclePrimaryColor">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivToolbarLogoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_arrow_left" />
+
+    <TextView
+        style="@style/AppTextKanit.Medium"
+        android:id="@+id/tvToolbarTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvToolbarTitleAction"
+        app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/notification_title" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Small"
+        android:id="@+id/tvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:background="@drawable/bg_notification_count"
+        android:padding="@dimen/_3sdp"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tvToolbarTitle"
+        app:layout_constraintStart_toEndOf="@id/tvToolbarTitle"
+        app:layout_constraintTop_toTopOf="@id/tvToolbarTitle"
+        tools:ignore="MissingConstraints"
+        tools:text="3" />
+
+    <TextView
+        style="@style/AppTextKanitLight.Small"
+        android:id="@+id/tvToolbarTitleAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/notification_title_action"
+        android:textColor="@color/blue"
+        android:textAlignment="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,8 +10,7 @@ import com.castcle.components_android.ui.CORNER
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.extensions.loadGranularRoundedCornersContentImage
 import com.castcle.extensions.loadRoundedCornersImageUri
-import com.castcle.ui.common.events.ItemClickable
-import com.castcle.ui.common.events.ItemClickableImpl
+import com.castcle.ui.common.events.*
 import com.google.android.flexbox.AlignSelf
 import com.google.android.flexbox.FlexboxLayoutManager
 import kotlinx.android.extensions.LayoutContainer
@@ -41,7 +40,7 @@ import kotlinx.android.extensions.LayoutContainer
 //  Created by sklim on 16/9/2021 AD at 13:41.
 
 class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewHolder>(),
-    ItemClickable<MediaItem> by ItemClickableImpl(), DiffUpdateAdapter {
+    ItemClickable<ImageItemClick> by ItemClickableImpl(), DiffUpdateAdapter {
 
     private var selectedPosition = 0
 
@@ -82,7 +81,12 @@ class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewH
 
         private fun bindOnClick(itemImage: MediaItem) {
             binding.ivCancelImage.subscribeOnClick {
-                notifyItemClick(itemImage)
+                notifyItemClick(
+                    ImageItemClick.RemoveImageClick(
+                        bindingAdapterPosition,
+                        itemImage
+                    )
+                )
             }
         }
 

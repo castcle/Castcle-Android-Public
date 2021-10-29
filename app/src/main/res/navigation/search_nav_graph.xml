@@ -52,6 +52,10 @@
         android:name="com.castcle.ui.search.trend.TrendFragment"
         tools:layout="@layout/fragment_trend">
 
+        <action
+            android:id="@+id/actionTrendFragmentToLoginFragment"
+            app:destination="@id/loginFragment" />
+
         <argument
             android:name="trendSlug"
             android:defaultValue=""

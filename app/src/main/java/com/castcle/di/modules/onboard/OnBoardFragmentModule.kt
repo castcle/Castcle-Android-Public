@@ -6,6 +6,7 @@ import com.castcle.di.modules.common.dialog.*
 import com.castcle.di.modules.feed.FeedDetailFragmentViewModelModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
 import com.castcle.di.modules.login.*
+import com.castcle.di.modules.notification.NotificationFragmentViewModelModule
 import com.castcle.di.modules.profile.*
 import com.castcle.di.modules.search.*
 import com.castcle.di.modules.setting.*
@@ -38,6 +39,10 @@ import com.castcle.ui.setting.changepassword.complete.CompleteFragment
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragment
 import com.castcle.ui.setting.deleteaccount.DeletePageFragment
 import com.castcle.ui.setting.language.LanguageAppFragment
+import com.castcle.ui.setting.notification.NotificationFragment
+import com.castcle.ui.setting.notification.page.ProfileNotificationFragment
+import com.castcle.ui.setting.notification.profile.PageNotificationFragment
+import com.castcle.ui.setting.notification.system.SystemNotificationFragment
 import com.castcle.ui.setting.page.GreetingPageFragment
 import com.castcle.ui.setting.profile.SettingProfileFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
@@ -251,4 +256,20 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [ProfileChooseDialogViewModelModule::class])
     fun profileChooseDialogFragment(): ProfileChooseDialogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [NotificationFragmentViewModelModule::class])
+    fun notificationFragment(): NotificationFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [NotificationFragmentViewModelModule::class])
+    fun profileNotificationFragment(): ProfileNotificationFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [NotificationFragmentViewModelModule::class])
+    fun pageNotificationFragment(): PageNotificationFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [NotificationFragmentViewModelModule::class])
+    fun systemnotificationFragment(): SystemNotificationFragment
 }

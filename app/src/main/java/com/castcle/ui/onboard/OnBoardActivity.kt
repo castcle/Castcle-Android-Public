@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu.NONE
 import androidx.lifecycle.LiveData
@@ -28,7 +29,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
-import timber.log.Timber
 import javax.inject.Inject
 
 class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
@@ -189,6 +189,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.dialogChooseFragment,
                 R.id.deletePageFragment,
                 R.id.profileChooseDialogFragment,
+                R.id.notificationFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }
@@ -237,22 +238,19 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     private fun initFirebaseToken() {
-        FirebaseMessaging
-            .getInstance()
-            .token
-            .addOnCompleteListener { task ->
-                try {
-                    val token = task.result.toString()
-                    Timber.i("====> Push notification token: $token")
-                } catch (e: Exception) {
-                    FirebaseCrashlytics.getInstance()
-                        .setCustomKey(
-                            LOG_FIREBASE_TOKEN_FAILED,
-                            e.message.toString()
-                        )
-                    e.printStackTrace()
-                }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            try {
+                val token = task.result.toString()
+                Log.i("token", "Push notification token: $token")
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance()
+                    .setCustomKey(
+                        LOG_FIREBASE_TOKEN_FAILED,
+                        e.message.toString()
+                    )
+                e.printStackTrace()
             }
+        }
     }
 
     companion object {
@@ -275,3 +273,6 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
 
 private const val LOG_FIREBASE_TOKEN_FAILED = "log-firebase-token-failed"
 private const val EXTRA_SHOULD_POP_STACK_TO_ENTRY = "shouldPopStackToEntry"
+private const val APP_ID = "1:946784514991:android:ac2a54362ffcb0f71ef55a"
+private const val PROJECT_ID = "castcle-dev"
+private const val PROJECT_NAME = "Castcle-DEV"

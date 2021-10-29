@@ -12,13 +12,13 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.search.SearchUiModel
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
-import com.castcle.networking.api.user.PROFILE_TYPE_ME
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
@@ -27,6 +27,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
@@ -126,7 +127,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }
 
         with(viewModel) {
-            launchOnLifecycleScope {
+            viewLifecycleOwner.lifecycleScope.launch {
                 feedContentPage.collectLatest {
                     adapterPagingCommon.submitData(it)
                 }
@@ -139,8 +140,24 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
                 handleEmptyState(displayEmpty)
+                if (!displayEmpty) {
+                    stopLoadingShimmer()
+                }
             }
         }
+
+//        val isLoading = loadStates.refresh is LoadState.Loading
+//        val isError = loadStates.refresh is LoadState.Error
+//        val isNotItem = loadStates.refresh is LoadState.NotLoading &&
+//            adapterPagingCommon.itemCount == 0
+//        if (isError || isNotItem) {
+//            handleEmptyState(true)
+//        }else{
+//            handleEmptyState(false)
+//        }
+//        if(!isLoading){
+//            stopLoadingShimmer()
+//        }
 
         with(binding.empState) {
             itemClick.subscribe {
@@ -155,14 +172,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleEmptyState(show: Boolean) {
         with(binding) {
-            rvFeedContent.visibleOrGone(!show)
             clFilter.visibleOrGone(!show)
         }
         with(binding.empState) {
             visibleOrGone(show)
             bindUiState(EmptyState.FEED_EMPTY)
         }
-        stopLoadingShimmer()
     }
 
     private fun stopLoadingShimmer() {
@@ -186,17 +201,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         val deeplinkType = if (contentUiModel.payLoadUiModel.author.castcleId ==
             viewModel.userProfile.value?.castcleId
         ) {
-            DeepLinkTarget.USER_PROFILE_YOU
+            ProfileType.PROFILE_TYPE_ME.type
         } else {
-            DeepLinkTarget.USER_PROFILE_PAGE
+            contentUiModel.payLoadUiModel.author.type
         }
-        val deepLink = makeDeepLinkUrl(
-            requireContext(), Input(
-                type = deeplinkType,
-                contentData = contentUiModel.payLoadUiModel.author.castcleId
-            )
-        ).toString()
-        navigateByDeepLink(deepLink)
+        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, deeplinkType)
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
@@ -299,7 +308,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }.run(binding.wtWhatYouMind::bindUiModel)
 
         binding.wtWhatYouMind.clickStatus.subscribe {
-            navigateToProfile(user.castcleId, PROFILE_TYPE_ME)
+            navigateToProfile(user.castcleId, ProfileType.PROFILE_TYPE_ME.type)
         }.addToDisposables()
     }
 

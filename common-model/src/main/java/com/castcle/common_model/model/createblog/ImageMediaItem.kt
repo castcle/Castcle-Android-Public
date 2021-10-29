@@ -38,7 +38,6 @@ sealed class MediaItem(
         override var id: String,
         override var uri: String,
         override var displayName: String,
-        var size: Long,
         var date: Date? = null,
         override var isSelected: Boolean = false
     ) : MediaItem(id, uri, displayName, imgRes, isSelected)
@@ -63,10 +62,9 @@ sealed class MediaItem(
 fun ArrayList<String>.toImageMediaItem(): List<MediaItem> {
     return map {
         MediaItem.ImageMediaItem(
-            uri = it,
-            size = 0,
-            id = UUID.randomUUID().toString(),
             imgRes = 0,
+            id = UUID.randomUUID().toString(),
+            uri = it,
             displayName = ""
         )
     }

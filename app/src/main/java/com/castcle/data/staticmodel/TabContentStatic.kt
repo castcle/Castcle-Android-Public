@@ -73,4 +73,16 @@ object TabContentStatic {
             featureSlug = "photo"
         )
     )
+
+    val tabNotification = mutableListOf(
+        TabContentUiModel(
+            tabNameRes = R.string.notification_tab_profile,
+        ),
+        TabContentUiModel(
+            tabNameRes = R.string.notification_tab_page,
+        ),
+        TabContentUiModel(
+            tabNameRes = R.string.notification_tab_system,
+        )
+    )
 }

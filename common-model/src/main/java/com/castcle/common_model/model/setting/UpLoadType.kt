@@ -26,7 +26,7 @@ package com.castcle.common_model.model.setting
 
 enum class UpLoadType(val type: String) {
     UPLOAD_AVATAR("avatar"),
-    UPLOAD_PAGE_AVATAR("avatar"),
+    UPLOAD_PAGE_AVATAR("avatar-page"),
     UPLOAD_COVER("cover"),
-    UPLOAD_PAGE_COVER("cover"),
+    UPLOAD_PAGE_COVER("cover-page"),
 }

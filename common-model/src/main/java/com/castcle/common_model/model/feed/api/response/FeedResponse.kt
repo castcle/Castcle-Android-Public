@@ -1,8 +1,12 @@
 package com.castcle.common_model.model.feed.api.response
 
 import com.castcle.common_model.model.feed.QuoteCast
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.ImageResponse
+import com.castcle.common_model.model.userprofile.Verified
+import com.google.gson.*
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.lang.reflect.Type
 
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -67,8 +71,8 @@ data class FeedViewContentResponse(
     @SerializedName("aggregator") var aggregator: Aggregator,
     @SerializedName("type") var type: String,
     @SerializedName("payload") var payload: ViewPayloadResponse,
-    @SerializedName("created") var created: String,
-    @SerializedName("updated") var updated: String,
+    @SerializedName("createAt") var created: String,
+    @SerializedName("updateAt") var updated: String,
 )
 
 data class Feature(
@@ -117,15 +121,15 @@ data class ViewPayloadResponse(
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: ViewAuthor,
-    @SerializedName("createdAt") var created: String,
-    @SerializedName("updatedAt") var updated: String,
+    @SerializedName("createAt") var created: String,
+    @SerializedName("updateAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 
 data class ReplyResponse(
     @SerializedName("id") var id: String,
     @SerializedName("message") var message: String,
-    @SerializedName("createdAt") var created: String,
+    @SerializedName("createAt") var created: String,
     @SerializedName("author") var author: Author,
 )
 
@@ -133,9 +137,40 @@ data class PayloadContent(
     @SerializedName("header") var header: String? = null,
     @SerializedName("message") var message: String? = null,
     @SerializedName("content") var content: String? = null,
-    @SerializedName("photo") var photo: PhotoResponse? = null,
+    @SerializedName("photo")
+    var photo: JsonElement? = null,
     @SerializedName("link") var linkResponse: List<LinkResponse>? = null
 )
+
+sealed class PhotoDynamicResponse() {
+    class PhotoObjectResponse(
+        @SerializedName("photo") var photo: PhotoResponse? = null
+    ) : PhotoDynamicResponse()
+
+    class PhotoArrayResponse(
+        @SerializedName("photo") var photo: List<PhotoResponse>? = null
+    ) : PhotoDynamicResponse()
+}
+
+class CustomDeserializer : JsonDeserializer<PhotoDynamicResponse> {
+
+    @Throws(JsonParseException::class)
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
+    ): PhotoDynamicResponse {
+        return when {
+            json.isJsonObject -> {
+                PhotoDynamicResponse.PhotoObjectResponse()
+            }
+            json.isJsonArray -> {
+                PhotoDynamicResponse.PhotoArrayResponse()
+            }
+            else -> PhotoDynamicResponse.PhotoObjectResponse()
+        }
+    }
+}
 
 data class Participant(
     @SerializedName("type") var type: String,
@@ -159,7 +194,7 @@ data class ViewAuthor(
     @SerializedName("type") var type: String,
     @SerializedName("displayName") var displayName: String? = null,
     @SerializedName("castcleId") var castcleId: String? = null,
-    @SerializedName("avatar") var avatar: String? = null,
+    @SerializedName("avatar") var avatar: ImageResponse? = null,
     @SerializedName("verified") var verified: Verified? = null,
     @SerializedName("followed") var followed: Boolean? = null
 )
@@ -194,5 +229,5 @@ data class RecastedResponse(
 
 data class PhotoResponse(
     @SerializedName("contents") var contents: List<ImageResponse>? = null,
-    @SerializedName("cover") var cover: Contents? = null
+    @SerializedName("cover") var cover: ImageResponse? = null
 )

@@ -8,8 +8,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.extensions.*
-import com.castcle.ui.common.events.ItemClickable
-import com.castcle.ui.common.events.ItemClickableImpl
+import com.castcle.ui.common.events.*
 import kotlinx.android.extensions.LayoutContainer
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -37,7 +36,7 @@ import kotlinx.android.extensions.LayoutContainer
 //  Created by sklim on 16/9/2021 AD at 10:54.
 
 class ImageGalleryAdapter : RecyclerView.Adapter<ImageGalleryAdapter.FilterViewHolder>(),
-    ItemClickable<MediaItem> by ItemClickableImpl(), DiffUpdateAdapter {
+    ItemClickable<ImageItemClick> by ItemClickableImpl(), DiffUpdateAdapter {
 
     private var selectedPosition = 0
 
@@ -83,14 +82,20 @@ class ImageGalleryAdapter : RecyclerView.Adapter<ImageGalleryAdapter.FilterViewH
 
         private fun bindOnClick(itemImage: MediaItem) {
             itemView.subscribeOnClick {
-                notifyItemClick(itemImage)
+                notifyItemClick(
+                    ImageItemClick.AddImageClick(
+                        bindingAdapterPosition,
+                        itemImage
+                    )
+                )
             }
         }
 
         private fun bindOpenImage(mediaItemCamera: MediaItem.ImageMediaItem) {
             binding.clBackground.isActivated = mediaItemCamera.isSelected
-            binding.ivImage.loadRoundedCornersImageUri(mediaItemCamera.uri)
+            binding.ivImage.visible()
             binding.ivImageAction.gone()
+            binding.ivImage.loadRoundedCornersImageUri(mediaItemCamera.uri)
         }
 
         private fun bindOpenCamera(itemCamera: MediaItem.OpenCamera) {

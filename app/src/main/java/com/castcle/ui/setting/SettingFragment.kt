@@ -9,7 +9,8 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.setting.*
+import com.castcle.common_model.model.setting.PageUiModel
+import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.StaticSeetingMenu
@@ -101,7 +102,7 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                     context?.getString(R.string.setting_noti_count)?.format("3")
                 tvCount.text = "3"
                 clNotiication.subscribeOnClick {
-
+                    navigateToNotificationFragment()
                 }
             }
             mtMenuSetting.bindingMenu(settingUiModel)
@@ -109,6 +110,10 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                 handleMenuClick(it)
             }.addToDisposables()
         }
+    }
+
+    private fun navigateToNotificationFragment() {
+        onBoardNavigator.navigateToNotificationFragment()
     }
 
     private fun handleMenuClick(menuClick: TemplateClicks?) {

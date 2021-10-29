@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "5039721996",
+    "project_id": "castcle-stg",
+    "storage_bucket": "castcle-stg.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5039721996:android:d2f22cc3e4bdac93aaa829",
+        "android_client_info": {
+          "package_name": "com.castcle.android.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5039721996-77tsfvclr32305kpolv39od1kvpi0kt4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuNALKZ5YqC-XvuvaA7f2Osjw02KW9BDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5039721996-77tsfvclr32305kpolv39od1kvpi0kt4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "5039721996-aca1hncveoi0u824p4onrtriulnsh7pc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.castcle.ios.stgs"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

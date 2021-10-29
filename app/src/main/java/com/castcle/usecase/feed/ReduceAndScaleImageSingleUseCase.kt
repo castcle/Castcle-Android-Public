@@ -9,7 +9,7 @@ import androidx.core.net.toUri
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.userprofile.Content
 import com.castcle.data.error.Ignored
-import com.castcle.extensions.*
+import com.castcle.extensions.toBase64String
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
 import java.io.File
@@ -64,9 +64,7 @@ class ReduceAndScaleImageSingleUseCase @Inject constructor(
 
         val bitMaps = ImageDecoder.decodeBitmap(
             source
-        ) { decoder, _, _ ->
-            decoder.setTargetSize(MAX_IMAGE_WIDTH, MAX_IMAGE_HGIHT)
-        }
+        )
 
         val tempFile = File.createTempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX, context.cacheDir)
         bitMaps.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, tempFile.outputStream())

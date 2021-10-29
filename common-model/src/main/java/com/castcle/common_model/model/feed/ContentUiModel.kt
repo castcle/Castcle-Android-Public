@@ -3,7 +3,11 @@ package com.castcle.common_model.model.feed
 import android.os.Parcelable
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.api.response.*
+import com.castcle.common_model.model.userprofile.ImageResponse
 import com.castcle.common_model.model.userprofile.User
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -67,7 +71,7 @@ fun ViewPayloadResponse.toPayloadUiModel(): PayLoadUiModel {
         contentId = id,
         headerFeed = payload.header ?: "",
         contentFeed = payload.content ?: "",
-        photo = payload.photo?.toPhotoUiMode() ?: PhotoUiModel(),
+        photo = dynamicPhotoType(payload.photo),
         contentMessage = payload.message ?: "",
         created = created,
         updated = updated,
@@ -85,6 +89,33 @@ fun ViewPayloadResponse.toPayloadUiModel(): PayLoadUiModel {
             }
         }
     )
+}
+
+private val jsonObjectType = object : TypeToken<PhotoResponse>() {}.type
+
+private val jsonArrayType = object : TypeToken<List<ImageResponse>>() {}.type
+
+fun dynamicPhotoType(photo: JsonElement?): PhotoUiModel {
+    val gson = Gson()
+    return when {
+        photo?.isJsonObject == true -> {
+            val objectPhoto = gson.fromJson<PhotoResponse>(photo.asJsonObject, jsonObjectType)
+            PhotoUiModel(
+                imageContent = objectPhoto.contents?.map {
+                    it.original
+                } ?: emptyList()
+            )
+        }
+        photo?.isJsonArray == true -> {
+            val listImage = gson.fromJson<List<ImageResponse>>(photo.asJsonArray, jsonArrayType)
+            PhotoUiModel(
+                imageContent = listImage.map {
+                    it.original
+                }
+            )
+        }
+        else -> PhotoUiModel()
+    }
 }
 
 @Parcelize
@@ -147,7 +178,7 @@ fun PayloadResponse.toPayloadUiModel(): PayLoadUiModel {
         contentId = id,
         headerFeed = payload.header ?: "",
         contentFeed = payload.content ?: "",
-        photo = payload.photo?.toPhotoUiMode() ?: PhotoUiModel(),
+        photo = dynamicPhotoType(payload.photo),
         contentMessage = payload.message ?: "",
         created = created,
         updated = updated,
@@ -181,7 +212,7 @@ fun PayloadContent.toPayloadContentUiModel(): PayloadContentUiModel {
         header = header,
         message = message,
         content = content,
-        photo = photo?.toPhotoUiMode(),
+        photo = dynamicPhotoType(photo),
         link = linkResponse?.map {
             it.toLinkUiModel()
         } ?: emptyList(),
@@ -225,7 +256,7 @@ data class PhotoUiModel(
 
 fun PhotoResponse.toPhotoUiMode() =
     PhotoUiModel(
-        imageCover = cover?.url ?: "",
+        imageCover = cover?.original ?: "",
         imageContent = contents?.map {
             it.original
         } ?: emptyList()
@@ -342,7 +373,7 @@ fun Author.toAuthorUiModel() =
 
 fun ViewAuthor.toAuthorUiModel() =
     AuthorUiModel(
-        avatar = avatar ?: "",
+        avatar = avatar?.original ?: "",
         displayName = displayName ?: "",
         castcleId = castcleId ?: "",
         followed = followed ?: false,

@@ -114,4 +114,6 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToProfileChooseDialogFragment()
 
     fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle)
+
+    fun navigateToNotificationFragment()
 }

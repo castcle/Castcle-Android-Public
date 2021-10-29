@@ -10,5 +10,5 @@ interface ServiceModule {
 
     @ServiceScope
     @ContributesAndroidInjector(modules = [CastcleFirebaseMessagingServiceModule::class])
-    fun castclebaseMessagingService(): CastcleFirebaseMessagingService
+    fun castcleFirebaseMessagingService(): CastcleFirebaseMessagingService
 }

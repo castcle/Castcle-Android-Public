@@ -15,6 +15,7 @@ import com.castcle.networking.api.auth.AuthenticationDataSourceModule
 import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.feed.FeedNonAuthenticationDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
+import com.castcle.networking.api.notification.NotificationDataSourceModule
 import com.castcle.networking.api.search.SearchDataSourceModule
 import com.castcle.networking.api.setting.SettingDataSourceModule
 import com.castcle.ui.base.BaseNavigator
@@ -62,7 +63,8 @@ import dagger.multibindings.IntoMap
         UserProfileDataSourceModule::class,
         SettingDataSourceModule::class,
         CommentDataSourceModule::class,
-        SearchDataSourceModule::class
+        SearchDataSourceModule::class,
+        NotificationDataSourceModule::class
     ]
 )
 abstract class OnBoardActivityModule {

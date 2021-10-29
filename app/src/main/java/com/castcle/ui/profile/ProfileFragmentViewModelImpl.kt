@@ -5,24 +5,19 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
-import com.castcle.android.R
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.repository.UserProfileRepository
-import com.castcle.data.staticmodel.ContentType
 import com.castcle.usecase.feed.LikeCommentCompletableUseCase
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.userprofile.*
-import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
-import org.json.JSONObject
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -119,7 +114,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
                 ProfileType.PROFILE_TYPE_ME.type -> {
                     userProfileDataSouce.getUserProfileContent(contentRequestHeader)
                 }
-                ProfileType.PROFILE_TYPE_YOU.type -> {
+                ProfileType.PROFILE_TYPE_PEOPLE.type -> {
                     userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
                 }
                 ProfileType.PROFILE_TYPE_PAGE.type -> {

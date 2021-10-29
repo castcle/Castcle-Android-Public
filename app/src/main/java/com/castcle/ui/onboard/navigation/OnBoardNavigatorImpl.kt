@@ -111,13 +111,17 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToLoginFragment() {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
-                if (navController.currentDestination?.id == R.id.dialogLoginFragment) {
-                    navController.navigate(
-                        R.id.actionDialogLoginFragmentToLoginFragment
-                    )
-                } else {
-                    unsupportedNavigation()
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.dialogLoginFragment -> {
+                        navController.navigate(
+                            R.id.actionDialogLoginFragmentToLoginFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
                 }
             }
             else -> {
@@ -837,6 +841,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                             ProfileFragmentArgs(castcle, profileType).toBundle()
                         )
                     }
+                    R.id.settingFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, profileType, true).toBundle()
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -1014,6 +1024,27 @@ class OnBoardNavigatorImpl @Inject constructor(
                         navController.navigate(
                             R.id.actionProfileFragmentToDeletePageFragment,
                             DeletePageFragmentArgs(profileEditBundle).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToNotificationFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.settingFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingFragmentToNotificationFragment
                         )
                     }
                     else -> {

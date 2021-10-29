@@ -44,9 +44,7 @@ fun CreateCastResponse.toCreateContentUiModel() =
         type = payload.type,
         message = payload.payload.message,
         commentedUiModel = payload.commentedResponse?.toCommentedUiModel(),
-        photo = payload.payload.photo?.let {
-            it.toPhotoUiMode()
-        } ?: PhotoUiModel(),
+        photo = dynamicPhotoType(payload.payload.photo),
         link = payload.likedResponse?.toLikedUiModel(),
         author = payload.author.toAuthorUiModel(),
         featureUiModel = payload.feature?.let {

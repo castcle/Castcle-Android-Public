@@ -135,7 +135,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
             else -> {
                 onProfileYou.invoke()
-                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_YOU)
+                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_PEOPLE)
             }
         }
         activityViewModel.setContentTypeYouId(profileId)
@@ -361,7 +361,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 profileTypeState = ProfileType.PROFILE_TYPE_PAGE
                 onBindEditImagePage()
             } else {
-                profileTypeState = ProfileType.PROFILE_TYPE_YOU
+                profileTypeState = ProfileType.PROFILE_TYPE_PEOPLE
                 binding.ivAddCover.gone()
                 btFollow.visibleOrGone(!user.followed)
                 if (btFollow.isVisible) {
@@ -547,26 +547,26 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             UpLoadType.UPLOAD_AVATAR -> {
                 ImagesRequest(
                     avatar = image.toString(),
-                    upLoadType = uploadAvatar.type
+                    upLoadType = UpLoadType.UPLOAD_AVATAR.type
                 )
             }
             UpLoadType.UPLOAD_COVER -> {
                 ImagesRequest(
                     cover = image.toString(),
-                    upLoadType = uploadAvatar.type
+                    upLoadType = UpLoadType.UPLOAD_COVER.type
                 )
             }
             UpLoadType.UPLOAD_PAGE_COVER -> {
                 ImagesRequest(
                     cover = image.toString(),
-                    upLoadType = uploadAvatar.type,
+                    upLoadType = UpLoadType.UPLOAD_PAGE_COVER.type,
                     castcleId = userProfile.castcleId
                 )
             }
             UpLoadType.UPLOAD_PAGE_AVATAR -> {
                 ImagesRequest(
                     avatar = image.toString(),
-                    upLoadType = uploadAvatar.type,
+                    upLoadType = UpLoadType.UPLOAD_PAGE_AVATAR.type,
                     castcleId = userProfile.castcleId
                 )
             }

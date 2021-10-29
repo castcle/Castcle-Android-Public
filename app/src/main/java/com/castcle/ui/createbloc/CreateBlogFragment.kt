@@ -1,7 +1,9 @@
 package com.castcle.ui.createbloc
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.graphics.Color
 import android.net.Uri
+import android.os.Environment
 import android.view.*
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
@@ -17,11 +19,14 @@ import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
+import com.castcle.ui.common.events.ImageItemClick
 import com.castcle.ui.createbloc.adapter.ImageFloxBoxAdapter
 import com.castcle.ui.createbloc.adapter.ImageGalleryAdapter
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.esafirm.imagepicker.features.*
+import com.esafirm.imagepicker.model.Image
 import com.google.android.flexbox.*
 import com.permissionx.guolindev.PermissionMediator
 import com.qingmei2.rximagepicker.core.RxImagePicker
@@ -48,6 +53,10 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     private lateinit var imageFloxBoxAdapter: ImageFloxBoxAdapter
 
     private var stateOpenGallery = false
+
+    private var imageGallerySelected: List<Image> = emptyList()
+
+    private lateinit var imagePickerLauncher: ImagePickerLauncher
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -103,6 +112,11 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         addOnBackPressedCallback {
             onBackToHomeFeed()
         }
+
+        imagePickerLauncher = registerImagePicker { result ->
+            imageGallerySelected = result
+            result.toMediaItemList()
+        }
     }
 
     private fun setupToolBar() {
@@ -126,6 +140,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun onClearState() {
         viewModel.onClearState()
+        stateOpenGallery = false
         binding.etInputMessage.setText("")
     }
 
@@ -246,20 +261,55 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         binding.tvAddImage.isActivated = isActivated
     }
 
-    private fun onImageClick(mediaItem: MediaItem) {
-        when (mediaItem) {
+    private fun onImageClick(imageItemClick: ImageItemClick) {
+        when (imageItemClick) {
+            is ImageItemClick.AddImageClick -> {
+                handlerImageClick(imageItemClick.itemImage)
+            }
+
+            is ImageItemClick.RemoveImageClick -> {
+                viewModel.input.removeMediaItem(imageItemClick.itemImage)
+            }
+        }
+    }
+
+    private fun handlerImageClick(itemImage: MediaItem) {
+        when (itemImage) {
             is MediaItem.ImageMediaItem -> {
-                onUpdateImageSelected(mediaItem)
+                onUpdateImageSelected(itemImage)
             }
             is MediaItem.OpenCamera -> {
                 requestStoragePermission {
-                    openImagePoickUp()
+                    openGallery()
                 }
             }
             is MediaItem.OpenGallery -> {
 
             }
         }
+    }
+
+    private fun openGallery() {
+        val config = ImagePickerConfig {
+            mode = ImagePickerMode.MULTIPLE // default is multi image mode
+            language = "en" // Set image picker language
+
+            theme = R.style.ef_CustomToolbarTheme
+            arrowColor = Color.BLUE // set toolbar arrow up color
+            folderTitle = "Folder" // folder selection title
+            imageTitle = "Tap to select" // image selection title
+            doneButtonText = "Apply" // done button text
+            limit = 4 // max images can be selected (99 by default)
+            isShowCamera = true // show camera or not (true by default)
+            savePath =
+                ImagePickerSavePath("Camera") // captured image directory name ("Camera" folder by default)
+            savePath = ImagePickerSavePath(
+                Environment.getExternalStorageState(),
+                isRelative = false
+            )
+            selectedImages = imageGallerySelected  // original selected images, used in multi mode
+        }
+        imagePickerLauncher.launch(config)
     }
 
     private fun openImagePoickUp() {
@@ -284,7 +334,6 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             imgRes = 0,
             id = UUID.randomUUID().toString(),
             uri = imageUrl.toString(),
-            size = 0,
             displayName = "",
             isSelected = true
         )
@@ -296,11 +345,18 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun onUpdateImageSelected(imageMediaItem: MediaItem.ImageMediaItem) {
+        viewModel.mediaImageSelected.value?.find {
+            it.uri == imageMediaItem.uri
+        }?.let {
+            viewModel.input.removeMediaItem(imageMediaItem)
+            return
+        }
         if (viewModel.mediaImageSelected.value?.size ?: 0 >= LIMIT_IMAGE_SELECTED) {
             displayErrorMessage("Is maximum selected Image")
             return
         }
-        viewModel.input.updateSelectedImage(imageMediaItem.id)
+
+        viewModel.input.updateSelectedImage(imageMediaItem)
     }
 
     private fun addImagePerivew(imageMediaItem: List<MediaItem>) {

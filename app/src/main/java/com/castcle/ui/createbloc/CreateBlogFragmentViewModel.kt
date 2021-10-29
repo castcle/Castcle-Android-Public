@@ -57,7 +57,7 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract val onError: Observable<Throwable>
 
-    abstract val showLoading:Observable<Boolean>
+    abstract val showLoading: Observable<Boolean>
 
     abstract fun onClearState()
 
@@ -66,11 +66,15 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
         fun validateImageCover(imageCover: String)
 
-        fun updateSelectedImage(id: String)
+        fun updateSelectedImage(item: MediaItem.ImageMediaItem)
 
         fun setMediaItem(mediaItem: List<MediaItem>)
 
         fun addMediaItem(mediaItem: MediaItem)
+
+        fun addMediaItemSelected(mediaItem: List<MediaItem>)
+
+        fun removeMediaItem(mediaItem: MediaItem)
 
         fun quoteCasteContent(contentUiModel: ContentUiModel)
     }

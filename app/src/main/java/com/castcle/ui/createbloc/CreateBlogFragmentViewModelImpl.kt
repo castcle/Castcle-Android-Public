@@ -247,18 +247,53 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         }?.apply {
             isSelected = !isSelected
         }?.let {
+            setImageSelected()
             setMediaItem(updateImage.toList())
             return
         }.run {
+            setImageSelected()
             updateImage?.add(mediaItem)
         }
-
     }
 
-    override fun updateSelectedImage(id: String) {
+    override fun removeMediaItem(mediaItem: MediaItem) {
+        val removeItem = _mediaImageSelected.value
+        removeItem?.indexOf(mediaItem)?.let {
+            removeItem.removeAt(it)
+            updateImageSelected(removeItem)
+        }
         val updateImage = _mediaItemImage.value
-        updateImage?.find { item ->
-            item.id == id
+        updateImage?.find { itemUpdate ->
+            itemUpdate.uri == mediaItem.uri
+        }?.apply {
+            isSelected = !isSelected
+        }?.let {
+            setMediaItem(updateImage.toList())
+        }
+    }
+
+    override fun addMediaItemSelected(mediaItem: List<MediaItem>) {
+        val updateImage = _mediaItemImage.value
+        mediaItem.forEach {
+            updateImage?.find { item ->
+                item.uri == it.uri
+            }?.apply {
+                isSelected = !isSelected
+            }?.let {
+                setMediaItem(updateImage.toList())
+            }
+        }
+        updateImageSelected(mediaItem.toMutableList())
+    }
+
+    private fun updateImageSelected(removeItem: MutableList<MediaItem>) {
+        _mediaImageSelected.value = removeItem
+    }
+
+    override fun updateSelectedImage(item: MediaItem.ImageMediaItem) {
+        val updateImage = _mediaItemImage.value
+        updateImage?.find { itemUpdate ->
+            itemUpdate.uri == item.uri
         }?.apply {
             isSelected = !isSelected
         }?.let {
@@ -311,6 +346,7 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     override fun onClearState() {
         _messageLength.onNext(Pair(0, MAX_LIGHTH))
         setMediaItem(emptyList())
+        updateImageSelected(mutableListOf())
     }
 }
 

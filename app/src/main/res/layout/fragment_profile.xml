@@ -70,7 +70,7 @@
             app:tabGravity="fill"
             app:tabIndicatorFullWidth="false"
             app:tabMode="scrollable"
-            app:tabRippleColor="@color/transparent"
+            app:tabRippleColor="@color/black_tranparen_80"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 
         <View
