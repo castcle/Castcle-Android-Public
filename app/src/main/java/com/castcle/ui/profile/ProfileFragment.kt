@@ -114,6 +114,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     override fun initViewModel() {
         viewModel.checkAvatarUploading().subscribe { it ->
             if (it) {
+                activityViewModel.onRefreshProfile()
                 displayErrorMessage("Up Load Image Success")
             }
         }.addToDisposables()
@@ -265,7 +266,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.getViewPage(profileId)
             })
 
-        viewModel.userUpLoadRes.observe(this, {
+        viewModel.userProfileData.observe(this, {
             when (photoSelectedState) {
                 PhotoSelectedState.COVER_PAGE_SELECT, PhotoSelectedState.AVATAR_PAGE_SELECT -> {
                     onBindViewProfile(it)
@@ -522,22 +523,48 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             PhotoSelectedState.AVATAR_SELECT -> {
                 if (mediaFile != null) {
                     onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_AVATAR)
+                    onBindImageProfile(imageAvatar = mediaFile.toString())
                 }
             }
             PhotoSelectedState.COVER_SELECT -> {
                 if (mediaFile != null) {
                     onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_COVER)
+                    onBindImageProfile(imageCover = mediaFile.toString())
                 }
             }
             PhotoSelectedState.COVER_PAGE_SELECT -> {
                 if (mediaFile != null) {
                     onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_PAGE_COVER)
+                    onBindImageViewProfile(imageCover = mediaFile.toString())
                 }
             }
             PhotoSelectedState.AVATAR_PAGE_SELECT -> {
                 if (mediaFile != null) {
                     onHandlerUpLoadAvatar(mediaFile, UpLoadType.UPLOAD_PAGE_AVATAR)
+                    onBindImageViewProfile(imageAvatar = mediaFile.toString())
                 }
+            }
+        }
+    }
+
+    private fun onBindImageViewProfile(imageAvatar: String? = "", imageCover: String? = "") {
+        with(binding.profileYou) {
+            if (imageAvatar?.isNotBlank() == true) {
+                ivAvatarProfile.loadCircleImage(imageAvatar)
+            }
+            if (imageCover?.isNotBlank() == true) {
+                ivProfileCover.loadImageWithoutTransformation(imageCover)
+            }
+        }
+    }
+
+    private fun onBindImageProfile(imageAvatar: String? = "", imageCover: String? = "") {
+        with(binding.profileMe) {
+            if (imageAvatar?.isNotBlank() == true) {
+                ivAvatarProfile.loadCircleImage(imageAvatar)
+            }
+            if (imageCover?.isNotBlank() == true) {
+                ivProfileCover.loadImageWithoutTransformation(imageCover)
             }
         }
     }

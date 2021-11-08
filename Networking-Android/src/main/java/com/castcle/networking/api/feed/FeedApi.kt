@@ -4,6 +4,7 @@ import com.castcle.common_model.model.feed.CommentRequest
 import com.castcle.common_model.model.feed.RecastRequest
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
 import retrofit2.Response
@@ -58,6 +59,7 @@ interface FeedApi {
     fun likeFeedContent(
         @Path("contentId") contentId: String,
         @Path("likeStatus") likeStatus: String,
+        @Body likeContentRequest: LikeContentRequest,
     ): Flowable<Response<Any>>
 
     @POST("contents/{id}/recasted")

@@ -3,10 +3,10 @@ package com.castcle.ui.feed.feeddetail
 import android.annotation.SuppressLint
 import android.view.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.LoadState
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedDetailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
@@ -14,6 +14,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.CommentRequest
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.custom.event.EndlessRecyclerViewScrollListener
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
@@ -125,27 +126,19 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             }
         }
 
+        val linearLayoutManager = LinearLayoutManager(
+            context, LinearLayoutManager.VERTICAL, false
+        )
+
         binding.rvViewComment.run {
             adapter = CommentedAdapter().also {
                 adapterComment = it
             }
-        }
-    }
-
-    private fun onBindPagingLoad() {
-        binding.rvViewComment.run {
-            adapter = CommentedPagingAdapter().also {
-                adapterCommentPaging = it
-            }
-        }
-
-        lifecycleScope.launchWhenCreated {
-            adapterCommentPaging.loadStateFlow.collectLatest { loadStates ->
-                val refresher = loadStates.refresh
-                val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterCommentPaging.itemCount == 0)
-                handleEmptyState(displayEmpty)
-            }
+            addOnScrollListener(object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+                    viewModel.fetachNextCommentedPage()
+                }
+            })
         }
     }
 
@@ -288,14 +281,36 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         viewModel.commentedResponses.subscribe {
             onBindCommentedItem(it)
         }.addToDisposables()
+
+        viewModel.showLoading.subscribe(::bindLoading).addToDisposables()
+
+        viewModel.onError.subscribe {
+            displayError(it)
+            bindLoading(false)
+        }.addToDisposables()
+    }
+
+    private fun bindLoading(showLoading: Boolean) {
+        if (showLoading) {
+            adapterComment.showLoading()
+        } else {
+            adapterComment.hideLoading()
+        }
     }
 
     private fun onBindCommentedItem(list: List<ContentUiModel>) {
         if (list.isNotEmpty()) {
+            onEmptyReply()
             handleEmptyState(false)
             adapterComment.uiModels = list
         } else {
             handleEmptyState(true)
+        }
+    }
+
+    private fun onEmptyReply() {
+        with(binding.itemComment) {
+            etInputMessage.setText("")
         }
     }
 

@@ -10,6 +10,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentBlogBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.*
@@ -168,9 +169,14 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
+        val likeContentRequest = LikeContentRequest(
+            contentId = contentUiModel.payLoadUiModel.contentId,
+            feedItemId = contentUiModel.payLoadUiModel.contentId,
+            authorId = viewModel.castcleId ?: "",
+            likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+        )
         viewModel.likedContent(
-            contentUiModel.payLoadUiModel.contentId,
-            contentUiModel.payLoadUiModel.likedUiModel.liked
+            likeContentRequest
         ).subscribeBy(onComplete = {
             adapterPagingCommon.updateStateItemLike(contentUiModel)
         }, onError = {

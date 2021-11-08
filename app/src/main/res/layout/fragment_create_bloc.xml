@@ -36,6 +36,7 @@
                 android:gravity="top"
                 android:hint="@string/create_blog_status"
                 android:inputType="textMultiLine"
+                android:lines="6"
                 android:maxLines="280"
                 android:scrollbars="vertical"
                 android:textAlignment="gravity"

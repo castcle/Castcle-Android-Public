@@ -36,7 +36,7 @@ import io.reactivex.Observable
 
 abstract class OnBoardViewModel : BaseViewModel() {
 
-    abstract val user: Observable<User>
+    abstract val userRefeshProfile: Observable<User>
 
     abstract val isGuestMode: Boolean
 

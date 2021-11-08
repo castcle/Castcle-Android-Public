@@ -1,5 +1,7 @@
 package com.castcle.common_model.model.userprofile
 
+import androidx.room.*
+
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 //
@@ -23,9 +25,25 @@ package com.castcle.common_model.model.userprofile
 //
 //
 //  Created by sklim on 21/9/2021 AD at 12:52.
-
+@Entity(tableName = "user_page")
 data class UserPage(
+    @PrimaryKey
+    @ColumnInfo(name = "page_id")
+    val pageId: String,
+    @ColumnInfo(name = "displayName")
     val displayName: String,
+    @ColumnInfo(name = "displayAvatar")
     val displayAvatar: String,
+    @ColumnInfo(name = "isSelected")
     var isSelected: Boolean = false
 )
+
+fun List<PageResponse>.toUserPageDao(): List<UserPage> {
+    return map {
+        UserPage(
+            pageId = it.castcleId,
+            displayName = it.displayName ?: "",
+            displayAvatar = it.images.avatar.original ?: ""
+        )
+    }
+}

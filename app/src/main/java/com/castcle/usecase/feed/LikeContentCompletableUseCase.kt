@@ -1,6 +1,7 @@
 package com.castcle.usecase.feed
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.base.CompletableUseCase
@@ -34,21 +35,13 @@ import javax.inject.Inject
 class LikeContentCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val feedRepository: FeedRepository
-) : CompletableUseCase<LikeContentCompletableUseCase.Input>(
+) : CompletableUseCase<LikeContentRequest>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::Ignored
 ) {
 
-    data class Input(
-        val contentId: String,
-        val likeStatus: Boolean
-    )
-
-    override fun create(input: Input): Completable {
-        return feedRepository.likeContent(
-            input.contentId,
-            input.likeStatus
-        )
+    override fun create(input: LikeContentRequest): Completable {
+        return feedRepository.likeContent(input)
     }
 }

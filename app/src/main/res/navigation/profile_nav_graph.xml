@@ -74,6 +74,10 @@
             android:id="@+id/actionProfileFragmentToProfileChooseDialogFragment"
             app:destination="@id/profileChooseDialogFragment" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>

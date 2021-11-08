@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.databinding.ItemRecastUserBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.extensions.loadRoundedCornersImage
@@ -39,13 +40,13 @@ import kotlin.properties.Delegates
 
 class RecastAdapter : RecyclerView.Adapter<RecastAdapter.RecastViewHolder>(),
     DiffUpdateAdapter,
-    ItemClickable<UserPage> by ItemClickableImpl() {
+    ItemClickable<PageUiModel> by ItemClickableImpl() {
 
-    private val click: (UserPage) -> Unit = {
+    private val click: (PageUiModel) -> Unit = {
         notifyItemClick(it)
     }
 
-    var uiModels: List<UserPage> by Delegates.observable(emptyList()) { _, old, new ->
+    var uiModels: List<PageUiModel> by Delegates.observable(emptyList()) { _, old, new ->
         autoNotify(
             old,
             new,
@@ -55,7 +56,7 @@ class RecastAdapter : RecyclerView.Adapter<RecastAdapter.RecastViewHolder>(),
 
     private var indexCurrent: Int = 0
 
-    fun onPageSelected(userPage: UserPage) {
+    fun onPageSelected(userPage: PageUiModel) {
         val indexSelected = uiModels.indexOf(userPage)
         notifyItemChanged(indexCurrent)
         notifyItemChanged(indexSelected)
@@ -80,9 +81,9 @@ class RecastAdapter : RecyclerView.Adapter<RecastAdapter.RecastViewHolder>(),
         val binding: ItemRecastUserBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindUiModel(uiModel: UserPage) {
+        fun bindUiModel(uiModel: PageUiModel) {
             with(binding) {
-                ivAvatar.loadRoundedCornersImage(uiModel.displayAvatar)
+                ivAvatar.loadRoundedCornersImage(uiModel.avatarUrl)
                 tvDisplayName.text = uiModel.displayName
                 ivSelected.visibleOrGone(indexCurrent == bindingAdapterPosition)
                 clBgItem.isActivated = indexCurrent == bindingAdapterPosition

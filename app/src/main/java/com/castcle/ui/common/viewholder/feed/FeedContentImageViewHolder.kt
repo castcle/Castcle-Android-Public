@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateImageBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.extensions.gone
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
-import com.castcle.ui.common.viewholder.feedMock.FeedContentImageMockViewHolder
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -46,9 +46,18 @@ class FeedContentImageViewHolder(
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
+
+        binding.icImageContent.imageItemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
     }
 
     private fun handleItemClick(it: TemplateEventClick?) {
+        binding.skeletonLoading.shimmerLayoutLoading.run {
+            stopShimmer()
+            setShimmer(null)
+            gone()
+        }
         when (it) {
             is TemplateEventClick.AvatarClick -> {
                 click.invoke(
@@ -82,6 +91,14 @@ class FeedContentImageViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.ImageClick -> {
+                click.invoke(
+                    FeedItemClick.FeedImageClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -91,6 +108,11 @@ class FeedContentImageViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentFeed

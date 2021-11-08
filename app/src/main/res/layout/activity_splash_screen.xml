@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_launch_screen"
+    android:background="@drawable/background_launch_screen"
     tools:context="com.castcle.ui.splashscreen.SplashScreenActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/_120sdp"
         android:layout_height="@dimen/_120sdp"
-        app:srcCompat="@drawable/ic_castcle_logo"
+        app:srcCompat="@drawable/castcle_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -31,7 +31,7 @@ class RegisterErrorError(
     readableMessage = getErrorMessage(cause)
 ) {
 
-    fun hasAuthenticationEmailNotFound() = CODE_INVALID_EMAIL == code
+    fun hasAuthenticationEmailNotFound() = STATUC_CODE_NOT_FOUND == statusCode
 
     fun hasAuthenticationEmailInSystem() = CODE_INVALID_EMAIL_IN_SYSTEM == code
 
@@ -49,7 +49,7 @@ class RegisterErrorError(
 const val CODE_INVALID_EMAIL = "3003"
 const val CODE_INVALID_CHANNEL = "3005"
 const val CODE_INVALID_ROLE = "30013"
-const val CODE_INVALID_EMAIL_IN_SYSTEM = "30014"
+const val CODE_INVALID_EMAIL_IN_SYSTEM = "3014"
 const val CODE_INVALID_CASTCLE_ID = "30017"
 const val CODE_INVALID_USER = "30016"
 const val CODE_TOKEN_EXPLIERD = "1003"

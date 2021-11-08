@@ -89,6 +89,7 @@ class ChangePasswordFragment : BaseFragment<ChangePasswordViewModel>(),
     }
 
     override fun bindViewEvents() {
+        binding.itPassword.setIconWithTransformation()
         binding.itPassword.onTextChanged = {
             handleInputPassword(it)
         }

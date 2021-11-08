@@ -9,7 +9,7 @@ import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.setting.*
-import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
+import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import com.google.gson.Gson
 import io.reactivex.Completable
@@ -45,7 +45,7 @@ import javax.inject.Inject
 
 class OnBoardViewModelImpl @Inject constructor(
     private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val logoutCompletableUseCase: LogoutCompletableUseCase,
     private val getAppLanguageSingleUseCase: GetAppLanguageSingleUseCase,
     private val setAppLanguageUseCase: SetAppLanguageUseCase,
@@ -55,13 +55,13 @@ class OnBoardViewModelImpl @Inject constructor(
 
     private val _userProfile = BehaviorSubject.create<User>()
 
-    override val user: Observable<User>
+    override val userRefeshProfile: Observable<User>
         get() = _userProfile
 
     private val _error = PublishSubject.create<Throwable>()
 
     override val isGuestMode: Boolean
-        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
     private val _currentAppLanguage = MutableLiveData<List<LanguageUiModel>>()
     override val currentAppLanguage: LiveData<List<LanguageUiModel>>
@@ -192,7 +192,9 @@ class OnBoardViewModelImpl @Inject constructor(
                 _preferredLanguage.value = it
             }
         } else {
-            _preferredLanguage.value = cache
+            cache?.let {
+                _preferredLanguage.value = it
+            }
         }
     }
 

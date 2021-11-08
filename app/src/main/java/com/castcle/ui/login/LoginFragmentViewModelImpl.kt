@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.login.LoginRequest
-import com.castcle.common_model.model.userprofile.User
-import com.castcle.extensions.isEmail
-import com.castcle.usecase.feed.LikeContentCompletableUseCase
+import com.castcle.common_model.model.userprofile.*
+import com.castcle.data.model.dao.user.UserDao
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
 import com.castcle.usecase.login.AuthenticationRefreshTokenCompletableUseCase
-import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -40,11 +39,14 @@ import javax.inject.Inject
 //  Created by sklim on 31/8/2021 AD at 09:08.
 
 class LoginFragmentViewModelImpl @Inject constructor(
+    private val userDao: UserDao,
     private val authenticationLoginWithEmailCompletableUseCase:
     AuthenticationLoginWithEmailCompletableUseCase,
     private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val authenticationRefreshTokenCompletableUseCase:
-    AuthenticationRefreshTokenCompletableUseCase
+    AuthenticationRefreshTokenCompletableUseCase,
+    private val updateProfileDataCompletableUseCase: UpdateProfileDataCompletableUseCase,
+    private val updateUserPageDataCompletableUseCase: UpdateUserPageDataCompletableUseCase
 ) : LoginFragmentViewModel(), LoginFragmentViewModel.Input {
 
     override val userResponse: LiveData<User>
@@ -74,12 +76,11 @@ class LoginFragmentViewModelImpl @Inject constructor(
         return authenticationLoginWithEmailCompletableUseCase.execute(
             LoginRequest(_userEmail.value!!, _password.value!!)
         ).doOnSubscribe { _showLoading.onNext(true) }
-            .andThen {
-                fetchUserProfile()
-                    .subscribe()
-                    .addToDisposables()
+            .doOnSuccess {
+                updateUserProfile(it.userProfileResponse)
+                updateUserPage(it.pageResponse)
             }
-            .doOnComplete { Completable.complete() }
+            .ignoreElement()
             .doOnError {
                 _showLoading.onNext(false)
             }.doFinally { _showLoading.onNext(false) }
@@ -90,15 +91,18 @@ class LoginFragmentViewModelImpl @Inject constructor(
             .execute(Unit)
     }
 
-    private fun fetchUserProfile(): Completable =
-        userProfileSingleUseCase
-            .execute(Unit)
-            .doOnSubscribe { _showLoading.onNext(true) }
-            .doFinally { _showLoading.onNext(false) }
-            .doOnError(_error::onNext).firstOrError()
-            .doOnSuccess {
-                setUserProfile(it)
-            }.ignoreElement()
+    private fun updateUserProfile(userProfileResponse: UserProfileResponse): Completable {
+        val userProfile = userProfileResponse.toUserProfile()
+        setUserProfile(userProfile)
+        updateProfileDataCompletableUseCase.execute(userProfile).subscribe().addToDisposables()
+        return Completable.complete()
+    }
+
+    private fun updateUserPage(userProfileResponse: List<PageResponse>): Completable {
+        val userPageList = userProfileResponse.toUserPageDao()
+        updateUserPageDataCompletableUseCase.execute(userPageList).subscribe().addToDisposables()
+        return Completable.complete()
+    }
 
     private fun setUserProfile(user: User) {
         _userResponse.value = user
@@ -118,6 +122,6 @@ class LoginFragmentViewModelImpl @Inject constructor(
     }
 
     private fun validateEmail(): Boolean {
-        return _userEmail.value?.isEmail() == true
+        return _userEmail.value?.isNotBlank() == true
     }
 }

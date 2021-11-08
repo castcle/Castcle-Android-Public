@@ -5,6 +5,7 @@ import com.castcle.authen_android.di.components.dependencies.AuthenticateStorage
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.data.model.dao.feed.PageKeyDao
 import com.castcle.data.model.dao.user.UserDao
+import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.data.storage.DeviceSettings
 import com.castcle.di.storage.StorageModule
@@ -45,6 +46,8 @@ interface StorageComponent : AuthenticateStorageComponent {
     }
 
     fun userDao(): UserDao
+
+    fun userPageDao(): UserPageDao
 
     fun commentDao(): CommentDao
 

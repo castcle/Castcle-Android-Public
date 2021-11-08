@@ -30,7 +30,7 @@ class LoginError(
     cause = cause,
     readableMessage = getErrorMessage(cause)
 ) {
-    fun hasAuthenticationNotFound() = CODE_NOT_FOUND == code
+    fun hasAuthenticationNotFound() = STATUC_CODE_NOT_FOUND == statusCode
 
     fun hasAuthenticationAccountNotFound() = CODE_INVALID_ACCOUNT == code
         && STATUC_CODE_NOT_FOUND == statusCode

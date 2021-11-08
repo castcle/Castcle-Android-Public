@@ -3,6 +3,7 @@ package com.castcle.di.component
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.data.model.dao.feed.PageKeyDao
 import com.castcle.data.model.dao.user.UserDao
+import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.CastcleDataBase
 import dagger.Module
 import dagger.Provides
@@ -38,6 +39,12 @@ class DaoModule {
     @Singleton
     internal fun userDao(db: CastcleDataBase): UserDao {
         return db.userDao()
+    }
+
+    @Provides
+    @Singleton
+    internal fun userPageDao(db: CastcleDataBase): UserPageDao {
+        return db.userPageDao()
     }
 
     @Provides

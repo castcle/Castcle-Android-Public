@@ -53,7 +53,7 @@ fun List<PageResponse>.toPageHeaderUiModel(): PageHeaderUiModel {
 fun PageResponse.toPageUiModel(): PageUiModel {
     return PageUiModel(
         castcleId = castcleId,
-        avatarUrl = images.avatar.original,
+        avatarUrl = images.avatar.original ?: "",
         pageType = ProfileType.PROFILE_TYPE_PAGE.type
     )
 }

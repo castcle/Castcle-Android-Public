@@ -64,4 +64,8 @@
         <attr name="whatYouMind_input" format="string" />
         <attr name="whatYouMind_show_avatar" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="RelationLineView">
+        <attr name="rlv_lineColor" format="color" />
+    </declare-styleable>
 </resources>

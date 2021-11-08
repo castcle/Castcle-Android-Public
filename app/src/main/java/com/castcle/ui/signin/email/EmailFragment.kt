@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.castcle.android.R
 import com.castcle.android.databinding.FragmentEmailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.authen_android.data.model.AuthenticationInfo
@@ -14,6 +13,7 @@ import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -90,6 +90,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
                 checkEmailExsit(it)
                 itEmail.clearDrawableEnd()
             }
+
             btContinue.subscribeOnClick {
                 val authBundle = AuthBundle.LoginAuthBundle.EmailAuthBundle(
                     authenticationMethod = AuthenticationInfo.Method.EMAIL,
@@ -101,8 +102,9 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     }
 
     private fun checkEmailExsit(email: String) {
-        if (email.isEmail()) {
-            viewModel.input.checkEmailExsit(email)
+        viewModel.input.checkEmailExist(email)
+        if (email.isBlank()) {
+            showErrorMessage(false)
         }
     }
 
@@ -117,16 +119,25 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
                 .addToDisposables()
 
             responseCheckEmailExsit
-                .subscribe(::resultCheckEmail)
+                .subscribeBy(
+                    onNext = {
+                        resultCheckEmail(it)
+                    }, onError = {
+                        showErrorMessage(true)
+                    }
+                )
                 .addToDisposables()
+
+            error.subscribe {
+                onErrorMessage(it)
+            }.addToDisposables()
         }
     }
 
     private fun resultCheckEmail(emailVerifyUiModel: AuthVerifyBaseUiModel.EmailVerifyUiModel) {
-        if (!emailVerifyUiModel.exist) {
+        if (!emailVerifyUiModel.exist && emailVerifyUiModel.message.isNotBlank()) {
             enableContinueButton(true)
-        } else {
-            showErrorMessage(emailVerifyUiModel.exist)
+            binding.tvSubTitle.gone()
         }
     }
 
@@ -140,6 +151,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
             statusInputText(enable)
             btContinue.isEnabled = enable
             btContinue.isActivated = enable
+            requireActivity().hideSoftKeyboard()
         }
     }
 
@@ -155,6 +167,14 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
         with(binding) {
             tvErrorMessage.visibleOrGone(exist)
             tvSubTitle.visibleOrGone(!exist)
+        }
+    }
+
+    private fun onErrorMessage(throwable: Throwable) {
+        with(binding) {
+            tvErrorMessage.visibleOrGone(true)
+            tvErrorMessage.text = throwable.cause?.message ?: ""
+            tvSubTitle.visibleOrGone(false)
         }
     }
 

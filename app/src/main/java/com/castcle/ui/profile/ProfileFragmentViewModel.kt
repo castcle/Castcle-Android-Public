@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.userprofile.ImagesRequest
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
@@ -51,7 +52,7 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val userProfileYouRes: Observable<User>
 
-    abstract val userUpLoadRes: LiveData<User>
+    abstract val userProfileData: LiveData<User>
 
     abstract val userProfileContentMock: Observable<List<ContentUiModel>>
 
@@ -71,8 +72,9 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun checkAvatarUploading(): Observable<Boolean>
 
+    abstract val castcleId: String
+
     abstract fun likedContent(
-        contentId: String,
-        likedStatus: Boolean
+        likeContentRequest: LikeContentRequest
     ): Completable
 }

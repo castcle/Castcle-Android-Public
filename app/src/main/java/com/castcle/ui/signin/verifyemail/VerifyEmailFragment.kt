@@ -110,7 +110,7 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
     }
 
     private fun navigateToProfileSetting() {
-        onBoardNavigator.navigateToAboutYouFragment(profileBundle)
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle, onEditProfile = true)
     }
 
     private fun navigateToResentVerifyEmail() {

@@ -1,6 +1,5 @@
 package com.castcle.ui.signin.email
 
-import androidx.lifecycle.MutableLiveData
 import com.castcle.common.lib.extension.doIfTakeLongerThan
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.EmailVerifyUiModel
@@ -53,7 +52,7 @@ abstract class EmailFragmentViewModel : BaseViewModel() {
     abstract val email: String
 
     interface Input {
-        fun checkEmailExsit(email: String)
+        fun checkEmailExist(email: String)
     }
 }
 
@@ -80,7 +79,7 @@ class EmailFragmentViewModelImpl @Inject constructor(
 
     private var _emailCache: EmailVerifyUiModel? = null
 
-    override fun checkEmailExsit(email: String) =
+    override fun checkEmailExist(email: String) =
         _email.onNext(email)
 
     override val responseCheckEmailExsit: Observable<EmailVerifyUiModel>
@@ -90,7 +89,7 @@ class EmailFragmentViewModelImpl @Inject constructor(
                 TimeUnit.MILLISECONDS,
                 rxSchedulerProvider.main().get()
             ).switchMapSingle { it ->
-                getEmailExsit(it)
+                getEmailExist(it)
                     .doIfTakeLongerThan(TIMEOUT_SHOWING_SPINNER, TimeUnit.MILLISECONDS) {
                         _showLoading.onNext(true)
                     }
@@ -102,20 +101,16 @@ class EmailFragmentViewModelImpl @Inject constructor(
                     }
             }
 
-    private fun getEmailExsit(email: String): Single<EmailVerifyUiModel> {
-        return if (_emailCache == null) {
-            checkEmailExsitSingleUseCase.execute(
-                EmailRequest(email = email)
-            ).map {
-                _emailCache = it
-                it
-            }.doOnError {
-                _error.onNext(it)
-            }.doOnSubscribe {
-                _showLoading.onNext(true)
-            }
-        } else {
-            Single.just(_emailCache)
+    private fun getEmailExist(email: String): Single<EmailVerifyUiModel> {
+        return checkEmailExsitSingleUseCase.execute(
+            EmailRequest(email = email)
+        ).map {
+            _emailCache = it
+            it
+        }.doOnError {
+            _error.onNext(it)
+        }.doOnSubscribe {
+            _showLoading.onNext(true)
         }
     }
 }

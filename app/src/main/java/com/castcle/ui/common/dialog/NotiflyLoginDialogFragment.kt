@@ -82,7 +82,7 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
 
     override fun bindViewEvents() {
         with(binding) {
-            tvHaveAccountLogin.subscribeOnClick {
+            tvHaveAccount.subscribeOnClick {
                 navigateToLoginFragment()
             }
             tvActionLinkUserAgreement.subscribeOnClick {
@@ -102,10 +102,14 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
             }
             with(layoutLogin) {
                 clLoginWithEmail.subscribeOnClick {
-                    navigateToLoginFragment()
+                    navigateToRegisterFragment()
                 }
             }
         }
+    }
+
+    private fun navigateToRegisterFragment() {
+        onBoardNavigator.navigateToGreetingFragment()
     }
 
     private fun navigateToLoginFragment() {
@@ -119,15 +123,15 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
 
 private const val STATIC_LINK_USER_AGREEMENT =
     "https://documents.castcle.com/terms-of-service.html"
-private const val STATIC_LINK_PRIVACY_POLICY =
+const val STATIC_LINK_PRIVACY_POLICY =
     "https://documents.castcle.com/privacy-policy.html"
-private const val STATIC_LINK_JOIN_US =
+const val STATIC_LINK_JOIN_US =
     "https://jobs.blognone.com/company/castcle"
 private const val STATIC_LINK_DOCS =
     "https://docs.castcle.com/"
 private const val STATIC_LINK_ABOUT_US =
     "https://documents.castcle.com/about-us.html"
-private const val STATIC_LINK_MENIFESTO =
-    "https://castcle.gitbook.io/document/"
-private const val STATIC_LINK_WHITEPAPER =
+const val STATIC_LINK_MENIFESTO =
+    "https://docs.castcle.com/"
+const val STATIC_LINK_WHITEPAPER =
     "https://documents.castcle.com/castcle-whitepaper-v1_3.pdf"

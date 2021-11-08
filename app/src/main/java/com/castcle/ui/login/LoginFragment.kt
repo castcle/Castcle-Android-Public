@@ -2,6 +2,8 @@ package com.castcle.ui.login
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.castcle.android.R
@@ -56,7 +58,8 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     }
 
     private fun navigatToHomeFeed() {
-        onBoardNavigator.nvaigateToFeedFragment()
+        val feedDeepLink = requireContext().getString(R.string.nav_deep_link_feed)
+        onBoardNavigator.navigateByDeepLink(feedDeepLink.toUri())
     }
 
     private fun setupToolBar() {
@@ -72,23 +75,39 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     override fun bindViewEvents() {
         with(binding) {
-            tvCastcleSignUp.subscribeOnClick {
+            tvCastcle.subscribeOnClick {
                 onBoardNavigator.navigateToGreetingFragment()
+            }.addToDisposables()
+
+            with(ieEmail) {
+                onTextChanged = {
+                    viewModel.input.userEmail(ieEmail.primaryText)
+                }
+                onEditorActionNext = {
+                    etPassword.setRequestFocus()
+                }
             }
 
-            ieEmail.onTextChanged = {
-                viewModel.input.userEmail(ieEmail.primaryText)
-            }
+            with(etPassword) {
+                setIconWithTransformation()
+                onTextChanged = {
+                    viewModel.input.password(etPassword.primaryText)
+                }
 
-            etPassword.onTextChanged = {
-                viewModel.input.password(etPassword.primaryText)
+                onEditorActionListener = { actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        requireActivity().hideSoftKeyboard()
+                        btLogin.callOnClick()
+                        true
+                    } else {
+                        false
+                    }
+                }
             }
 
             btLogin.subscribeOnClick {
                 viewModel.getAuthLoginWithEmail().subscribeBy(
-                    onComplete = {
-                        navigatToHomeFeed()
-                    }, onError = ::handlerError
+                    onError = ::handlerError
                 ).addToDisposables()
             }
         }
@@ -96,6 +115,12 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     private fun handlerError(error: Throwable) {
         if (error is LoginError && error.hasAuthenticationAccountNotFound()) {
+            binding.etPassword.setError(
+                error = error.userReadableMessage(requireContext()),
+                isShowErrorWithBackground = true
+            )
+        }
+        if (error is LoginError && error.hasAuthenticationNotFound()) {
             binding.etPassword.setError(
                 error = error.userReadableMessage(requireContext()),
                 isShowErrorWithBackground = true

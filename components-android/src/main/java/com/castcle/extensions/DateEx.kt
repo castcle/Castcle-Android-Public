@@ -1,6 +1,7 @@
 package com.castcle.extensions
 
 import android.annotation.SuppressLint
+import android.os.Build
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.chrono.ChronoLocalDateTime
@@ -36,8 +37,17 @@ import java.util.*
 fun String.toTime(): Long {
     val format = SimpleDateFormat(COMMON_DATE_FORMAT, Locale.getDefault())
     return try {
-        val date = format.parse(this)
-        date?.time ?: 0L
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val date = format.parse(this)
+            date?.toInstant()?.toEpochMilli() ?: 0L
+        } else {
+            val date = LocalDateTime.parse(
+                this,
+                DateTimeFormatter.ofPattern(COMMON_DATE_FORMAT, Locale.getDefault())
+            )
+            date.atOffset(org.threeten.bp.ZoneOffset.UTC).toInstant().toEpochMilli()
+        }
     } catch (e: ParseException) {
         0L
     }

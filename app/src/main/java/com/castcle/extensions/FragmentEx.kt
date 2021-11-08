@@ -54,7 +54,7 @@ fun Fragment.displayError(error: Throwable) {
 }
 
 fun Fragment.displayErrorMessage(error: String) {
-    Toast.makeText(this.requireContext(), error, Toast.LENGTH_LONG).also { it.show() }
+    Toast.makeText(this.requireContext(), error, Toast.LENGTH_SHORT).also { it.show() }
 }
 
 fun <T> Fragment.setNavigationResult(

@@ -1,6 +1,7 @@
 package com.castcle.ui.common.events
 
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ImageContentUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -56,5 +57,10 @@ sealed class FeedItemClick(
 
     class FeedOpenProFileClick(
         position: Int
+    ) : FeedItemClick(position)
+
+    class FeedImageClick(
+        position: Int,
+        val contentUiModel: ContentUiModel
     ) : FeedItemClick(position)
 }

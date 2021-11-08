@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
@@ -50,7 +51,7 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val userProfile: LiveData<User>
 
-    abstract val onUpdateContentLike: Observable<ContentUiModel>
+    abstract val onUpdateContentLike: Observable<Unit>
 
     abstract val feedContentPage: Flow<PagingData<ContentUiModel>>
 
@@ -64,11 +65,11 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun getTopTrends()
 
-    abstract val trendsResponse:LiveData<List<SearchUiModel>>
+    abstract val trendsResponse: LiveData<List<SearchUiModel>>
 
     interface Input {
 
-        fun updateLikeContent(contentUiModel: ContentUiModel)
+        fun updateLikeContent(likeContentRequest: LikeContentRequest)
 
         fun setDefaultFeedRequestHeader()
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="version_app">V.1</string>
     <string name="bottom_menu_feed" translatable="false">Feed</string>
     <string name="bottom_menu_create" translatable="false">Create</string>
     <string name="bottom_menu_search" translatable="false">Search</string>
@@ -19,7 +18,7 @@
     <string name="dialog_login_footer_join_us">Join Us</string>
     <string name="dialog_login_footer_menifesto">Manifesto</string>
     <string name="dialog_login_footer_whitepaper">Whitepaper</string>
-    <string name="dialog_login_footer_title">Already have a Castcle account?</string>
+    <string name="dialog_login_footer_title">Already have a Castcle account? <font color="#01D2FF">Login</font></string>
     <string name="dialog_login">Login</string>
     <string name="tool_bar_skip">Skip</string>
     <string name="tool_bar_apply">Apply</string>
@@ -29,7 +28,7 @@
     <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login_forget">Forgot Password?</string>
-    <string name="login_sign_up_title">New to Castcle?</string>
+    <string name="login_sign_up_title">New to Castcle? <font color="#01D2FF">sign up</font></string>
     <string name="login_sign_up">sign up</string>
     <string name="login_home">Home</string>
     <string name="error_get_member">Error has occurred. Please try again. (Error : XXX)</string>
@@ -213,4 +212,9 @@ please enter your password.</string>
     <string name="notification_tab_profile">Profile</string>
     <string name="notification_tab_page">Page</string>
     <string name="notification_tab_system">System</string>
+    <string name="forgot_password_fragment_title">Account search</string>
+    <string name="forgot_password_fragment_description">Enter your email again to find your
+account</string>
+    <string name="create_cast_warning_message">Is massage maximum Character</string>
+    <string name="register_warning_message">Castcle Id already been Exists</string>
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="android:background">@drawable/bg_onboard_greeting</item>
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/transparent</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/castcle_logo</item>
+        <item name="windowSplashScreenAnimationDuration">100</item>
+        <item name="postSplashScreenTheme">@style/Theme.Castcle</item>
+    </style>
+</resources>

@@ -72,7 +72,7 @@ data class Images(
 
 data class ImageResponse(
     @SerializedName("original")
-    val original: String,
+    val original: String? = null,
     @SerializedName("large")
     val large: String? = null,
     @SerializedName("fullHd")

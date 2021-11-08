@@ -7,9 +7,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutImageContentTemplateBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.adapter.ImageTemplateFloxBoxAdapter
+import com.castcle.components_android.ui.base.addToDisposables
+import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.gone
 import com.castcle.extensions.visible
 import com.google.android.flexbox.*
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -41,9 +45,14 @@ class ImageContentTemplate(
 ) : ConstraintLayout(context, attrs) {
 
     private lateinit var adapterImageTemplate: ImageTemplateFloxBoxAdapter
+
     private val fbLayoutManager: FlexboxLayoutManager = FlexboxLayoutManager(
         context
     )
+
+    private var _imageItemClick = BehaviorSubject.create<TemplateEventClick>()
+    val imageItemClick: Observable<TemplateEventClick>
+        get() = _imageItemClick
 
     private var binding: LayoutImageContentTemplateBinding =
         LayoutImageContentTemplateBinding.inflate(
@@ -60,7 +69,7 @@ class ImageContentTemplate(
         fbLayoutManager.alignItems = AlignItems.FLEX_START
     }
 
-    fun bindImageContent(itemUiModel: ContentUiModel, onMargin: Boolean = false) {
+    fun  bindImageContent(itemUiModel: ContentUiModel, onMargin: Boolean = false) {
         with(binding) {
             if (onMargin) {
                 rcImageContentOnMargin.visible()
@@ -81,6 +90,10 @@ class ImageContentTemplate(
             listImage = listImage.take(LIMNIT_MAX_IMAGE)
         }
         adapterImageTemplate.items = listImage
+        adapterImageTemplate.baseContentUiModel = itemUiModel
+        adapterImageTemplate.imageItemClick.subscribe {
+            _imageItemClick.onNext(it)
+        }.addToDisposables()
     }
 }
 

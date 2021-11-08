@@ -51,6 +51,7 @@
         android:padding="@dimen/_3sdp"
         android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"
+        android:visibility="gone"
         app:layout_constraintCircle="@id/ivNotification"
         app:layout_constraintCircleAngle="47"
         app:layout_constraintCircleRadius="@dimen/_16sdp"

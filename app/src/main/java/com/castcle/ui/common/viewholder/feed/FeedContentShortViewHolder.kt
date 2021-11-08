@@ -45,6 +45,9 @@ class FeedContentShortViewHolder(
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
+        binding.icImageContent.imageItemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
     }
 
     private fun handleItemClick(it: TemplateEventClick?) {
@@ -77,6 +80,14 @@ class FeedContentShortViewHolder(
                 click.invoke(
                     FeedItemClick.FeedCommentClick(
                         bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.ImageClick -> {
+                click.invoke(
+                    FeedItemClick.FeedImageClick(
+                        it.imageIndex,
                         it.contentUiModel
                     )
                 )
@@ -167,7 +178,7 @@ class FeedContentShortViewHolder(
 
     private fun stopLoadingPreViewShimmer() {
         with(binding) {
-            clPreviewLoadingContent.shimmerLayoutLoading.run {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
                 gone()

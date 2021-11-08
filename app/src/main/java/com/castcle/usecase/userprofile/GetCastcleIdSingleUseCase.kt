@@ -34,16 +34,14 @@ import javax.inject.Inject
 class GetCastcleIdSingleUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val appPreferences: AppPreferences
-) : SingleUseCase<Unit, Boolean>(
+) : SingleUseCase<Unit, String>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.io(),
     ::Ignored
 ) {
-    override fun create(input: Unit): Single<Boolean> {
+    override fun create(input: Unit): Single<String> {
         return Single.just(
             appPreferences.castcleId ?: ""
-        ).map { castcleId ->
-            castcleId.isBlank()
-        }
+        )
     }
 }

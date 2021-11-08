@@ -1,6 +1,7 @@
 package com.castcle.ui.webview
 
-import com.castcle.ui.webview.WebViewFragmentViewModel
+import android.net.Uri
+import com.castcle.data.model.ModelDeepLink
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,5 +28,24 @@ import javax.inject.Inject
 //
 //  Created by sklim on 24/8/2021 AD at 08:24.
 
-class WebViewFragmentViewModelImpl @Inject constructor() : WebViewFragmentViewModel() {
+class WebViewFragmentViewModelImpl @Inject constructor(
+) : WebViewFragmentViewModel(), Input {
+    override val input: Input
+        get() = this
+
+    override fun processHandleDeeplink(uri: Uri) {
+
+    }
+
+    override fun deepLink(deepLink: String?) {
+
+    }
+
+    override fun processDeeplinkPreActivation(deepLink: ModelDeepLink?) {
+
+    }
+
+    override fun handlePartnerRegister(uri: Uri?) {
+
+    }
 }

@@ -8,8 +8,7 @@ import com.castcle.android.components_android.databinding.ItemMenuBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.MenuItem
 import com.castcle.components_android.ui.base.*
-import com.castcle.extensions.loadImageResource
-import com.castcle.extensions.visible
+import com.castcle.extensions.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -68,9 +67,14 @@ class MenuChildTemplateAdapter(
 
         override fun onBind(item: MenuItem) {
             with(binding) {
-                ivMenu.loadImageResource(item.icon)
+                if (item.icon != 0) {
+                    ivMenu.visible()
+                    ivMenu.loadImageResource(item.icon)
+                } else {
+                    ivMenu.gone()
+                }
                 tvHeader.setText(item.menuName)
-                if(item.menuDetail.isNotBlank()){
+                if (item.menuDetail.isNotBlank()) {
                     tvDetail.visible()
                     tvDetail.text = item.menuDetail
                 }

@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.setting
 
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.UserPage
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,6 +35,7 @@ data class PageUiModel(
     val id: String = "",
     val avatarUrl: String = "",
     val castcleId: String = "",
+    val displayName: String = "",
     val pageType: String = "",
     val verifyEmail: Boolean = false,
     val addPage: Boolean = false
@@ -45,7 +47,20 @@ fun User.toPageHeaderUiModel() =
             PageUiModel(
                 avatarUrl = avatar,
                 verifyEmail = verified,
+                displayName = displayName,
                 pageType = ProfileType.PROFILE_TYPE_ME.type
             )
         )
+    )
+
+fun List<UserPage>.toPageHeaderUiModel() =
+    PageHeaderUiModel(
+        pageUiItem = map {
+            PageUiModel(
+                displayName = it.displayName,
+                avatarUrl = it.displayAvatar,
+                verifyEmail = false,
+                pageType = ProfileType.PROFILE_TYPE_PAGE.type
+            )
+        }
     )

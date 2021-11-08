@@ -2,6 +2,7 @@ package com.castcle.networking.api.auth.network
 
 import com.castcle.common_model.model.engagement.EngagementRequest
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.login.LoginResponse
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.response.AuthExsitResponse
 import com.castcle.common_model.model.signin.reuquest.*
@@ -39,7 +40,7 @@ interface AuthenticationApi {
     @POST("authentications/login")
     fun authLogin(
         @Body loginRequest: LoginRequest
-    ): Flowable<Response<TokenResponse>>
+    ): Flowable<Response<LoginResponse>>
 
     @POST("authentications/checkEmailExists")
     fun checkEmailExists(

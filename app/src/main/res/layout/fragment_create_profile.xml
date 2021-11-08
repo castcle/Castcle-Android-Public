@@ -33,11 +33,11 @@
         android:id="@+id/tvWelcome"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:textAlignment="center"
         android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:text="@string/create_profile_sub_title"
+        android:textAlignment="center"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,15 +48,15 @@
         android:id="@+id/tvDisplayName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:textAlignment="textStart"
         android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_4sdp"
         android:text="@string/create_profile_title_display_name"
+        android:textAlignment="textStart"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@id/itDisplatName"
-        app:layout_constraintBottom_toTopOf="@id/itDisplatName"/>
+        app:layout_constraintBottom_toTopOf="@id/itDisplatName"
+        app:layout_constraintStart_toStartOf="@id/itDisplatName" />
 
     <com.castcle.components_android.ui.custom.InputEditText
         android:id="@+id/itDisplatName"
@@ -77,15 +77,15 @@
         android:id="@+id/tvCastcleId"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:textAlignment="textStart"
         android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_4sdp"
         android:text="@string/create_profile_title_castcle_id"
+        android:textAlignment="textStart"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@id/itDisplatName"
-        app:layout_constraintTop_toBottomOf="@id/itDisplatName"/>
+        app:layout_constraintTop_toBottomOf="@id/itDisplatName" />
 
     <com.castcle.components_android.ui.custom.InputEditText
         android:id="@+id/itCastcleId"
@@ -100,6 +100,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvCastcleId" />
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btNext" />
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/AppTextKanitLight.Medium"

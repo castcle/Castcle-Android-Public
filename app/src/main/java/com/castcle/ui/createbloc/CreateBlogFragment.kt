@@ -15,9 +15,11 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
+import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.events.ImageItemClick
 import com.castcle.ui.createbloc.adapter.ImageFloxBoxAdapter
@@ -45,6 +47,8 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     @Inject lateinit var rxPermissions: PermissionMediator
+
+    @Inject lateinit var localizedResources: LocalizedResources
 
     private var softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
 
@@ -144,36 +148,11 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         binding.etInputMessage.setText("")
     }
 
-
     override fun bindViewEvents() {
-        var mentionData = listOf<ContentUiModel>()
-        val mentionAdapter = MentionArrayAdapter(requireContext(), mentionData)
-        with(binding.etInputMessage) {
-            setMentionAdapter(mentionAdapter)
-            addTextChangedListener { it ->
-                viewModel.input.validateMessage(it.toString())
-                    .subscribeBy(
-                        onError = ::handleOnError
-                    ).addToDisposables()
-                setMentionTextChangedListener(
-                    object : MentionView.OnChangedListener {
-                        override fun onChanged(view: MentionView, text: CharSequence) {
-                            fetchMentionUser().run {
-                                mentionData = this
-                                mentionAdapter.items = this
-                                mentionAdapter.notifyDataSetChanged()
-                            }
-                        }
-                    }
-                )
-            }
-        }
+        onBindUserMention()
 
         binding.btCast.subscribeOnClick {
-            viewModel.createContent().subscribeBy(
-                onSuccess = ::handleOnResponse,
-                onError = ::handleOnError
-            ).addToDisposables()
+            handlerCreateCast()
         }
 
         binding.tvAddImage.subscribeOnClick {
@@ -189,6 +168,13 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         imageGalleryAdapter.itemClick.subscribe {
             onImageClick(it)
         }.addToDisposables()
+    }
+
+    private fun handlerCreateCast() {
+        viewModel.createContent().subscribeBy(
+            onSuccess = ::handleOnResponse,
+            onError = ::handleOnError
+        ).addToDisposables()
     }
 
     override fun bindViewModel() {
@@ -230,11 +216,17 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
         val textFormatCount = "%s/%d"
         with(binding.tvCountChar) {
-            text = if (messageCount.first > messageCount.second) {
+            if (messageCount.first > messageCount.second) {
                 setTextColor(requireContext().getColorResource(R.color.red_primary))
-                "${messageCount.first - MAX_LIGHTH}"
+                text = "${messageCount.first - MAX_LIGHTH}"
+                enableButtonCast(false)
+                displayErrorMessage(
+                    localizedResources.getString(
+                        R.string.create_cast_warning_message
+                    )
+                )
             } else {
-                textFormatCount.format(messageCount.first, messageCount.second)
+                text = textFormatCount.format(messageCount.first, messageCount.second)
             }
         }
     }
@@ -404,11 +396,44 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         }
     }
 
-    private fun fetchMentionUser(): MutableList<ContentUiModel> {
-        /**
-         * It for implement API  fetch Mention
-         * */
-        return mutableListOf()
+    private lateinit var mentionAdapter: MentionArrayAdapter
+    private var mentionData = listOf<MentionUiModel>()
+
+    private fun onBindUserMention() {
+        mentionAdapter = MentionArrayAdapter(requireContext(), mentionData)
+        with(binding.etInputMessage) {
+            setMentionAdapter(mentionAdapter)
+            addTextChangedListener { it ->
+                viewModel.input.validateMessage(it.toString())
+                    .subscribeBy(
+                        onError = ::handleOnError
+                    ).addToDisposables()
+                setMentionTextChangedListener(
+                    object : MentionView.OnChangedListener {
+                        override fun onChanged(view: MentionView, text: CharSequence) {
+                            fetchMentionUser(text)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    private fun fetchMentionUser(text: CharSequence) {
+        viewModel.getUserMention(text.toString()).subscribeBy(
+            onSuccess = {
+                onBindMentionItem(it)
+            },
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun onBindMentionItem(list: List<MentionUiModel>) {
+        mentionData = list
+        mentionAdapter.items = list
+        mentionAdapter.notifyDataSetChanged()
     }
 
     private fun handleOnError(case: Throwable) {

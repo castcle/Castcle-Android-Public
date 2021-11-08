@@ -2,6 +2,7 @@ package com.castcle.ui.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +12,7 @@ import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
@@ -26,6 +28,7 @@ import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.stfalcon.imageviewer.StfalconImageViewer
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,6 +44,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     private lateinit var adapterPagingCommon: CommonAdapter
 
     private var adapterFilterAdapter = FeedFilterAdapter()
+
+    private lateinit var baseContentUiModel: ContentUiModel
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentFeedBinding
         get() = { inflater, container, attachToRoot ->
@@ -69,6 +74,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun setupView() {
+        startLoadingShimmer()
         setupToolbar(viewModel.isGuestMode)
         with(binding) {
             wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
@@ -137,27 +143,17 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         lifecycleScope.launchWhenCreated {
             adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
                 val refresher = loadStates.refresh
+                val isError = loadStates.refresh is LoadState.Error
+                val isLoading = loadStates.refresh is LoadState.Loading
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
                 handleEmptyState(displayEmpty)
-                if (!displayEmpty) {
+                if (!isLoading) {
+                    binding.swiperefresh.isRefreshing = false
                     stopLoadingShimmer()
                 }
             }
         }
-
-//        val isLoading = loadStates.refresh is LoadState.Loading
-//        val isError = loadStates.refresh is LoadState.Error
-//        val isNotItem = loadStates.refresh is LoadState.NotLoading &&
-//            adapterPagingCommon.itemCount == 0
-//        if (isError || isNotItem) {
-//            handleEmptyState(true)
-//        }else{
-//            handleEmptyState(false)
-//        }
-//        if(!isLoading){
-//            stopLoadingShimmer()
-//        }
 
         with(binding.empState) {
             itemClick.subscribe {
@@ -165,20 +161,35 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             }.addToDisposables()
         }
 
-        viewModel.onUpdateContentLike.subscribe {
-            adapterPagingCommon.updateStateItemLike(it)
-        }.addToDisposables()
+        with(binding.swiperefresh) {
+            setOnRefreshListener {
+                adapterPagingCommon.refresh()
+            }
+        }
+
+        viewModel.onUpdateContentLike.subscribe().addToDisposables()
     }
 
     private fun handleEmptyState(show: Boolean) {
         with(binding) {
             clFilter.visibleOrGone(!show)
+            rvFeedContent.visibleOrGone(!show)
         }
         with(binding.empState) {
             visibleOrGone(show)
             bindUiState(EmptyState.FEED_EMPTY)
         }
     }
+
+    private fun startLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
+            }
+        }
+    }
+
 
     private fun stopLoadingShimmer() {
         with(binding) {
@@ -210,20 +221,38 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
         guestEnable(enable = {
-            viewModel.input.updateLikeContent(contentUiModel)
-        }, disable = {})
+            baseContentUiModel = contentUiModel
+            val likeContentRequest = LikeContentRequest(
+                contentId = contentUiModel.payLoadUiModel.contentId,
+                feedItemId = contentUiModel.payLoadUiModel.contentId,
+                authorId = viewModel.userProfile.value?.castcleId ?: "",
+                likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+            )
+            if (!contentUiModel.payLoadUiModel.likedUiModel.liked) {
+                adapterPagingCommon.updateStateItemLike(contentUiModel)
+            } else {
+                adapterPagingCommon.updateStateItemUnLike(contentUiModel)
+            }
+            viewModel.input.updateLikeContent(likeContentRequest)
+        }, disable = {
+            navigateToNotiflyLoginDialog()
+        })
     }
 
     private fun handleRecastClick(contentUiModel: ContentUiModel) {
         guestEnable(enable = {
             navigateToRecastDialogFragment(contentUiModel)
-        }, disable = {})
+        }, disable = {
+            navigateToNotiflyLoginDialog()
+        })
     }
 
     private fun handleCommentClick(contentUiModel: ContentUiModel) {
         guestEnable(enable = {
             navigateToFeedDetailFragment(contentUiModel)
-        }, disable = {})
+        }, disable = {
+            navigateToNotiflyLoginDialog()
+        })
     }
 
     private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
@@ -259,8 +288,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             onBindWhatYouMind(it)
         })
 
-        activityViewModel.user.subscribe {
-            onRefreshProfile()
+        activityViewModel.userRefeshProfile.subscribe {
+            onBindWhatYouMindData(it)
         }.addToDisposables()
 
         viewModel.onError.subscribe {
@@ -294,7 +323,30 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             is FeedItemClick.FeedCommentClick -> {
                 handleCommentClick(click.contentUiModel)
             }
+            is FeedItemClick.FeedImageClick -> {
+                handleImageItemClick(click.position, click.contentUiModel)
+            }
         }
+    }
+
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentUiModel) {
+        val image = contentUiModel.payLoadUiModel.photo.imageContent.map {
+            it.imageFullHd
+        }
+        val imagePosition = when (contentUiModel.payLoadUiModel.photo.imageContent.size) {
+            1 -> 0
+            else -> position
+        }
+        StfalconImageViewer.Builder(context, image, ::loadPosterImage)
+            .withStartPosition(imagePosition)
+            .allowSwipeToDismiss(true)
+            .allowZooming(true)
+            .show()
+    }
+
+    private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
+        imageView.loadImageWithoutTransformation(imageUrl)
+
     }
 
     private fun onBindWhatYouMind(user: User) {
@@ -310,6 +362,17 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         binding.wtWhatYouMind.clickStatus.subscribe {
             navigateToProfile(user.castcleId, ProfileType.PROFILE_TYPE_ME.type)
         }.addToDisposables()
+    }
+
+    private fun onBindWhatYouMindData(user: User) {
+        user.toContentUiModel().apply {
+            deepLink = makeDeepLinkUrl(
+                requireContext(), Input(
+                    type = DeepLinkTarget.USER_PROFILE_ME,
+                    contentData = user.castcleId
+                )
+            ).toString()
+        }.run(binding.wtWhatYouMind::bindUiModel)
     }
 
     private fun navigateToProfile(castcleId: String, profileType: String) {
@@ -339,5 +402,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun onRefreshProfile() {
+        viewModel.fetchUserProfile()
     }
 }

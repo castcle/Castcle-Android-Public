@@ -1,7 +1,5 @@
 package com.castcle.data.staticmodel
 
-import com.castcle.common_model.model.userprofile.UserPage
-
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 //
@@ -27,15 +25,4 @@ import com.castcle.common_model.model.userprofile.UserPage
 //  Created by sklim on 21/9/2021 AD at 12:50.
 
 object UserRecastStatic {
-    val  userPageMock = listOf(
-        UserPage(
-            displayName = "Adam Douglas Driver",
-            displayAvatar = "https://api.time.com/wp-content/uploads/2015/11/adam-driver.jpg",
-            isSelected = true
-        ),
-        UserPage(
-            displayName = "Stan Lee",
-            displayAvatar = "https://dudeplace.co/wp-content/uploads/2018/11/stanlee.jpg"
-        )
-    )
 }

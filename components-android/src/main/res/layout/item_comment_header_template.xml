@@ -6,6 +6,17 @@
     android:layout_height="wrap_content"
     android:background="@color/transparent">
 
+    <com.castcle.components_android.ui.LineRelationView
+        android:id="@+id/lrLineRelation"
+        android:layout_width="@dimen/_2sdp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_2sdp"
+        app:layout_constraintBottom_toBottomOf="@id/rvChildComment"
+        app:layout_constraintEnd_toEndOf="@id/ivAvatar"
+        app:layout_constraintStart_toStartOf="@id/ivAvatar"
+        app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+        app:rlv_lineColor="@color/gray_medium_01"/>
+
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
         android:layout_width="@dimen/_35sdp"

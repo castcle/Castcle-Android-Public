@@ -8,6 +8,7 @@ import android.text.*
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -74,6 +75,7 @@ class InputEditText(
     var onTextChanged: ((String) -> Unit)? = null
     var onDrawableEndClickListener: ((String) -> Unit)? = null
     var onEditorActionListener: ((actionId: Int, event: KeyEvent?) -> Boolean)? = null
+    var onEditorActionNext: ((Unit) -> Unit)? = null
     private var inputType: Int = android.text.InputType.TYPE_CLASS_TEXT
     private var endableTransform = false
 
@@ -124,16 +126,20 @@ class InputEditText(
         } finally {
             styles.recycle()
         }
+
         with(binding) {
             etTextInputPrimary.apply {
                 setTextStyle(R.style.TextInput_Text)
+                movePrimaryTextUp()
 
                 setOnFocusChangeListener { _, hasFocus ->
                     binding.root.isActivated = hasFocus
                     when {
                         hasFocus -> {
+                            movePrimaryTextDown()
                             context.showSoftKeyboard(this)
                         }
+                        text.toString().isEmpty() -> movePrimaryTextUp()
                     }
                 }
                 textWatcher = object : TextWatcher {
@@ -152,13 +158,22 @@ class InputEditText(
                     ) = Unit
 
                     override fun afterTextChanged(s: Editable?) {
+                        when {
+                            s.toString().isNotEmpty() -> movePrimaryTextDown()
+                            !hasFocus() -> movePrimaryTextUp()
+                        }
                         onTextChanged?.invoke(s.toString())
                     }
                 }
                 addTextChangedListener(textWatcher)
 
                 setOnEditorActionListener { _, actionId, keyEvent ->
-                    onEditorActionListener?.invoke(actionId, keyEvent) ?: false
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        onEditorActionNext?.invoke(Unit)
+                        true
+                    } else {
+                        onEditorActionListener?.invoke(actionId, keyEvent) ?: false
+                    }
                 }
 
                 setOnLongClickListener {
@@ -321,6 +336,26 @@ class InputEditText(
         binding.etTextInputPrimary.setTextColor(colorInputText)
     }
 
+    fun setIconWithTransformation() {
+        with(binding) {
+            with(ibTextInputDrawableEnd) {
+                visible()
+                binding.tilTextInputLayout.isEndIconVisible = false
+                val iconDefault = context?.getDrawableRes(R.drawable.ic_password)
+                setImageDrawable(iconDefault)
+                setOnClickListener {
+                    setTransformationTextPassword()
+                    val iconPassword = if (endableTransform) {
+                        context?.getDrawableRes(R.drawable.ic_password_visible)
+                    } else {
+                        iconDefault
+                    }
+                    setImageDrawable(iconPassword)
+                }
+            }
+        }
+    }
+
     fun setTransformationTextPassword() {
         with(binding) {
             etTextInputPrimary.setTransformationPassword(endableTransform)
@@ -364,6 +399,13 @@ class InputEditText(
             }
             val params = binding.etTextInputPrimary.layoutParams as MarginLayoutParams
             params.marginEnd = resources.getDimensionPixelSize(R.dimen._40sdp)
+        }
+    }
+
+    fun setRequestFocus() {
+        with(binding.etTextInputPrimary) {
+            requestFocus()
+            context.showSoftKeyboard(this)
         }
     }
 }

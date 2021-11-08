@@ -11,7 +11,6 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.base.TemplateClicks
-import com.castcle.data.staticmodel.FeedFilterMock.feedFilter
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
@@ -145,7 +144,6 @@ class FeedMockFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
         guestEnable(enable = {
-            viewModel.input.updateLikeContent(contentUiModel)
         }, disable = {})
     }
 
@@ -172,7 +170,7 @@ class FeedMockFragment : BaseFragment<FeedFragmentViewModel>(),
             onBindWhatYouMind(it)
         })
 
-        activityViewModel.user.subscribe {
+        activityViewModel.userRefeshProfile.subscribe {
             onRefreshProfile()
         }.addToDisposables()
 
@@ -181,10 +179,6 @@ class FeedMockFragment : BaseFragment<FeedFragmentViewModel>(),
         viewModel.feedContentMock.observe(this, {
             adapterMockCommon.uiModels = it
         })
-
-        viewModel.onUpdateContentLike.subscribe {
-            adapterMockCommon.onUpdateItem(it)
-        }.addToDisposables()
     }
 
     private fun handleContentClick(click: Click) {
@@ -193,7 +187,6 @@ class FeedMockFragment : BaseFragment<FeedFragmentViewModel>(),
                 handleNavigateAvatarClick(click.contentUiModel)
             }
             is FeedItemClick.FeedLikeClick -> {
-                handleLikeClick(click.contentUiModel)
             }
             is FeedItemClick.FeedRecasteClick -> {
                 handleRecastClick(click.contentUiModel)

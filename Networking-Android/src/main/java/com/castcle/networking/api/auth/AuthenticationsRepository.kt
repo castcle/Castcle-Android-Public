@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common_model.model.engagement.EngagementRequest
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.login.LoginResponse
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.*
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.*
@@ -47,7 +48,7 @@ import javax.inject.Inject
 //
 //  Created by sklim on 31/8/2021 AD at 14:37.
 interface AuthenticationsRepository {
-    fun authLoginWithEmail(loginRequest: LoginRequest): Completable
+    fun authLoginWithEmail(loginRequest: LoginRequest): Single<LoginResponse>
 
     fun authRegister(registerRequest: RegisterRequest): Completable
 
@@ -80,15 +81,14 @@ class AuthenticationsRepositoryImpl @Inject constructor(
     private val sessionManagerRepository: SessionManagerRepository
 ) : AuthenticationsRepository {
 
-    override fun authLoginWithEmail(loginRequest: LoginRequest): Completable {
+    override fun authLoginWithEmail(loginRequest: LoginRequest): Single<LoginResponse> {
         return authenticationApi
             .authLogin(loginRequest)
             .lift(ApiOperators.mobileApiError())
             .firstOrError()
             .doOnSuccess {
-                updateAccessToken(it.toOAuthResponse())
+                updateProfile(it)
             }
-            .ignoreElement()
     }
 
     override fun authRegister(registerRequest: RegisterRequest): Completable {
@@ -99,6 +99,10 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .doOnSuccess {
                 updateAccessToken(it.toOAuthResponse())
             }.ignoreElement()
+    }
+
+    private fun updateProfile(loginResponse: LoginResponse) {
+        updateAccessToken(loginResponse.toOAuthResponse())
     }
 
     override fun createPage(createPageRequest: CreatePageRequest): Single<CreatePageResponse> {

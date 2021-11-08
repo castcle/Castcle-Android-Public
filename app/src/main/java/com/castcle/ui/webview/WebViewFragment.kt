@@ -1,19 +1,27 @@
 package com.castcle.ui.webview
 
 import android.annotation.SuppressLint
+import android.content.*
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.webkit.*
+import androidx.annotation.DrawableRes
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.castcle.extensions.gone
+import androidx.viewbinding.ViewBinding
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentWebviewBinding
 import com.castcle.android.databinding.ToolbarCastcleWebviewBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.extensions.*
 import com.castcle.ui.base.*
+import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import timber.log.Timber
+import java.net.URISyntaxException
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -60,16 +68,28 @@ class WebViewFragment : BaseFragment<WebViewFragmentViewModel>(),
         get() = toolbarViewBinding as ToolbarCastcleWebviewBinding
 
     override fun viewModel(): WebViewFragmentViewModel =
-        ViewModelProvider(this, viewModelFactory)
-            .get(WebViewFragmentViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[WebViewFragmentViewModel::class.java]
+
+    @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     private lateinit var scheme: String
+
+    private lateinit var schemeCastcle: String
+
+    private lateinit var host: String
+
     private var webViewState: Bundle? = null
+
     private val args by navArgs<WebViewFragmentArgs>()
+
+    private var customWebChromeClient: CustomWebChromeClient? = null
+
+    private var geolocationCallback: GeolocationPermissions.Callback? = null
+
+    private var geolocationRequestOrigin: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initValueScheme()
         initView()
         initViewEvents()
@@ -78,9 +98,26 @@ class WebViewFragment : BaseFragment<WebViewFragmentViewModel>(),
     }
 
     private fun openUrl() {
-        args.url?.let {
+        val intentData = requireActivity().intent.data.toString()
+
+        val url = if (intentData.contains(PATH_PREFIX_WEBVIEW)) {
+            intentData.substringAfter(PATH_PREFIX_WEBVIEW)
+        } else {
+            args.url
+        }
+
+        url?.let {
+            val uri = Uri.parse(it)
+            toolbarBinding.apply {
+                if (isShowOpenInBrowserOption(uri)) {
+                    ivToolbarWebViewFragmentWebViewOptionsButton.visible()
+                } else {
+                    ivToolbarWebViewFragmentWebViewOptionsButton.invisible()
+                }
+            }
+
             clearAppIntent()
-            binding.webView.loadUrl(it)
+            binding.webView.loadUrl(uri.toString())
         }
     }
 
@@ -90,12 +127,26 @@ class WebViewFragment : BaseFragment<WebViewFragmentViewModel>(),
 
     private fun initValueScheme() {
         scheme = getString(R.string.link_scheme)
+        host = getString(R.string.deep_link_host)
+        schemeCastcle = getString(R.string.deep_link_scheme_castcle)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initView() {
         with(binding) {
             with(webView) {
+                activity?.let {
+                    customWebChromeClient = CustomWebChromeClient(
+                        this@WebViewFragment,
+                        doOnProgressChanged = { view, newProgress ->
+                            onWebChromeClientProgressChanged(view, newProgress)
+                        },
+                        doOnError = { error ->
+                            handleError(error)
+                        }
+                    )
+                    webChromeClient = customWebChromeClient
+                }
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(
                         view: WebView?,
@@ -103,16 +154,95 @@ class WebViewFragment : BaseFragment<WebViewFragmentViewModel>(),
                     ): Boolean {
                         request?.let {
                             webView.stopLoading()
-                            if (PatternsCompat.WEB_URL.matcher(it.url.toString()).matches()) {
-                                webView.loadUrl(it.url.toString())
+                            when {
+                                it.url.toString().startsWith("intent://") -> {
+                                    handleIntentType(it)
+                                }
+                                PatternsCompat.WEB_URL.matcher(it.url.toString()).matches() -> {
+                                    webView.loadUrl(it.url.toString())
+                                }
                             }
                         }
                         return true
                     }
                 }
                 settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
                 CookieManager.getInstance().removeAllCookies(null)
             }
+        }
+    }
+
+    private fun handleIntentType(request: WebResourceRequest) {
+        try {
+            val intent =
+                Intent.parseUri(request.url.toString(), Intent.URI_INTENT_SCHEME)
+            intent?.let {
+                binding.webView.stopLoading()
+                intent.data?.let {
+                    try {
+                        onBoardNavigator.navigateBack()
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        requireActivity().startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Uri.parse(args.url)?.apply {
+                            activity?.openUri(uri = this, isOpenExternal = true)
+                        }
+                    }
+                }
+            }
+        } catch (e: URISyntaxException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun isHttpsDeepLink(uri: Uri?) = uri != null
+        && uri.scheme == scheme
+        && uri.host == host
+        && !uri.path.isNullOrEmpty()
+
+    private fun isCastcleDeepLink(uri: Uri?) = uri != null
+        && uri.scheme == schemeCastcle
+        && !uri.host.isNullOrEmpty()
+
+    private fun onWebChromeClientProgressChanged(view: WebView, newProgress: Int) {
+        ensureViewBindingNotNull(viewBinding) {
+            binding.progress = newProgress
+        }
+
+        ensureViewBindingNotNull(toolbarViewBinding) {
+            with(toolbarBinding) {
+                tvToolbarWebViewTitle.text = view.title
+                ivToolbarWebViewFragmentBackButton.setImageResource(
+                    getImageResource(view.canGoBack())
+                )
+                ivToolbarWebViewFragmentForwardButton.setImageResource(
+                    getImageResource(view.canGoForward())
+                )
+            }
+        }
+    }
+
+    private fun handleError(error: Throwable) {
+        displayError(error)
+    }
+
+    @DrawableRes
+    private fun getImageResource(canMove: Boolean): Int =
+        if (canMove) {
+            R.drawable.ic_arrow_left_big_active
+        } else {
+            R.drawable.ic_arrow_left_big
+        }
+
+    private fun isShowOpenInBrowserOption(uri: Uri): Boolean {
+        val openInBrowserOption = uri.getQueryParameter(QUERY_PARAM_OPEN_IN_BROWSER_OPTION)
+        return QUERY_PARAM_VALUE_FALSE != openInBrowserOption
+    }
+
+    private fun ensureViewBindingNotNull(viewBinding: ViewBinding?, block: () -> Unit) {
+        if (viewBinding != null) {
+            block()
         }
     }
 
@@ -150,4 +280,23 @@ class WebViewFragment : BaseFragment<WebViewFragmentViewModel>(),
             binding.webView.saveState(this)
         }
     }
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        if (requestCode == FILE_PERMISSION_REQUEST_CODE) {
+            customWebChromeClient?.doOnActivityResult(
+                requestCode,
+                resultCode,
+                data
+            )
+        }
+    }
 }
+
+internal const val PATH_PREFIX_WEBVIEW: String = "://webview/"
+private const val LOCATION_PERMISSION_REQUEST_CODE = 7
+private const val QUERY_PARAM_OPEN_IN_BROWSER_OPTION = "openInBrowserOption"
+private const val QUERY_PARAM_VALUE_FALSE = "false"

@@ -104,4 +104,11 @@ interface UserApi {
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Flowable<Response<UserPageResponse>>
+
+    @GET("/users/mentions")
+    fun getUserMention(
+        @Query(KEYWORD) keyword: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Flowable<Response<UserMentionResponse>>
 }

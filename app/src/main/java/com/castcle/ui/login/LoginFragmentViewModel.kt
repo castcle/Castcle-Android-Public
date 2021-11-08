@@ -2,6 +2,7 @@ package com.castcle.ui.login
 
 import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.ui.base.BaseViewCoroutinesModel
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -30,7 +31,7 @@ import io.reactivex.Observable
 //
 //  Created by sklim on 31/8/2021 AD at 09:07.
 
-abstract class LoginFragmentViewModel : BaseViewModel() {
+abstract class LoginFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val enableLogin: LiveData<Boolean>
 

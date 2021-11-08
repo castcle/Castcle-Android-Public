@@ -169,7 +169,7 @@ class FeedContentShortMockViewHolder(
 
     private fun stopLoadingPreViewShimmer() {
         with(binding) {
-            clPreviewLoadingContent.shimmerLayoutLoading.run {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
                 gone()

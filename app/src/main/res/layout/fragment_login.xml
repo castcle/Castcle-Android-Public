@@ -71,7 +71,6 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_12sdp"
             android:textColorHint="@color/gray_light"
-            app:endIconMode="password_toggle"
             app:endIconTint="@color/light"
             app:hintText="@string/login_password"
             app:inputType="textPassword"
@@ -122,26 +121,14 @@
             android:id="@+id/tvCastcle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_64sdp"
             android:layout_marginTop="@dimen/_24sdp"
             android:enabled="false"
             android:text="@string/login_sign_up_title"
             android:textColor="@color/gray_light"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/btLogin"
             app:layout_constraintTop_toBottomOf="@id/btLogin"
             tools:enabled="true" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanit.Regular"
-            android:id="@+id/tvCastcleSignUp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:text="@string/login_sign_up"
-            android:textColor="@color/blue"
-            app:layout_constraintBottom_toBottomOf="@id/tvCastcle"
-            app:layout_constraintStart_toEndOf="@id/tvCastcle"
-            app:layout_constraintTop_toTopOf="@id/tvCastcle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

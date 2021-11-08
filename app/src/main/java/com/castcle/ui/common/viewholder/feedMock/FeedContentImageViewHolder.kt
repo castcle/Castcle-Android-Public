@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateImageBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.extensions.gone
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
@@ -90,6 +91,11 @@ class FeedContentImageMockViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentFeed

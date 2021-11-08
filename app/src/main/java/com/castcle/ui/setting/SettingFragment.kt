@@ -1,5 +1,6 @@
 package com.castcle.ui.setting
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -9,6 +10,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.notification.NotificationUiModel
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.userprofile.User
@@ -18,6 +20,7 @@ import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.networking.api.user.PROFILE_TYPE_ME
 import com.castcle.ui.base.*
+import com.castcle.ui.common.dialog.*
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
@@ -98,9 +101,6 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         with(binding) {
             val settingUiModel = StaticSeetingMenu.staticMenuSetting
             with(layoutNotification) {
-                tvNotiCount.text =
-                    context?.getString(R.string.setting_noti_count)?.format("3")
-                tvCount.text = "3"
                 clNotiication.subscribeOnClick {
                     navigateToNotificationFragment()
                 }
@@ -109,6 +109,17 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
             mtMenuSetting.clickStateMenu.subscribe {
                 handleMenuClick(it)
             }.addToDisposables()
+        }
+    }
+
+    private fun onBindNotification(badgesCount: String) {
+        with(binding) {
+            with(layoutNotification) {
+                tvNotiCount.text =
+                    context?.getString(R.string.setting_noti_count)?.format(badgesCount)
+                tvCount.text = badgesCount
+                tvCount.visibleOrGone(badgesCount.isBlank())
+            }
         }
     }
 
@@ -126,7 +137,7 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                     navigateToProfileSettingFragment()
                 }
                 SettingMenuType.PRIVACY -> {
-
+                    openWebView(STATIC_LINK_PRIVACY_POLICY)
                 }
                 else -> {
 
@@ -174,6 +185,22 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         binding.ptPageContentList.onNextPage.subscribe {
             viewModel.fetchNextUserPage()
         }.addToDisposables()
+
+        binding.tvjoinUs.subscribeOnClick {
+            openWebView(STATIC_LINK_JOIN_US)
+        }.addToDisposables()
+
+        binding.tvManifesto.subscribeOnClick {
+            openWebView(STATIC_LINK_MENIFESTO)
+        }.addToDisposables()
+
+        binding.tvWhitepaper.subscribeOnClick {
+            openWebView(STATIC_LINK_WHITEPAPER)
+        }.addToDisposables()
+    }
+
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
     }
 
     private fun handleError(it: Throwable) {
@@ -223,6 +250,12 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
 
         viewModel.userPage.observe(this, {
             onBindPageContent(it)
+        })
+
+        viewModel.notificationBadgesCounts.observe(viewLifecycleOwner, {
+            if (it is NotificationUiModel.NotificationBadgeModel) {
+                onBindNotification(it.badges)
+            }
         })
     }
 

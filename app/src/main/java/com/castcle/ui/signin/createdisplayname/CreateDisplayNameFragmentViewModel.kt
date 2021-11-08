@@ -54,6 +54,8 @@ abstract class CreateDisplayNameFragmentViewModel : BaseViewModel() {
 
     abstract val responseCastcleIdSuggest: Observable<DisplayNameVerifyUiModel>
 
+    abstract val responseCastcleIdExsit: Observable<CastcleIdVerifyUiModel>
+
     abstract val input: Input
 
     interface Input {
@@ -145,15 +147,12 @@ class CreateDisplayNameFragmentViewModelImpl @Inject constructor(
 
     override fun checkCastcleId(castcleId: String) {
         _castcleId.onNext(castcleId)
-        responseCastcleIdExsit
-            .subscribe(::handlerDisplayName)
-            .addToDisposables()
     }
 
     private fun handlerDisplayName(authVerifyBaseUiModel: AuthVerifyBaseUiModel) {
         if (authVerifyBaseUiModel is CastcleIdVerifyUiModel) {
-            val displayNameExsit = authVerifyBaseUiModel.exist
-            if (!displayNameExsit && authVerifyBaseUiModel.message.isNotBlank()) {
+            val displayNameExist = authVerifyBaseUiModel.exist
+            if (!displayNameExist && authVerifyBaseUiModel.message.isNotBlank()) {
                 VerifyProfileState.CASTCLE_ID_PASS.also {
                     _disPlayNameState = it
                     _verifyState.onNext(it)
@@ -164,7 +163,7 @@ class CreateDisplayNameFragmentViewModelImpl @Inject constructor(
         }
     }
 
-    private val responseCastcleIdExsit: Observable<CastcleIdVerifyUiModel>
+    override val responseCastcleIdExsit: Observable<CastcleIdVerifyUiModel>
         get() = _castcleId
             .debounce(
                 TIMEOUT_SEARCH_REQUEST,
@@ -174,8 +173,9 @@ class CreateDisplayNameFragmentViewModelImpl @Inject constructor(
                 onCheckCastcleIdExsit(it)
                     .doIfTakeLongerThan(TIMEOUT_SHOWING_SPINNER, TimeUnit.MILLISECONDS) {
                         _showLoading.onNext(true)
-                    }
-                    .doFinally {
+                    }.doOnSuccess {
+                        handlerDisplayName(it)
+                    }.doFinally {
                         _showLoading.onNext(false)
                     }.onErrorResumeNext {
                         _error.onNext(it)

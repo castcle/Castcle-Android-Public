@@ -5,6 +5,8 @@
     android:id="@+id/dialog_login_nav_graph"
     app:startDestination="@id/dialogLoginFragment">
 
+    <include app:graph="@navigation/login_nav_graph" />
+
     <dialog
         android:id="@+id/dialogLoginFragment"
         android:name="com.castcle.ui.common.dialog.NotiflyLoginDialogFragment"
@@ -12,7 +14,11 @@
 
         <action
             android:id="@+id/actionDialogLoginFragmentToLoginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginNavGraph" />
+
+        <action
+            android:id="@+id/actionDialogLoginFragmentToGreetingFragment"
+            app:destination="@id/greetingFragment" />
     </dialog>
 
 </navigation>

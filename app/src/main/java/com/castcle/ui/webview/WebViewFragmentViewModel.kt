@@ -1,5 +1,7 @@
 package com.castcle.ui.webview
 
+import android.net.Uri
+import com.castcle.data.model.ModelDeepLink
 import com.castcle.ui.base.BaseViewModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,4 +29,12 @@ import com.castcle.ui.base.BaseViewModel
 //  Created by sklim on 24/8/2021 AD at 08:23.
 
 abstract class WebViewFragmentViewModel : BaseViewModel() {
+    abstract val input: Input
+}
+
+interface Input {
+    fun processHandleDeeplink(uri: Uri)
+    fun deepLink(deepLink: String?)
+    fun processDeeplinkPreActivation(deepLink: ModelDeepLink?)
+    fun handlePartnerRegister(uri: Uri?)
 }

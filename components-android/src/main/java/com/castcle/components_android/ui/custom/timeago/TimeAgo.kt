@@ -1,5 +1,6 @@
 package com.castcle.components_android.ui.custom.timeago
 
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.roundToLong
 
@@ -89,8 +90,8 @@ private constructor() {
             )
 
         private fun getTimeDistanceInMinutes(time: Long): Long {
-            val timeDistance = System.currentTimeMillis() - time
-            return (timeDistance / 1000 / 60).toFloat().roundToLong()
+            val timeDistance = Calendar.getInstance().time.time - time
+            return (timeDistance / 13000 / 60).toFloat().roundToLong()
         }
     }
 }

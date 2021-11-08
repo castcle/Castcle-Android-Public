@@ -27,7 +27,7 @@
         <item name="colorControlActivated">@color/white</item>
     </style>
 
-    <style name="TextInput" >
+    <style name="TextInput">
         <item name="boxStrokeWidthFocused">0dp</item>
         <item name="boxStrokeWidth">0dp</item>
     </style>
@@ -55,5 +55,16 @@
     <style name="TextInput.TextError" parent="AppTextKanit.xSmall">
         <item name="android:textColor">@color/red_primary</item>
     </style>
+
+    <declare-styleable name="PinTextInput">
+        <attr name="pinMasked" format="boolean" />
+        <attr name="pinCharacterAmount" format="integer" />
+        <attr name="pinCharacterMasked" format="string" />
+        <attr name="pinTextPaddingBottom" format="dimension" />
+        <attr name="pinCharacterBoxHorizontalSpacing" format="dimension" />
+        <attr name="the1PinCharacterBoxBackground" format="reference" />
+        <attr name="the1PinErrorCharacterBoxBackground" format="reference" />
+        <attr name="the1PinActiveCharacterBoxBackground" format="reference" />
+    </declare-styleable>
 
 </resources>

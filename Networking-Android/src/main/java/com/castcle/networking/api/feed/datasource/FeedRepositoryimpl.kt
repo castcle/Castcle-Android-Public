@@ -3,6 +3,7 @@ package com.castcle.networking.api.feed.datasource
 import androidx.paging.*
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.networking.api.feed.FeedApi
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Completable
@@ -106,14 +107,17 @@ class FeedRepositoryImpl @Inject constructor(
         }
     ).flow
 
-    override fun likeContent(contentId: String, likeStatus: Boolean): Completable {
-        val status = if (!likeStatus) {
+    override fun likeContent(likeContentRequest: LikeContentRequest): Completable {
+        val status = if (!likeContentRequest.likeStatus) {
             LIKE_STATUS_LIKE
         } else {
             LIKE_STATUS_UNLIKE
         }
-        return feedApi.likeFeedContent(contentId, status)
-            .lift(ApiOperators.mobileApiError())
+        return feedApi.likeFeedContent(
+            likeContentRequest.contentId,
+            status,
+            likeContentRequest
+        ).lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()
     }

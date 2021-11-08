@@ -105,7 +105,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     private fun initBottomNavigation() {
-        viewModel.user.subscribe {
+        viewModel.userRefeshProfile.subscribe {
             setupBottomNavigationBar()
         }.addToDisposables()
 
@@ -216,7 +216,6 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     private fun onTokenIsExpired() {
-        displayMessage("on Section is Expired")
         viewModel.onAccessTokenExpired(this).subscribe().addToDisposables()
     }
 

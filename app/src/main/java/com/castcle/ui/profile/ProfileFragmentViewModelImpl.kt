@@ -5,7 +5,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
-import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.repository.UserProfileRepository
@@ -18,7 +20,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
-import java.io.InputStream
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -55,7 +56,8 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val uploadProfileAvatarCompletableUseCase: UploadProfileAvatarCompletableUseCase,
     private val checkAvatarUpLoadingFlowableCase: CheckAvatarUpLoadingFlowableCase,
     private val likedCommentCompletableUseCase: LikeCommentCompletableUseCase,
-    private val likeContentCompletableUseCase: LikeContentCompletableUseCase
+    private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
 ) : ProfileFragmentViewModel() {
 
     private lateinit var _userProfileContentRes: Flow<PagingData<ContentUiModel>>
@@ -64,7 +66,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
 
     private var _userProfileData = MutableLiveData<User>()
 
-    override val userUpLoadRes: LiveData<User>
+    override val userProfileData: LiveData<User>
         get() = _userProfileData
 
     override val userProfileRes: Observable<User>
@@ -89,6 +91,9 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val _error = PublishSubject.create<Throwable>()
     override val onError: Observable<Throwable>
         get() = _error
+
+    override val castcleId: String
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     private fun fetchUserProfile(): Observable<User> {
         return getUserProfileSingleUseCase
@@ -193,8 +198,6 @@ class ProfileFragmentViewModelImpl @Inject constructor(
             .map { (status, userResponse) ->
                 userResponse.takeIf {
                     it.isNotBlank()
-                }.let {
-                    checkUserResponse(userResponse)
                 }
                 status
             }.doOnError {
@@ -210,14 +213,10 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     }
 
     override fun likedContent(
-        contentId: String,
-        likedStatus: Boolean
+        likeContentRequest: LikeContentRequest
     ): Completable {
         return likeContentCompletableUseCase.execute(
-            LikeContentCompletableUseCase.Input(
-                contentId = contentId,
-                likeStatus = likedStatus
-            )
+            likeContentRequest
         )
     }
 }

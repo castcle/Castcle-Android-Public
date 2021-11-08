@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.createblog.MediaItem
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
+import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.*
 
@@ -60,6 +61,8 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
     abstract val showLoading: Observable<Boolean>
 
     abstract fun onClearState()
+
+    abstract fun getUserMention(keyword: String): Single<List<MentionUiModel>>
 
     interface Input {
         fun validateMessage(message: String): Completable

@@ -5,16 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.PaginationModel
+import com.castcle.common_model.model.notification.NotificationUiModel
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.common_model.model.setting.toPageHeaderUiModel
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.ui.util.SingleLiveEvent
+import com.castcle.usecase.notification.GetBadgesNotificationSingleUseCase
 import com.castcle.usecase.setting.GetUerPageSingleUseCase
 import com.castcle.usecase.setting.LogoutCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -49,6 +53,8 @@ abstract class SettingFragmentViewModel : BaseViewModel() {
 
     abstract val userPage: LiveData<List<PageUiModel>>
 
+    abstract val notificationBadgesCounts: SingleLiveEvent<NotificationUiModel>
+
     abstract fun onLogOut(activity: Activity): Completable
 
     abstract fun fetchCachedUserProfile(): Completable
@@ -61,7 +67,8 @@ abstract class SettingFragmentViewModel : BaseViewModel() {
 class SettingFragmentViewModelImpl @Inject constructor(
     private val logoutCompletableUseCase: LogoutCompletableUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
-    private val getUerPageSingleUseCase: GetUerPageSingleUseCase
+    private val getUerPageSingleUseCase: GetUerPageSingleUseCase,
+    private val getBadgesNotificationSingleUseCase: GetBadgesNotificationSingleUseCase
 ) : SettingFragmentViewModel() {
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
@@ -69,6 +76,10 @@ class SettingFragmentViewModelImpl @Inject constructor(
     private val _error = PublishSubject.create<Throwable>()
 
     private var _pagination = MutableLiveData<PaginationModel>()
+
+    private var _notificationBadgesCounts = SingleLiveEvent<NotificationUiModel>()
+    override val notificationBadgesCounts: SingleLiveEvent<NotificationUiModel>
+        get() = _notificationBadgesCounts
 
     private val _userProfile = MutableLiveData<User>()
     override val userProfile: LiveData<User>
@@ -102,14 +113,21 @@ class SettingFragmentViewModelImpl @Inject constructor(
         }
         defaultPaginate?.let { it ->
             getUerPageSingleUseCase.execute(it)
-                .subscribeBy(
-                    onSuccess = {
-                        onBindPageModel(it)
+                .zipWith(
+                    getBadgesNotificationSingleUseCase.execute(Unit)
+                ).subscribeBy(
+                    onSuccess = { (pageUiMode, notificationBadge) ->
+                        onBindPageModel(pageUiMode)
+                        onBindNotification(notificationBadge)
                     }, onError = {
                         _error.onNext(it)
                     }
                 ).addToDisposables()
         }
+    }
+
+    private fun onBindNotification(notificationBadge: NotificationUiModel) {
+        _notificationBadgesCounts.value = notificationBadge
     }
 
     override fun fetchNextUserPage() {

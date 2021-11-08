@@ -93,6 +93,7 @@ class CommentedItemViewHolder(
         super.bindUiModel(uiModel)
         contentUiModel = uiModel
         with(binding) {
+
             with(uiModel.payLoadUiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
                 tvUserName.text = author.displayName

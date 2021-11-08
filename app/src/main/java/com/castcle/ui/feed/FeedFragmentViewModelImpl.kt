@@ -9,6 +9,7 @@ import com.castcle.android.R
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.staticmodel.FeedContentType
@@ -17,7 +18,7 @@ import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.search.GetTopTrendsSingleUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
+import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -56,7 +57,7 @@ import javax.inject.Inject
 @SuppressLint("StaticFieldLeak")
 class FeedFragmentViewModelImpl @Inject constructor(
     private val appContext: Context,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val feedNonAuthRepository: FeedRepository,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
@@ -83,7 +84,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
         get() = _feedUiMode
 
     override val isGuestMode: Boolean
-        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
     private fun setUserProfileData(user: Optional<User>) {
         if (user.isPresent) {
@@ -133,15 +134,15 @@ class FeedFragmentViewModelImpl @Inject constructor(
             _feedUiMode = it
         })
 
-    private var _onUpdateContentLike = BehaviorSubject.create<ContentUiModel>()
-    override val onUpdateContentLike: Observable<ContentUiModel>
+    private var _onUpdateContentLike = BehaviorSubject.create<Unit>()
+    override val onUpdateContentLike: Observable<Unit>
         get() = _onUpdateContentLike
 
-    override fun updateLikeContent(contentUiModel: ContentUiModel) {
-        postLikeContent(contentUiModel)
+    override fun updateLikeContent(likeContentRequest: LikeContentRequest) {
+        postLikeContent(likeContentRequest)
             .subscribeBy(
                 onComplete = {
-                    _onUpdateContentLike.onNext(contentUiModel)
+                    _onUpdateContentLike.onNext(Unit)
                 },
                 onError = {
                     _error.onNext(it)
@@ -150,14 +151,9 @@ class FeedFragmentViewModelImpl @Inject constructor(
             .addToDisposables()
     }
 
-    private fun postLikeContent(contentUiModel: ContentUiModel): Completable {
+    private fun postLikeContent(contentUiModel: LikeContentRequest): Completable {
         return likeContentCompletableUseCase
-            .execute(
-                LikeContentCompletableUseCase.Input(
-                    contentUiModel.payLoadUiModel.contentId,
-                    contentUiModel.payLoadUiModel.likedUiModel.liked
-                )
-            ).doOnError {
+            .execute(contentUiModel).doOnError {
                 _error.onNext(it)
             }
     }

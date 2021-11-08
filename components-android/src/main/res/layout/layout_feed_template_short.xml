@@ -208,7 +208,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
-        android:id="@id/clPreviewLoadingContent"
+        android:id="@+id/inShimmerContentLoading"
         layout="@layout/layout_item_preview_shimmer_load"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

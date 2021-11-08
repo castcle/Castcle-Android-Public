@@ -50,5 +50,10 @@ sealed class TemplateEventClick(
         val contentUiModel: ContentUiModel
     ) : TemplateEventClick()
 
+    class ImageClick(
+        val imageIndex: Int,
+        val contentUiModel: ContentUiModel
+    ) : TemplateEventClick()
+
     class ReTryClick() : TemplateEventClick()
 }

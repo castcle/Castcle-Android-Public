@@ -5,9 +5,11 @@ import androidx.room.RoomDatabase
 import com.castcle.common_model.model.feed.ContentDbModel
 import com.castcle.common_model.model.feed.PageKey
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.data.model.dao.feed.PageKeyDao
 import com.castcle.data.model.dao.user.UserDao
+import com.castcle.data.model.dao.user.UserPageDao
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -36,11 +38,13 @@ import com.castcle.data.model.dao.user.UserDao
     entities = [
         User::class,
         ContentDbModel::class,
-        PageKey::class
-    ], version = 3
+        PageKey::class,
+        UserPage::class
+    ], version = 4
 )
 abstract class CastcleDataBase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun userPageDao(): UserPageDao
     abstract fun commentDao(): CommentDao
     abstract fun pageKeyDao(): PageKeyDao
 }

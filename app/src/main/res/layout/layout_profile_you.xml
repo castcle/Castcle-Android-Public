@@ -172,7 +172,7 @@
             tools:text="\@Kasidej Daengdej" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Regular"
+            style="@style/AppTextKanitLight.Small"
             android:id="@+id/tvProfileOverView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -180,6 +180,7 @@
             android:layout_marginTop="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_12sdp"
             android:lineSpacingExtra="@dimen/_2sdp"
+            android:maxLines="3"
             android:textAlignment="center"
             android:textColor="@color/light"
             app:layout_constraintEnd_toEndOf="parent"

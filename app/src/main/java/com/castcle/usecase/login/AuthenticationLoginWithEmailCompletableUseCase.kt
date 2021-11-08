@@ -1,11 +1,12 @@
 package com.castcle.usecase.login
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.data.error.LoginError
 import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.login.LoginResponse
+import com.castcle.data.error.LoginError
 import com.castcle.networking.api.auth.AuthenticationsRepository
-import com.castcle.usecase.base.CompletableUseCase
-import io.reactivex.Completable
+import com.castcle.usecase.base.SingleUseCase
+import io.reactivex.Single
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -35,12 +36,12 @@ import javax.inject.Inject
 class AuthenticationLoginWithEmailCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val authenticationsRepository: AuthenticationsRepository
-) : CompletableUseCase<LoginRequest>(
+) : SingleUseCase<LoginRequest,LoginResponse>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::LoginError
 ) {
-    override fun create(input: LoginRequest): Completable {
+    override fun create(input: LoginRequest): Single<LoginResponse> {
         return authenticationsRepository.authLoginWithEmail(input)
     }
 }

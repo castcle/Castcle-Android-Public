@@ -102,7 +102,11 @@ fun dynamicPhotoType(photo: JsonElement?): PhotoUiModel {
             val objectPhoto = gson.fromJson<PhotoResponse>(photo.asJsonObject, jsonObjectType)
             PhotoUiModel(
                 imageContent = objectPhoto.contents?.map {
-                    it.original
+                    ImageContentUiModel(
+                        imageFullHd = it.fullHd ?: "",
+                        imageOrigin = it.original ?: "",
+                        imageThumbnail = it.thumbnail ?: ""
+                    )
                 } ?: emptyList()
             )
         }
@@ -110,7 +114,11 @@ fun dynamicPhotoType(photo: JsonElement?): PhotoUiModel {
             val listImage = gson.fromJson<List<ImageResponse>>(photo.asJsonArray, jsonArrayType)
             PhotoUiModel(
                 imageContent = listImage.map {
-                    it.original
+                    ImageContentUiModel(
+                        imageFullHd = it.fullHd ?: "",
+                        imageOrigin = it.original ?: "",
+                        imageThumbnail = it.thumbnail ?: ""
+                    )
                 }
             )
         }
@@ -251,16 +259,31 @@ fun ReplyResponse.toReplyUiModel() =
 @Parcelize
 data class PhotoUiModel(
     val imageCover: String? = null,
-    val imageContent: List<String> = emptyList()
+    val imageContent: List<ImageContentUiModel> = emptyList()
+) : Parcelable
+
+@Parcelize
+data class ImageContentUiModel(
+    val imageOrigin: String = "",
+    val imageThumbnail: String = "",
+    val imageFullHd: String = "",
 ) : Parcelable
 
 fun PhotoResponse.toPhotoUiMode() =
     PhotoUiModel(
         imageCover = cover?.original ?: "",
         imageContent = contents?.map {
-            it.original
+            it.toImageContentUiModel()
         } ?: emptyList()
     )
+
+fun ImageResponse.toImageContentUiModel(): ImageContentUiModel {
+    return ImageContentUiModel(
+        imageFullHd = fullHd ?: "",
+        imageOrigin = original ?: "",
+        imageThumbnail = thumbnail ?: ""
+    )
+}
 
 @Parcelize
 data class LinkUiModel(
@@ -279,7 +302,7 @@ fun LinkResponse.toLinkUiModel(): LinkUiModel {
 
 @Parcelize
 data class LikedUiModel(
-    val count: Int = 0,
+    var count: Int = 0,
     var liked: Boolean = false,
     val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable

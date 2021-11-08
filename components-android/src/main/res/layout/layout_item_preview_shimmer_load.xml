@@ -1,98 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
-    <ScrollView
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayoutLoading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shimmer_auto_start="true">
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmerLayoutLoading"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clPreviewLoadingContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shimmer_auto_start="true">
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            app:layout_constraintBottom_toTopOf="@id/ftFooter"
+            app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+            tools:layout_editor_absoluteX="16dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clPreviewLoadingContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivPerviewLoadingUrl"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:background="@drawable/bg_cover_round_icon_loading"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                style="@style/AppTextKanitLight.Small"
+                android:id="@+id/tvLoadingPreview"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_16sdp"
+                android:layout_marginStart="@dimen/_4sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:layout_marginBottom="@dimen/_4sdp"
-                app:layout_constraintBottom_toTopOf="@id/ftFooter"
-                app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
-                tools:layout_editor_absoluteX="16dp">
+                android:background="@color/gray_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivPerviewLoadingUrl"
+                app:layout_constraintTop_toTopOf="@id/ivPerviewLoadingUrl"
+                tools:text="Youtube.com" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivPerviewLoadingUrl"
-                    android:layout_width="@dimen/_80sdp"
-                    android:layout_height="@dimen/_80sdp"
-                    android:background="@drawable/bg_cover_round_icon_loading"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <FrameLayout
+                style="@style/AppTextKanitLight.Regular"
+                android:id="@+id/tvPreviewLoadingHeader"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@color/gray_light"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
+                app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
+                app:layout_constraintTop_toBottomOf="@id/tvLoadingPreview"
+                tools:text="How does a blockchain work - Simply Explained" />
 
-                <FrameLayout
-                    style="@style/AppTextKanitLight.Small"
-                    android:id="@+id/tvLoadingPreview"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_16sdp"
-                    android:layout_marginStart="@dimen/_4sdp"
-                    android:layout_marginEnd="@dimen/_12sdp"
-                    android:background="@color/dark_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivPerviewLoadingUrl"
-                    app:layout_constraintTop_toTopOf="@id/ivPerviewLoadingUrl"
-                    tools:text="Youtube.com" />
+            <FrameLayout
+                style="@style/AppTextKanitLight.Small"
+                android:id="@+id/tvPreviewLoadingContent1"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@color/dark_gray"
+                android:paddingBottom="@dimen/_12sdp"
+                app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
+                app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
+                app:layout_constraintTop_toBottomOf="@id/tvPreviewLoadingHeader" />
 
-                <FrameLayout
-                    style="@style/AppTextKanitLight.Regular"
-                    android:id="@+id/tvPreviewLoadingHeader"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:background="@color/dark_gray"
-                    android:ellipsize="end"
-                    app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
-                    app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
-                    app:layout_constraintTop_toBottomOf="@id/tvLoadingPreview"
-                    tools:text="How does a blockchain work - Simply Explained" />
+            <FrameLayout
+                style="@style/AppTextKanitLight.Small"
+                android:id="@+id/tvPreviewLoadingContent"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@color/dark_gray"
+                android:paddingBottom="@dimen/_12sdp"
+                app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
+                app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
+                app:layout_constraintTop_toBottomOf="@id/tvPreviewLoadingContent1" />
 
-                <FrameLayout
-                    style="@style/AppTextKanitLight.Small"
-                    android:id="@+id/tvPreviewLoadingContent1"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:background="@color/dark_gray"
-                    android:paddingBottom="@dimen/_12sdp"
-                    app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
-                    app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
-                    app:layout_constraintTop_toBottomOf="@id/tvPreviewLoadingHeader" />
-
-                <FrameLayout
-                    style="@style/AppTextKanitLight.Small"
-                    android:id="@+id/tvPreviewLoadingContent"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:background="@color/dark_gray"
-                    android:paddingBottom="@dimen/_12sdp"
-                    app:layout_constraintEnd_toEndOf="@id/tvLoadingPreview"
-                    app:layout_constraintStart_toStartOf="@id/tvLoadingPreview"
-                    app:layout_constraintTop_toBottomOf="@id/tvPreviewLoadingContent1" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.facebook.shimmer.ShimmerFrameLayout>
-    </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

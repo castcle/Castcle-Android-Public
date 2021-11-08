@@ -14,6 +14,7 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.toContentFeedUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
+import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
 import com.castcle.extensions.*
@@ -111,39 +112,11 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun navigateToFeed() {
-        makeDeepLinkUrl(
-            requireContext(),
-            Input("", DeepLinkTarget.HOME_FEED)
-        ).run(::navigateByDeepLink)
-    }
-
-    private fun navigateByDeepLink(url: Uri) {
-        onBoardNavigator.navigateByDeepLink(url, true)
+        onBoardNavigator.findNavController().navigateUp()
     }
 
     override fun bindViewEvents() {
-        var mentionData = listOf<ContentUiModel>()
-        val mentionAdapter = MentionArrayAdapter(requireContext(), mentionData)
-        with(binding.etInputMessage) {
-            setMentionAdapter(mentionAdapter)
-            addTextChangedListener { it ->
-                viewModel.input.validateMessage(it.toString())
-                    .subscribeBy(
-                        onError = ::handleOnError
-                    ).addToDisposables()
-                setMentionTextChangedListener(
-                    object : MentionView.OnChangedListener {
-                        override fun onChanged(view: MentionView, text: CharSequence) {
-                            fetchMentionUser().run {
-                                mentionData = this
-                                mentionAdapter.items = this
-                                mentionAdapter.notifyDataSetChanged()
-                            }
-                        }
-                    }
-                )
-            }
-        }
+        onBindUserMention()
 
         with(binding.rvContent) {
             adapter = CommonQuoteCastAdapter().also {
@@ -156,6 +129,46 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         binding.btCast.subscribeOnClick {
             viewModel.input.quoteCasteContent(currentCoutent)
         }
+    }
+
+    private lateinit var mentionAdapter: MentionArrayAdapter
+    private var mentionData = listOf<MentionUiModel>()
+
+    private fun onBindUserMention() {
+        mentionAdapter = MentionArrayAdapter(requireContext(), mentionData)
+        with(binding.etInputMessage) {
+            setMentionAdapter(mentionAdapter)
+            addTextChangedListener { it ->
+                viewModel.input.validateMessage(it.toString())
+                    .subscribeBy(
+                        onError = ::handleOnError
+                    ).addToDisposables()
+                setMentionTextChangedListener(
+                    object : MentionView.OnChangedListener {
+                        override fun onChanged(view: MentionView, text: CharSequence) {
+                            fetchMentionUser(text)
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    private fun fetchMentionUser(text: CharSequence) {
+        viewModel.getUserMention(text.toString()).subscribeBy(
+            onSuccess = {
+                onBindMentionItem(it)
+            },
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun onBindMentionItem(list: List<MentionUiModel>) {
+        mentionData = list
+        mentionAdapter.items = list
+        mentionAdapter.notifyDataSetChanged()
     }
 
     override fun bindViewModel() {

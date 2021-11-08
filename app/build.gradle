@@ -21,6 +21,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         renderscriptSupportModeEnabled true
+        ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+        }
     }
 
     flavorDimensions "stage"
@@ -88,6 +92,7 @@ android {
         exclude 'org/mozilla/javascript/resources/*.*'
         exclude '**/module-info.class'
         exclude 'org/eclipse/paho/**'
+        exclude 'lib/armeabi-v7a/libARM_ARCH.so'
 
     }
 
@@ -95,6 +100,12 @@ android {
         dataBinding true
         viewBinding true
     }
+
+    packagingOptions {
+        doNotStrip '*/mips/*.so'
+        doNotStrip '*/mips64/*.so'
+    }
+
     compileSdkVersion android_app_compile_sdk_version
 }
 
@@ -196,7 +207,9 @@ dependencies {
             "com.google.android.flexbox:flexbox:$flexbox_lib_version",
             "com.mikhaellopez:circularimageview:$circle_image_version",
             "com.github.lyrebirdstudio:Croppy:0.2",
-            "com.github.esafirm:android-image-picker:3.0.0-beta1"
+            "com.github.esafirm:android-image-picker:3.0.0-beta1",
+            "androidx.core:core-splashscreen:1.0.0-alpha01",
+            "com.github.stfalcon-studio:StfalconImageViewer:v1.0.1"
     )
 
 

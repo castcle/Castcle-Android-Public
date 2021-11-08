@@ -198,6 +198,8 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
                 _showLoading.onNext(true)
             }.doOnError {
                 _error.onNext(it)
+            }.doFinally {
+                _showLoading.onNext(false)
             }.subscribeBy(
                 onSuccess = {
                     onBindContentUiModel(it)
@@ -215,6 +217,8 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
                 _showLoading.onNext(true)
             }.doOnError {
                 _error.onNext(it)
+            }.doFinally {
+                _showLoading.onNext(false)
             }.subscribeBy(
                 onSuccess = {
                     onBindContentUiModel(it)

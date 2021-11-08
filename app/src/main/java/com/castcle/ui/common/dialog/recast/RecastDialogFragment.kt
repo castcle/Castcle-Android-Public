@@ -10,6 +10,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.DialogFragmentRecastBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.data.staticmodel.UserRecastStatic
 import com.castcle.extensions.*
@@ -50,8 +51,6 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
 
     private lateinit var adapterRecast: RecastAdapter
 
-    private var pageMock: List<UserPage> = emptyList()
-
     private val dialogArgs: RecastDialogFragmentArgs by navArgs()
 
     private val currentCoutent: ContentUiModel
@@ -80,7 +79,7 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
     override fun initViewModel() = Unit
 
     override fun setupView() {
-        pageMock = UserRecastStatic.userPageMock
+        viewModel.fetchUserProfile()
         initBottomSheetDialog()
     }
 
@@ -103,8 +102,10 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
     }
 
     override fun bindViewModel() {
-        adapterRecast.uiModels = pageMock
-        onBindRecastAction(pageMock[0])
+        viewModel.userPageUiModel.observe(viewLifecycleOwner, {
+            adapterRecast.uiModels = it.pageUiItem
+            onBindRecastAction(it.pageUiItem[0])
+        })
 
         adapterRecast.itemClick.subscribeBy {
             handleClick(it)
@@ -119,16 +120,16 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
         }.addToDisposables()
     }
 
-    private fun handleClick(user: UserPage) {
+    private fun handleClick(user: PageUiModel) {
         adapterRecast.onPageSelected(user)
         onBindRecastAction(user)
         handleBindRecast()
     }
 
-    private fun onBindRecastAction(user: UserPage) {
+    private fun onBindRecastAction(user: PageUiModel) {
         with(binding) {
             tvDisplayName.text = user.displayName
-            ivAvatar.loadRoundedCornersImage(user.displayAvatar)
+            ivAvatar.loadRoundedCornersImage(user.avatarUrl)
             ivSelected.subscribeOnClick {
                 handleBindSelectPage()
             }
@@ -153,8 +154,8 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
         viewModel.input.recastContent(currentCoutent)
     }
 
-    private fun handleNavigateResultBack(){
-        setNavigationResult(onBoardNavigator,KEY_REQUEST, currentCoutent)
+    private fun handleNavigateResultBack() {
+        setNavigationResult(onBoardNavigator, KEY_REQUEST, currentCoutent)
         onBoardNavigator.findNavController().popBackStack()
     }
 

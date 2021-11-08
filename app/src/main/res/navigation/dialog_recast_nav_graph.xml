@@ -22,14 +22,4 @@
         <deepLink app:uri="@string/nav_deep_link_recast_dialog" />
     </dialog>
 
-    <fragment
-        android:id="@+id/createQuoteFragment"
-        android:name="com.castcle.ui.createbloc.CreateQuoteFragment"
-        tools:layout="@layout/fragment_create_bloc">
-
-        <argument
-            android:name="contentUiModel"
-            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
-    </fragment>
-
 </navigation>

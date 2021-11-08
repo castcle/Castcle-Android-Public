@@ -9,7 +9,7 @@ import com.castcle.usecase.GuestLoginCompletableUseCase
 import com.castcle.usecase.setting.GetCurrentLocalSingleUseCase
 import com.castcle.usecase.setting.SetAppLanguageUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.GetCastcleIdSingleUseCase
+import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
@@ -41,7 +41,7 @@ import javax.inject.Inject
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenViewModelImpl @Inject constructor(
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val guestLoginCompletableUseCase: GuestLoginCompletableUseCase,
     private val getCurrentLocalSingleUseCase: GetCurrentLocalSingleUseCase,
     private val setAppLanguageUseCase: SetAppLanguageUseCase,
@@ -54,7 +54,7 @@ class SplashScreenViewModelImpl @Inject constructor(
     }
 
     override val isGuestMode: Boolean
-        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
     override fun requestGuestLogin(): Completable {
         return if (isGuestMode) {

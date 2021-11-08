@@ -17,7 +17,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shimmer_auto_start="true">
+            app:layout_constraintVertical_bias="0.5"
+            app:shimmer_auto_start="true"
+            app:shimmer_direction="left_to_right"
+            app:shimmer_dropoff="@integer/material_motion_duration_medium_1">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -25,16 +28,26 @@
                 android:orientation="vertical">
 
                 <include
-                    layout="@layout/ui_shimmer_suggestion_load"
+                    layout="@layout/ui_shimmer_item_feed_loading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <View
+                <include
+                    layout="@layout/ui_shimmer_item_short_loading"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_280sdp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/_12sdp"
-                    android:background="@drawable/item_feed_loading" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp" />
+
+                <include
+                    layout="@layout/ui_shimmer_item_short_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp" />
+
+                <include
+                    layout="@layout/ui_shimmer_item_feed_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.facebook.shimmer.ShimmerFrameLayout>

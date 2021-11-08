@@ -6,7 +6,7 @@ import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import com.castcle.android.components_android.databinding.ItemMentionUserBinding
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.extensions.loadCircleImage
 import java.util.*
 import kotlin.collections.ArrayList
@@ -38,10 +38,10 @@ import kotlin.collections.ArrayList
 
 class MentionArrayAdapter(
     context: Context,
-    var items: List<ContentUiModel>
-) : ArrayAdapter<ContentUiModel>(context, 0, items) {
+    var items: List<MentionUiModel>
+) : ArrayAdapter<MentionUiModel>(context, 0, items) {
 
-    var filtered = ArrayList<ContentUiModel>()
+    var filtered = ArrayList<MentionUiModel>()
 
     @SuppressLint("ViewHolder")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -54,7 +54,7 @@ class MentionArrayAdapter(
         return viewBinding.root
     }
 
-    override fun getItem(position: Int): ContentUiModel {
+    override fun getItem(position: Int): MentionUiModel {
         return filtered[position]
     }
 
@@ -72,7 +72,7 @@ class MentionArrayAdapter(
         return viewBinding.root
     }
 
-    override fun addAll(collection: MutableCollection<out ContentUiModel>) {
+    override fun addAll(collection: MutableCollection<out MentionUiModel>) {
         super.addAll(collection)
     }
 
@@ -93,13 +93,11 @@ class MentionArrayAdapter(
             return results
         }
 
-        private fun autocomplete(input: String): ArrayList<ContentUiModel> {
-            val results = arrayListOf<ContentUiModel>()
+        private fun autocomplete(input: String): ArrayList<MentionUiModel> {
+            val results = arrayListOf<MentionUiModel>()
 
             for (item in items) {
-                if (item.payLoadUiModel.author.displayName
-                        .toLowerCase(Locale.ROOT).contains(input)
-                ) {
+                if (item.castcleId.toLowerCase(Locale.ROOT).contains(input)) {
                     results.add(item)
                 }
             }
@@ -109,24 +107,24 @@ class MentionArrayAdapter(
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
             if (results?.count!! > 0) {
-                filtered = results.values as ArrayList<ContentUiModel>
+                filtered = results.values as ArrayList<MentionUiModel>
                 notifyDataSetInvalidated()
             }
         }
 
         override fun convertResultToString(resultValue: Any?): CharSequence {
-            return (resultValue as ContentUiModel).payLoadUiModel.author.displayName
+            return (resultValue as MentionUiModel).castcleId
         }
 
     }
 
     private fun onBindHolder(
-        itemMention: ContentUiModel,
+        itemMention: MentionUiModel,
         viewBinding: ItemMentionUserBinding
     ) {
         with(viewBinding) {
-            ivAvatar.loadCircleImage(itemMention.payLoadUiModel.author.avatar)
-            tvFilterName.text = itemMention.payLoadUiModel.author.displayName
+            ivAvatar.loadCircleImage(itemMention.images.imageOrigin)
+            tvFilterName.text = itemMention.castcleId
         }
     }
 }

@@ -112,6 +112,7 @@ fun ImageView.loadGranularRoundedCornersImage(
 
 fun ImageView.loadGranularRoundedCornersContentImage(
     url: String,
+    thumbnailUrl: String,
     topLeft: Float = 0f,
     topRight: Float = 0f,
     bottomLeft: Float = 0f,
@@ -120,7 +121,10 @@ fun ImageView.loadGranularRoundedCornersContentImage(
 ) {
     Glide.with(context)
         .load(url)
-        .circleCrop()
+        .thumbnail(
+            Glide.with(context)
+                .load(thumbnailUrl)
+        ).circleCrop()
         .error(R.drawable.ic_img_placeholder)
         .apply(
             RequestOptions().transform(

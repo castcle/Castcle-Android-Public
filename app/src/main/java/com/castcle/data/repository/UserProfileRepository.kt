@@ -7,6 +7,7 @@ import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.model.dao.user.UserDao
+import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.*
 import com.castcle.networking.service.operators.ApiOperators
@@ -72,11 +73,16 @@ interface UserProfileRepository {
     fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable
 
     fun onDeletePage(deletePageRequest: DeletePageRequest): Completable
+
+    fun insertUserProfile(user: User): Completable
+
+    fun getUserMention(mentionRequest: MentionRequest): Single<UserMentionUiModel>
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val userApi: UserApi,
+    private val userPageDao: UserPageDao,
     private val userProfileMapper: UserProfileMapper,
     private val createContentMapper: CreateContentMapper,
     private val appPreferences: AppPreferences,
@@ -205,9 +211,15 @@ class UserProfileRepositoryImpl @Inject constructor(
             pageSize = paginationModel.limit
         ).lift(ApiOperators.mobileApiError())
             .firstOrError()
-            .map {
+            .doOnSuccess {
+                onUpDatePageUser(it)
+            }.map {
                 it.toViewPageUiModel()
             }
+    }
+
+    private fun onUpDatePageUser(it: UserPageResponse?) {
+        it?.pageResponse?.toUserPageDao()?.let { it1 -> userPageDao.insertAll(it1) }
     }
 
     private fun getUserRemoteProfile(): Flowable<User> {
@@ -263,6 +275,23 @@ class UserProfileRepositoryImpl @Inject constructor(
             ).lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()
+    }
+
+    override fun insertUserProfile(user: User): Completable {
+        return Completable.fromCallable {
+            setCastcleId(user)
+            userDao.insert(user)
+        }
+    }
+
+    override fun getUserMention(mentionRequest: MentionRequest): Single<UserMentionUiModel> {
+        return userApi.getUserMention(
+            keyword = mentionRequest.keyword,
+            pageSize = mentionRequest.pageSize ?: 1,
+            pageNumber = mentionRequest.pageNumber ?: DEFAULT_PAGE_SIZE
+        ).lift(ApiOperators.mobileApiError())
+            .map { it.toUserMentionUiModel() }
+            .firstOrError()
     }
 }
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.*
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.databinding.ActivitySplashScreenBinding
 import com.castcle.ui.base.BaseActivity
@@ -21,7 +22,7 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-
+        val splashScreen = installSplashScreen()
         requestLogin()
     }
 

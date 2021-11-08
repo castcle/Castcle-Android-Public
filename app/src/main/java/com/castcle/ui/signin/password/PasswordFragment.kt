@@ -1,6 +1,7 @@
 package com.castcle.ui.signin.password
 
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -88,34 +89,52 @@ class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
 
     override fun bindViewEvents() {
         with(binding) {
-            itPassword.onDrawableEndClickListener = {
-                itPassword.setTransformationTextPassword()
+            with(itPassword) {
+                onDrawableEndClickListener = {
+                    itPassword.setTransformationTextPassword()
+                }
+                onTextChanged = {
+                    handlePasswordChecked()
+                    viewModel.input.password(it)
+                }
+                onEditorActionNext = {
+                    itReTypePassword.setRequestFocus()
+                }
             }
-            itPassword.onTextChanged = {
-                handlePasswordChecged()
-                viewModel.input.password(it)
-            }
-            itReTypePassword.onDrawableEndClickListener = {
-                itReTypePassword.setTransformationTextPassword()
-            }
-            itReTypePassword.onTextChanged = {
-                handleReTypeChecged()
-                viewModel.input.retypePassword(it)
+            with(itReTypePassword) {
+                onDrawableEndClickListener = {
+                    itReTypePassword.setTransformationTextPassword()
+                }
+                onTextChanged = {
+                    handleReTypeChecked()
+                    viewModel.input.retypePassword(it)
+                }
+                onEditorActionListener = { actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        btNext.callOnClick()
+                        true
+                    }
+                    false
+                }
             }
             btNext.subscribeOnClick {
-                val emailEdit = emailBundle.toEmailAuthBundle()
-                if (emailEdit is RegisterBundle.RegisterWithEmail) {
-                    emailEdit.apply {
-                        password = binding.itPassword.primaryText
-                    }.run {
-                        onBoardNavigator.navigetToDisplayNameFragment(this)
-                    }
-                }
+                onNavigateToDisplayNameFragment()
+            }.addToDisposables()
+        }
+    }
+
+    private fun onNavigateToDisplayNameFragment() {
+        val emailEdit = emailBundle.toEmailAuthBundle()
+        if (emailEdit is RegisterBundle.RegisterWithEmail) {
+            emailEdit.apply {
+                password = binding.itPassword.primaryText
+            }.run {
+                onBoardNavigator.navigetToDisplayNameFragment(this)
             }
         }
     }
 
-    private fun handlePasswordChecged() {
+    private fun handlePasswordChecked() {
         with(binding) {
             if (itReTypePassword.primaryText.isPasswordPatten()) {
                 itReTypePassword.onSetupStatusDrawableEnd()
@@ -124,7 +143,7 @@ class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
         }
     }
 
-    private fun handleReTypeChecged() {
+    private fun handleReTypeChecked() {
         with(binding) {
             if (itPassword.primaryText.isPasswordPatten()) {
                 itPassword.onSetupStatusDrawableEnd()

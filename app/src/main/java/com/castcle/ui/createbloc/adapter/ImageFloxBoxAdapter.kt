@@ -102,12 +102,14 @@ class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewH
                             0 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.uri,
+                                    mediaItemCamera.uri,
                                     topLeft = CORNER,
                                     bottomLeft = CORNER
                                 )
                             }
                             1 -> {
                                 loadGranularRoundedCornersContentImage(
+                                    mediaItemCamera.uri,
                                     mediaItemCamera.uri,
                                     topRight = CORNER,
                                     bottomRight = CORNER
@@ -120,17 +122,20 @@ class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewH
                             0 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.uri,
+                                    mediaItemCamera.uri,
                                     topLeft = CORNER
                                 )
                             }
                             1 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.uri,
+                                    mediaItemCamera.uri,
                                     topRight = CORNER
                                 )
                             }
                             2 -> {
                                 loadGranularRoundedCornersContentImage(
+                                    mediaItemCamera.uri,
                                     mediaItemCamera.uri,
                                     bottomLeft = CORNER,
                                     bottomRight = CORNER
@@ -143,11 +148,13 @@ class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewH
                             0 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.uri,
+                                    mediaItemCamera.uri,
                                     topLeft = CORNER,
                                 )
                             }
                             1 -> {
                                 loadGranularRoundedCornersContentImage(
+                                    mediaItemCamera.uri,
                                     mediaItemCamera.uri,
                                     topRight = CORNER,
                                 )
@@ -155,11 +162,13 @@ class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewH
                             2 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.uri,
+                                    mediaItemCamera.uri,
                                     bottomLeft = CORNER
                                 )
                             }
                             3 -> {
                                 loadGranularRoundedCornersContentImage(
+                                    mediaItemCamera.uri,
                                     mediaItemCamera.uri,
                                     bottomRight = CORNER
                                 )

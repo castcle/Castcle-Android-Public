@@ -48,9 +48,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private val getImagePathMapUseCase: GetImagePathMapUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val createContentSingleUseCase: CreateContentSingleUseCase,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val reduceAndScaleImageSingleUseCase: ReduceAndScaleImageSingleUseCase,
-    private val quoteCastContentSingleUseCase: QuoteCastContentSingleUseCase
+    private val quoteCastContentSingleUseCase: QuoteCastContentSingleUseCase,
+    private val getUserMentionSingleUseCase: GetUserMentionSingleUseCase
 ) : CreateBlogFragmentViewModel(), CreateBlogFragmentViewModel.Input {
 
     private var _userProfileUiModel = MutableLiveData<ContentUiModel>()
@@ -76,7 +77,7 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         get() = _messageLength
 
     override val isGuestMode: Boolean
-        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
     override val userProfileUiModel: LiveData<ContentUiModel>
         get() = _userProfileUiModel
@@ -347,6 +348,12 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         _messageLength.onNext(Pair(0, MAX_LIGHTH))
         setMediaItem(emptyList())
         updateImageSelected(mutableListOf())
+    }
+
+    override fun getUserMention(keyword: String): Single<List<MentionUiModel>> {
+        return getUserMentionSingleUseCase
+            .execute(MentionRequest(keyword = keyword))
+            .map { it.userMention }
     }
 }
 

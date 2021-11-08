@@ -2,9 +2,12 @@ package com.castcle.ui.signin.createdisplayname
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.castcle.android.R
 import com.castcle.android.databinding.FragmentCreateProfileBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
@@ -12,7 +15,8 @@ import com.castcle.common_model.model.login.ProfileBundle
 import com.castcle.common_model.model.login.RegisterBundle
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.DisplayNameVerifyUiModel
 import com.castcle.data.error.RegisterErrorError
-import com.castcle.extensions.gone
+import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
@@ -49,6 +53,8 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+
     private val authBundle: CreateDisplayNameFragmentArgs by navArgs()
 
     private val resgisterBundle: RegisterBundle
@@ -56,6 +62,8 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     private val isCreatePage: Boolean
         get() = authBundle.isCreatePage
+
+    private val isRegisterPass = MutableLiveData<Boolean>()
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -95,14 +103,34 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
     }
 
     override fun bindViewEvents() {
-        binding.itDisplatName.onTextChanged = {
-            viewModel.input.displayName(it)
-        }
-        binding.itCastcleId.onTextChanged = {
-            viewModel.input.checkCastcleId(it)
-        }
-        binding.btNext.subscribeOnClick {
-            handleActionNext()
+        with(binding) {
+            with(itDisplatName) {
+                onTextChanged = {
+                    viewModel.input.displayName(it)
+                }
+                onEditorActionNext = {
+                    itCastcleId.setRequestFocus()
+                }
+            }
+            with(itCastcleId) {
+                onTextChanged = {
+                    viewModel.input.checkCastcleId(it)
+                }
+                onEditorActionListener = { actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        btNext.callOnClick()
+                        true
+                    }
+                    false
+                }
+            }
+            btNext.subscribeOnClick {
+                if (isRegisterPass.value == true) {
+                    navigateToChooseProfile()
+                } else {
+                    handleActionNext()
+                }
+            }.addToDisposables()
         }
     }
 
@@ -121,7 +149,8 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
                 itCastcleId.primaryText
             ).subscribeBy(
                 onSuccess = {
-                    navigateToChooseProfile()
+                    isRegisterPass.value = true
+                    navigateToChooseProfile(true)
                 }, onError = {
                     handlerError(it)
                 }
@@ -137,6 +166,7 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
                 itCastcleId.primaryText
             ).subscribeBy(
                 onComplete = {
+                    isRegisterPass.value = true
                     navigateToChooseProfile()
                 }, onError = {
                     handlerError(it)
@@ -147,19 +177,41 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     private fun handlerError(error: Throwable) {
         if (error is RegisterErrorError && error.hasAuthenticationTokenExprierd()) {
-            binding.itCastcleId.setError(error = error.readableMessage)
+            binding.itCastcleId.setError(
+                error = error.readableMessage,
+                isShowErrorWithBackground = true
+            )
+        }
+        if (error is RegisterErrorError && error.hasAuthenticationCastcleIdInSystem()) {
+            binding.itCastcleId.setError(
+                error = error.readableMessage,
+                isShowErrorWithBackground = true
+            )
+        }
+        if (error is RegisterErrorError && error.hasAuthenticationUserInSystem()) {
+            binding.itCastcleId.setError(
+                error = error.readableMessage,
+                isShowErrorWithBackground = true
+            )
+        }
+        if (error is RegisterErrorError && error.hasAuthenticationEmailNotFound()) {
+            binding.itCastcleId.setError(
+                error = error.readableMessage,
+                isShowErrorWithBackground = true
+            )
         }
     }
 
-    private fun navigateToChooseProfile() {
+    private fun navigateToChooseProfile(isCreatePage: Boolean = false) {
         with(binding) {
+            isRegisterPass.value = true
             val registerBundle = resgisterBundle as RegisterBundle.RegisterWithEmail
             onBoardNavigator.naivgetToProfileChooseImageFragment(
                 ProfileBundle.ProfileWithEmail(
                     email = registerBundle.email,
                     displayName = itDisplatName.primaryText,
                     castcleId = itCastcleId.primaryText,
-                ),true
+                ), isCreatePage
             )
         }
     }
@@ -170,16 +222,27 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
             .addToDisposables()
 
         viewModel.showLoading
-            .subscribe()
-            .addToDisposables()
+            .subscribe {
+                showLoading(it)
+            }.addToDisposables()
 
         viewModel.error
-            .subscribe()
-            .addToDisposables()
+            .subscribe {
+                displayError(it)
+            }.addToDisposables()
 
         viewModel.responseCastcleIdSuggest
             .subscribe(::fieldInCastcleSuggest)
             .addToDisposables()
+
+        viewModel.responseCastcleIdExsit.subscribe().addToDisposables()
+    }
+
+    private fun showLoading(isLoad: Boolean) {
+        with(binding) {
+            btNext.visibleOrInvisible(!isLoad)
+            pbLoading.visibleOrGone(isLoad)
+        }
     }
 
     private fun fieldInCastcleSuggest(displayNameVerifyUiModel: DisplayNameVerifyUiModel) {
@@ -190,6 +253,9 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
         when (verifyProfileState) {
             VerifyProfileState.CASTCLE_ID_ERROR -> {
                 endableButtomNext(false)
+                binding.itCastcleId.setError(
+                    localizedResources.getString(R.string.register_warning_message)
+                )
             }
             VerifyProfileState.CASTCLE_ID_PASS -> {
                 endableButtomNext(true)

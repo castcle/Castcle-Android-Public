@@ -8,6 +8,7 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.ui.common.events.*
 import com.castcle.ui.feed.feeddetail.viewholder.CommentedItemViewHolder
+import com.castcle.ui.feed.feeddetail.viewholder.ProgressBarViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
@@ -46,7 +47,7 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         notifyItemClick(it)
     }
 
-    var uiModels: List<ContentUiModel> by Delegates.observable(emptyList()) { _, old, new ->
+    var uiModels: List<ContentUiModel?> by Delegates.observable(emptyList()) { _, old, new ->
         autoNotify(
             old,
             new,
@@ -54,8 +55,31 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         )
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return when {
+            uiModels[position] == null && position == itemCount - 1 -> VIEW_TYPE_PROGRESS_BAR
+            else -> VIEW_TYPE_ITEM
+        }
+    }
+
+    fun showLoading() {
+        if (uiModels.isNotEmpty() && uiModels.last() == null) return
+
+        uiModels = uiModels.toMutableList().also {
+            it.add(null)
+        }
+    }
+
+    fun hideLoading() {
+        if (uiModels.isNotEmpty() && uiModels.last() != null) return
+
+        uiModels = uiModels.toMutableList().also {
+            it.removeLastOrNull()
+        }
+    }
+
     override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
-        holder.bindUiModel(uiModels[position])
+        uiModels[position]?.let { holder.bindUiModel(it) }
     }
 
     override fun getItemCount(): Int {
@@ -63,7 +87,11 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentUiModel> {
-        return CommentedItemViewHolder.newInstance(parent, click)
+        return when (viewType) {
+            VIEW_TYPE_ITEM -> CommentedItemViewHolder.newInstance(parent, click)
+            VIEW_TYPE_PROGRESS_BAR -> ProgressBarViewHolder(parent, false)
+            else -> throw UnsupportedOperationException("View type $viewType is not supported")
+        }
     }
 
     abstract class ViewHolder<UiModel : ContentUiModel>(itemView: View) :
@@ -80,5 +108,10 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         open fun bindUiModel(uiModel: UiModel) {
             this.uiModel = uiModel
         }
+    }
+
+    companion object {
+        private const val VIEW_TYPE_PROGRESS_BAR = 0
+        private const val VIEW_TYPE_ITEM = 1
     }
 }
