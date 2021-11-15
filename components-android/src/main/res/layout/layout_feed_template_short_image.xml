@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_4sdp"
+    android:background="?attr/colorPrimaryVariant">
+
+    <include
+        android:id="@+id/skeletonLoading"
+        layout="@layout/layout_item_shimmer_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.castcle.components_android.ui.UserBarTemplate
+        android:id="@+id/ubUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.castcle.components_android.ui.custom.mention.MentionTextView
+        style="@style/AppTextKanitExLight.Small"
+        android:id="@+id/tvFeedContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:bufferType="spannable"
+        android:maxLines="3"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/ubUser"
+        app:layout_constraintStart_toStartOf="@id/ubUser"
+        app:layout_constraintTop_toBottomOf="@id/ubUser"
+        tools:text="Win a legendary DappRadar x\b\n@MOBOX_Official #NFT.\b\nDon't miss your chance and register now:" />
+
+    <include
+        android:id="@+id/clPreviewContentImage"
+        layout="@layout/layout_preview_content_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/ftFooter"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <include
+        android:id="@+id/inShimmerContentLoading"
+        layout="@layout/layout_item_preview_shimmer_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/ftFooter"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent" />
+
+    <com.castcle.components_android.ui.FeedFooterTemplate
+        android:id="@+id/ftFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="3k" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

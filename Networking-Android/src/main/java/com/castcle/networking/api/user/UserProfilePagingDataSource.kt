@@ -3,7 +3,9 @@ package com.castcle.networking.api.user
 import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.api.response.toProfileContentUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -45,7 +47,7 @@ class UserProfilePagingDataSource(
                 filterType = contentRequestHeader.type
             )
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toContentUiModel()
+            val data = pagedResponse?.payload?.toProfileContentUiModel()
             var nextPageNumber: Int? = null
             if (pagedResponse?.pagination?.next != null) {
                 val uri = Uri.parse(pagedResponse.pagination.next.toString())

@@ -1,6 +1,8 @@
 package com.castcle.ui.common
 
+import FeedContentShortImageViewHolder
 import FeedContentShortViewHolder
+import FeedContentShortWebViewHolder
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
@@ -93,6 +95,10 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
                 FeedContentBlogViewHolder.newInstance(parent, click)
             R.layout.layout_feed_template_short ->
                 FeedContentShortViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_short_web ->
+                FeedContentShortWebViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_short_image ->
+                FeedContentShortImageViewHolder.newInstance(parent, click)
             else -> throw UnsupportedOperationException()
         }
     }
@@ -100,8 +106,19 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
     override fun getItemViewType(position: Int): Int {
         return when (getContentType(position)) {
             BLOG.type -> R.layout.layout_feed_template_blog
-            SHORT.type -> R.layout.layout_feed_template_short
+            SHORT.type -> optionalTypeShort(position)
             IMAGE.type -> R.layout.layout_feed_template_image
+            else -> R.layout.layout_feed_template_short
+        }
+    }
+
+    private fun optionalTypeShort(position: Int): Int {
+        return when {
+            getItem(position)?.payLoadUiModel?.link.isNullOrEmpty() &&
+                getItem(position)?.payLoadUiModel?.photo?.imageContent?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            getItem(position)?.payLoadUiModel?.link?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }
     }

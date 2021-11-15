@@ -241,6 +241,8 @@
         <entry key="components-android/src/main/res/layout/layout_feed_template_blog.xml" value="0.25" />
         <entry key="components-android/src/main/res/layout/layout_feed_template_image.xml" value="0.21388888888888888" />
         <entry key="components-android/src/main/res/layout/layout_feed_template_short.xml" value="0.25" />
+        <entry key="components-android/src/main/res/layout/layout_feed_template_short_image.xml" value="0.12397540983606557" />
+        <entry key="components-android/src/main/res/layout/layout_feed_template_short_web.xml" value="0.12397540983606557" />
         <entry key="components-android/src/main/res/layout/layout_image_content_template.xml" value="0.1" />
         <entry key="components-android/src/main/res/layout/layout_input_account.xml" value="0.15095628415300547" />
         <entry key="components-android/src/main/res/layout/layout_item_image_shimmer_load.xml" value="0.12739071038251365" />

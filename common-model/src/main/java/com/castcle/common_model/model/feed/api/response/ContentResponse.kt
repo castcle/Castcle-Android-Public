@@ -1,5 +1,7 @@
 package com.castcle.common_model.model.feed.api.response
 
+import com.castcle.common_model.ContentBaseUiModel
+import com.castcle.common_model.model.feed.*
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -28,8 +30,64 @@ import com.google.gson.annotations.SerializedName
 
 data class ContentResponse(
     @SerializedName("payload")
-    val payload: List<PayloadResponse>,
+    val payload: List<PayloadProfileContentResponse>,
 
     @SerializedName("pagination")
     val pagination: Pagination
 )
+
+data class PayloadProfileContentResponse(
+    @SerializedName("id") var id: String,
+    @SerializedName("type") var type: String,
+    @SerializedName("payload") var payload: PayloadContent,
+    @SerializedName("feature") var feature: Feature? = null,
+    @SerializedName("liked") var likedResponse: LikedResponse? = null,
+    @SerializedName("commented") var commentedResponse: CommentedResponse? = null,
+    @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
+    @SerializedName("quoteCast") var quoteCast: QuoteCast,
+    @SerializedName("author") var author: Author,
+    @SerializedName("createAt") var created: String,
+    @SerializedName("updateAt") var updated: String,
+    @SerializedName("reply") var reply: List<ReplyResponse>? = null
+)
+
+fun List<PayloadProfileContentResponse>.toProfileContentUiModel():
+    ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel {
+    return ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel(
+        feedContentUiModel = map {
+            ContentUiModel(
+                contentType = it.type,
+                featureSlug = it.feature?.slug ?: "",
+                created = it.created,
+                updated = it.updated,
+                payLoadUiModel = it.toPayloadUiModel()
+            )
+        }.toMutableList()
+    )
+}
+
+fun PayloadProfileContentResponse.toPayloadUiModel(): PayLoadUiModel {
+    return PayLoadUiModel(
+        contentId = id,
+        contentType = type,
+        headerFeed = "",
+        contentFeed = "",
+        photo = dynamicPhotoType(payload.photo),
+        contentMessage = payload.message ?: "",
+        created = created,
+        updated = updated,
+        link = payload.linkResponse?.map {
+            it.toLinkUiModel()
+        } ?: emptyList(),
+        likedUiModel = likedResponse?.toLikedUiModel() ?: LikedUiModel(),
+        commentedUiModel = commentedResponse?.toCommentedUiModel() ?: CommentedUiModel(),
+        reCastedUiModel = recastedResponse?.toRecastedUiModel() ?: RecastedUiModel(),
+        author = author.toAuthorUiModel(),
+        featureContent = feature?.toFeatureUiModel(),
+        replyUiModel = reply?.let { it ->
+            it.map {
+                it.toReplyUiModel()
+            }
+        }
+    )
+}

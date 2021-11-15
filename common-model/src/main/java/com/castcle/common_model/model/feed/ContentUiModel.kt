@@ -87,7 +87,7 @@ fun ViewPayloadResponse.toPayloadUiModel(): PayLoadUiModel {
     )
 }
 
-fun List<ReplyResponse>.toReplyUiModelList():List<ReplyUiModel>{
+fun List<ReplyResponse>.toReplyUiModelList(): List<ReplyUiModel> {
     return map {
         it.toReplyUiModel()
     }
@@ -427,7 +427,9 @@ fun Author.toAuthorUiModel() =
         followed = followed ?: false,
         id = id,
         type = type,
-        verifiedEmail = verified?.email ?: false
+        verifiedEmail = verified?.email ?: false,
+        verifiedMobile = verified?.mobile ?: false,
+        verifiedOfficial = verified?.official ?: false
     )
 
 fun ViewAuthor.toAuthorUiModel() =
