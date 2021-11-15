@@ -1,7 +1,7 @@
 package com.castcle.usecase.signin
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.signin.reuquest.RegisterRequest
+import com.castcle.common_model.model.signin.domain.RegisterRequest
 import com.castcle.data.error.RegisterErrorError
 import com.castcle.networking.api.auth.AuthenticationsRepository
 import com.castcle.usecase.base.CompletableUseCase

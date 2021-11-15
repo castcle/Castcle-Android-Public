@@ -69,11 +69,13 @@
         android:textColorHint="@color/gray_light"
         app:drawableEnd="@drawable/ic_dropdown"
         app:editable="false"
+        android:clickable="true"
         app:hintText="@string/about_you_birthday"
         app:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvBirthday" />
+        app:layout_constraintTop_toBottomOf="@id/tvBirthday"
+        android:focusable="true" />
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanitLight.Regular"
@@ -211,5 +213,5 @@
         android:id="@+id/groupAddLinks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tvLinks,tvAddLinks" />
+        app:constraint_referenced_ids="tvLinks,tvAddLinks,tvBirthday" />
 </androidx.constraintlayout.widget.ConstraintLayout>

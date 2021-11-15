@@ -5,12 +5,12 @@ import com.castcle.data.datasource.UserProfileDataSourceModule
 import com.castcle.data.repository.UserWorkerRepository
 import com.castcle.data.repository.UserWorkerRepositoryImpl
 import com.castcle.di.modules.common.SessionEnvironmentModule
-import com.castcle.di.scope.ActivityScope
 import com.castcle.networking.NetworkModule
 import com.castcle.networking.api.auth.AuthenticationDataSourceModule
 import com.castcle.networking.api.auth.freshtoken.AuthRefreshTokenDataSourceModule
 import com.castcle.networking.api.nonauthen.NonAuthenticationDataSourceModule
 import com.castcle.session_memory.SessionManagerModule
+import com.castcle.usecase.worker.UpLoadPostCastWorker
 import com.castcle.usecase.worker.UpLoadProfileAvatarWorker
 import com.castcle.usecase.worker.factory.*
 import com.co.the1.the1app.di.annotation.WorkerKey
@@ -64,9 +64,21 @@ interface WorkerBindingModule {
     ): ChildWorkerFactory
 
     @Binds
+    @IntoMap
+    @WorkerKey(UpLoadPostCastWorker::class)
+    fun bindingUpLoadPostCastWorker(
+        factory: UpLoadPostCastWorker.Factory
+    ): ChildWorkerFactory
+
+    @Binds
     fun bindImageUploader(
         imageUploader: ImageUploaderWorkHelperImpl
     ): ImageUploaderWorkHelper
+
+    @Binds
+    fun bindCastWithImageLoader(
+        imageUploader: CastWithImageLoadWorkHelperImpl
+    ): CastWithImageLoadWorkHelper
 
     @Binds
     fun userWorkerRepository(

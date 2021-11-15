@@ -13,15 +13,19 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentCreateProfileChooseBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.ProfileBundle
-import com.castcle.common_model.model.setting.CreatePageRequest
-import com.castcle.common_model.model.userprofile.ImagesRequest
-import com.castcle.common_model.model.userprofile.UserUpdateRequest
+import com.castcle.common_model.model.login.domain.ProfileBundle
+import com.castcle.common_model.model.login.domain.toCreatePage
+import com.castcle.common_model.model.setting.domain.CreatePageRequest
+import com.castcle.common_model.model.setting.domain.ImagesPageRequest
+import com.castcle.common_model.model.userprofile.domain.ImagesRequest
+import com.castcle.common_model.model.userprofile.domain.UserUpdateRequest
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.usecase.createblog.setConfig
 import com.permissionx.guolindev.PermissionMediator
 import io.reactivex.rxkotlin.subscribeBy
+import me.shouheng.compress.Compress
 import pl.aprilapps.easyphotopicker.*
 import javax.inject.Inject
 
@@ -223,7 +227,10 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
 
     private fun applyImageProfile() {
         val profileBundle = emailBundle as ProfileBundle.ProfileWithEmail
-        val image = binding.cvCropImage.croppedBitmap.toBase64String()
+        val image = Compress.with(
+            requireContext(),
+            binding.cvCropImage.croppedBitmap
+        ).setConfig().get().toBase64String()
 
         if (isCreatePage) {
             updatePageAvatar(image, profileBundle)
@@ -235,7 +242,9 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
     private fun updatePageAvatar(image: String, profileBundle: ProfileBundle.ProfileWithEmail) {
         viewModel.requestUpdatePage(
             CreatePageRequest(
-                avatar = image,
+                images = ImagesPageRequest(
+                    avatar = image
+                ),
                 displayName = profileBundle.displayName ?: "",
                 castcleId = profileBundle.castcleId
             )
@@ -252,7 +261,7 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
     }
 
     private fun navigateToAboutMe(profileBundle: ProfileBundle.ProfileWithEmail) {
-        onBoardNavigator.navigateToAboutYouFragment(profileBundle, true)
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle.toCreatePage(), true)
     }
 
     private fun updateProfileAvatar(image: String, profileBundle: ProfileBundle.ProfileWithEmail) {
@@ -274,5 +283,13 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
         )
     }
 
-    override fun bindViewModel() = Unit
+    override fun bindViewModel() {
+        viewModel.showLoading.subscribe {
+            onBindShowLoading(it)
+        }.addToDisposables()
+    }
+
+    private fun onBindShowLoading(show: Boolean) {
+        binding.pbLoading.visibleOrGone(show)
+    }
 }

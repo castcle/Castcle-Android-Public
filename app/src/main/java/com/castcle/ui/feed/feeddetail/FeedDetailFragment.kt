@@ -14,6 +14,9 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.CommentRequest
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.converter.LikeCommentRequest
+import com.castcle.common_model.model.setting.PageHeaderUiModel
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.custom.event.EndlessRecyclerViewScrollListener
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
@@ -22,7 +25,6 @@ import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 
@@ -61,7 +63,6 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private lateinit var adapterMockCommon: CommonMockAdapter
 
-    private lateinit var adapterCommentPaging: CommentedPagingAdapter
     private lateinit var adapterComment: CommentedAdapter
 
     private var softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
@@ -70,11 +71,15 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private var replyState: Boolean = false
 
+    private var onReplyComment: Boolean = false
+
     private val contentUiModel: ContentUiModel
         get() = feedFetaailArgs.contentUiModel
 
     private val isContent: Boolean
         get() = feedFetaailArgs.isContent
+
+    private lateinit var userProfile: User
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -98,6 +103,8 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     override fun initViewModel() {
         viewModel.fetachCommentedPage(contentUiModel.payLoadUiModel.contentId)
+
+        viewModel.fetchUserProfile()
     }
 
     override fun onResume() {
@@ -139,6 +146,17 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
                     viewModel.fetachNextCommentedPage()
                 }
             })
+        }
+
+        onBindStartComment()
+    }
+
+    private fun onBindStartComment() {
+        with(binding.itemComment) {
+            groupOnReply.gone()
+            groupReply.visible()
+            etInputMessage.requestFocus()
+            requireContext().showSoftKeyboard(etInputMessage)
         }
     }
 
@@ -228,12 +246,12 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     private fun handlerCommentedLike(item: CommentItemClick) {
         when (item) {
             is CommentItemClick.CommentedLikeChildClick -> {
-                onLikeingComment(item.commentedId, item.replyId, item.likeStatus)
+                onLikedComment(item.commentedId, item.replyId, item.likeStatus)
             }
             is CommentItemClick.CommentedLikedItemClick -> {
-                onLikeingComment(
+                onLikedComment(
                     contentUiModel.payLoadUiModel.contentId,
-                    item.contentUiModel.payLoadUiModel.contentId,
+                    item.contentUiModel.id,
                     item.contentUiModel.payLoadUiModel.likedUiModel.liked
                 )
             }
@@ -242,18 +260,26 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
-    private fun onLikeingComment(contentId: String, commentId: String, likeStatus: Boolean) {
-        viewModel.likedComment(contentId, commentId, likeStatus)
+    private fun onLikedComment(contentId: String, commentId: String, likeStatus: Boolean) {
+        val commentedRequest = LikeCommentRequest(
+            authorId = userProfile.castcleId,
+            feedItemId = contentId,
+            commentId = commentId,
+            likeStatue = likeStatus
+        )
+        viewModel.likedComment(commentedRequest)
     }
 
     private fun handlerReplyClickItem(it: CommentItemClick.CommentReplyClick) {
+        onBindStartComment()
         with(binding.itemComment) {
-            replyState = true
-            groupOnReply.visibleOrGone(false)
-            groupReply.visibleOrGone(true)
-
-            if (replyState) {
-                etInputMessage.requestFocus()
+            val castcleId = it.contentUiModel.payLoadUiModel.author.castcleId
+            with(etInputMessage) {
+                setText(
+                    MENTION_CASTCLE_ID.format(castcleId)
+                )
+                setSelection(etInputMessage.text.length)
+                onReplyComment = true
             }
         }
     }
@@ -262,12 +288,20 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         with(binding.itemComment) {
             val commentRequest = CommentRequest(
                 message = etInputMessage.text.toString(),
-                feedItemId = contentUiModel.payLoadUiModel.contentId,
-                authorId = contentUiModel.payLoadUiModel.author.castcleId
+                feedItemId = getContentId(),
+                authorId = userProfile.castcleId
             )
             if (etInputMessage.text.isNotBlank()) {
                 sentReplyComment(commentRequest)
             }
+        }
+    }
+
+    private fun getContentId(): String {
+        return if (onReplyComment) {
+            contentUiModel.payLoadUiModel.contentId
+        } else {
+            contentUiModel.payLoadUiModel.contentId
         }
     }
 
@@ -288,6 +322,26 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             displayError(it)
             bindLoading(false)
         }.addToDisposables()
+
+        viewModel.userPageUiModel.observe(viewLifecycleOwner, {
+            onBindUserProfileComment(it)
+        })
+
+        viewModel.userProfile.observe(viewLifecycleOwner, {
+            userProfile = it
+        })
+
+        viewModel.onSentCommentResponse.subscribe {
+            adapterComment.onInsertComment(it)
+        }.addToDisposables()
+    }
+
+    private fun onBindUserProfileComment(userAndPage: PageHeaderUiModel) {
+        with(binding.itemComment) {
+            userAndPage.pageUiItem.firstOrNull()?.avatarUrl?.let {
+                ivAvatar.loadCircleImage(it)
+            }
+        }
     }
 
     private fun bindLoading(showLoading: Boolean) {
@@ -314,22 +368,9 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
-    private fun onObserverPaging() {
-        with(viewModel) {
-            launchOnLifecycleScope {
-                commentedResponse.collectLatest {
-                    adapterCommentPaging.submitData(lifecycle, it)
-                }
-            }
-
-            onRefreshComment.subscribe {
-                adapterCommentPaging.refresh()
-            }.addToDisposables()
-        }
-    }
-
     private fun onBindFeedContent() {
         adapterMockCommon.uiModels = listOf(contentUiModel)
     }
-
 }
+
+private const val MENTION_CASTCLE_ID = "@%s"

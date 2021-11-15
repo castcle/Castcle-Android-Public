@@ -3,8 +3,8 @@ package com.castcle.common_model.model.feed
 import android.os.Parcelable
 import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
 import com.castcle.common_model.model.feed.api.response.*
-import com.castcle.common_model.model.userprofile.ImageResponse
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.domain.ImageResponse
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
@@ -83,12 +83,14 @@ fun ViewPayloadResponse.toPayloadUiModel(): PayLoadUiModel {
         reCastedUiModel = recastedResponse?.toRecastedUiModel() ?: RecastedUiModel(),
         author = author.toAuthorUiModel(),
         featureContent = feature?.toFeatureUiModel(),
-        replyUiModel = reply?.let { it ->
-            it.map {
-                it.toReplyUiModel()
-            }
-        }
+        replyUiModel = reply?.toReplyUiModelList()
     )
+}
+
+fun List<ReplyResponse>.toReplyUiModelList():List<ReplyUiModel>{
+    return map {
+        it.toReplyUiModel()
+    }
 }
 
 private val jsonObjectType = object : TypeToken<PhotoResponse>() {}.type
@@ -165,12 +167,14 @@ fun FeedViewContentResponse.toViewContentUiModel(): ContentUiModel {
 @Parcelize
 data class PayLoadUiModel(
     val contentId: String = "",
-    val headerFeed: String = "",
+    val contentType: String = "",
+    val headerFeed: String? = "",
     val contentFeed: String = "",
     val contentMessage: String = "",
     val photo: PhotoUiModel = PhotoUiModel(),
     val created: String = "",
     val updated: String = "",
+    val hasHistory: Boolean? = false,
     val link: List<LinkUiModel> = emptyList(),
     val likedUiModel: LikedUiModel = LikedUiModel(),
     val commentedUiModel: CommentedUiModel = CommentedUiModel(),
@@ -181,11 +185,32 @@ data class PayLoadUiModel(
     val replyedUiModel: ReplyUiModel? = null
 ) : Parcelable
 
+fun PayloadResponse.toViewContentUiModel(): ContentUiModel {
+    return ContentUiModel(
+        id = id,
+        featureSlug = feature?.slug ?: "",
+        circleSlug = "",
+        contentType = type,
+        created = created,
+        updated = updated,
+        payLoadUiModel = toPayloadUiModel()
+    )
+}
+
+fun ContentUiModel.toContentUiModelString(): String {
+    return Gson().toJson(this)
+}
+
+fun String.totContentUiModel(): ContentUiModel {
+    return Gson().fromJson(this, ContentUiModel::class.java)
+}
+
 fun PayloadResponse.toPayloadUiModel(): PayLoadUiModel {
     return PayLoadUiModel(
         contentId = id,
-        headerFeed = payload.header ?: "",
-        contentFeed = payload.content ?: "",
+        contentType = type,
+        headerFeed = "",
+        contentFeed = "",
         photo = dynamicPhotoType(payload.photo),
         contentMessage = payload.message ?: "",
         created = created,
@@ -254,6 +279,17 @@ fun ReplyResponse.toReplyUiModel() =
         created = created,
         message = message,
         author = author.toAuthorUiModel()
+    )
+
+fun AuthorComment.toAuthorUiModel() =
+    AuthorUiModel(
+        avatar = avatar?.original ?: "",
+        displayName = displayName ?: "",
+        castcleId = castcleId ?: "",
+        followed = followed ?: false,
+        id = id,
+        type = type,
+        verifiedEmail = verified ?: false
     )
 
 @Parcelize

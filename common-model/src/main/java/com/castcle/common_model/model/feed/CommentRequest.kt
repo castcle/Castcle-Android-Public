@@ -31,7 +31,7 @@ data class CommentRequest(
     val message: String? = "",
     @SerializedName("feedItemId")
     val feedItemId: String = "",
-    @SerializedName("authorId")
+    @SerializedName("castcleId")
     val authorId: String = "",
     val paginationModel: PaginationModel = PaginationModel()
 )

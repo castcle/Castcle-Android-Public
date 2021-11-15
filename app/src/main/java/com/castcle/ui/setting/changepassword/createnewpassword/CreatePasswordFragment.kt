@@ -8,7 +8,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.*
-import com.castcle.common_model.model.setting.ChangePassRequest
+import com.castcle.common_model.model.setting.domain.ChangePassRequest
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.data.error.userReadableMessage
 import com.castcle.extensions.*

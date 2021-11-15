@@ -1,8 +1,10 @@
 package com.castcle.ui.login
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,6 +20,7 @@ import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
+
 
 class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     BaseFragmentCallbacks,
@@ -53,6 +56,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     override fun initViewModel() = Unit
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun setupView() {
         setupToolBar()
     }

@@ -10,6 +10,7 @@ import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.usecase.feed.LikeCommentCompletableUseCase
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
@@ -20,6 +21,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -60,7 +62,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
 ) : ProfileFragmentViewModel() {
 
-    private lateinit var _userProfileContentRes: Flow<PagingData<ContentUiModel>>
+    private var _userProfileContentRes = flowOf<PagingData<ContentUiModel>>()
 
     private lateinit var _userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
 
@@ -68,9 +70,6 @@ class ProfileFragmentViewModelImpl @Inject constructor(
 
     override val userProfileData: LiveData<User>
         get() = _userProfileData
-
-    override val userProfileRes: Observable<User>
-        get() = fetchUserProfile()
 
     private lateinit var _feedContent: Flow<PagingData<ContentUiModel>>
     override val feedContentPage: Flow<PagingData<ContentUiModel>>
@@ -95,12 +94,15 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override val castcleId: String
         get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
-    private fun fetchUserProfile(): Observable<User> {
-        return getUserProfileSingleUseCase
+    override fun fetchUserProfile() {
+        getUserProfileSingleUseCase
             .execute(Unit)
-            .doOnNext {
+            .firstOrError()
+            .subscribeBy(onSuccess = {
                 setUserProfileData(it)
-            }.toObservable()
+            }, onError = {
+                _error.onNext(it)
+            }).addToDisposables()
     }
 
     private fun setUserProfileData(userData: User) {
@@ -198,6 +200,8 @@ class ProfileFragmentViewModelImpl @Inject constructor(
             .map { (status, userResponse) ->
                 userResponse.takeIf {
                     it.isNotBlank()
+                }?.let {
+                    checkUserResponse(userResponse)
                 }
                 status
             }.doOnError {

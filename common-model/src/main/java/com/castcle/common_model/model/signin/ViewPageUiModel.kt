@@ -3,8 +3,8 @@ package com.castcle.common_model.model.signin
 import com.castcle.common_model.model.feed.PaginationModel
 import com.castcle.common_model.model.feed.toPaginationModel
 import com.castcle.common_model.model.setting.*
-import com.castcle.common_model.model.userprofile.PageResponse
-import com.castcle.common_model.model.userprofile.UserPageResponse
+import com.castcle.common_model.model.userprofile.domain.PageResponse
+import com.castcle.common_model.model.userprofile.domain.UserPageResponse
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

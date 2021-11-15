@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.castcle.android.R
 import com.castcle.android.databinding.FragmentEmailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.authen_android.data.model.AuthenticationInfo
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.AuthBundle
+import com.castcle.common_model.model.login.domain.AuthBundle
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
@@ -46,6 +48,8 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     ToolbarBindingInflater<ToolbarCastcleGreetingBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    @Inject lateinit var localizedResources: LocalizedResources
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -102,7 +106,9 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     }
 
     private fun checkEmailExsit(email: String) {
-        viewModel.input.checkEmailExist(email)
+        if (email.isNotBlank()) {
+            viewModel.input.checkEmailExist(email)
+        }
         if (email.isBlank()) {
             showErrorMessage(false)
         }
@@ -123,7 +129,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
                     onNext = {
                         resultCheckEmail(it)
                     }, onError = {
-                        showErrorMessage(true)
+                        onErrorMessage(it)
                     }
                 )
                 .addToDisposables()
@@ -135,9 +141,16 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     }
 
     private fun resultCheckEmail(emailVerifyUiModel: AuthVerifyBaseUiModel.EmailVerifyUiModel) {
-        if (!emailVerifyUiModel.exist && emailVerifyUiModel.message.isNotBlank()) {
-            enableContinueButton(true)
-            binding.tvSubTitle.gone()
+        when {
+            !emailVerifyUiModel.exist && emailVerifyUiModel.message.isNotBlank() -> {
+                enableContinueButton(true)
+                binding.tvSubTitle.gone()
+            }
+            emailVerifyUiModel.exist && emailVerifyUiModel.message.isNotBlank() -> {
+                showErrorMessage(true)
+            }
+            else -> {
+            }
         }
     }
 
@@ -165,8 +178,10 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
 
     private fun showErrorMessage(exist: Boolean) {
         with(binding) {
+            tvErrorMessage.text = localizedResources.getString(R.string.email_error_message)
             tvErrorMessage.visibleOrGone(exist)
-            tvSubTitle.visibleOrGone(!exist)
+            tvSubTitle.visibleOrGone(false)
+            tvPassMessage.gone()
         }
     }
 
@@ -175,6 +190,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
             tvErrorMessage.visibleOrGone(true)
             tvErrorMessage.text = throwable.cause?.message ?: ""
             tvSubTitle.visibleOrGone(false)
+            tvPassMessage.gone()
         }
     }
 

@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.castcle.android.R
 import com.castcle.android.databinding.FragmentGreetingSignInBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.RegisterBundle
+import com.castcle.common_model.model.login.domain.RegisterBundle
 import com.castcle.extensions.gone
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator

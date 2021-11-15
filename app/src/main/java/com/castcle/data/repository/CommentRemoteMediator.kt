@@ -2,7 +2,6 @@ package com.castcle.data.repository
 
 import androidx.paging.*
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.api.response.toFeedCommentList
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.data.model.dao.feed.PageKeyDao
 import com.castcle.networking.api.feed.CommentApi
@@ -67,7 +66,7 @@ class CommentRemoteMediator(
                 pageSize = pageSize ?: 25
             )
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toFeedCommentList()
+            val data = listOf<ContentDbModel>()
             if (data != null) {
                 if (loadType == LoadType.REFRESH) {
                     pageKeyDao.clearAll()
@@ -76,8 +75,8 @@ class CommentRemoteMediator(
                 pageKeyDao.insertOrReplace(
                     PageKey(
                         data.firstOrNull()?.id.toString(),
-                        pagedResponse.pagination.next,
-                        pagedResponse.pagination.limit
+                        pagedResponse?.pagination?.next,
+                        pagedResponse?.pagination?.limit
                     )
                 )
                 commentDao.insertAllComment(data)

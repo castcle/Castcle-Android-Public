@@ -8,6 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.*
+import com.castcle.common_model.model.login.domain.*
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator

@@ -22,6 +22,7 @@ import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -130,7 +131,35 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                 val refresher = loadStates.refresh
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                handleEmptyState(displayEmpty)
+                val isError = loadStates.refresh is LoadState.Error
+                val isLoading = loadStates.refresh is LoadState.Loading
+                if (isError) {
+                    handleEmptyState(isError)
+                }
+                if (!isLoading) {
+                    stopLoadingShimmer()
+                    activityViewModel.onProfileLoading(false)
+
+                }
+            }
+        }
+    }
+
+    private fun startLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
+            }
+        }
+    }
+
+    private fun stopLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
             }
         }
     }
@@ -228,7 +257,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     override fun bindViewModel() {
         with(viewModel) {
-            launchOnLifecycleScope {
+            viewLifecycleOwner.lifecycleScope.launch {
                 userProfileContentRes.collectLatest {
                     adapterPagingCommon.submitData(it)
                 }

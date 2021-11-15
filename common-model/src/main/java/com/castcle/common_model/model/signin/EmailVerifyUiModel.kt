@@ -1,6 +1,6 @@
 package com.castcle.common_model.model.signin
 
-import com.castcle.common_model.model.signin.response.AuthExsitResponse
+import com.castcle.common_model.model.signin.domain.AuthExsitResponse
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

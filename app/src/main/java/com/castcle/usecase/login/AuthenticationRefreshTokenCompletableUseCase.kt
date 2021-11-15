@@ -1,7 +1,6 @@
 package com.castcle.usecase.login
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.login.LoginRequest
 import com.castcle.data.error.LoginError
 import com.castcle.networking.api.auth.freshtoken.AuthenticationTokenRepository
 import com.castcle.usecase.base.CompletableUseCase

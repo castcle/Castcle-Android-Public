@@ -3,7 +3,7 @@ package com.castcle.ui.onboard.navigation
 import android.content.Intent
 import android.net.Uri
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.login.*
+import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
 import com.castcle.ui.base.BaseNavigator
@@ -60,9 +60,7 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToAboutYouFragment(
         profileBundle: ProfileBundle,
-        isCreatePage: Boolean = false,
-        onEditProfile: Boolean = false,
-        onEditPage: Boolean = false
+        isCreatePage: Boolean = false
     )
 
     fun navigateToSettingFragment()

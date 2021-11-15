@@ -5,8 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
-import android.view.View
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import com.castcle.android.R
 import com.castcle.ui.onboard.OnBoardActivity
@@ -99,6 +98,10 @@ fun Activity.registerKeyboardListener(listener: KeyboardListener) {
 fun Activity.hideSoftKeyboard() {
     val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     inputMethodManager?.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+}
+
+fun Activity.showSoftKeyboard() {
+    setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 }
 
 fun Activity.getSoftInputMode(): Int {

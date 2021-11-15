@@ -35,24 +35,13 @@ import javax.inject.Inject
 class LikeCommentCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val feedRepository: FeedRepository
-) : CompletableUseCase<LikeCommentCompletableUseCase.Input>(
+) : CompletableUseCase<LikeCommentRequest>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::Ignored
 ) {
 
-    data class Input(
-        val contentId: String,
-        val commentId: String,
-        val likedStatus: Boolean
-    )
-
-    override fun create(input: Input): Completable {
-        return feedRepository.likeComment(
-            LikeCommentRequest(
-                input.commentId,
-                input.contentId,
-            ), input.likedStatus
-        )
+    override fun create(input: LikeCommentRequest): Completable {
+        return feedRepository.likeComment(input, input.likeStatue)
     }
 }

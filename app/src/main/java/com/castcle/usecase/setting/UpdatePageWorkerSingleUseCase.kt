@@ -1,7 +1,7 @@
 package com.castcle.usecase.setting
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.setting.CreatePageRequest
+import com.castcle.common_model.model.setting.domain.CreatePageRequest
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.error.CommonError
 import com.castcle.networking.api.auth.AuthenticationsRepository

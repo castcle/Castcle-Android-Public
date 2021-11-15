@@ -6,6 +6,7 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
+import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Completable
@@ -66,6 +67,10 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
     abstract fun getTopTrends()
 
     abstract val trendsResponse: LiveData<List<SearchUiModel>>
+
+    abstract fun checkCastPostWithImageStatus(): Observable<Boolean>
+
+    abstract val castPostResponse: Observable<ContentUiModel>
 
     interface Input {
 

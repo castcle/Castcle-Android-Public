@@ -45,7 +45,7 @@ class CommentPagingDataSource(
                 pageSize = pageSize
             )
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toContentUiModel()
+            val data = pagedResponse?.toCommentModel()
 
             var nextPageNumber: Int? = null
             if (pagedResponse?.pagination?.next != null) {
@@ -55,7 +55,7 @@ class CommentPagingDataSource(
             }
 
             LoadResult.Page(
-                data = data?.feedContentUiModel.orEmpty(),
+                data = data?.contentUiModel.orEmpty(),
                 prevKey = null,
                 nextKey = nextPageNumber
             )

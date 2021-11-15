@@ -30,31 +30,8 @@ import java.util.*
 
 data class ContentCommentResponse(
     @SerializedName("payload")
-    val payload: List<PayloadResponse>,
+    val payload: List<CommentedDataResponse>,
 
     @SerializedName("pagination")
     val pagination: Pagination
 )
-
-fun List<PayloadResponse>.toFeedCommentList(): List<ContentDbModel> {
-    return map { it ->
-        ContentDbModel(
-            id = it.id,
-            featureSlug = it.feature?.slug ?: "",
-            circleSlug = "",
-            contentType = it.type,
-            created = it.created,
-            updated = it.updated,
-            payloadContent = it.payload.toPayloadContentUiModel(),
-            commented = it.commentedResponse?.toCommentedUiModel() ?: CommentedUiModel(),
-            liked = it.likedResponse?.toLikedUiModel() ?: LikedUiModel(),
-            recasted = it.recastedResponse?.toRecastedUiModel() ?: RecastedUiModel(),
-            author = it.author.toAuthorUiModel(),
-            replyUiModel = it.reply?.let { item ->
-                item.map {
-                    it.toReplyUiModel()
-                }
-            } ?: emptyList()
-        )
-    }
-}

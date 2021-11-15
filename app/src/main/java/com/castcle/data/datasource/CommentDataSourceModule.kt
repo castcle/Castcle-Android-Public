@@ -1,14 +1,8 @@
 package com.castcle.data.datasource
 
-import com.castcle.common_model.model.userprofile.CreateCastResponse
-import com.castcle.common_model.model.userprofile.UserProfileResponse
-import com.castcle.data.repository.CreateContentMapper
-import com.castcle.data.repository.UserProfileMapper
 import com.castcle.networking.api.feed.CommentApi
 import dagger.Module
 import dagger.Provides
-import io.reactivex.functions.Function
-import retrofit2.Response
 import retrofit2.Retrofit
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

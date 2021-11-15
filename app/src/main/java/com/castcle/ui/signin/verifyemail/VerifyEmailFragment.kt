@@ -8,7 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.databinding.FragmentVerifyEmailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.ProfileBundle
+import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -110,7 +110,7 @@ class VerifyEmailFragment : BaseFragment<VerifyEmailFragmentViewModel>(),
     }
 
     private fun navigateToProfileSetting() {
-        onBoardNavigator.navigateToAboutYouFragment(profileBundle, onEditProfile = true)
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle)
     }
 
     private fun navigateToResentVerifyEmail() {

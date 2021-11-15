@@ -1,7 +1,7 @@
 package com.castcle.usecase.auth
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.setting.ChangePassRequest
+import com.castcle.common_model.model.setting.domain.ChangePassRequest
 import com.castcle.data.error.VerificationError
 import com.castcle.networking.api.auth.AuthenticationsRepository
 import com.castcle.usecase.base.CompletableUseCase

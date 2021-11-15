@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.userprofile
 
 import androidx.room.*
+import com.castcle.common_model.model.userprofile.domain.PageResponse
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

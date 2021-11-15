@@ -1,10 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply plugin: 'com.google.firebase.crashlytics'
 apply from: '../config/detekt.gradle'
 
 android {
@@ -51,7 +52,8 @@ android {
     buildTypes {
         release {
             debuggable false
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -209,7 +211,10 @@ dependencies {
             "com.github.lyrebirdstudio:Croppy:0.2",
             "com.github.esafirm:android-image-picker:3.0.0-beta1",
             "androidx.core:core-splashscreen:1.0.0-alpha01",
-            "com.github.stfalcon-studio:StfalconImageViewer:v1.0.1"
+            "com.github.stfalcon-studio:StfalconImageViewer:v1.0.1",
+            "com.github.arhanashik:LinkPreview:1.2.3",
+            "com.github.Shouheng88:compressor:1.5.0",
+            "com.github.perfomer:blitz:1.0.9"
     )
 
 
@@ -250,5 +255,3 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
     }
 }
-
-apply plugin: 'com.google.gms.google-services'

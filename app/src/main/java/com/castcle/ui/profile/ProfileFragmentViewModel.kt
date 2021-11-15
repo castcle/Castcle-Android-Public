@@ -5,7 +5,7 @@ import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
-import com.castcle.common_model.model.userprofile.ImagesRequest
+import com.castcle.common_model.model.userprofile.domain.ImagesRequest
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Completable
@@ -48,7 +48,7 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun getUserViewProfile(castcleId: String)
 
-    abstract val userProfileRes: Observable<User>
+    abstract fun fetchUserProfile()
 
     abstract val userProfileYouRes: Observable<User>
 

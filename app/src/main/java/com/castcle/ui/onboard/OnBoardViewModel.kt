@@ -89,4 +89,8 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract val onBackToFeed: Observable<Unit>
 
     abstract fun onBackToHomeFeed()
+
+    abstract val profileContentLoading: Observable<Boolean>
+
+    abstract fun onProfileLoading(onLoading: Boolean)
 }

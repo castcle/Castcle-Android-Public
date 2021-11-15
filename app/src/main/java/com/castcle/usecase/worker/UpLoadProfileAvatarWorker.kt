@@ -2,9 +2,12 @@ package com.castcle.usecase.worker
 
 import android.content.Context
 import androidx.work.*
-import com.castcle.common_model.model.setting.CreatePageRequest
 import com.castcle.common_model.model.setting.UpLoadType
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.setting.domain.CreatePageRequest
+import com.castcle.common_model.model.setting.domain.ImagesPageRequest
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.domain.*
+import com.castcle.common_model.model.userprofile.toStringModel
 import com.castcle.data.error.AppError
 import com.castcle.usecase.setting.UpdatePageWorkerSingleUseCase
 import com.castcle.usecase.userprofile.ScaleImageSingleUseCase
@@ -75,23 +78,21 @@ class UpLoadProfileAvatarWorker(
     private fun upLoadPageImage(image: Content, upLoadType: ImagesRequest): Single<User> {
         val imageRequest = when (upLoadType.upLoadType) {
             UpLoadType.UPLOAD_PAGE_AVATAR.type -> {
-                CreatePageRequest(
-                    avatar = image.image,
-                    castcleId = upLoadType.castcleId ?: ""
+                ImagesPageRequest(
+                    avatar = image.image ?: ""
                 )
             }
-            UpLoadType.UPLOAD_PAGE_COVER.type -> {
-                CreatePageRequest(
-                    cover = image.image,
-                    castcleId = upLoadType.castcleId ?: ""
-                )
-            }
-            else -> CreatePageRequest(
-                avatar = image.image,
-                castcleId = upLoadType.castcleId ?: ""
+            else -> ImagesPageRequest(
+                cover = image.image ?: ""
             )
         }
-        return updatePageSingleUseCase.execute(imageRequest)
+        val pageUpdateRequest = CreatePageRequest(
+            images = imageRequest,
+            castcleId = upLoadType.castcleId ?: ""
+
+        )
+
+        return updatePageSingleUseCase.execute(pageUpdateRequest)
     }
 
     private fun upLoadImage(image: Content, upLoadType: String): Single<User> {

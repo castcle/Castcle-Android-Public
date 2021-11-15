@@ -9,10 +9,10 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentDeletePageBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.ProfileBundle
+import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.DeletePagePayload
-import com.castcle.common_model.model.userprofile.DeletePageRequest
+import com.castcle.common_model.model.userprofile.DeleteUserPayload
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
@@ -145,13 +145,13 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
     }
 
     private fun onHandlerDeletePageState() {
-        val profileBundle = profile as ProfileBundle.ProfileDelete
         var messageTitle: CharSequence = ""
         var messageDescription: CharSequence = ""
         var messageToolbar: CharSequence = ""
+
         with(binding) {
-            when (profileBundle.profileType) {
-                ProfileType.PROFILE_TYPE_PAGE.type -> {
+            onHandlerDeleteRequest(
+                onDeletePage = {
                     messageTitle = localizedResources.getText(
                         R.string.delete_page_fragment_title_on_delete_page
                     )
@@ -161,8 +161,8 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
                     messageToolbar = localizedResources.getText(
                         R.string.delete_page_fragment_title_confirm_page
                     )
-                }
-                ProfileType.PROFILE_TYPE_ME.type -> {
+                },
+                onDeleteUser = {
                     messageTitle = localizedResources.getText(
                         R.string.delete_page_fragment_title_on_delete
                     )
@@ -173,7 +173,7 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
                         R.string.delete_page_fragment_title_confirm
                     )
                 }
-            }
+            )
             tvWelcome.text = messageTitle
             tvDescription.text = messageDescription
             setToolbarTitle(messageToolbar)
@@ -189,6 +189,18 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
             }
             btDelete.text = localizedResources.getText(R.string.delete_page_fragment_continue)
             onActiveButtonContinue()
+        }
+    }
+
+    private fun onHandlerDeleteRequest(onDeleteUser: () -> Unit, onDeletePage: () -> Unit) {
+        val profileBundle = profile as ProfileBundle.ProfileDelete
+        when (profileBundle.profileType) {
+            ProfileType.PROFILE_TYPE_PAGE.type -> {
+                onDeleteUser.invoke()
+            }
+            ProfileType.PROFILE_TYPE_ME.type -> {
+                onDeletePage.invoke()
+            }
         }
     }
 
@@ -208,9 +220,9 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
         }
     }
 
-    private fun handlerOnDeletePage(profileBundle: ProfileBundle.ProfileDelete) {
-        viewModel.onDeletePage(
-            DeletePageRequest(
+    private fun handlerOnDeleteAccount(profileBundle: ProfileBundle.ProfileDelete) {
+        viewModel.onDeleteAccount(
+            DeleteUserPayload(
                 castcleId = profileBundle.castcleId,
                 channel = DEFAULT_CHANNEL,
                 payload = DeletePagePayload(
@@ -219,16 +231,23 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
             )
         ).subscribeBy(
             onComplete = {
-                onNavigateCompleteFragment(profileBundle.profileType)
+                onNavigateCompleteFragment(ProfileType.PROFILE_TYPE_ME.type)
             }, onError = {
-                displayError(it)
+                onDisplayError(it)
             }
         ).addToDisposables()
     }
 
-    private fun handlerOnDeleteAccount(profileBundle: ProfileBundle.ProfileDelete) {
-        viewModel.onDeleteAccount(
-            DeletePageRequest(
+    private fun onDisplayError(it: Throwable) {
+        with(binding.itPassword) {
+            setError(it.cause?.message)
+        }
+    }
+
+    private fun handlerOnDeletePage(profileBundle: ProfileBundle.ProfileDelete) {
+        viewModel.onDeletePage(
+            DeleteUserPayload(
+                castcleId = profileBundle.castcleId,
                 channel = DEFAULT_CHANNEL,
                 payload = DeletePagePayload(
                     password = binding.itPassword.primaryText
@@ -236,7 +255,7 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
             )
         ).subscribeBy(
             onComplete = {
-                onNavigateCompleteFragment(profileBundle.profileType)
+                onNavigateCompleteFragment(ProfileType.PROFILE_TYPE_PAGE.type)
             }, onError = {
                 displayError(it)
             }

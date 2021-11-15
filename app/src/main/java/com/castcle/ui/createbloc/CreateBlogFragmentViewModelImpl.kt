@@ -5,13 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.castcle.android.R
 import com.castcle.common_model.model.createblog.MediaItem
-import com.castcle.common_model.model.createblog.toListUri
+import com.castcle.common_model.model.createblog.toListContent
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.MentionUiModel
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.usecase.createblog.GetImagePathMapUseCase
+import com.castcle.usecase.createblog.ScaleImagesSingleUseCase
 import com.castcle.usecase.feed.QuoteCastContentSingleUseCase
-import com.castcle.usecase.feed.ReduceAndScaleImageSingleUseCase
 import com.castcle.usecase.userprofile.*
 import io.reactivex.*
 import io.reactivex.rxkotlin.Observables
@@ -19,6 +21,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
+import kotlin.math.abs
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -49,9 +52,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val createContentSingleUseCase: CreateContentSingleUseCase,
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
-    private val reduceAndScaleImageSingleUseCase: ReduceAndScaleImageSingleUseCase,
     private val quoteCastContentSingleUseCase: QuoteCastContentSingleUseCase,
-    private val getUserMentionSingleUseCase: GetUserMentionSingleUseCase
+    private val getUserMentionSingleUseCase: GetUserMentionSingleUseCase,
+    private val scaleImageSingleUseCase: ScaleImagesSingleUseCase,
+    private val uploadCastWithImageWorkerCompletableUseCase: UploadCastWithImageWorkerCompletableUseCase
 ) : CreateBlogFragmentViewModel(), CreateBlogFragmentViewModel.Input {
 
     private var _userProfileUiModel = MutableLiveData<ContentUiModel>()
@@ -89,6 +93,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     override val mediaItemImage: LiveData<MutableList<MediaItem>>
         get() = _mediaItemImage
 
+    private var _imageReSized = MutableLiveData<MutableList<Content>>()
+
     private var _mediaImageSelected = MutableLiveData<MutableList<MediaItem>>()
     override val mediaImageSelected: LiveData<MutableList<MediaItem>>
         get() = _mediaImageSelected
@@ -105,30 +111,27 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         ) { message, imageContent, imageCover ->
             if (message.isNotBlank()) {
                 message.trim().run {
-                    val charLength = Pair(this.length, MAX_LIGHTH - this.length)
+                    val charLength = Pair(this.length, abs(MAX_LIGHTH - this.length))
                     _messageLength.onNext(charLength)
                 }
+            } else {
+                _messageLength.onNext(Pair(0, MAX_LIGHTH))
             }
             when {
                 imageContent.isNotEmpty() -> true
-                message.isNotEmpty() && (imageContent.isEmpty() || imageCover.isEmpty()) -> true
+                (message.isNotEmpty() && message.length <= MAX_LIGHTH) &&
+                    (imageContent.isEmpty() || imageCover.isEmpty()) -> true
                 else -> false
             }
         }
 
-    override fun createContent(): Single<CreateContentUiModel> {
-        val imageSelected = takeImageSelected()
-        return if (imageSelected.isNullOrEmpty()) {
-            postCreateContent()
-        } else {
-            reduceAndScaleImageSingleUseCase.execute(
-                imageSelected
-            ).flatMap(::postCreateContent)
-        }
+    override fun createContent(): Completable {
+        val imageSelected = _mediaImageSelected.value?.toListContent() ?: mutableListOf()
+        return postCreateContent(imageSelected)
     }
 
-    private fun postCreateContent(imageList: List<Content>): Single<CreateContentUiModel> {
-        return createContentSingleUseCase.execute(
+    private fun postCreateContent(imageList: List<Content>): Completable {
+        return uploadCastWithImageWorkerCompletableUseCase.execute(
             CreateContentRequest(
                 type = ContentType.SHORT.type,
                 payload = Payload(
@@ -142,34 +145,6 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
             )
         ).doOnSubscribe {
             _showLoading.onNext(true)
-        }.doOnSuccess {
-            _showLoading.onNext(false)
-        }.onErrorReturn {
-            _showLoading.onNext(false)
-            _error.onNext(it)
-            CreateContentUiModel()
-        }.doFinally {
-            _showLoading.onNext(false)
-        }
-    }
-
-    private fun postCreateContent(): Single<CreateContentUiModel> {
-        return createContentSingleUseCase.execute(
-            CreateContentRequest(
-                type = contentType.blockingFirst().type,
-                payload = Payload(
-                    message = _message.blockingFirst(),
-                    photo = Photo(
-                        contents = _mediaItemImage.value?.toRequestPhoto() ?: emptyList()
-                    )
-                ),
-                castcleId = _castUserProfile.value?.castcleId ?: "",
-                createType = ContentType.FEED.type
-            )
-        ).doOnSubscribe {
-            _showLoading.onNext(true)
-        }.doOnSuccess {
-            _showLoading.onNext(false)
         }.doFinally {
             _showLoading.onNext(false)
         }
@@ -239,7 +214,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
                     id = "",
                     uri = "",
                     imgRes = R.drawable.ic_camera,
-                    displayName = ""
+                    displayName = "",
+                    path = ""
                 )
             )
         }
@@ -248,8 +224,8 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         }?.apply {
             isSelected = !isSelected
         }?.let {
-            setImageSelected()
             setMediaItem(updateImage.toList())
+            setImageSelected()
             return
         }.run {
             setImageSelected()
@@ -259,8 +235,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
 
     override fun removeMediaItem(mediaItem: MediaItem) {
         val removeItem = _mediaImageSelected.value
-        removeItem?.indexOf(mediaItem)?.let {
-            removeItem.removeAt(it)
+        removeItem?.find { itemUpdate ->
+            itemUpdate.uri == mediaItem.uri
+        }?.let {
+            removeItem.remove(it)
             updateImageSelected(removeItem)
         }
         val updateImage = _mediaItemImage.value
@@ -275,16 +253,24 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
 
     override fun addMediaItemSelected(mediaItem: List<MediaItem>) {
         val updateImage = _mediaItemImage.value
+
         mediaItem.forEach {
             updateImage?.find { item ->
                 item.uri == it.uri
             }?.apply {
-                isSelected = !isSelected
+                isSelected = true
             }?.let {
                 setMediaItem(updateImage.toList())
+                setImageSelected()
+                return
             }
         }
-        updateImageSelected(mediaItem.toMutableList())
+        updateImage?.apply {
+            addAll(mediaItem)
+        }.run {
+            this?.let { setMediaItem(it) }
+            setImageSelected()
+        }
     }
 
     private fun updateImageSelected(removeItem: MutableList<MediaItem>) {
@@ -292,29 +278,28 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     }
 
     override fun updateSelectedImage(item: MediaItem.ImageMediaItem) {
-        val updateImage = _mediaItemImage.value
-        updateImage?.find { itemUpdate ->
-            itemUpdate.uri == item.uri
-        }?.apply {
-            isSelected = !isSelected
-        }?.let {
-            setMediaItem(updateImage.toList())
-            setImageSelected()
-        }
+        addMediaItem(item)
     }
 
     private fun setImageSelected() {
         val updateImage = _mediaItemImage.value
         updateImage?.filter {
             it.isSelected
-        }?.let {
+        }?.let { it ->
             _mediaImageSelected.value = it.toMutableList()
         }
     }
 
-    private fun takeImageSelected(): List<String> {
-        val updateImage = _mediaImageSelected.value
-        return updateImage?.toListUri() ?: emptyList()
+    private fun onScaleImageSelected(imageSelected: MutableList<MediaItem>) {
+        if (imageSelected.isNotEmpty()) {
+            scaleImageSingleUseCase.execute(imageSelected.map {
+                it.uri
+            }).subscribeBy {
+                _imageReSized.value = it.toMutableList()
+            }.addToDisposables()
+        } else {
+            _imageReSized.value = mutableListOf()
+        }
     }
 
     override fun quoteCasteContent(contentUiModel: ContentUiModel) {
@@ -346,6 +331,7 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
 
     override fun onClearState() {
         _messageLength.onNext(Pair(0, MAX_LIGHTH))
+        _imageReSized.value = mutableListOf()
         setMediaItem(emptyList())
         updateImageSelected(mutableListOf())
     }

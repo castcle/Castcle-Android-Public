@@ -35,7 +35,7 @@ class ImageResize {
         path: String,
         resizeType: ResizeType,
         skipLargerResize: Boolean = true,
-    ): Bitmap {
+    ): Bitmap? {
         return BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeFile(path, this)
@@ -87,5 +87,5 @@ class ImageResize {
     }
 }
 
-const val MAX_IMAGE_WIDTH = 1080
-const val MAX_IMAGE_HGIHT = 1920
+const val MAX_IMAGE_WIDTH = 1920
+const val MAX_IMAGE_HGIHT = 1080

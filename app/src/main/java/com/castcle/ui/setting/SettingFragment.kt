@@ -117,8 +117,8 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
             with(layoutNotification) {
                 tvNotiCount.text =
                     context?.getString(R.string.setting_noti_count)?.format(badgesCount)
+                tvCount.visibleOrGone(badgesCount.isNotBlank())
                 tvCount.text = badgesCount
-                tvCount.visibleOrGone(badgesCount.isBlank())
             }
         }
     }

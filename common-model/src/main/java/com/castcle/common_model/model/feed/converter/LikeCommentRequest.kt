@@ -28,6 +28,7 @@ import com.google.gson.annotations.SerializedName
 
 data class LikeCommentRequest(
     val commentId: String,
+    val likeStatue: Boolean = false,
     @SerializedName("feedItemId")
     val feedItemId: String = "",
     @SerializedName("authorId")

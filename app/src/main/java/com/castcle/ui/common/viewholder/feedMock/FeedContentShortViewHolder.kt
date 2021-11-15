@@ -5,11 +5,13 @@ import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
-import com.castcle.components_android.ui.custom.previewlinkurl.*
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
+import com.workfort.linkpreview.LinkData
+import com.workfort.linkpreview.callback.ParserCallback
+import com.workfort.linkpreview.util.LinkParser
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -92,6 +94,11 @@ class FeedContentShortMockViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+            clPreviewContentImage.clInPreviewContentImage.gone()
+            clPreviewContent.clInPreviewContent.gone()
+            clPreviewIconContent.clInPreviewIconContent.gone()
+            startLoadingPreViewShimmer()
+
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
@@ -103,35 +110,37 @@ class FeedContentShortMockViewHolder(
                 ftFooter.bindUiModel(uiModel)
                 when {
                     link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
-                        group2.gone()
-                        vCover.gone()
-                        clPreviewContent.visible()
-                        icImageContent.visible()
-                        icImageContent.bindImageContent(uiModel, true)
+                        with(clPreviewContentImage) {
+                            clInPreviewContentImage.visible()
+                            icImageContent.bindImageContent(uiModel, true)
+
+                        }
                         stopLoadingPreViewShimmer()
                     }
                     link.isNotEmpty() -> {
                         link.firstOrNull()?.let {
-                            PreViewLinkUrl(it.url, it.type, object : PreViewLinkCallBack {
-                                override fun onComplete(urlInfo: UrlInfoUiModel) {
-                                    with(urlInfo) {
-                                        if (image.isEmpty()) {
-                                            onBindContentIcon(urlInfo)
-                                        } else {
-                                            onBindContentImage(urlInfo)
-                                        }
+                            LinkParser(it.url, object : ParserCallback {
+                                override fun onData(linkData: LinkData) {
+                                    clPreviewContent.clInPreviewContent.gone()
+                                    clPreviewIconContent.clInPreviewIconContent.gone()
+
+                                    if (linkData.imageUrl.isNullOrBlank()) {
+                                        onBindContentIconWeb(linkData)
+                                    } else {
+                                        onBindContentImageWeb(linkData)
                                     }
                                 }
 
-                                override fun onFailed(throwable: Throwable) {
-                                    clPreviewContent.gone()
+                                override fun onError(exception: Exception) {
+                                    clPreviewIconContent.clInPreviewIconContent.gone()
+                                    clPreviewContent.clInPreviewContent.gone()
                                 }
-                            }).fetchUrlPreview()
+                            }).parse()
+
                         }
                     }
                     else -> {
                         stopLoadingPreViewShimmer()
-                        clPreviewContent.gone()
                     }
                 }
 
@@ -139,13 +148,12 @@ class FeedContentShortMockViewHolder(
         }
     }
 
-    private fun onBindContentIcon(linkUiModel: UrlInfoUiModel) {
+    private fun onBindContentIconWeb(linkUiModel: LinkData) {
         stopLoadingPreViewShimmer()
-        with(binding) {
-            clPreviewContent.gone()
-            clPreviewIconContent.visible()
+        with(binding.clPreviewIconContent) {
+            clInPreviewIconContent.visible()
             with(linkUiModel) {
-                ivPerviewIconUrl.loadIconImage(imageIcon)
+                ivPerviewIconUrl.loadIconImage(favicon ?: "")
                 tvIconPreview.text = url
                 tvPreviewIconHeader.text = title
                 tvPreviewIconContent.text = description
@@ -153,13 +161,12 @@ class FeedContentShortMockViewHolder(
         }
     }
 
-    private fun onBindContentImage(linkUiModel: UrlInfoUiModel) {
+    private fun onBindContentImageWeb(linkUiModel: LinkData) {
         stopLoadingPreViewShimmer()
-        with(binding) {
-            clPreviewContent.visible()
-            clPreviewIconContent.gone()
+        with(binding.clPreviewContent) {
+            clInPreviewContent.visible()
             with(linkUiModel) {
-                ivPerviewUrl.loadGranularRoundedCornersImage(image)
+                ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
                 tvPreviewUrl.text = url
                 tvPreviewHeader.text = title
                 tvPreviewContent.text = description
@@ -173,6 +180,15 @@ class FeedContentShortMockViewHolder(
                 stopShimmer()
                 setShimmer(null)
                 gone()
+            }
+        }
+    }
+
+    private fun startLoadingPreViewShimmer() {
+        with(binding) {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
             }
         }
     }

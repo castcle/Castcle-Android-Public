@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.EditText
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -17,6 +18,7 @@ import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.di.ActivityViewModelFactory
 import com.castcle.di.FragmentViewModelFactory
+import com.castcle.extensions.hideSoftKeyboard
 import com.castcle.extensions.inflate
 import com.castcle.usecase.OverrideLocaleAppImpl
 import dagger.android.support.DaggerFragment
@@ -98,6 +100,7 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -105,6 +108,12 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
             setupView()
             bindViewEvents()
             bindViewModel()
+        }
+        if (view !is EditText) {
+            view.setOnTouchListener { v, event ->
+                requireActivity().hideSoftKeyboard()
+                false
+            }
         }
     }
 

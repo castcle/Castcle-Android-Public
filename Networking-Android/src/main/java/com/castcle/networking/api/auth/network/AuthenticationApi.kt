@@ -1,11 +1,11 @@
 package com.castcle.networking.api.auth.network
 
 import com.castcle.common_model.model.engagement.EngagementRequest
-import com.castcle.common_model.model.login.LoginRequest
-import com.castcle.common_model.model.login.LoginResponse
-import com.castcle.common_model.model.setting.*
-import com.castcle.common_model.model.signin.response.AuthExsitResponse
-import com.castcle.common_model.model.signin.reuquest.*
+import com.castcle.common_model.model.login.domain.LoginRequest
+import com.castcle.common_model.model.login.domain.LoginResponse
+import com.castcle.common_model.model.setting.domain.*
+import com.castcle.common_model.model.signin.domain.*
+import com.castcle.common_model.model.signin.domain.AuthExsitResponse
 import com.castcle.networking.api.response.TokenResponse
 import io.reactivex.Flowable
 import retrofit2.Response

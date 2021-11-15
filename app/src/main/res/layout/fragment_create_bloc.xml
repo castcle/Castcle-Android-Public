@@ -121,6 +121,7 @@
             android:paddingEnd="@dimen/_12sdp"
             android:paddingBottom="@dimen/_4sdp"
             android:text="@string/create_blog_cast"
+            android:enabled="false"
             android:textColor="@color/light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -6,12 +6,13 @@ import com.auth0.jwt.exceptions.JWTDecodeException
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common_model.model.engagement.EngagementRequest
-import com.castcle.common_model.model.login.LoginRequest
-import com.castcle.common_model.model.login.LoginResponse
+import com.castcle.common_model.model.login.domain.LoginRequest
+import com.castcle.common_model.model.login.domain.LoginResponse
 import com.castcle.common_model.model.setting.*
+import com.castcle.common_model.model.setting.domain.*
 import com.castcle.common_model.model.signin.*
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.*
-import com.castcle.common_model.model.signin.reuquest.*
+import com.castcle.common_model.model.signin.domain.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.toUserPage
 import com.castcle.networking.api.auth.network.AuthenticationApi

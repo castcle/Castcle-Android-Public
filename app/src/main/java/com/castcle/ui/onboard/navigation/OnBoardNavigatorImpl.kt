@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.*
 import com.castcle.android.R
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.login.*
+import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
 import com.castcle.data.staticmodel.BottomNavigateStatic
@@ -322,9 +322,7 @@ class OnBoardNavigatorImpl @Inject constructor(
 
     override fun navigateToAboutYouFragment(
         profileBundle: ProfileBundle,
-        isCreatePage: Boolean,
-        onEditProfile: Boolean,
-        onEditPage: Boolean
+        isCreatePage: Boolean
     ) {
         val navController = findNavController()
         when (navController.graph.id) {
@@ -336,7 +334,6 @@ class OnBoardNavigatorImpl @Inject constructor(
                             AboutYouFragmentArgs(
                                 isCreatePage = isCreatePage,
                                 profileBundle = profileBundle,
-                                onEditProfile = onEditProfile
                             ).toBundle()
                         )
                     }
@@ -346,7 +343,6 @@ class OnBoardNavigatorImpl @Inject constructor(
                             AboutYouFragmentArgs(
                                 isCreatePage = isCreatePage,
                                 profileBundle = profileBundle,
-                                onEditProfile = onEditProfile
                             ).toBundle()
                         )
                     }
@@ -356,8 +352,6 @@ class OnBoardNavigatorImpl @Inject constructor(
                             AboutYouFragmentArgs(
                                 isCreatePage = isCreatePage,
                                 profileBundle = profileBundle,
-                                onEditProfile = onEditProfile,
-                                onEditPage = onEditPage
                             ).toBundle()
                         )
                     }
@@ -759,14 +753,18 @@ class OnBoardNavigatorImpl @Inject constructor(
                 when (navController.currentDestination?.id) {
                     R.id.createPasswordFragment -> {
                         navController.navigate(
-                            R.id.actionCreatePasswordToCompleteFragment
+                            R.id.actionCreatePasswordToCompleteFragment,
+                            CompleteFragmentArgs(
+                                onDeletePage = onAccountPage,
+                                onDeleteAccount = onAccountPage
+                            ).toBundle()
                         )
                     }
                     R.id.deletePageFragment -> {
                         navController.navigate(
                             R.id.actionDeletePageFragmentToCompleteFragment,
                             CompleteFragmentArgs(
-                                onDeletePage = onAccountPage,
+                                onDeletePage = onDeletePage,
                                 onDeleteAccount = onAccountPage
                             ).toBundle()
                         )

@@ -48,7 +48,7 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
     abstract val messageLength: Observable<Pair<Int, Int>>
 
-    abstract fun createContent(): Single<CreateContentUiModel>
+    abstract fun createContent(): Completable
 
     abstract fun fetchCastUserProfile(): Completable
 

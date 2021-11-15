@@ -1,6 +1,7 @@
 package com.castcle.networking.api.search
 
 import com.castcle.common_model.model.search.*
+import com.castcle.common_model.model.search.domain.SearchResponse
 import com.castcle.networking.api.search.api.SearchApi
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Single

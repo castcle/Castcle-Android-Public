@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.userprofile.Content
+import com.castcle.common_model.model.userprofile.domain.Content
 import com.castcle.data.error.Ignored
 import com.castcle.extensions.toBase64String
 import com.castcle.usecase.base.SingleUseCase

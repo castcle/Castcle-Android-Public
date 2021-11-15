@@ -125,6 +125,7 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun setupView() {
+//        startLoadingShimmer()
         with(binding) {
             rvContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
@@ -136,10 +137,38 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
                 val refresher = loadStates.refresh
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                handleEmptyState(displayEmpty)
+                val isError = loadStates.refresh is LoadState.Error
+                val isLoading = loadStates.refresh is LoadState.Loading
+                if (isError) {
+                    handleEmptyState(isError)
+//                    stopLoadingShimmer()
+                }
+                if (!isLoading) {
+//                    stopLoadingShimmer()
+                }
             }
         }
     }
+
+//    private fun startLoadingShimmer() {
+//        with(binding) {
+//            skeletonLoading.shimmerLayoutLoading.run {
+//                startShimmer()
+//                visible()
+//            }
+//        }
+//    }
+//
+//
+//    private fun stopLoadingShimmer() {
+//        with(binding) {
+//            skeletonLoading.shimmerLayoutLoading.run {
+//                stopShimmer()
+//                setShimmer(null)
+//                gone()
+//            }
+//        }
+//    }
 
     private fun handleContentClick(click: Click) {
         when (click) {

@@ -38,6 +38,9 @@ interface UserPageDao : BaseDao<UserPage> {
     @Query("DELETE FROM user_page")
     fun deleteUserPage()
 
+    @Query("DELETE FROM user_page WHERE page_id = :pageId")
+    fun deleteUserPageByPageId(pageId: String)
+
     @Transaction
     fun refresh(user: UserPage) {
         deleteUserPage()

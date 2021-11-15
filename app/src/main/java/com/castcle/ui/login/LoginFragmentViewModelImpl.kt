@@ -3,8 +3,10 @@ package com.castcle.ui.login
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.castcle.common_model.model.login.LoginRequest
+import com.castcle.common_model.model.login.domain.LoginRequest
 import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.domain.PageResponse
+import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
 import com.castcle.usecase.login.AuthenticationRefreshTokenCompletableUseCase

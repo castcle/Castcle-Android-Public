@@ -1,7 +1,7 @@
 package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.userprofile.CreateContentRequest
+import com.castcle.common_model.model.userprofile.domain.CreateContentRequest
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.data.error.CreateContentError
 import com.castcle.data.repository.UserProfileRepository

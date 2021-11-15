@@ -2,13 +2,13 @@ package com.castcle.ui.signin.createdisplayname
 
 import com.castcle.common.lib.extension.doIfTakeLongerThan
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.login.RegisterBundle
-import com.castcle.common_model.model.setting.CreatePageRequest
-import com.castcle.common_model.model.setting.CreatePageResponse
+import com.castcle.common_model.model.login.domain.RegisterBundle
+import com.castcle.common_model.model.setting.domain.CreatePageRequest
+import com.castcle.common_model.model.setting.domain.CreatePageResponse
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.CastcleIdVerifyUiModel
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.DisplayNameVerifyUiModel
-import com.castcle.common_model.model.signin.reuquest.*
+import com.castcle.common_model.model.signin.domain.*
 import com.castcle.networking.service.common.TIMEOUT_SHOWING_SPINNER
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.usecase.setting.CreatePageSingleUseCase

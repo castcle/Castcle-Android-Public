@@ -2,7 +2,7 @@ package com.castcle.usecase.signin
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.CastcleIdVerifyUiModel
-import com.castcle.common_model.model.signin.reuquest.CastcleIdRequest
+import com.castcle.common_model.model.signin.domain.CastcleIdRequest
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.auth.AuthenticationsRepository
 import com.castcle.usecase.base.SingleUseCase

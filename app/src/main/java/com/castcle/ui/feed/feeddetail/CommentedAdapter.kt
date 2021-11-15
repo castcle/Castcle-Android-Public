@@ -55,6 +55,15 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         )
     }
 
+    fun onInsertComment(commented: ContentUiModel) {
+        uiModels.toMutableList().add(commented)
+        if (uiModels.isEmpty()) {
+            notifyDataSetChanged()
+        } else {
+            notifyItemInserted(uiModels.lastIndex.plus(1))
+        }
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when {
             uiModels[position] == null && position == itemCount - 1 -> VIEW_TYPE_PROGRESS_BAR

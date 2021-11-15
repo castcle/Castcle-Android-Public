@@ -1,6 +1,6 @@
 package com.castcle.networking.api.response
 
-import com.castcle.common_model.model.login.LoginResponse
+import com.castcle.common_model.model.login.domain.LoginResponse
 import com.castcle.networking.service.response.OAuthResponse
 import com.google.gson.annotations.SerializedName
 

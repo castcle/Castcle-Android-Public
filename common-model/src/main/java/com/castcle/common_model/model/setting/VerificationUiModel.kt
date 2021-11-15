@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.setting
 
 import android.os.Parcelable
+import com.castcle.common_model.model.setting.domain.VerificationResponse
 import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

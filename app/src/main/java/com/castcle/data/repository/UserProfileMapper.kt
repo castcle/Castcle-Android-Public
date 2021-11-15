@@ -1,6 +1,6 @@
 package com.castcle.data.repository
 
-import com.castcle.common_model.model.userprofile.UserProfileResponse
+import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
 import com.castcle.networking.service.exception.RemoteException
 import io.reactivex.functions.Function
 import retrofit2.Response

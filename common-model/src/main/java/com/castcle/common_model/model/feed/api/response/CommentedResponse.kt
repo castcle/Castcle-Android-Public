@@ -28,5 +28,24 @@ import com.google.gson.annotations.SerializedName
 
 data class ContentCommentedResponse(
     @SerializedName("payload")
-    val payload: ReplyResponse
+    val payload: CommentedDataResponse
+)
+
+data class CommentedDataResponse(
+    @SerializedName("author")
+    val author: Author,
+    @SerializedName("createAt")
+    val createAt: String,
+    @SerializedName("hasHistory")
+    val hasHistory: Boolean? = null,
+    @SerializedName("id")
+    val id: String,
+    @SerializedName("like")
+    val like: LikedResponse,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("reply")
+    val reply: List<ReplyResponse>,
+    @SerializedName("updateAt")
+    val updateAt: String
 )

@@ -45,7 +45,7 @@ fun Fragment.addOnBackPressedCallback(block: () -> Unit) {
 }
 
 fun Fragment.displayError(error: Throwable) {
-    val message = if (error.userReadableMessage(this.requireContext()).isBlank()) {
+    val message = if (error.cause?.message?.isBlank() == false) {
         error.cause?.message
     } else {
         error.userReadableMessage(this.requireContext())

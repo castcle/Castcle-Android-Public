@@ -1,7 +1,7 @@
 package com.castcle.ui.signin.aboutyou
 
-import com.castcle.common_model.model.setting.CreatePageRequest
-import com.castcle.common_model.model.userprofile.UserUpdateRequest
+import com.castcle.common_model.model.setting.domain.CreatePageRequest
+import com.castcle.common_model.model.userprofile.domain.UserUpdateRequest
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.usecase.setting.UpdatePageSingleUseCase
 import com.castcle.usecase.userprofile.UpdateUserProfileCompletableUseCase

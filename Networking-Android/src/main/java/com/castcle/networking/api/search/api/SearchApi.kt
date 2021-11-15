@@ -1,6 +1,6 @@
 package com.castcle.networking.api.search.api
 
-import com.castcle.common_model.model.search.SearchResponse
+import com.castcle.common_model.model.search.domain.SearchResponse
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
 import retrofit2.Response

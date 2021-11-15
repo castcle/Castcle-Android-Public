@@ -41,12 +41,13 @@
         app:layout_constraintTop_toTopOf="@id/tvUserName"
         tools:text="July 06, 2021" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.castcle.components_android.ui.custom.mention.MentionTextView
         style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvCommentMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_12sdp"
+        android:bufferType="spannable"
         android:textColor="@color/light_t01"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvUserName"

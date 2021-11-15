@@ -47,7 +47,7 @@
         <entry key="app/src/main/res/layout/fragment_content_all.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_content_blog.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_content_photo.xml" value="0.14583333333333334" />
-        <entry key="app/src/main/res/layout/fragment_content_post.xml" value="0.14583333333333334" />
+        <entry key="app/src/main/res/layout/fragment_content_post.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_create_bloc.xml" value="0.32448979591836735" />
         <entry key="app/src/main/res/layout/fragment_create_password.xml" value="0.300399463277991" />
         <entry key="app/src/main/res/layout/fragment_create_profile.xml" value="0.335" />
@@ -249,6 +249,9 @@
         <entry key="components-android/src/main/res/layout/layout_item_shimmer_page_load.xml" value="0.13900273224043716" />
         <entry key="components-android/src/main/res/layout/layout_menu_template.xml" value="0.30833333333333335" />
         <entry key="components-android/src/main/res/layout/layout_page_header.xml" value="0.335" />
+        <entry key="components-android/src/main/res/layout/layout_preview_content_image.xml" value="0.15027322404371585" />
+        <entry key="components-android/src/main/res/layout/layout_preview_content_web.xml" value="0.15027322404371585" />
+        <entry key="components-android/src/main/res/layout/layout_preview_content_web_icon.xml" value="0.15027322404371585" />
         <entry key="components-android/src/main/res/layout/layout_quote_bar_template.xml" value="0.25" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_blog.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_image.xml" value="0.11851092896174864" />

@@ -9,8 +9,8 @@ import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.setting.*
-import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -236,5 +236,13 @@ class OnBoardViewModelImpl @Inject constructor(
 
     override fun onBackToHomeFeed() {
         _onBackToFeed.onNext(Unit)
+    }
+
+    private var _profileContentLoading = BehaviorSubject.create<Boolean>()
+    override val profileContentLoading: Observable<Boolean>
+        get() = _profileContentLoading
+
+    override fun onProfileLoading(onLoading: Boolean) {
+        _profileContentLoading.onNext(onLoading)
     }
 }

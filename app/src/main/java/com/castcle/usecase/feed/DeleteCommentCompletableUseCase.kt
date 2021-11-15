@@ -1,6 +1,7 @@
 package com.castcle.usecase.feed
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.feed.converter.DeleteCommentRequest
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.feed.datasource.FeedRepository
@@ -48,9 +49,9 @@ class DeleteCommentCompletableUseCase @Inject constructor(
 
     override fun create(input: Input): Completable {
         return feedRepository.deleteComment(
-            LikeCommentRequest(
-                input.commentId,
-                input.contentId,
+            DeleteCommentRequest(
+                commentId = input.commentId,
+                conntentId = input.contentId,
             )
         )
     }

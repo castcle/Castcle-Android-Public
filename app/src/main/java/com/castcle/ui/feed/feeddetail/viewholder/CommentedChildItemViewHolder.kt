@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.ItemCommentChildTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ReplyUiModel
-import com.castcle.components_android.ui.custom.timeago.TimeAgo
-import com.castcle.extensions.*
+import com.castcle.extensions.loadCircleImage
+import com.castcle.extensions.toTime
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.feed.feeddetail.CommentedChildAdapter
+import com.perfomer.blitz.setTimeAgo
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -60,12 +61,9 @@ class CommentedChildItemViewHolder(
             with(uiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
                 tvUserName.text = author.displayName
-                val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
-                    created.toFormatDate()
-                } else {
-                    TimeAgo.using(created.toTime())
+                created.toTime()?.let {
+                    tvDataTime.setTimeAgo(it)
                 }
-                tvDataTime.text = dateTime
                 tvCommentMessage.text = message
             }
         }

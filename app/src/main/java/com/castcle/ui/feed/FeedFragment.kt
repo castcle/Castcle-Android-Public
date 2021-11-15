@@ -29,6 +29,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.stfalcon.imageviewer.StfalconImageViewer
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -147,7 +148,10 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 val isLoading = loadStates.refresh is LoadState.Loading
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                handleEmptyState(displayEmpty)
+                if (isError) {
+                    handleEmptyState(isError)
+                    stopLoadingShimmer()
+                }
                 if (!isLoading) {
                     binding.swiperefresh.isRefreshing = false
                     stopLoadingShimmer()
@@ -284,6 +288,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
+        viewModel.checkCastPostWithImageStatus().subscribe {
+            if (it) {
+                displayErrorMessage(localizedResources.getString(R.string.cast_post_status_success))
+            }
+        }.addToDisposables()
+
         viewModel.userProfile.observe(this, {
             onBindWhatYouMind(it)
         })
@@ -299,6 +309,17 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         viewModel.trendsResponse.observe(this, {
             onBindFilterItem(it)
         })
+
+        viewModel.castPostResponse.subscribeBy(
+            onNext = {
+                onBindCastPostSuccess(it)
+            }, onError = { displayError(it) }
+        ).addToDisposables()
+    }
+
+    private fun onBindCastPostSuccess(content: ContentUiModel) {
+        adapterPagingCommon.updateContentPost(content)
+        binding.rvFeedContent.scrollToPosition(0)
     }
 
     private fun onBindFilterItem(filterItems: List<SearchUiModel>) {
@@ -331,7 +352,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleImageItemClick(position: Int, contentUiModel: ContentUiModel) {
         val image = contentUiModel.payLoadUiModel.photo.imageContent.map {
-            it.imageFullHd
+            it.imageOrigin
         }
         val imagePosition = when (contentUiModel.payLoadUiModel.photo.imageContent.size) {
             1 -> 0
@@ -339,6 +360,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }
         StfalconImageViewer.Builder(context, image, ::loadPosterImage)
             .withStartPosition(imagePosition)
+            .withHiddenStatusBar(true)
             .allowSwipeToDismiss(true)
             .allowZooming(true)
             .show()
@@ -346,7 +368,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
         imageView.loadImageWithoutTransformation(imageUrl)
-
     }
 
     private fun onBindWhatYouMind(user: User) {

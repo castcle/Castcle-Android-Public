@@ -2,14 +2,13 @@ package com.castcle.ui.setting.changepassword.createnewpassword
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.castcle.common_model.model.setting.ChangePassRequest
+import com.castcle.common_model.model.setting.domain.ChangePassRequest
 import com.castcle.extensions.isNewPasswordPatten
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.ui.signin.password.VerifyPassState
 import com.castcle.usecase.auth.SubmitChangePasswordUseCase
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject

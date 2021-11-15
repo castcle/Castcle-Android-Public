@@ -72,7 +72,8 @@ class GetImagePathMapUseCase @Inject constructor(
                 id = "",
                 uri = "",
                 imgRes = R.drawable.ic_camera,
-                displayName = ""
+                displayName = "",
+                path = ""
             )
         )
         return imagePath.toList()
@@ -90,7 +91,7 @@ class GetImagePathMapUseCase @Inject constructor(
 //                sourceUri, null,
 //                queryString, null, MediaStore.Images.Media.DATE_ADDED
 //            )
-            val cursor =appContext.contentResolver.query(
+            val cursor = appContext.contentResolver.query(
                 uriExternal,
                 projection,
                 MediaStore.Images.Media.MIME_TYPE + "=? or "
@@ -122,7 +123,8 @@ class GetImagePathMapUseCase @Inject constructor(
                             id.toString(),
                             contentUri.toString(),
                             name,
-                            dateModified
+                            dateModified,
+                            path = path
                         )
                         allImagrPath.add(item)
                     }

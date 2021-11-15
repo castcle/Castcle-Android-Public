@@ -2,7 +2,7 @@ package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.common_model.model.userprofile.ViewProfileRequest
+import com.castcle.common_model.model.userprofile.domain.ViewProfileRequest
 import com.castcle.data.error.UserProfileError.GetUserProfileError
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.usecase.base.FlowableUseCase

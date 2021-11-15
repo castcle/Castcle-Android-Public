@@ -89,7 +89,17 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/black_light">
+
+            <include
+                android:id="@+id/skeletonLoading"
+                layout="@layout/layout_feed_shimmer_load"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vpPageContent"
@@ -98,7 +108,6 @@
                 android:layout_marginTop="@dimen/_1sdp"
                 android:layout_marginBottom="@dimen/_6sdp"
                 android:layout_weight="1"
-                android:background="@color/black_light"
                 android:elevation="@dimen/_5sdp"
                 android:translationZ="@dimen/_4sdp"
                 app:layout_constraintEnd_toEndOf="parent"

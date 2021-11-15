@@ -1,6 +1,8 @@
 package com.castcle.common_model.model.userprofile
 
 import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.userprofile.domain.CreateCastResponse
+import com.google.gson.Gson
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -27,6 +29,7 @@ import com.castcle.common_model.model.feed.*
 //  Created by sklim on 13/9/2021 AD at 11:42.
 
 data class CreateContentUiModel(
+    var id: String? = "",
     var type: String? = "",
     var message: String? = "",
     var content: String? = "",
@@ -41,6 +44,7 @@ data class CreateContentUiModel(
 
 fun CreateCastResponse.toCreateContentUiModel() =
     CreateContentUiModel(
+        id = payload.id,
         type = payload.type,
         message = payload.payload.message,
         commentedUiModel = payload.commentedResponse?.toCommentedUiModel(),
@@ -51,3 +55,19 @@ fun CreateCastResponse.toCreateContentUiModel() =
             it.toFeatureUiModel()
         }
     )
+
+fun CreateContentUiModel.toStringModel(): String {
+    return Gson().toJson(this)
+}
+
+fun String.toCreateContentUiModel(): CreateContentUiModel {
+    return Gson().fromJson(this, CreateContentUiModel::class.java)
+}
+
+fun CreateContentUiModel.toContentUiModel(): ContentUiModel {
+    return ContentUiModel(
+        id = id ?: "",
+        featureSlug = featureUiModel?.slug ?: "",
+
+    )
+}

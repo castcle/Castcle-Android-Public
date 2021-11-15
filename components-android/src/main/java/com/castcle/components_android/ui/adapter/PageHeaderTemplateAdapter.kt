@@ -75,7 +75,7 @@ class PageHeaderTemplateAdapter(listener: OnItemClickListener) :
                         )
                     }.addToDisposables()
                 } else {
-                    borderColor = binding.root.context.getColorResource(R.color.red_primary_warning)
+                    borderColor = binding.root.context.getColorResource(R.color.white)
                     loadCircleImage(item.avatarUrl)
                     itemView.subscribeOnClick {
                         onBindItemClick(item)

@@ -1,8 +1,6 @@
 package com.castcle.common_model.model.feed
 
-import com.castcle.common_model.ContentBaseUiModel.CommonContentBaseUiModel.ContentFeedUiModel
-import com.castcle.common_model.model.feed.api.response.ContentCommentResponse
-import com.castcle.common_model.model.feed.api.response.Pagination
+import com.castcle.common_model.model.feed.api.response.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -29,14 +27,31 @@ import com.castcle.common_model.model.feed.api.response.Pagination
 //  Created by sklim on 12/10/2021 AD at 11:26.
 
 data class CommentedModel(
-    val contentUiModel: ContentFeedUiModel,
+    val contentUiModel: List<ContentUiModel>,
     val paginationModel: PaginationModel
 )
 
 fun ContentCommentResponse.toCommentModel(): CommentedModel {
     return CommentedModel(
-        contentUiModel = payload.toContentUiModel(),
+        contentUiModel = payload.toCommentedModel(),
         paginationModel = pagination.toPaginationModel()
+    )
+}
+
+fun List<CommentedDataResponse>.toCommentedModel(): List<ContentUiModel> {
+    return map { it.toContentUiModel() }
+}
+
+fun CommentedDataResponse.toContentUiModel(): ContentUiModel {
+    return ContentUiModel(
+        id = id,
+        payLoadUiModel = PayLoadUiModel(
+            created = createAt,
+            contentMessage = message,
+            hasHistory = hasHistory ?: false,
+            author = author.toAuthorUiModel(),
+            replyUiModel = reply.toReplyUiModelList()
+        )
     )
 }
 

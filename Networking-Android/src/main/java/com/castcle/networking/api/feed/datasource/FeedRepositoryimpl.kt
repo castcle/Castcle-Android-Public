@@ -2,8 +2,7 @@ package com.castcle.networking.api.feed.datasource
 
 import androidx.paging.*
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.converter.LikeCommentRequest
-import com.castcle.common_model.model.feed.converter.LikeContentRequest
+import com.castcle.common_model.model.feed.converter.*
 import com.castcle.networking.api.feed.FeedApi
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Completable
@@ -70,11 +69,7 @@ class FeedRepositoryImpl @Inject constructor(
             commentRequest = commentRequest
         ).lift(ApiOperators.mobileApiError())
             .map {
-                ContentUiModel(
-                    payLoadUiModel = PayLoadUiModel(
-                        replyedUiModel = it.payload.toReplyUiModel()
-                    )
-                )
+                it.payload.toContentUiModel()
             }.firstOrError()
     }
 
@@ -171,11 +166,11 @@ class FeedRepositoryImpl @Inject constructor(
     }
 
     override fun deleteComment(
-        likeCommentRequest: LikeCommentRequest,
+        deleteCommentRequest: DeleteCommentRequest,
     ): Completable {
         return feedApi.deleteComment(
-            likeCommentRequest.feedItemId,
-            likeCommentRequest.commentId,
+            deleteCommentRequest.conntentId,
+            deleteCommentRequest.commentId,
         ).lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()

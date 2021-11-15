@@ -6,6 +6,7 @@ import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
@@ -70,9 +71,9 @@ interface UserProfileRepository {
 
     fun getUserPage(paginationModel: PaginationModel): Single<ViewPageUiModel>
 
-    fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable
+    fun onDeleteAccount(deleteUserPayload: DeleteUserPayload): Completable
 
-    fun onDeletePage(deletePageRequest: DeletePageRequest): Completable
+    fun onDeletePage(deleteUserPayload: DeleteUserPayload): Completable
 
     fun insertUserProfile(user: User): Completable
 
@@ -259,20 +260,23 @@ class UserProfileRepositoryImpl @Inject constructor(
             && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
     }
 
-    override fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable {
+    override fun onDeleteAccount(deleteUserPayload: DeleteUserPayload): Completable {
         return userApi
-            .onDeleteAccount(deletePageRequest)
+            .onDeleteAccount(
+                deleteUserPayload = deleteUserPayload
+            )
             .lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()
     }
 
-    override fun onDeletePage(deletePageRequest: DeletePageRequest): Completable {
+    override fun onDeletePage(deleteUserPayload: DeleteUserPayload): Completable {
         return userApi
             .onDeletePage(
-                castcleId = deletePageRequest.castcleId,
-                deletePageRequest = deletePageRequest
-            ).lift(ApiOperators.mobileApiError())
+                castcleId = deleteUserPayload.castcleId,
+                deleteUserPayload = deleteUserPayload.payload
+            )
+            .lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()
     }

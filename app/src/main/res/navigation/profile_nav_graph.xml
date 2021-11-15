@@ -127,7 +127,7 @@
 
         <argument
             android:name="profileBundle"
-            app:argType="com.castcle.common_model.model.login.ProfileBundle" />
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
     </fragment>
 
     <dialog

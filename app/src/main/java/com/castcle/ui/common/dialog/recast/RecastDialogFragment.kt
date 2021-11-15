@@ -130,7 +130,7 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
         with(binding) {
             tvDisplayName.text = user.displayName
             ivAvatar.loadRoundedCornersImage(user.avatarUrl)
-            ivSelected.subscribeOnClick {
+            clSelectedRecast.subscribeOnClick {
                 handleBindSelectPage()
             }
             if (currentCoutent.payLoadUiModel.reCastedUiModel.recasted) {

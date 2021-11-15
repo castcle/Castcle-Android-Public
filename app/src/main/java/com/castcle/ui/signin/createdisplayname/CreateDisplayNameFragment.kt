@@ -11,8 +11,8 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentCreateProfileBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.ProfileBundle
-import com.castcle.common_model.model.login.RegisterBundle
+import com.castcle.common_model.model.login.domain.ProfileBundle
+import com.castcle.common_model.model.login.domain.RegisterBundle
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.DisplayNameVerifyUiModel
 import com.castcle.data.error.RegisterErrorError
 import com.castcle.extensions.*

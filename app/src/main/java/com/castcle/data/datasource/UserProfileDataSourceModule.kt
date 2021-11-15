@@ -1,7 +1,7 @@
 package com.castcle.data.datasource
 
-import com.castcle.common_model.model.userprofile.CreateCastResponse
-import com.castcle.common_model.model.userprofile.UserProfileResponse
+import com.castcle.common_model.model.userprofile.domain.CreateCastResponse
+import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
 import com.castcle.data.repository.CreateContentMapper
 import com.castcle.data.repository.UserProfileMapper
 import com.castcle.networking.api.user.UserApi

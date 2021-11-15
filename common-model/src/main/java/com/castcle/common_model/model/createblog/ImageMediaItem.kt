@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.createblog
 
 import androidx.annotation.DrawableRes
+import com.castcle.common_model.model.userprofile.domain.Content
 import java.util.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -31,7 +32,8 @@ sealed class MediaItem(
     open var uri: String = "",
     open var displayName: String = "",
     @DrawableRes open val imgRes: Int,
-    open var isSelected: Boolean = false
+    open var isSelected: Boolean = false,
+    open var path: String = "",
 ) {
     data class ImageMediaItem(
         override val imgRes: Int,
@@ -39,15 +41,17 @@ sealed class MediaItem(
         override var uri: String,
         override var displayName: String,
         var date: Date? = null,
-        override var isSelected: Boolean = false
-    ) : MediaItem(id, uri, displayName, imgRes, isSelected)
+        override var isSelected: Boolean = false,
+        override var path: String
+    ) : MediaItem(id, uri, displayName, imgRes, isSelected, path)
 
     data class OpenCamera(
         override var id: String,
         override var uri: String,
         override val imgRes: Int,
         override var displayName: String,
-        override var isSelected: Boolean = false
+        override var isSelected: Boolean = false,
+        override var path: String
     ) : MediaItem(id, uri, displayName, imgRes, isSelected)
 
     data class OpenGallery(
@@ -55,7 +59,8 @@ sealed class MediaItem(
         override var uri: String,
         override val imgRes: Int,
         override var displayName: String,
-        override var isSelected: Boolean = false
+        override var isSelected: Boolean = false,
+        override var path: String
     ) : MediaItem(id, uri, displayName, imgRes, isSelected)
 }
 
@@ -65,7 +70,8 @@ fun ArrayList<String>.toImageMediaItem(): List<MediaItem> {
             imgRes = 0,
             id = UUID.randomUUID().toString(),
             uri = it,
-            displayName = ""
+            displayName = "",
+            path = ""
         )
     }
 }
@@ -73,4 +79,11 @@ fun ArrayList<String>.toImageMediaItem(): List<MediaItem> {
 fun List<MediaItem>.toListUri(): List<String> {
     return map { it.uri }
 }
-//MediaItem
+
+fun List<MediaItem>.toListContent(): List<Content> {
+    return map {
+        Content(
+            image = it.uri
+        )
+    }
+}

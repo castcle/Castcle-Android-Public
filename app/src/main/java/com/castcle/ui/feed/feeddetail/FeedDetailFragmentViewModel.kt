@@ -1,19 +1,27 @@
 package com.castcle.ui.feed.feeddetail
 
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.converter.LikeCommentRequest
+import com.castcle.common_model.model.setting.*
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.data.repository.CommentRepository
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.ui.base.BaseViewCoroutinesModel
+import com.castcle.ui.util.SingleLiveEvent
 import com.castcle.usecase.feed.*
+import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.GetUserPageDataSingleUseCase
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -60,15 +68,19 @@ abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun fetachNextCommentedPage()
 
-    abstract fun likedComment(
-        conntentId: String,
-        commentId: String,
-        likedStatus: Boolean
-    )
+    abstract fun likedComment(likeCommentedRequest: LikeCommentRequest)
 
     abstract fun editComment(conntentId: String, commentId: String)
 
     abstract fun deleteComment(conntentId: String, commentId: String)
+
+    abstract fun fetchUserProfile()
+
+    abstract val userProfile: LiveData<User>
+
+    abstract val userPageUiModel: SingleLiveEvent<PageHeaderUiModel>
+
+    abstract val likedSuccess: Observable<Boolean>
 
     interface Input {
         fun getCommented(feedContentId: String)
@@ -83,7 +95,9 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val commentRepository: CommentRepository,
     private val likeCommentCompletableUseCase: LikeCommentCompletableUseCase,
     private val deleteCommentCompletableUseCase: DeleteCommentCompletableUseCase,
-    private val getCommentedPagingSingleUseCase: GetCommentedPagingSingleUseCase
+    private val getCommentedPagingSingleUseCase: GetCommentedPagingSingleUseCase,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
+    private val getUserPageDataSingleUseCase: GetUserPageDataSingleUseCase,
 ) : FeedDetailFragmentViewModel(), FeedDetailFragmentViewModel.Input {
 
     override val input: Input
@@ -96,6 +110,10 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val _showLoading = BehaviorSubject.create<Boolean>()
     override val showLoading: Observable<Boolean>
         get() = _showLoading
+
+    private val _likedSuccess = BehaviorSubject.create<Boolean>()
+    override val likedSuccess: Observable<Boolean>
+        get() = _likedSuccess
 
     private val _error = PublishSubject.create<Throwable>()
     override val onError: Observable<Throwable>
@@ -116,6 +134,14 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     override val commentedResponses: Observable<List<ContentUiModel>>
         get() = _commentedResponses
 
+    private val _userProfile = MutableLiveData<User>()
+    override val userProfile: LiveData<User>
+        get() = _userProfile
+
+    private val _userPageUiModel = SingleLiveEvent<PageHeaderUiModel>()
+    override val userPageUiModel: SingleLiveEvent<PageHeaderUiModel>
+        get() = _userPageUiModel
+
     override fun getCommented(feedContentId: String) {
         getCommentedPaging(CommentRequest(feedItemId = feedContentId))
     }
@@ -132,52 +158,21 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     })
 
     override fun setComment(commentRequest: CommentRequest) {
-        addCommented(commentRequest)
         sentCommentSingleUseCase.execute(commentRequest)
             .doOnSubscribe { _showLoading.onNext(true) }
             .doOnError { _error.onNext(it) }
             .subscribeBy(
                 onSuccess = {
-                    _onSentCommentResponse.onNext(it)
+                    onBindSingleCommented(it)
                     _showLoading.onNext(false)
                 }, onError = _error::onNext
             ).addToDisposables()
     }
 
-    private fun addCommented(commentRequest: CommentRequest) {
-        val commented = ContentUiModel(
-            id = UUID.randomUUID().variant().toString(),
-            payLoadUiModel = PayLoadUiModel(
-                contentMessage = commentRequest.message ?: "",
-                replyUiModel = listOf(
-                    ReplyUiModel(
-                        id = UUID.randomUUID().variant().toString(),
-                        created = "",
-                        message = commentRequest.message ?: "",
-                        author = AuthorUiModel(
-                            displayName = "Child Test"
-                        )
-                    ), ReplyUiModel(
-                        id = UUID.randomUUID().variant().toString(),
-                        created = "",
-                        message = commentRequest.message ?: "",
-                        author = AuthorUiModel(
-                            displayName = "Child Test"
-                        )
-                    )
-
-                ),
-                author = AuthorUiModel(
-                    displayName = "Test",
-                    castcleId = "Rx",
-                    followed = true,
-                    verifiedEmail = true
-                )
-            )
-        )
+    private fun onBindSingleCommented(item: ContentUiModel) {
         val oldData = _commentedResponses.value ?: emptyList()
         val commentedValue = oldData.toMutableList().apply {
-            addAll(listOf(commented))
+            addAll(listOf(item))
         }
         _commentedResponses.onNext(commentedValue)
     }
@@ -232,8 +227,12 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private fun onBindContentUiModel(item: CommentedModel) {
         val oldData = _commentedResponses.value ?: emptyList()
         val commentedValue = oldData.toMutableList().apply {
-            addAll(item.contentUiModel.feedContentUiModel)
+            addAll(item.contentUiModel)
+            sortBy {
+                it.created
+            }
         }
+
         _commentedResponses.onNext(commentedValue)
         _commentedId.value.apply {
             nextPage = item.paginationModel.next ?: 0
@@ -242,17 +241,18 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
         }
     }
 
-    override fun likedComment(conntentId: String, commentId: String, likedStatus: Boolean) {
-        likeCommentCompletableUseCase.execute(
-            LikeCommentCompletableUseCase.Input(conntentId, commentId, likedStatus)
-        ).doOnSubscribe {
-            _showLoading.onNext(true)
-        }.subscribeBy(
-            onComplete = {},
-            onError = {
-                _error.onNext(it)
-            }
-        ).addToDisposables()
+    override fun likedComment(likeCommentedRequest: LikeCommentRequest) {
+        likeCommentCompletableUseCase.execute(likeCommentedRequest)
+            .doOnSubscribe {
+                _showLoading.onNext(true)
+            }.subscribeBy(
+                onComplete = {
+                    _likedSuccess.onNext(true)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
     }
 
     override fun editComment(conntentId: String, commentId: String) {
@@ -269,7 +269,51 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
             onError = {}
         ).addToDisposables()
     }
+
+    override fun fetchUserProfile() {
+        cachedUserProfileSingleUseCase
+            .execute(Unit)
+            .flatMapCompletable {
+                fetchUserPage(it)
+            }.subscribeBy(
+                onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    private fun fetchUserPage(user: Optional<User>): Completable {
+        return getUserPageDataSingleUseCase.execute(Unit)
+            .map {
+                onPageUserData(it, user)
+            }.ignoreElement()
+    }
+
+    private fun onPageUserData(pageList: List<UserPage>, user: Optional<User>) {
+        setUserProfileData(user)
+        val userPage = mutableListOf<PageUiModel>()
+        val userPageHeader = if (user.isPresent) {
+            user.get().toPageHeaderUiModel()
+        } else {
+            PageHeaderUiModel(emptyList())
+        }
+        val userPageData = pageList.toPageHeaderUiModel()
+        userPage.apply {
+            addAll(userPageHeader.pageUiItem)
+            addAll(userPageData.pageUiItem)
+        }
+        _userPageUiModel.value = PageHeaderUiModel(
+            userPage
+        )
+    }
+
+    private fun setUserProfileData(user: Optional<User>) {
+        if (user.isPresent) {
+            _userProfile.value = user.get()
+        }
+    }
 }
+
 
 private const val PAGE_NUMBER_DEFAULT = 1
 private const val PAGE_SIZE_DEFAULT = 25

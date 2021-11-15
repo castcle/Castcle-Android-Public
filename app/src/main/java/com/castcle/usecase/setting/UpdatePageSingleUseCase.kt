@@ -1,11 +1,12 @@
 package com.castcle.usecase.setting
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.setting.CreatePageRequest
-import com.castcle.common_model.model.setting.CreatePageResponse
+import com.castcle.common_model.model.setting.domain.CreatePageRequest
+import com.castcle.common_model.model.setting.domain.CreatePageResponse
 import com.castcle.data.error.CommonError
 import com.castcle.networking.api.auth.AuthenticationsRepository
 import com.castcle.usecase.base.SingleUseCase
+import com.castcle.usecase.createblog.ScaleImagesSingleUseCase
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ import javax.inject.Inject
 
 class UpdatePageSingleUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
-    private val authenticationsRepository: AuthenticationsRepository
+    private val authenticationsRepository: AuthenticationsRepository,
 ) : SingleUseCase<CreatePageRequest, CreatePageResponse>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),

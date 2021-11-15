@@ -25,8 +25,10 @@ package com.castcle.common_model.model.setting
 //  Created by sklim on 19/10/2021 AD at 11:45.
 
 enum class ProfileType(val type: String) {
+    PROFILE_REGISTER("register"),
     PROFILE_TYPE_ME("me"),
     PROFILE_TYPE_PEOPLE("people"),
     PROFILE_TYPE_PAGE("page"),
+    PROFILE_TYPE_PAGE_CREATE("page-create"),
     NON("")
 }

@@ -9,8 +9,8 @@ import com.castcle.android.components_android.databinding.LayoutUserBarTemplateB
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
-import com.castcle.components_android.ui.custom.timeago.TimeAgo
 import com.castcle.extensions.*
+import com.perfomer.blitz.setTimeAgo
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -80,12 +80,9 @@ class UserBarTemplate(
                     tvUserName.text = author.displayName
                     ivStatusFollow.visibleOrGone(author.followed)
                     tvStatusFollow.visibleOrGone(author.followed)
-                    val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
-                        created.toFormatDate()
-                    } else {
-                        TimeAgo.using(created.toTime())
+                    created.toTime()?.let {
+                        tvDataTime.setTimeAgo(it)
                     }
-                    tvDataTime.text = dateTime
                 }
             }
         } else {
@@ -96,12 +93,9 @@ class UserBarTemplate(
                     tvUserName.text = author.displayName
                     ivStatusFollow.visibleOrGone(author.followed)
                     tvStatusFollow.visibleOrGone(author.followed)
-                    val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
-                        created.toFormatDate()
-                    } else {
-                        TimeAgo.using(created.toTime())
+                    created.toTime()?.let {
+                        tvDataTime.setTimeAgo(it)
                     }
-                    tvDataTime.text = dateTime
                 }
             }
         }

@@ -1,7 +1,7 @@
 package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.userprofile.DeletePageRequest
+import com.castcle.common_model.model.userprofile.DeleteUserPayload
 import com.castcle.data.error.CommonError
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.usecase.base.CompletableUseCase
@@ -35,15 +35,13 @@ import javax.inject.Inject
 class DeleteAccountCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val userRepository: UserProfileRepository
-) : CompletableUseCase<DeletePageRequest>(
+) : CompletableUseCase<DeleteUserPayload>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     CommonError::Error
 ) {
 
-    override fun create(input: DeletePageRequest): Completable {
-        return Completable.fromAction {
-            userRepository.onDeleteAccount(input)
-        }
+    override fun create(input: DeleteUserPayload): Completable {
+        return userRepository.onDeleteAccount(input)
     }
 }

@@ -5,7 +5,9 @@ import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.signin.toViewPageUiModel
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.domain.*
+import com.castcle.common_model.model.userprofile.toUserProfile
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.*
@@ -61,7 +63,7 @@ interface UserWorkerRepository {
     fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentUiModel>>
 
-    fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
+    fun createContent(contentRequest: CreateContentRequest): Single<ContentUiModel>
 
     fun putToFollowUser(followRequest: FollowRequest): Completable
 
@@ -116,13 +118,13 @@ class UserWorkerRepositoryImpl @Inject constructor(
             }.firstOrError()
     }
 
-    override fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel> {
+    override fun createContent(contentRequest: CreateContentRequest): Single<ContentUiModel> {
         return userApi
             .createContent(
                 featureSlug = contentRequest.createType,
                 createContentRequest = contentRequest
             ).lift(ApiOperators.mobileApiError())
-            .map { it.toCreateContentUiModel() }
+            .map { it.payload.toViewContentUiModel() }
             .firstOrError()
     }
 

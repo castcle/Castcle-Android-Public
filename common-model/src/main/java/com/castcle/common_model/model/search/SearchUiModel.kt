@@ -1,5 +1,7 @@
 package com.castcle.common_model.model.search
 
+import com.castcle.common_model.model.search.domain.*
+
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 //

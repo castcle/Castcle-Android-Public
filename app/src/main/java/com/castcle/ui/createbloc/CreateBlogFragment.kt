@@ -2,7 +2,6 @@ package com.castcle.ui.createbloc
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.graphics.Color
-import android.net.Uri
 import android.os.Environment
 import android.view.*
 import android.widget.Toast
@@ -13,7 +12,6 @@ import com.castcle.android.databinding.FragmentCreateBlocBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.createblog.MediaItem
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
@@ -31,11 +29,7 @@ import com.esafirm.imagepicker.features.*
 import com.esafirm.imagepicker.model.Image
 import com.google.android.flexbox.*
 import com.permissionx.guolindev.PermissionMediator
-import com.qingmei2.rximagepicker.core.RxImagePicker
-import com.qingmei2.rximagepicker_extension.MimeType
-import com.qingmei2.rximagepicker_extension_zhihu.ZhihuConfigurationBuilder
 import io.reactivex.rxkotlin.subscribeBy
-import java.util.*
 import javax.inject.Inject
 
 
@@ -58,7 +52,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private var stateOpenGallery = false
 
-    private var imageGallerySelected: List<Image> = emptyList()
+    private var imageGallerySelected: MutableList<Image> = mutableListOf()
 
     private lateinit var imagePickerLauncher: ImagePickerLauncher
 
@@ -118,8 +112,14 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         }
 
         imagePickerLauncher = registerImagePicker { result ->
-            imageGallerySelected = result
-            result.toMediaItemList()
+            val imageMedia = result.toMediaItemList()
+            if (imageMedia.isNotEmpty()) {
+                imageGallerySelected = result.toMutableList()
+                onShowImagePicker()
+                activatButtonOpenGallery(false)
+                stateOpenGallery = false
+                viewModel.input.addMediaItemSelected(imageMedia)
+            }
         }
     }
 
@@ -145,6 +145,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     private fun onClearState() {
         viewModel.onClearState()
         stateOpenGallery = false
+        imageGallerySelected = mutableListOf()
         binding.etInputMessage.setText("")
     }
 
@@ -172,17 +173,17 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun handlerCreateCast() {
         viewModel.createContent().subscribeBy(
-            onSuccess = ::handleOnResponse,
+            onComplete = {
+                handleOnResponse()
+            },
             onError = ::handleOnError
         ).addToDisposables()
     }
 
     override fun bindViewModel() {
-        if (!viewModel.isGuestMode) {
-            viewModel.fetchCastUserProfile()
-                .subscribe()
-                .addToDisposables()
-        }
+        viewModel.fetchCastUserProfile()
+            .subscribe()
+            .addToDisposables()
 
         viewModel.userProfileUiModel.observe(this, {
             binding.utUserBar.bindUiModel(it)
@@ -216,9 +217,9 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
         val textFormatCount = "%s/%d"
         with(binding.tvCountChar) {
-            if (messageCount.first > messageCount.second) {
+            if (messageCount.first > MAX_LIGHTH) {
                 setTextColor(requireContext().getColorResource(R.color.red_primary))
-                text = "${messageCount.first - MAX_LIGHTH}"
+                text = "${messageCount.second}"
                 enableButtonCast(false)
                 displayErrorMessage(
                     localizedResources.getString(
@@ -226,6 +227,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
                     )
                 )
             } else {
+                setTextColor(requireContext().getColorResource(R.color.white))
                 text = textFormatCount.format(messageCount.first, messageCount.second)
             }
         }
@@ -235,14 +237,18 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         stateOpenGallery = !stateOpenGallery
         if (stateOpenGallery) {
             activatButtonOpenGallery(stateOpenGallery)
-            binding.rvImagePickger.visible()
+            onShowImagePicker(true)
             requestStoragePermission {
                 viewModel.fetchImageGallery().subscribeBy().addToDisposables()
             }
         } else {
             activatButtonOpenGallery(stateOpenGallery)
-            binding.rvImagePickger.gone()
+            onShowImagePicker()
         }
+    }
+
+    private fun onShowImagePicker(show: Boolean = false) {
+        binding.rvImagePickger.visibleOrGone(show)
     }
 
     private fun onBindGallery(it: List<MediaItem>) {
@@ -261,7 +267,17 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
             is ImageItemClick.RemoveImageClick -> {
                 viewModel.input.removeMediaItem(imageItemClick.itemImage)
+                removeImageCacheSelected(imageItemClick.itemImage)
             }
+        }
+    }
+
+    private fun removeImageCacheSelected(itemImage: MediaItem) {
+        imageGallerySelected.find {
+            it.uri.toString() == itemImage.uri
+        }?.let {
+            val indexImage = imageGallerySelected.indexOf(it)
+            imageGallerySelected.removeAt(indexImage)
         }
     }
 
@@ -269,6 +285,8 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         when (itemImage) {
             is MediaItem.ImageMediaItem -> {
                 onUpdateImageSelected(itemImage)
+                addImageCacheSelected(itemImage)
+
             }
             is MediaItem.OpenCamera -> {
                 requestStoragePermission {
@@ -281,13 +299,30 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         }
     }
 
+    private fun addImageCacheSelected(itemImage: MediaItem) {
+        imageGallerySelected.find {
+            it.uri.toString() == itemImage.uri
+        }?.let {
+            val indexImage = imageGallerySelected.indexOf(it)
+            imageGallerySelected.removeAt(indexImage)
+            return
+        }
+
+        val imageSelected = Image(
+            id = itemImage.id.toLong(),
+            name = itemImage.displayName,
+            path = itemImage.uri
+        )
+        imageGallerySelected.add(imageSelected)
+    }
+
     private fun openGallery() {
         val config = ImagePickerConfig {
             mode = ImagePickerMode.MULTIPLE // default is multi image mode
             language = "en" // Set image picker language
 
             theme = R.style.ef_CustomToolbarTheme
-            arrowColor = Color.BLUE // set toolbar arrow up color
+            arrowColor = Color.WHITE // set toolbar arrow up color
             folderTitle = "Folder" // folder selection title
             imageTitle = "Tap to select" // image selection title
             doneButtonText = "Apply" // done button text
@@ -302,38 +337,6 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             selectedImages = imageGallerySelected  // original selected images, used in multi mode
         }
         imagePickerLauncher.launch(config)
-    }
-
-    private fun openImagePoickUp() {
-        val rxImagePicker: ZhihuImagePicker = RxImagePicker
-            .create(ZhihuImagePicker::class.java)
-
-        rxImagePicker.openGalleryAsDracula(
-            requireContext(),
-            ZhihuConfigurationBuilder(MimeType.ofAll(), false)
-                .capture(true)
-                .spanCount(4)
-                .maxSelectable(4)
-                .theme(R.style.Zhihu_Dracula)
-                .build()
-        ).subscribeBy {
-            addImageSelected(it.uri)
-        }.addToDisposables()
-    }
-
-    private fun addImageSelected(imageUrl: Uri) {
-        val itemMedia = MediaItem.ImageMediaItem(
-            imgRes = 0,
-            id = UUID.randomUUID().toString(),
-            uri = imageUrl.toString(),
-            displayName = "",
-            isSelected = true
-        )
-        addImageFormGallery(itemMedia)
-    }
-
-    private fun addImageFormGallery(itemMedia: MediaItem) {
-        viewModel.input.addMediaItem(itemMedia)
     }
 
     private fun onUpdateImageSelected(imageMediaItem: MediaItem.ImageMediaItem) {
@@ -440,14 +443,8 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         displayError(case)
     }
 
-    private fun handleOnResponse(createContentUiModel: CreateContentUiModel) {
-        if (createContentUiModel.type.isNullOrBlank()) {
-            Toast.makeText(activity, "Can not Create Post", Toast.LENGTH_LONG).also {
-                it.show()
-            }
-        } else {
-            onBackToHomeFeed()
-        }
+    private fun handleOnResponse() {
+        onBackToHomeFeed()
     }
 
     private fun enableButtonCast(enable: Boolean) {

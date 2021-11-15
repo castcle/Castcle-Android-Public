@@ -1,7 +1,6 @@
 package com.castcle.extensions
 
 import android.annotation.SuppressLint
-import android.os.Build
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.chrono.ChronoLocalDateTime
@@ -34,23 +33,9 @@ import java.util.*
 //
 //  Created by sklim on 26/8/2021 AD at 11:36.
 
-fun String.toTime(): Long {
+fun String.toTime(): Date? {
     val format = SimpleDateFormat(COMMON_DATE_FORMAT, Locale.getDefault())
-    return try {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val date = format.parse(this)
-            date?.toInstant()?.toEpochMilli() ?: 0L
-        } else {
-            val date = LocalDateTime.parse(
-                this,
-                DateTimeFormatter.ofPattern(COMMON_DATE_FORMAT, Locale.getDefault())
-            )
-            date.atOffset(org.threeten.bp.ZoneOffset.UTC).toInstant().toEpochMilli()
-        }
-    } catch (e: ParseException) {
-        0L
-    }
+    return format.parse(this)
 }
 
 fun String.toFormatDate(language: String = LANGUAGE_CODE_EN): String {
@@ -116,6 +101,7 @@ fun Int.getMonthName(language: String = LANGUAGE_CODE_EN): String {
 @SuppressLint("SimpleDateFormat")
 fun getDateTimeStamp(): Long = Date().time
 
+const val FORMAT_AGO = "yyyy-MM-dd HH:mm:ss"
 const val COMMON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 const val SOURCE_DATE_FORMAT = "MMM dd,yyyy"
 const val LANGUAGE_CODE_TH = "th"

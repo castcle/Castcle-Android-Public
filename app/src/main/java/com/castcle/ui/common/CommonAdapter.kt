@@ -1,6 +1,7 @@
 package com.castcle.ui.common
 
 import FeedContentShortViewHolder
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -53,6 +54,13 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
 
     override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
         getItem(position)?.let { holder.bindUiModel(it) }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateContentPost(contentUiModel: ContentUiModel) {
+        val content = snapshot()
+        content.items.toMutableList().add(0, contentUiModel)
+        notifyItemInserted(0)
     }
 
     fun updateStateItemRecast(contentUiModel: ContentUiModel) {
@@ -122,7 +130,7 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
 object ContentUiModelPagedListDiffCallBack : DiffUtil.ItemCallback<ContentUiModel>() {
 
     override fun areItemsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
-        return (oldItem.id == newItem.id)
+        return (oldItem.created == newItem.created)
     }
 
     override fun areContentsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {

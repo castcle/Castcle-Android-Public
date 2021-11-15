@@ -2,7 +2,7 @@ package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.common_model.model.userprofile.UserUpdateRequest
+import com.castcle.common_model.model.userprofile.domain.UserUpdateRequest
 import com.castcle.data.error.UpLoadImageError.UpLoadAvatarError
 import com.castcle.data.repository.UserWorkerRepository
 import com.castcle.usecase.base.SingleUseCase

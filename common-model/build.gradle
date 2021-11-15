@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -47,7 +48,11 @@ dependencies {
             "com.google.code.gson:gson:$gson_version",
             "androidx.room:room-runtime:$room_version",
             "androidx.room:room-rxjava2:$room_version",
+            "com.google.firebase:firebase-crashlytics-ktx",
+            "com.github.arhanashik:LinkPreview:1.2.3"
     )
+
+    implementation platform("com.google.firebase:firebase-bom:$firebase_bom")
 
     kapt(
             "androidx.room:room-compiler:$room_version"

@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        android_app_version_code = 7
+        android_app_version_code = 12
         android_app_version_name = "1.0.0"
         android_app_target_sdk_version = 30
         android_app_compile_sdk_version = 31
@@ -137,7 +137,7 @@ buildscript {
         maven { url '../ijrrepo_aar' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.1'
+        classpath 'com.android.tools.build:gradle:7.0.3'
         classpath 'com.google.firebase:perf-plugin:1.4.0'
         classpath 'com.google.gms:google-services:4.3.10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

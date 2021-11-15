@@ -11,11 +11,12 @@
         android:layout_width="@dimen/_2sdp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_2sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/rvChildComment"
         app:layout_constraintEnd_toEndOf="@id/ivAvatar"
         app:layout_constraintStart_toStartOf="@id/ivAvatar"
         app:layout_constraintTop_toBottomOf="@id/ivAvatar"
-        app:rlv_lineColor="@color/gray_medium_01"/>
+        app:rlv_lineColor="@color/gray_medium_01" />
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
@@ -52,12 +53,13 @@
         app:layout_constraintTop_toTopOf="@id/tvUserName"
         tools:text="July 06, 2021" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.castcle.components_android.ui.custom.mention.MentionTextView
         style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvCommentMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_12sdp"
+        android:bufferType="spannable"
         android:textColor="@color/light_t01"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvUserName"

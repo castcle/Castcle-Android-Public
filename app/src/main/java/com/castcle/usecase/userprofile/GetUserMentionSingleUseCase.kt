@@ -1,7 +1,7 @@
 package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.userprofile.MentionRequest
+import com.castcle.common_model.model.userprofile.domain.MentionRequest
 import com.castcle.common_model.model.userprofile.UserMentionUiModel
 import com.castcle.data.error.Ignored
 import com.castcle.data.repository.UserProfileRepository

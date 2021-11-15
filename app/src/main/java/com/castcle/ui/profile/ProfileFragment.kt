@@ -14,10 +14,11 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.login.ProfileBundle
+import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.setting.UpLoadType
 import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.domain.ImagesRequest
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
@@ -93,6 +94,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     private var profileTypeState: ProfileType = ProfileType.NON
 
     private lateinit var userProfile: User
+
+    private lateinit var profileBundle: ProfileBundle
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentProfileBinding
@@ -253,26 +256,26 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
         profileType(
             onProfileMe = {
-                viewModel.userProfileRes
-                    .subscribeBy(
-                        onError = {
-                            displayError(it)
-                        }
-                    ).addToDisposables()
-            }, onProfileYou = {
+                viewModel.fetchUserProfile()
+            },
+            onProfileYou = {
                 viewModel.getUserViewProfile(profileId)
-
-            }, onPage = {
+            },
+            onPage = {
                 viewModel.getViewPage(profileId)
             })
 
         viewModel.userProfileData.observe(this, {
-            when (photoSelectedState) {
-                PhotoSelectedState.COVER_PAGE_SELECT, PhotoSelectedState.AVATAR_PAGE_SELECT -> {
+            profileType(
+                onProfileMe = {
+                    onBindProfile(it)
+                },
+                onProfileYou = {
                     onBindViewProfile(it)
-                }
-                else -> onBindProfile(it)
-            }
+                },
+                onPage = {
+                    onBindViewProfile(it)
+                })
         })
 
         viewModel.userProfileYouRes.subscribe {
@@ -290,6 +293,34 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         activityViewModel.imageResponse.observe(this, {
             handlerUpLoadImage(it)
         })
+
+        activityViewModel.profileContentLoading.subscribe {
+            if (it) {
+                startLoadingShimmer()
+            } else {
+                stopLoadingShimmer()
+            }
+        }.addToDisposables()
+    }
+
+    private fun startLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
+            }
+        }
+    }
+
+
+    private fun stopLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
     }
 
     private fun handlerShowLoading(it: Boolean) {
@@ -318,7 +349,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             ivAvatarProfile.loadCircleImage(user.avatar)
 
             btViewProfile.subscribeOnClick {
-                onNavigateToEditProfile()
+                onNavigateToEditProfileOrPage()
             }.addToDisposables()
 
             ivEditProfile.subscribeOnClick {
@@ -391,7 +422,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             btFollow.text = localizedResources.getString(R.string.profile_edit_profile)
 
             btFollow.subscribeOnClick {
-                onNavigateToEditPage()
+                onNavigateToEditProfileOrPage()
             }.addToDisposables()
 
             ivAddAvatar.subscribeOnClick {
@@ -402,27 +433,37 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
     }
 
-    private fun onNavigateToEditPage() {
+    private fun onNavigateToEditProfileOrPage() {
         val profileBundle = getProfileBundle()
-        onBoardNavigator.navigateToAboutYouFragment(profileBundle, onEditPage = true)
-    }
-
-    private fun onNavigateToEditProfile() {
-        val profileBundle = getProfileBundle()
-        onBoardNavigator.navigateToAboutYouFragment(profileBundle, onEditProfile = true)
+        onBoardNavigator.navigateToAboutYouFragment(profileBundle)
     }
 
     private fun getProfileBundle(): ProfileBundle {
-        return ProfileBundle.ProfileEdit(
-            castcleId = userProfile.castcleId,
-            overview = userProfile.overview,
-            dob = userProfile.dob,
-            facebookLinks = userProfile.facebookLinks,
-            twitterLinks = userProfile.twitterLinks,
-            youtubeLinks = userProfile.youtubeLinks,
-            mediumLinks = userProfile.mediumLinks,
-            websiteLinks = userProfile.websiteLinks
-        )
+        profileType(onPage = {
+            profileBundle = ProfileBundle.PageEdit(
+                castcleId = userProfile.castcleId,
+                overview = userProfile.overview,
+                dob = userProfile.dob,
+                facebookLinks = userProfile.facebookLinks,
+                twitterLinks = userProfile.twitterLinks,
+                youtubeLinks = userProfile.youtubeLinks,
+                mediumLinks = userProfile.mediumLinks,
+                websiteLinks = userProfile.websiteLinks
+            )
+        }, onProfileMe = {
+            profileBundle = ProfileBundle.ProfileEdit(
+                castcleId = userProfile.castcleId,
+                overview = userProfile.overview,
+                dob = userProfile.dob,
+                facebookLinks = userProfile.facebookLinks,
+                twitterLinks = userProfile.twitterLinks,
+                youtubeLinks = userProfile.youtubeLinks,
+                mediumLinks = userProfile.mediumLinks,
+                websiteLinks = userProfile.websiteLinks
+            )
+        }, onProfileYou = {})
+
+        return profileBundle
     }
 
     private fun onNavigateToDialogChooseFragment(photoSelectedState: PhotoSelectedState) {

@@ -5,6 +5,7 @@ import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.data.error.SettingsError.LogoutError
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.data.model.dao.user.UserDao
+import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.ui.onboard.OnBoardActivity
@@ -17,6 +18,7 @@ class LogoutCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val appPreferences: AppPreferences,
     private val userDao: UserDao,
+    private val userPageDao: UserPageDao,
     private val commentDao: CommentDao,
     private val sessionManagerRepository: SessionManagerRepository,
 ) : CompletableUseCase<Activity>(
@@ -37,6 +39,7 @@ class LogoutCompletableUseCase @Inject constructor(
                 Completable.fromAction {
                     commentDao.deleteComment()
                     userDao.deleteUser()
+                    userPageDao.deleteUserPage()
                 }
             )
         ).doOnComplete {

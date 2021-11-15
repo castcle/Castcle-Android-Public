@@ -1,6 +1,8 @@
 package com.castcle.common_model.model.userprofile
 
 import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.userprofile.domain.MentionResponse
+import com.castcle.common_model.model.userprofile.domain.UserMentionResponse
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

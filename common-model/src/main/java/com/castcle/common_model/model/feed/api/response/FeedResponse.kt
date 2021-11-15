@@ -1,10 +1,9 @@
 package com.castcle.common_model.model.feed.api.response
 
 import com.castcle.common_model.model.feed.QuoteCast
-import com.castcle.common_model.model.userprofile.ImageResponse
-import com.castcle.common_model.model.userprofile.Verified
+import com.castcle.common_model.model.userprofile.domain.ImageResponse
+import com.castcle.common_model.model.userprofile.domain.Verified
 import com.google.gson.*
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.lang.reflect.Type
 
@@ -105,7 +104,7 @@ data class PayloadResponse(
     @SerializedName("commented") var commentedResponse: CommentedResponse? = null,
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
-    @SerializedName("author") var author: Author,
+    @SerializedName("author") var author: AuthorComment,
     @SerializedName("createAt") var created: String,
     @SerializedName("updateAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
@@ -130,7 +129,7 @@ data class ReplyResponse(
     @SerializedName("id") var id: String,
     @SerializedName("message") var message: String,
     @SerializedName("createAt") var created: String,
-    @SerializedName("author") var author: Author,
+    @SerializedName("author") var author: AuthorComment,
 )
 
 data class PayloadContent(
@@ -186,6 +185,16 @@ data class Author(
     @SerializedName("castcleId") var castcleId: String? = null,
     @SerializedName("avatar") var avatar: ImageResponse? = null,
     @SerializedName("verified") var verified: Verified? = null,
+    @SerializedName("followed") var followed: Boolean? = null
+)
+
+data class AuthorComment(
+    @SerializedName("id") var id: String,
+    @SerializedName("type") var type: String,
+    @SerializedName("displayName") var displayName: String? = null,
+    @SerializedName("castcleId") var castcleId: String? = null,
+    @SerializedName("avatar") var avatar: ImageResponse? = null,
+    @SerializedName("verified") var verified: Boolean? = null,
     @SerializedName("followed") var followed: Boolean? = null
 )
 

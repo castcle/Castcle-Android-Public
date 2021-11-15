@@ -217,4 +217,6 @@ please enter your password.</string>
 account</string>
     <string name="create_cast_warning_message">Is massage maximum Character</string>
     <string name="register_warning_message">Castcle Id already been Exists</string>
+    <string name="edite_page_success_message">Update Page success</string>
+    <string name="cast_post_status_success">Create Post Success</string>
 </resources>

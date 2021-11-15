@@ -2,8 +2,7 @@ package com.castcle.networking.api.feed.datasource
 
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.converter.LikeCommentRequest
-import com.castcle.common_model.model.feed.converter.LikeContentRequest
+import com.castcle.common_model.model.feed.converter.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
@@ -73,6 +72,6 @@ interface FeedRepository {
     ): Completable
 
     fun deleteComment(
-        likeCommentRequest: LikeCommentRequest,
+        deleteCommentRequest: DeleteCommentRequest,
     ): Completable
 }

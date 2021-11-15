@@ -3,6 +3,7 @@ package com.castcle.networking.api.user
 import com.castcle.common_model.model.feed.api.response.ContentResponse
 import com.castcle.common_model.model.feed.api.response.ContentViewResponse
 import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -65,12 +66,12 @@ interface UserApi {
 
     @HTTP(method = "DELETE", path = "/users/me", hasBody = true)
     fun onDeleteAccount(
-        @Body deletePageRequest: DeletePageRequest,
+        @Body deleteUserPayload: DeleteUserPayload,
     ): Flowable<Response<Unit>>
 
     @HTTP(method = "DELETE", path = "/pages/{castcleId}", hasBody = true)
     fun onDeletePage(
-        @Body deletePageRequest: DeletePageRequest,
+        @Body deleteUserPayload: DeletePagePayload,
         @Path("castcleId") castcleId: String,
     ): Flowable<Response<Unit>>
 

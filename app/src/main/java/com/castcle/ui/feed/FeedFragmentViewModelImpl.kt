@@ -11,14 +11,13 @@ import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
-import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.*
 import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.ModeType
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.search.GetTopTrendsSingleUseCase
-import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
+import com.castcle.usecase.userprofile.*
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -61,7 +60,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val feedNonAuthRepository: FeedRepository,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
-    private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase
+    private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase,
+    private val checkCastUpLoadingFlowableCase: CheckCastUpLoadingFlowableCase
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -179,6 +179,31 @@ class FeedFragmentViewModelImpl @Inject constructor(
 
     private fun setTrendResponse(list: List<SearchUiModel>) {
         _trendsResponse.value = list
+    }
+
+    private var _castPostResponse = BehaviorSubject.create<ContentUiModel>()
+    override val castPostResponse: Observable<ContentUiModel>
+        get() = _castPostResponse
+
+    override fun checkCastPostWithImageStatus(): Observable<Boolean> {
+        return checkCastUpLoadingFlowableCase.execute(Unit)
+            .map { (status, userResponse) ->
+                userResponse.takeIf {
+                    it.isNotBlank()
+                }?.let {
+                    checkCastPostResponse(userResponse)
+                }
+                status
+            }.doOnError {
+                _error.onNext(it)
+            }.toObservable()
+    }
+
+    private fun checkCastPostResponse(userResponse: String) {
+        if (userResponse.isNotBlank()) {
+            val castPostRes = userResponse.totContentUiModel()
+            _castPostResponse.onNext(castPostRes)
+        }
     }
 
     override fun getFeedResponseMock() {

@@ -9,8 +9,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
+        android:layout_height="@dimen/_160sdp"
         app:srcCompat="@drawable/castcle_logo"
+        android:background="@color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

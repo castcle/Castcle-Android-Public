@@ -89,9 +89,7 @@ class RecastAdapter : RecyclerView.Adapter<RecastAdapter.RecastViewHolder>(),
                 clBgItem.isActivated = indexCurrent == bindingAdapterPosition
             }
             itemView.subscribeOnClick {
-                if (indexCurrent != bindingAdapterPosition) {
-                    click.invoke(uiModel)
-                }
+                click.invoke(uiModel)
             }
         }
     }

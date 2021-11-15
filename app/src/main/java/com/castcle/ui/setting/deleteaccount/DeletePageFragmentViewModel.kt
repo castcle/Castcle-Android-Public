@@ -1,9 +1,8 @@
 package com.castcle.ui.setting.deleteaccount
 
-import com.castcle.common_model.model.userprofile.DeletePageRequest
+import com.castcle.common_model.model.userprofile.DeleteUserPayload
 import com.castcle.ui.base.BaseViewModel
-import com.castcle.usecase.userprofile.DeleteAccountCompletableUseCase
-import com.castcle.usecase.userprofile.DeletePageCompletableUseCase
+import com.castcle.usecase.userprofile.*
 import io.reactivex.Completable
 import javax.inject.Inject
 
@@ -33,21 +32,28 @@ import javax.inject.Inject
 
 abstract class DeletePageFragmentViewModel : BaseViewModel() {
 
-    abstract fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable
+    abstract fun onDeleteAccount(deletePagePayload: DeleteUserPayload): Completable
 
-    abstract fun onDeletePage(deletePageRequest: DeletePageRequest): Completable
+    abstract fun onDeletePage(deletePagePayload: DeleteUserPayload): Completable
 }
 
 class DeletePageFragmentViewModelImpl @Inject constructor(
     private val deleteAccountCompletableUseCase: DeleteAccountCompletableUseCase,
-    private val deletePageCompletableUseCase: DeletePageCompletableUseCase
+    private val deletePageCompletableUseCase: DeletePageCompletableUseCase,
+    private val deleteUserPageDaoSingleUseCase: DeleteUserPageSingleUseCase
 ) : DeletePageFragmentViewModel() {
 
-    override fun onDeleteAccount(deletePageRequest: DeletePageRequest): Completable {
-        return deleteAccountCompletableUseCase.execute(deletePageRequest)
+    override fun onDeletePage(deletePagePayload: DeleteUserPayload): Completable {
+        return deletePageCompletableUseCase.execute(deletePagePayload)
     }
 
-    override fun onDeletePage(deletePageRequest: DeletePageRequest): Completable {
-        return deletePageCompletableUseCase.execute(deletePageRequest)
+    override fun onDeleteAccount(deletePagePayload: DeleteUserPayload): Completable {
+        return deleteAccountCompletableUseCase
+            .execute(deletePagePayload)
+            .andThen {
+                deleteUserPageDaoSingleUseCase.execute(deletePagePayload.castcleId)
+                    .subscribe()
+                    .addToDisposables()
+            }
     }
 }

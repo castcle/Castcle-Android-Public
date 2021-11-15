@@ -7,12 +7,12 @@ import com.castcle.android.components_android.databinding.ItemCommentHeaderTempl
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.LikedUiModel
-import com.castcle.components_android.ui.custom.timeago.TimeAgo
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.feed.feeddetail.CommentedAdapter
 import com.castcle.ui.feed.feeddetail.CommentedChildAdapter
+import com.perfomer.blitz.setTimeAgo
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -67,9 +67,11 @@ class CommentedItemViewHolder(
         }.addToDisposables()
 
         binding.tvReply.subscribeOnClick {
-            CommentItemClick.CommentReplyItemClick(
-                bindingAdapterPosition,
-                contentUiModel
+            click.invoke(
+                CommentItemClick.CommentReplyClick(
+                    bindingAdapterPosition,
+                    contentUiModel
+                )
             )
         }.addToDisposables()
     }
@@ -97,17 +99,15 @@ class CommentedItemViewHolder(
             with(uiModel.payLoadUiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
                 tvUserName.text = author.displayName
-                val dateTime = if (TimeAgo.using(created.toTime()).isBlank()) {
-                    created.toFormatDate()
-                } else {
-                    TimeAgo.using(created.toTime())
-                }
                 onBindLikeComment(likedUiModel)
-                tvDataTime.text = dateTime
+                created.toTime()?.let {
+                    tvDataTime.setTimeAgo(it)
+                }
                 tvCommentMessage.text = contentMessage
-                replyUiModel?.let {
+                if (replyUiModel?.isNotEmpty() == true) {
+                    lrLineRelation.visible()
                     rvChildComment.visible()
-                    commentedAdapter.uiModels = it
+                    commentedAdapter.uiModels = replyUiModel ?: emptyList()
                 }
             }
         }

@@ -1,14 +1,7 @@
 package com.castcle.ui.createbloc
 
-import android.content.Context
 import com.castcle.common_model.model.createblog.MediaItem
 import com.esafirm.imagepicker.model.Image
-import com.qingmei2.rximagepicker.entity.Result
-import com.qingmei2.rximagepicker.entity.sources.Camera
-import com.qingmei2.rximagepicker.entity.sources.Gallery
-import com.qingmei2.rximagepicker.ui.ICustomPickerConfiguration
-import com.qingmei2.rximagepicker_extension_zhihu.ui.ZhihuImagePickerActivity
-import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,40 +27,6 @@ import io.reactivex.Observable
 //
 //  Created by sklim on 17/9/2021 AD at 12:55.
 
-interface ZhihuImagePicker {
-
-    @Gallery(
-        componentClazz = ZhihuImagePickerActivity::class,
-        openAsFragment = false
-    )
-    fun openGalleryAsNormal(
-        context: Context,
-        config: ICustomPickerConfiguration
-    ): Observable<Result>
-
-    @Gallery(
-        componentClazz = ZhihuImagePickerActivity::class,
-        openAsFragment = false
-    )
-    fun openGalleryAsDracula(
-        context: Context,
-        config: ICustomPickerConfiguration
-    ): Observable<Result>
-
-    @Camera
-    fun openCamera(context: Context): Observable<Result>
-}
-
-fun Image.toMediaItem(): MediaItem {
-    return MediaItem.ImageMediaItem(
-        imgRes = 0,
-        id = id.toString(),
-        uri = uri.toString(),
-        displayName = name,
-        isSelected = true
-    )
-}
-
 fun List<Image>.toMediaItemList(): List<MediaItem> {
     return map {
         MediaItem.ImageMediaItem(
@@ -75,6 +34,7 @@ fun List<Image>.toMediaItemList(): List<MediaItem> {
             id = it.id.toString(),
             uri = it.uri.toString(),
             displayName = it.name,
+            path = it.path,
             isSelected = true
         )
     }

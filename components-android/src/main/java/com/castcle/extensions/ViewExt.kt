@@ -1,5 +1,7 @@
 package com.castcle.extensions
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Build
 import android.os.Parcelable
 import android.text.*
@@ -14,6 +16,7 @@ import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.StyleRes
 import androidx.core.view.children
+import androidx.fragment.app.FragmentActivity
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

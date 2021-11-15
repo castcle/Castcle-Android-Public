@@ -86,6 +86,9 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
                     )
                 }
                 else -> {
+                    tvChangePasswrdTitle.text = localizedResources.getString(
+                        R.string.setting_complete_change_title
+                    )
                 }
             }
         }
@@ -100,9 +103,6 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
 
     private fun handlerOnCompleteNavigate() {
         when {
-            onDeletePage -> {
-                onBoardNavigator.navigateToSettingFragment()
-            }
             onDeleteAccount -> {
                 viewModel.onLogout(requireActivity())
                     .subscribe()

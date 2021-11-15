@@ -1,6 +1,6 @@
 package com.castcle.networking.api.setting
 
-import com.castcle.common_model.model.setting.LanguagesResponse
+import com.castcle.common_model.model.setting.domain.LanguagesResponse
 import io.reactivex.Flowable
 import retrofit2.Response
 import retrofit2.http.GET

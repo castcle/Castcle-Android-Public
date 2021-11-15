@@ -1,7 +1,8 @@
 package com.castcle.common_model.model.userprofile
 
 import androidx.room.*
-import com.castcle.common_model.model.setting.CreatePageResponse
+import com.castcle.common_model.model.setting.domain.CreatePageResponse
+import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
 import com.google.gson.Gson
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

@@ -3,7 +3,7 @@ package com.castcle.ui.signin.email
 import com.castcle.common.lib.extension.doIfTakeLongerThan
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel.EmailVerifyUiModel
-import com.castcle.common_model.model.signin.reuquest.EmailRequest
+import com.castcle.common_model.model.signin.domain.EmailRequest
 import com.castcle.networking.service.common.TIMEOUT_SEARCH_REQUEST
 import com.castcle.networking.service.common.TIMEOUT_SHOWING_SPINNER
 import com.castcle.ui.base.BaseViewModel
