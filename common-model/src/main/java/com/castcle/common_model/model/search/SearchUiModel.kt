@@ -105,7 +105,7 @@ fun Follow.toSearchFollowUiModel(): SearchUiModel {
     return SearchUiModel.SearchFollowUiModel(
         count = count,
         id = id,
-        avatar = avatar,
+        avatar = avatar.thumbnail ?: "",
         castcleId = castcleId,
         overview = overview,
         type = type,
@@ -119,7 +119,8 @@ data class AggregatorUiModel(
     val action: String,
     val id: String,
     val message: String,
-    val type: String
+    val type: String,
+    val count: String
 )
 
 fun Aggregator.toAggregatorUiModel() =
@@ -127,7 +128,8 @@ fun Aggregator.toAggregatorUiModel() =
         action = action,
         id = id,
         message = message,
-        type = type
+        type = type,
+        count = count
     )
 
 const val FOLLOW_PERSON = "person"

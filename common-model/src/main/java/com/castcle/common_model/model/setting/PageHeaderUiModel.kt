@@ -45,6 +45,7 @@ fun User.toPageHeaderUiModel() =
     PageHeaderUiModel(
         pageUiItem = listOf(
             PageUiModel(
+                castcleId = castcleId,
                 avatarUrl = avatar,
                 verifyEmail = verified,
                 displayName = displayName,

@@ -1,5 +1,6 @@
 package com.castcle.common_model.model.setting.domain
 
+import com.castcle.common_model.model.engagement.domain.OBJECTIVE_FORGOT_PASSWORD
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -27,9 +28,14 @@ import com.google.gson.annotations.SerializedName
 //  Created by sklim on 1/10/2021 AD at 12:53.
 
 data class ChangePassRequest(
+    @SerializedName("objective")
+    val objective: String = OBJECTIVE_FORGOT_PASSWORD,
+
     @SerializedName("refCode")
     val refCode: String,
 
     @SerializedName("newPassword")
     val newPassword: String
 )
+
+const val OBJECTIVE_CHANGE_PASSWORD = "change_password"

@@ -33,9 +33,11 @@ import java.util.*
 //
 //  Created by sklim on 26/8/2021 AD at 11:36.
 
+@SuppressLint("SimpleDateFormat")
 fun String.toTime(): Date? {
-    val format = SimpleDateFormat(COMMON_DATE_FORMAT, Locale.getDefault())
-    return format.parse(this)
+    val formatter = SimpleDateFormat(COMMON_DATE_FORMAT)
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+    return formatter.parse(this)
 }
 
 fun String.toFormatDate(language: String = LANGUAGE_CODE_EN): String {

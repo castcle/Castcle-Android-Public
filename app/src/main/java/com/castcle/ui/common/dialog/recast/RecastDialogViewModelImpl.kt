@@ -67,10 +67,12 @@ class RecastDialogViewModelImpl @Inject constructor(
     private val _contentUiModel = MutableLiveData<ContentUiModel>()
 
     override fun recastContent(contentUiModel: ContentUiModel) {
+        val castcleId = _userPageUiModel.value?.pageUiItem?.get(0)?.castcleId ?: ""
+
         RecastRequest(
             reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
             contentId = contentUiModel.payLoadUiModel.contentId,
-            authorId = contentUiModel.payLoadUiModel.author.id
+            authorId = castcleId
         ).run {
             postReCastContent(this)
                 .subscribe()

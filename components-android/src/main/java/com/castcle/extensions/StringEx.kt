@@ -64,11 +64,12 @@ private const val EMAIL_PATTERN = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
 
 private val PASSWORD_PATTERN: Pattern = Pattern.compile(
     "^(?=.*[a-z])(?=.*[A-Z])" +
-        "(?=.*[@#$%^&+=])" +  // at least 1 special character
         "(?=\\S+$)" +  // no white spaces
         ".{8,}" +  // at least c characters
         "$"
 )
+
+//        "(?=.*[@#$%^&+=])" +  // at least 1 special character
 
 fun String.toMD5Hex(): String {
     val bytes = MessageDigest.getInstance("MD5").digest(this.toByteArray())

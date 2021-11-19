@@ -57,6 +57,10 @@ fun Fragment.displayErrorMessage(error: String) {
     Toast.makeText(this.requireContext(), error, Toast.LENGTH_SHORT).also { it.show() }
 }
 
+fun Fragment.displayMessage(error: String) {
+    Toast.makeText(this.requireContext(), error, Toast.LENGTH_SHORT).also { it.show() }
+}
+
 fun <T> Fragment.setNavigationResult(
     onBoardNavigator: OnBoardNavigator,
     key: String, value: T

@@ -51,7 +51,11 @@ interface FeedRepository {
     ): Flow<PagingData<ContentUiModel>>
 
     fun createComment(
-        commentRequest: CommentRequest
+        commentRequest: ReplyCommentRequest
+    ): Single<ContentUiModel>
+
+    fun createReplyComment(
+        commentRequest: ReplyCommentRequest
     ): Single<ContentUiModel>
 
     fun likeContent(

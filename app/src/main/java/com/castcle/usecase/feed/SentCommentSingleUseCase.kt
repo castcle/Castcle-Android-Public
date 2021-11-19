@@ -1,8 +1,7 @@
 package com.castcle.usecase.feed
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.feed.CommentRequest
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.*
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.base.SingleUseCase
@@ -36,13 +35,13 @@ import javax.inject.Inject
 class SentCommentSingleUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val feedRepository: FeedRepository
-) : SingleUseCase<CommentRequest, ContentUiModel>(
+) : SingleUseCase<ReplyCommentRequest, ContentUiModel>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::Ignored
 ) {
 
-    override fun create(input: CommentRequest): Single<ContentUiModel> {
+    override fun create(input: ReplyCommentRequest): Single<ContentUiModel> {
         return feedRepository.createComment(input)
     }
 }

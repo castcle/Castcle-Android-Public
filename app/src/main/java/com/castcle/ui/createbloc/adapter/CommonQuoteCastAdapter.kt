@@ -1,5 +1,7 @@
 package com.castcle.ui.createbloc.adapter
 
+import FeedContentQuteShortImageViewHolder
+import FeedContentQuteShortWebViewHolder
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -78,6 +80,10 @@ class CommonQuoteCastAdapter :
                 FeedContentBlogViewHolder.newInstance(parent, click)
             R.layout.layout_quote_template_short ->
                 FeedContentShortViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_short_web ->
+                FeedContentQuteShortWebViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_short_image ->
+                FeedContentQuteShortImageViewHolder.newInstance(parent, click)
             else -> throw UnsupportedOperationException()
         }
     }
@@ -85,9 +91,20 @@ class CommonQuoteCastAdapter :
     override fun getItemViewType(position: Int): Int {
         return when (getContentType(position)) {
             BLOG.type -> R.layout.layout_quote_template_blog
-            SHORT.type -> R.layout.layout_quote_template_short
+            SHORT.type -> optionalTypeShort(position)
             IMAGE.type -> R.layout.layout_quote_template_image
             else -> R.layout.layout_quote_template_short
+        }
+    }
+
+    private fun optionalTypeShort(position: Int): Int {
+        return when {
+            uiModels[position].payLoadUiModel.link.isNullOrEmpty()
+                && uiModels[position].payLoadUiModel.photo.imageContent.isNotEmpty() ->
+                R.layout.layout_feed_template_short_image
+            uiModels[position].payLoadUiModel.link.isNotEmpty() ->
+                R.layout.layout_feed_template_short_web
+            else -> R.layout.layout_feed_template_short
         }
     }
 

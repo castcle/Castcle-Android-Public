@@ -1,7 +1,6 @@
 package com.castcle.networking.api.feed
 
-import com.castcle.common_model.model.feed.CommentRequest
-import com.castcle.common_model.model.feed.RecastRequest
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
@@ -41,7 +40,6 @@ interface FeedApi {
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
         @Query(MODE) mode: String,
-        @Query(HAS_TAG) hasTag: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<FeedResponse>
@@ -72,7 +70,7 @@ interface FeedApi {
     fun unRecastContent(
         @Path("id") id: String,
         @Body recastRequest: RecastRequest,
-    ): Flowable<Response<FeedContentResponse>>
+    ): Flowable<Response<Unit>>
 
     @POST("contents/{id}/quotecast")
     fun quoteCastContent(
@@ -97,7 +95,14 @@ interface FeedApi {
     @POST("contents/{contentId}/comments")
     fun sentComments(
         @Path("contentId") contentId: String,
-        @Body commentRequest: CommentRequest,
+        @Body commentRequest: ReplyCommentRequest,
+    ): Flowable<Response<ContentCommentedResponse>>
+
+    @POST("contents/{contentId}/comments/{commentId}/reply")
+    fun sentReplyComments(
+        @Path("contentId") contentId: String,
+        @Path("commentId") commentId: String,
+        @Body commentRequest: ReplyCommentRequest,
     ): Flowable<Response<ContentCommentedResponse>>
 
     @PUT("contents/{contentId}/comments/{contentIdChild}")

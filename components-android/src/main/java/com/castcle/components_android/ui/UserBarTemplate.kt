@@ -78,8 +78,7 @@ class UserBarTemplate(
                 with(itemUiModel.payLoadUiModel) {
                     ivAvatar.loadCircleImage(author.avatar)
                     tvUserName.text = author.displayName
-                    ivStatusFollow.visibleOrGone(author.followed)
-                    tvStatusFollow.visibleOrGone(author.followed)
+//                    ivStatusFollow.gone()
                     created.toTime()?.let {
                         tvDataTime.setTimeAgo(it)
                     }
@@ -91,8 +90,7 @@ class UserBarTemplate(
                 with(itemUiModel.payLoadUiModel) {
                     ivAvatar.loadCircleImage(author.avatar)
                     tvUserName.text = author.displayName
-                    ivStatusFollow.visibleOrGone(author.followed)
-                    tvStatusFollow.visibleOrGone(author.followed)
+                    ivStatusFollow.gone()
                     created.toTime()?.let {
                         tvDataTime.setTimeAgo(it)
                     }

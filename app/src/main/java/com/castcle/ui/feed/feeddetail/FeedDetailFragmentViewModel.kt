@@ -85,7 +85,9 @@ abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
     interface Input {
         fun getCommented(feedContentId: String)
 
-        fun setComment(commentRequest: CommentRequest)
+        fun setComment(commentRequest: ReplyCommentRequest)
+
+        fun setReplyComment(commentRequest: ReplyCommentRequest)
     }
 }
 
@@ -98,6 +100,7 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val getCommentedPagingSingleUseCase: GetCommentedPagingSingleUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val getUserPageDataSingleUseCase: GetUserPageDataSingleUseCase,
+    private val replyCommentSingleUseCase: SentReplyCommentSingleUseCase
 ) : FeedDetailFragmentViewModel(), FeedDetailFragmentViewModel.Input {
 
     override val input: Input
@@ -157,7 +160,7 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
         _commentedResponse = it
     })
 
-    override fun setComment(commentRequest: CommentRequest) {
+    override fun setComment(commentRequest: ReplyCommentRequest) {
         sentCommentSingleUseCase.execute(commentRequest)
             .doOnSubscribe { _showLoading.onNext(true) }
             .doOnError { _error.onNext(it) }
@@ -167,6 +170,35 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
                     _showLoading.onNext(false)
                 }, onError = _error::onNext
             ).addToDisposables()
+    }
+
+    override fun setReplyComment(commentRequest: ReplyCommentRequest) {
+        replyCommentSingleUseCase.execute(commentRequest)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _error.onNext(it) }
+            .subscribeBy(
+                onSuccess = {
+                    onBindSingleReplyCommented(it, commentRequest)
+                    _showLoading.onNext(false)
+                }, onError = _error::onNext
+            ).addToDisposables()
+    }
+
+    private fun onBindSingleReplyCommented(
+        response: ContentUiModel?,
+        commentRequest: ReplyCommentRequest
+    ) {
+        val oldData = _commentedResponses.value ?: emptyList()
+        oldData.toMutableList().find {
+            it.id == commentRequest.commentId
+        }?.apply {
+            response?.toReplyComment()?.let { it1 ->
+                payLoadUiModel.replyUiModel = payLoadUiModel.replyUiModel?.toMutableList()?.apply {
+                    addAll(listOf(it1))
+                }
+            }
+        }
+        _commentedResponses.onNext(oldData)
     }
 
     private fun onBindSingleCommented(item: ContentUiModel) {
@@ -228,9 +260,6 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
         val oldData = _commentedResponses.value ?: emptyList()
         val commentedValue = oldData.toMutableList().apply {
             addAll(item.contentUiModel)
-            sortBy {
-                it.created
-            }
         }
 
         _commentedResponses.onNext(commentedValue)
@@ -243,9 +272,7 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
 
     override fun likedComment(likeCommentedRequest: LikeCommentRequest) {
         likeCommentCompletableUseCase.execute(likeCommentedRequest)
-            .doOnSubscribe {
-                _showLoading.onNext(true)
-            }.subscribeBy(
+            .subscribeBy(
                 onComplete = {
                     _likedSuccess.onNext(true)
                 },

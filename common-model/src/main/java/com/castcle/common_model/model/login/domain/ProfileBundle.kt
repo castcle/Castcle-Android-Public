@@ -74,11 +74,31 @@ sealed class ProfileBundle : Parcelable {
     ) : ProfileBundle()
 
     @Parcelize
+    data class ViewProfile(
+        var overview: String = "",
+        var dob: String? = "",
+        var castcleId: String = "",
+        var profileType: String = "",
+        val facebookLinks: String = "",
+        val mediumLinks: String = "",
+        val twitterLinks: String = "",
+        val websiteLinks: String = "",
+        val youtubeLinks: String = ""
+    ) : ProfileBundle()
+
+    @Parcelize
     data class ProfileDelete(
         var castcleId: String = "",
         var profileType: String = "",
         var avatar: String = "",
         val displayName: String?
+    ) : ProfileBundle()
+
+    @Parcelize
+    data class ProfileOtp(
+        var email: String = "",
+        var refCode: String = "",
+        var expiresTime: String = "",
     ) : ProfileBundle()
 }
 

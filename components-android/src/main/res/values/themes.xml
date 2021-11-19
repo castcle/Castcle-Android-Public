@@ -62,9 +62,10 @@
         <attr name="pinCharacterMasked" format="string" />
         <attr name="pinTextPaddingBottom" format="dimension" />
         <attr name="pinCharacterBoxHorizontalSpacing" format="dimension" />
-        <attr name="the1PinCharacterBoxBackground" format="reference" />
-        <attr name="the1PinErrorCharacterBoxBackground" format="reference" />
-        <attr name="the1PinActiveCharacterBoxBackground" format="reference" />
+        <attr name="pinCharacterBoxBackground" format="reference" />
+        <attr name="pinErrorCharacterBoxBackground" format="reference" />
+        <attr name="pinActiveCharacterBoxBackground" format="reference" />
+        <attr name="characterColor" format="reference" />
     </declare-styleable>
 
 </resources>

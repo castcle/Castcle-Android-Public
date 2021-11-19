@@ -45,7 +45,7 @@ data class Pagination(
     @SerializedName("limit")
     val limit: Int? = null,
     @SerializedName("next")
-    val next: Int? = null,
+    var next: Int? = null,
     @SerializedName("previous")
     val previous: Int,
     @SerializedName("self")
@@ -53,14 +53,14 @@ data class Pagination(
 )
 
 data class FeedContentResponse(
-    @SerializedName("id") var id: String,
-    @SerializedName("feature") var feature: Feature,
+    @SerializedName("id") var id: String? = null,
+    @SerializedName("feature") var feature: Feature? = null,
     @SerializedName("circle") var circle: Circle? = null,
-    @SerializedName("aggregator") var aggregator: Aggregator,
-    @SerializedName("type") var type: String,
+    @SerializedName("aggregator") var aggregator: Aggregator? = null,
+    @SerializedName("type") var type: String? = null,
     @SerializedName("payload") var payload: PayloadResponse,
-    @SerializedName("createdAt") var created: String,
-    @SerializedName("updatedAt") var updated: String,
+    @SerializedName("createdAt") var created: String? = null,
+    @SerializedName("updatedAt") var updated: String? = null,
 )
 
 data class FeedViewContentResponse(
@@ -76,9 +76,9 @@ data class FeedViewContentResponse(
 
 data class Feature(
     @SerializedName("id") var id: String? = null,
-    @SerializedName("slug") var slug: String,
-    @SerializedName("name") var name: String,
-    @SerializedName("key") var key: String
+    @SerializedName("slug") var slug: String? = null,
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("key") var key: String? = null
 )
 
 data class Circle(
@@ -194,7 +194,7 @@ data class AuthorComment(
     @SerializedName("displayName") var displayName: String? = null,
     @SerializedName("castcleId") var castcleId: String? = null,
     @SerializedName("avatar") var avatar: ImageResponse? = null,
-    @SerializedName("verified") var verified: Boolean? = null,
+    @SerializedName("verified") var verified: Verified? = null,
     @SerializedName("followed") var followed: Boolean? = null
 )
 

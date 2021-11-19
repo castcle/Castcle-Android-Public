@@ -25,12 +25,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.castcle.components_android.ui.custom.mention.MentionTextView
-        style="@style/AppTextKanitExLight.Small"
+        style="@style/AppTextKanitExLight.xSmall"
         android:id="@+id/tvFeedContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:bufferType="spannable"
-        android:maxLines="3"
         android:paddingStart="@dimen/_12sdp"
         android:paddingTop="@dimen/_4sdp"
         android:paddingEnd="@dimen/_12sdp"

@@ -30,6 +30,6 @@ data class FollowRequest(
 
     val castcleIdFollower: String = "",
 
-    @SerializedName("castcleId")
+    @SerializedName("targetCastcleId")
     val castcleId: String = ""
 )

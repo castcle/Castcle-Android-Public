@@ -34,6 +34,6 @@ data class RecastRequest(
     @SerializedName("feedItemId")
     val feedItemId: String? = "",
 
-    @SerializedName("authorId")
+    @SerializedName("castcleId")
     val authorId: String
 )

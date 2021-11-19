@@ -2,7 +2,8 @@ package com.castcle.ui.search.onsearch
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -87,7 +88,6 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
     override fun setupView() {
         setupToolBar()
         with(binding.etTextInputPrimary) {
-            viewModel.getResentSearch()
 
             setOnEditorActionListener { _, actionId, keyEven ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -232,7 +232,7 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
             onBindEmptyState(true)
         }.addToDisposables()
 
-        viewModel.resentSearchResponse.observe(this, {
+        viewModel.resentSearchResponse.observe(viewLifecycleOwner, {
             it.toMutableList().apply {
                 if (isNotEmpty()) {
                     add(0, SearchUiModel.SearchResentHeaderUiModel)

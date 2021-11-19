@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_cover_quote"
+    android:padding="@dimen/_2sdp">
+
+    <include
+        android:id="@+id/skeletonLoading"
+        layout="@layout/layout_item_shimmer_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.castcle.components_android.ui.UserBarTemplate
+        android:id="@+id/ubUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.castcle.components_android.ui.custom.mention.MentionTextView
+        style="@style/AppTextKanitExLight.xSmall"
+        android:id="@+id/tvFeedContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:bufferType="spannable"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/ubUser"
+        app:layout_constraintStart_toStartOf="@id/ubUser"
+        app:layout_constraintTop_toBottomOf="@id/ubUser"
+        tools:text="Win a legendary DappRadar x\b\n@MOBOX_Official #NFT.\b\nDon't miss your chance and register now:" />
+
+    <View
+        android:id="@+id/vCover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_cover_under"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="@id/clPreviewContent"
+        app:layout_constraintEnd_toEndOf="@id/clPreviewContent"
+        app:layout_constraintStart_toStartOf="@id/clPreviewContent"
+        app:layout_constraintTop_toTopOf="@id/clPreviewContent" />
+
+    <include
+        android:id="@+id/clPreviewContent"
+        layout="@layout/layout_preview_content_web"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <include
+        android:id="@+id/clPreviewIconContent"
+        layout="@layout/layout_preview_content_web_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <include
+        android:id="@+id/inShimmerContentLoading"
+        layout="@layout/layout_item_preview_shimmer_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

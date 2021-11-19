@@ -79,7 +79,7 @@
         android:id="@+id/clToolBarCast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@color/black_night"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -102,6 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:background="@drawable/bg_bottom"
             android:paddingStart="@dimen/_12sdp"
             android:paddingTop="@dimen/_4sdp"
@@ -114,4 +115,45 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <View
+        android:id="@+id/vLoading"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:background="@drawable/bg_cover_round"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tvMessageLoading"
+        app:layout_constraintStart_toStartOf="@id/pbLoading"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingEnd="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMessageLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:text="@string/message_loading_create_cast"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/pbLoading"
+        app:layout_constraintEnd_toEndOf="@id/vLoading"
+        app:layout_constraintStart_toEndOf="@id/pbLoading"
+        app:layout_constraintTop_toTopOf="@id/pbLoading" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="vLoading,pbLoading,tvMessageLoading" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -164,6 +164,11 @@
             android:defaultValue="false"
             app:argType="boolean" />
 
+        <argument
+            android:name="onForgotPassword"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/actionCompleteFragmentToSettingFragment"
             app:destination="@id/settingFragment"
@@ -179,4 +184,22 @@
         android:id="@+id/notificationFragment"
         android:name="com.castcle.ui.setting.notification.NotificationFragment"
         tools:layout="@layout/fragment_notification" />
+
+    <fragment
+        android:id="@+id/deletePageFragment"
+        android:name="com.castcle.ui.setting.deleteaccount.DeletePageFragment"
+        tools:layout="@layout/fragment_delete_page">
+
+        <action
+            android:id="@+id/actionDeletePageFragmentToCompleteFragment"
+            app:destination="@id/completeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
+    </fragment>
 </navigation>

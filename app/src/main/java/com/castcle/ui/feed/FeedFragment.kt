@@ -24,6 +24,7 @@ import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST_COMMENTED_COUNT
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -84,6 +85,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             rvFeedContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
             }
+            rvFeedContent.itemAnimator = null
 
             with(rcFeedFillter) {
                 adapter = adapterFilterAdapter
@@ -264,15 +266,34 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
         getNavigationResult<ContentUiModel>(
             onBoardNavigator,
-            R.id.dialogRecastFragment,
+            R.id.feedFragment,
             KEY_REQUEST,
             onResult = {
                 adapterPagingCommon.updateStateItemRecast(it)
+            })
+
+        getNavigationResult<ContentUiModel>(
+            onBoardNavigator,
+            R.id.feedFragment,
+            KEY_REQUEST,
+            onResult = {
+                adapterPagingCommon.updateStateItemUnRecast(it)
             })
     }
 
     private fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel) {
         onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
+        getNavigationResult<Int>(
+            onBoardNavigator,
+            R.id.feedFragment,
+            KEY_REQUEST_COMMENTED_COUNT,
+            onResult = {
+                onBindCommentedCount(it, contentUiModel)
+            })
+    }
+
+    private fun onBindCommentedCount(count: Int, contentUiModel: ContentUiModel) {
+        adapterPagingCommon.updateCommented(count, contentUiModel)
     }
 
     private fun onSelectedFilterClick(itemFilter: SearchUiModel) {

@@ -16,6 +16,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentWebviewBinding
 import com.castcle.android.databinding.ToolbarCastcleWebviewBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.webview.WebViewRequest
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator

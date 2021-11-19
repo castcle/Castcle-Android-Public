@@ -219,4 +219,18 @@ account</string>
     <string name="register_warning_message">Castcle Id already been Exists</string>
     <string name="edite_page_success_message">Update Page success</string>
     <string name="cast_post_status_success">Create Post Success</string>
+    <string name="search_account_title">Account search</string>
+    <string name="search_account_description">Enter your email again to find your account</string>
+    <string name="for_got_password_tool_bar">Forgot Password</string>
+    <string name="for_got_password_title">Reset your passsword</string>
+    <string name="for_got_password_description">Do you want to reset password by your email that register with Castcle</string>
+    <string name="for_got_password_action_title">Sent to this email</string>
+    <string name="verify_otp_title">Enter 6-digit code</string>
+    <string name="verify_otp_message">We already send you an OTP to your email address %s</string>
+    <string name="verify_otp_warning">Don\'t receive it yet?</string>
+    <string name="verify_otp_warning_sent"><font color="#01D2FF">Send again</font></string>
+    <string name="verify_otp_warning_re_sent">Resend Code %s</string>
+    <string name="verify_otp_warning_error">Your OTP code is wrong please enter again</string>
+    <string name="complete_fragment_button_complete">Sign in</string>
+    <string name="recast_title_recasted">Recasted</string>
 </resources>

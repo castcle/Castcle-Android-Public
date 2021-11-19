@@ -21,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.extensions.LayoutContainer
+import kotlin.math.abs
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -65,9 +66,29 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
         notifyItemInserted(0)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateCommented(commentedCount: Int, contentUiModel: ContentUiModel) {
+        val contentIndex = snapshot().indexOf(contentUiModel)
+        snapshot().items[contentIndex].apply {
+            payLoadUiModel.commentedUiModel.count =
+                payLoadUiModel.commentedUiModel.count.plus(commentedCount)
+        }
+        notifyItemInserted(contentIndex)
+    }
+
     fun updateStateItemRecast(contentUiModel: ContentUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        snapshot()[index]?.payLoadUiModel?.reCastedUiModel?.recasted = true
+        val recastUiModel = snapshot()[index]?.payLoadUiModel?.reCastedUiModel
+        recastUiModel?.recasted = !recastUiModel?.recasted!!
+        recastUiModel.count = recastUiModel.count.plus(1) ?: 0
+        notifyItemChanged(index)
+    }
+
+    fun updateStateItemUnRecast(contentUiModel: ContentUiModel) {
+        val index = snapshot().indexOf(contentUiModel)
+        val recastUiModel = snapshot()[index]?.payLoadUiModel?.reCastedUiModel
+        recastUiModel?.recasted = !recastUiModel?.recasted!!
+        recastUiModel.count = abs(recastUiModel.count - 1)
         notifyItemChanged(index)
     }
 
@@ -83,7 +104,7 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
         val index = snapshot().indexOf(contentUiModel)
         val likeUiModel = snapshot()[index]?.payLoadUiModel?.likedUiModel
         likeUiModel?.liked = !likeUiModel?.liked!!
-        likeUiModel.count = kotlin.math.abs(likeUiModel.count.plus(-1))
+        likeUiModel.count = abs(likeUiModel.count.plus(-1))
         notifyItemChanged(index)
     }
 

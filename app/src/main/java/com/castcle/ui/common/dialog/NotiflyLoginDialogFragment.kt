@@ -84,26 +84,30 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
         with(binding) {
             tvHaveAccount.subscribeOnClick {
                 navigateToLoginFragment()
-            }
+            }.addToDisposables()
             tvActionLinkUserAgreement.subscribeOnClick {
                 openWebView(STATIC_LINK_USER_AGREEMENT)
-            }
+            }.addToDisposables()
             tvActionLinkPrivacy.subscribeOnClick {
                 openWebView(STATIC_LINK_PRIVACY_POLICY)
-            }
+            }.addToDisposables()
             tvjoinUs.subscribeOnClick {
                 openWebView(STATIC_LINK_JOIN_US)
-            }
+            }.addToDisposables()
             tvManifesto.subscribeOnClick {
                 openWebView(STATIC_LINK_MENIFESTO)
-            }
+            }.addToDisposables()
             tvWhitepaper.subscribeOnClick {
                 openWebView(STATIC_LINK_WHITEPAPER)
-            }
+            }.addToDisposables()
             with(layoutLogin) {
                 clLoginWithEmail.subscribeOnClick {
                     navigateToRegisterFragment()
-                }
+                }.addToDisposables()
+
+                clLoginWithTwitter.subscribeOnClick {
+                    openWebView(REQUEST_TOKEN_TWITTWE)
+                }.addToDisposables()
             }
         }
     }
@@ -135,3 +139,5 @@ const val STATIC_LINK_MENIFESTO =
     "https://docs.castcle.com/"
 const val STATIC_LINK_WHITEPAPER =
     "https://documents.castcle.com/castcle-whitepaper-v1_3.pdf"
+
+private const val REQUEST_TOKEN_TWITTWE = "https://api.twitter.com/oauth/request_token?oauth_callback"

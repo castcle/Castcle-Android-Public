@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.res.ResourcesCompat
 import com.castcle.android.components_android.R
 import com.castcle.components_android.ui.custom.InputType.NUMBER_PASSWORD
+import com.castcle.extensions.getColorResource
 
 // Adaptation of https://github.com/alphamu/PinEntryEditText
 class PinTextInput : AppCompatEditText {
@@ -26,6 +27,8 @@ class PinTextInput : AppCompatEditText {
     private var characterMasked = DEFAULT_CHARACTER_MASKED
     var characterAmount = DEFAULT_CHARACTER_AMOUNT
         private set
+
+    var defaultCharacterColor = context.getColorResource(R.color.white)
 
     private var characterTextPaddingBottom = resources.getDimensionPixelSize(
         DEFAULT_CHARACTER_TEXT_PADDING_BOTTOM
@@ -119,17 +122,21 @@ class PinTextInput : AppCompatEditText {
             )
 
             defaultCharacterBoxBackground = styles.getDrawable(
-                R.styleable.PinTextInput_the1PinCharacterBoxBackground
+                R.styleable.PinTextInput_pinCharacterBoxBackground
             ) ?: defaultCharacterBoxBackground
 
             errorCharacterBoxBackground = styles.getDrawable(
-                R.styleable.PinTextInput_the1PinErrorCharacterBoxBackground
+                R.styleable.PinTextInput_pinErrorCharacterBoxBackground
             ) ?: errorCharacterBoxBackground
 
             activeCharacterBoxBackground = styles.getDrawable(
-                R.styleable.PinTextInput_the1PinActiveCharacterBoxBackground
+                R.styleable.PinTextInput_pinActiveCharacterBoxBackground
             ) ?: activeCharacterBoxBackground
 
+            defaultCharacterColor = styles.getColor(
+                R.styleable.PinTextInput_characterColor,
+                defaultCharacterColor
+            )
             characterBoxBackground = defaultCharacterBoxBackground
         } finally {
             styles.recycle()
@@ -138,10 +145,10 @@ class PinTextInput : AppCompatEditText {
 
     private fun setTextColor() {
         characterPaint = Paint(paint).apply {
-            color = textColors.defaultColor
+            color = defaultCharacterColor
         }
         characterPaintLast = Paint(paint).apply {
-            color = textColors.defaultColor
+            color = defaultCharacterColor
         }
     }
 
@@ -203,6 +210,7 @@ class PinTextInput : AppCompatEditText {
         )
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         val textWidths = FloatArray(textMasked.length)
         paint.getTextWidths(textMasked, 0, textLength, textWidths)

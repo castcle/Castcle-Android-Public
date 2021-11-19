@@ -23,14 +23,14 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivToolbarLogoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tool_bar" />
+            app:srcCompat="@drawable/castcle_logo" />
 
         <TextView
             style="@style/CastcleToolBar"

@@ -52,6 +52,9 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
     private val onDeleteAccount: Boolean
         get() = completeBundle.onDeleteAccount
 
+    private val onForGotPassword: Boolean
+        get() = completeBundle.onForgotPassword
+
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentCompletedBinding
         get() = { inflater, container, attachToRoot ->
@@ -91,6 +94,10 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
                     )
                 }
             }
+
+            if(onForGotPassword){
+                btNext.text = localizedResources.getString(R.string.complete_fragment_button_complete)
+            }
         }
     }
 
@@ -107,6 +114,9 @@ class CompleteFragment : BaseFragment<CompleteViewModel>(),
                 viewModel.onLogout(requireActivity())
                     .subscribe()
                     .addToDisposables()
+            }
+            onForGotPassword -> {
+                onBoardNavigator.navigateToLoginFragment()
             }
             else -> {
                 onBoardNavigator.navigateToSettingFragment()

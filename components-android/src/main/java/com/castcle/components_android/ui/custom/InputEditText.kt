@@ -41,16 +41,25 @@ import com.google.android.material.textfield.TextInputLayout.END_ICON_PASSWORD_T
 //
 //  Created by sklim on 1/9/2021 AD at 14:25.
 
-class InputEditText(
-    context: Context,
-    attrs: AttributeSet
-) : ConstraintLayout(context, attrs) {
+class InputEditText : ConstraintLayout {
 
     val binding: InputEditTextBinding by lazy {
         InputEditTextBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    init {
+    constructor(context: Context) : super(context) {
+        init(context, null)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init(context, attrs)
+    }
+
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         init(context, attrs)
     }
 
@@ -131,15 +140,21 @@ class InputEditText(
             etTextInputPrimary.apply {
                 setTextStyle(R.style.TextInput_Text)
                 movePrimaryTextUp()
+                isCursorVisible = false
+
+                if (text.toString().isNotBlank()) {
+                    setSelection(text.toString().length)
+                }
 
                 setOnFocusChangeListener { _, hasFocus ->
-                    binding.root.isActivated = hasFocus
+                    isActivated = hasFocus
                     when {
                         hasFocus -> {
+                            isCursorVisible = true
                             movePrimaryTextDown()
                             context.showSoftKeyboard(this)
                         }
-                        text.toString().isEmpty() -> movePrimaryTextUp()
+                        text.toString().isEmpty() -> movePrimaryTextDown()
                     }
                 }
                 textWatcher = object : TextWatcher {
@@ -193,7 +208,10 @@ class InputEditText(
     override fun onSaveInstanceState(): Parcelable {
         return Bundle().apply {
             putParcelable(TEXT_INPUT_SUPER_STATE_KEY, super.onSaveInstanceState())
-            putSparseParcelableArray(TEXT_INPUT_SPARSE_STATE_KEY, saveChildViewStates())
+            putSparseParcelableArray(
+                TEXT_INPUT_SPARSE_STATE_KEY,
+                binding.root.saveChildViewStates()
+            )
         }
     }
 
@@ -202,7 +220,7 @@ class InputEditText(
         if (newState is Bundle) {
             val childrenState =
                 newState.getSparseParcelableArray<Parcelable>(TEXT_INPUT_SPARSE_STATE_KEY)
-            childrenState?.let { restoreChildViewStates(it) }
+            childrenState?.let { binding.root.restoreChildViewStates(it) }
             newState = newState.getParcelable(TEXT_INPUT_SUPER_STATE_KEY)
         }
         super.onRestoreInstanceState(newState)
@@ -323,6 +341,13 @@ class InputEditText(
         binding.ibTextInputDrawableEnd.setImageDrawable(
             context?.getDrawableRes(R.drawable.ic_password_visible)
         )
+    }
+
+    fun onDisableDrawableClick() {
+        with(binding.ibTextInputDrawableEnd) {
+            isClickable = false
+            isEditable = false
+        }
     }
 
     fun onSetupStatusVerifyEmailPass() {

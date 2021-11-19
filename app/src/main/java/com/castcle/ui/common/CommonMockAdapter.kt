@@ -56,9 +56,12 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
         )
     }
 
-    fun onUpdateItem(contentUiModel: ContentUiModel) {
-        val indexItem = uiModels.indexOf(contentUiModel)
-        notifyItemChanged(indexItem)
+    fun onUpdateItemCommentedCount() {
+        uiModels[0].apply {
+            payLoadUiModel.commentedUiModel.commented = true
+            payLoadUiModel.commentedUiModel.count = payLoadUiModel.commentedUiModel.count.plus(1)
+        }
+        notifyItemChanged(0)
     }
 
     fun onUpdateRecastItem(contentUiModel: ContentUiModel) {

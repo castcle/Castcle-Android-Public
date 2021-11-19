@@ -10,7 +10,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.data.staticmodel.*
+import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
@@ -21,6 +21,7 @@ import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.search.trend.TrendFragmentViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -95,6 +96,12 @@ class TopFragment : BaseFragment<TrendFragmentViewModel>(),
                 val refresher = loadStates.refresh
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                val isLoading = loadStates.refresh is LoadState.Loading
+//                if(!isLoading){
+//                    stopLoadingShimmer()
+//                }else{
+//                    startLoadingShimmer()
+//                }
                 handleEmptyState(displayEmpty)
             }
         }
@@ -179,7 +186,7 @@ class TopFragment : BaseFragment<TrendFragmentViewModel>(),
 
     override fun bindViewModel() {
         with(viewModel) {
-            launchOnLifecycleScope {
+            viewLifecycleOwner.lifecycleScope.launch {
                 feedTrendResponse.collectLatest {
                     adapterPagingCommon.submitData(lifecycle, it)
                 }

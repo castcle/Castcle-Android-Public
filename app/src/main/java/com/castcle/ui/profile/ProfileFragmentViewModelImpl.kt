@@ -59,8 +59,12 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val checkAvatarUpLoadingFlowableCase: CheckAvatarUpLoadingFlowableCase,
     private val likedCommentCompletableUseCase: LikeCommentCompletableUseCase,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
 ) : ProfileFragmentViewModel() {
+
+    override val isGuestMode: Boolean
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
     private var _userProfileContentRes = flowOf<PagingData<ContentUiModel>>()
 
@@ -156,12 +160,11 @@ class ProfileFragmentViewModelImpl @Inject constructor(
             ).addToDisposables()
     }
 
-    override fun putToFollowUser(castcleId: String): Completable {
-        val castcleIdMe = _userProfileData.value?.castcleId ?: ""
+    override fun putToFollowUser(castcleIdToFoller: String): Completable {
         return putToFollowUserCompletableUseCase.execute(
             FollowRequest(
-                castcleIdFollower = castcleId,
-                castcleId = castcleIdMe
+                castcleIdFollower = castcleIdToFoller,
+                castcleId = castcleId
             )
         ).doOnSubscribe {
             _showLoading.onNext(true)

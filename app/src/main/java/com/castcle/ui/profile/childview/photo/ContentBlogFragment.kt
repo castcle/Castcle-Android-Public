@@ -17,6 +17,7 @@ import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST_UNRECAST
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -204,11 +205,12 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
             authorId = viewModel.castcleId ?: "",
             likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
         )
+        adapterPagingCommon.updateStateItemLike(contentUiModel)
+
         viewModel.likedContent(
             likeContentRequest
-        ).subscribeBy(onComplete = {
-            adapterPagingCommon.updateStateItemLike(contentUiModel)
-        }, onError = {
+        ).subscribeBy(onError = {
+            adapterPagingCommon.updateStateItemUnLike(contentUiModel)
             displayError(it)
         }).addToDisposables()
     }
@@ -222,10 +224,18 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
 
         getNavigationResult<ContentUiModel>(
             onBoardNavigator,
-            R.id.dialogRecastFragment,
+            R.id.feedFragment,
             KEY_REQUEST,
             onResult = {
                 adapterPagingCommon.updateStateItemRecast(it)
+            })
+
+        getNavigationResult<ContentUiModel>(
+            onBoardNavigator,
+            R.id.feedFragment,
+            KEY_REQUEST_UNRECAST,
+            onResult = {
+                adapterPagingCommon.updateStateItemUnRecast(it)
             })
     }
 

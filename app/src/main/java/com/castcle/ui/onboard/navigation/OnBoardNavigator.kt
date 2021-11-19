@@ -6,6 +6,7 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
+import com.castcle.common_model.model.webview.WebViewRequest
 import com.castcle.ui.base.BaseNavigator
 import pl.aprilapps.easyphotopicker.MediaFile
 
@@ -91,7 +92,11 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToCreatePasswordFragment(verificationUiModel: VerificationUiModel)
 
-    fun navigateToCompleteFragment(onDeletePage: Boolean = false, onAccountPage: Boolean = false)
+    fun navigateToCompleteFragment(
+        onDeletePage: Boolean = false,
+        onAccountPage: Boolean = false,
+        onForGotPass: Boolean = false
+    )
 
     fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean = false)
 
@@ -114,4 +119,8 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle)
 
     fun navigateToNotificationFragment()
+
+    fun navigateToForgotPassword()
+
+    fun navigateToVerifyOtpFragment(otpRequest: ProfileBundle.ProfileOtp)
 }

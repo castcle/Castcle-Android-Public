@@ -50,7 +50,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/etTextInputPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/etTextInputPrimary"
-                app:srcCompat="@drawable/ic_close" />
+                app:srcCompat="@drawable/ic_close_white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 

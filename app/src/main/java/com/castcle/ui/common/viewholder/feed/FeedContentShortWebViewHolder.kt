@@ -110,24 +110,25 @@ class FeedContentShortWebViewHolder(
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = contentMessage
                 ftFooter.bindUiModel(uiModel)
-                clPreviewIconContent.clInPreviewIconContent.gone()
-                clPreviewContent.clInPreviewContent.gone()
 
-                link.firstOrNull()?.let {
-                    LinkParser(it.url, object : ParserCallback {
-                        override fun onData(linkData: LinkData) {
-                            if (linkData.imageUrl.isNullOrBlank()) {
-                                onBindContentIconWeb(linkData)
-                            } else {
-                                onBindContentImageWeb(linkData)
+                if(!clPreviewIconContent.clInPreviewIconContent.isVisible
+                    && !clPreviewContent.clInPreviewContent.isVisible){
+                    link.firstOrNull()?.let {
+                        LinkParser(it.url, object : ParserCallback {
+                            override fun onData(linkData: LinkData) {
+                                if (linkData.imageUrl.isNullOrBlank()) {
+                                    onBindContentIconWeb(linkData)
+                                } else {
+                                    onBindContentImageWeb(linkData)
+                                }
                             }
-                        }
 
-                        override fun onError(exception: Exception) {
-                            clPreviewIconContent.clInPreviewIconContent.gone()
-                            clPreviewContent.clInPreviewContent.gone()
-                        }
-                    }).parse()
+                            override fun onError(exception: Exception) {
+                                clPreviewIconContent.clInPreviewIconContent.gone()
+                                clPreviewContent.clInPreviewContent.gone()
+                            }
+                        }).parse()
+                    }
                 }
             }
         }

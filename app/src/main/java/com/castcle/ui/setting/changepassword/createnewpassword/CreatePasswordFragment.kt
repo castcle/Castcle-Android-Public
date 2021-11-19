@@ -58,6 +58,9 @@ class CreatePasswordFragment : BaseFragment<CreatePasswordFragmentViewModel>(),
     private val verificationUiModel: VerificationUiModel
         get() = createPasswordFragmentArgs.veificationUiModel
 
+    private val onForGotPassword: Boolean
+        get() = verificationUiModel.forgotPassword
+
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleLanguageBinding
         get() = { inflater, container, attachToRoot ->
@@ -128,7 +131,7 @@ class CreatePasswordFragment : BaseFragment<CreatePasswordFragmentViewModel>(),
         )
         viewModel.submitChangePassword(changePasswordRequest).subscribeBy(
             onComplete = {
-                navigateToSetting()
+                onBindNavigate()
             },
             onError = {
                 handleErrorState(it)
@@ -136,9 +139,13 @@ class CreatePasswordFragment : BaseFragment<CreatePasswordFragmentViewModel>(),
         ).addToDisposables()
     }
 
-    private fun navigateToSetting() {
+    private fun onBindNavigate() {
+        navigateToCompleteFragment()
+    }
+
+    private fun navigateToCompleteFragment() {
         requireActivity().hideSoftKeyboard()
-        onBoardNavigator.navigateToCompleteFragment()
+        onBoardNavigator.navigateToCompleteFragment(onForGotPass = onForGotPassword)
     }
 
     private fun handleCheckLawOne() {

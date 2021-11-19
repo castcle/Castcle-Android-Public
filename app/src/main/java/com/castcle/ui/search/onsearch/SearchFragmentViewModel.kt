@@ -3,6 +3,7 @@ package com.castcle.ui.search.onsearch
 import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.ui.util.SingleLiveEvent
 import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -35,7 +36,7 @@ abstract class SearchFragmentViewModel : BaseViewModel() {
 
     abstract val searchResponse: LiveData<List<SearchUiModel>>
 
-    abstract val resentSearchResponse: LiveData<List<SearchUiModel>>
+    abstract val resentSearchResponse: SingleLiveEvent<List<SearchUiModel>>
 
     abstract val showLoading: Observable<String>
 

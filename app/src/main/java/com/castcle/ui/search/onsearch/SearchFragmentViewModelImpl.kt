@@ -9,6 +9,7 @@ import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.localization.LocalizedResources
 import com.castcle.networking.service.common.TIMEOUT_SEARCH_REQUEST
 import com.castcle.networking.service.common.TIMEOUT_SHOWING_SPINNER
+import com.castcle.ui.util.SingleLiveEvent
 import com.castcle.usecase.search.*
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -64,8 +65,8 @@ class SearchFragmentViewModelImpl @Inject constructor(
     override val searchResponse: LiveData<List<SearchUiModel>>
         get() = _searchResponse
 
-    private val _resentSearchResponse = MutableLiveData<List<SearchUiModel>>()
-    override val resentSearchResponse: LiveData<List<SearchUiModel>>
+    private val _resentSearchResponse = SingleLiveEvent<List<SearchUiModel>>()
+    override val resentSearchResponse: SingleLiveEvent<List<SearchUiModel>>
         get() = _resentSearchResponse
 
     private var _cacheSearchUiModel = MutableLiveData<List<SearchUiModel>>()

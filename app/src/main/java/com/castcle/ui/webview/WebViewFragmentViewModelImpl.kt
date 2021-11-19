@@ -1,6 +1,7 @@
 package com.castcle.ui.webview
 
 import android.net.Uri
+import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.data.model.ModelDeepLink
 import javax.inject.Inject
 
@@ -29,6 +30,7 @@ import javax.inject.Inject
 //  Created by sklim on 24/8/2021 AD at 08:24.
 
 class WebViewFragmentViewModelImpl @Inject constructor(
+    private val secureStorage: SecureStorage,
 ) : WebViewFragmentViewModel(), Input {
     override val input: Input
         get() = this

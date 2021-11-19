@@ -63,9 +63,20 @@ class FeedRepositoryImpl @Inject constructor(
         pagingSourceFactory = { TrendPagingDataSource(feedApi, feedRequestHeader) }
     ).flow
 
-    override fun createComment(commentRequest: CommentRequest): Single<ContentUiModel> {
+    override fun createComment(commentRequest: ReplyCommentRequest): Single<ContentUiModel> {
         return feedApi.sentComments(
-            contentId = commentRequest.feedItemId,
+            contentId = commentRequest.contentId,
+            commentRequest = commentRequest
+        ).lift(ApiOperators.mobileApiError())
+            .map {
+                it.payload.toContentUiModel()
+            }.firstOrError()
+    }
+
+    override fun createReplyComment(commentRequest: ReplyCommentRequest): Single<ContentUiModel> {
+        return feedApi.sentReplyComments(
+            contentId = commentRequest.contentId,
+            commentId = commentRequest.commentId,
             commentRequest = commentRequest
         ).lift(ApiOperators.mobileApiError())
             .map {
@@ -124,7 +135,7 @@ class FeedRepositoryImpl @Inject constructor(
             feedApi.unRecastContent(id = recastRequest.contentId, recastRequest)
                 .lift(ApiOperators.mobileApiError())
                 .map {
-                    it.toContentUiModel()
+                    ContentUiModel()
                 }.firstOrError()
         } else {
             feedApi.recastContent(id = recastRequest.contentId, recastRequest)
@@ -142,8 +153,7 @@ class FeedRepositoryImpl @Inject constructor(
             .lift(ApiOperators.mobileApiError())
             .map {
                 it.toContentUiModel()
-            }
-            .firstOrError()
+            }.firstOrError()
     }
 
     override fun likeComment(
@@ -156,7 +166,7 @@ class FeedRepositoryImpl @Inject constructor(
             LIKE_STATUS_UNLIKE
         }
         return feedApi.likeComment(
-            likeCommentRequest.feedItemId,
+            likeCommentRequest.contentId,
             likeCommentRequest.commentId,
             status,
             likeCommentRequest
@@ -178,6 +188,6 @@ class FeedRepositoryImpl @Inject constructor(
 }
 
 const val DEFAULT_PAGE_SIZE = 25
-const val DEFAULT_PREFETCH = 2
+const val DEFAULT_PREFETCH = 3
 private const val LIKE_STATUS_LIKE = "liked"
 private const val LIKE_STATUS_UNLIKE = "unliked"

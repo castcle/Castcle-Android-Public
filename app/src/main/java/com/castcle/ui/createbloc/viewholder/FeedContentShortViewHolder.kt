@@ -2,14 +2,17 @@ package com.castcle.ui.createbloc.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutQuoteTemplateShortBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
-import com.castcle.components_android.ui.custom.previewlinkurl.*
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.createbloc.adapter.CommonQuoteCastAdapter
+import com.workfort.linkpreview.LinkData
+import com.workfort.linkpreview.callback.ParserCallback
+import com.workfort.linkpreview.util.LinkParser
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -84,31 +87,104 @@ class FeedContentShortViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel, true)
+                tvFeedContent.text = contentMessage
                 ftFooter.gone()
-                tvFeedContent.text = contentFeed
-                if (link.isNotEmpty()) {
-                    groupPreview.visible()
-                    link.firstOrNull()?.let {
-                        PreViewLinkUrl(it.url, it.type, object : PreViewLinkCallBack {
-                            override fun onComplete(urlInfo: UrlInfoUiModel) {
-                                with(urlInfo) {
-                                    ivPerviewUrl.loadGranularRoundedCornersImage(image)
-                                    tvPreviewUrl.text = url
-                                    tvPreviewHeader.text = title
-                                    tvFeedContent.text = description
-                                }
-                            }
-
-                            override fun onFailed(throwable: Throwable) {
-
-                            }
-                        }).fetchUrlPreview()
+                when {
+                    link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
+                        clPreviewIconContent.clInPreviewIconContent.gone()
+                        clPreviewContent.clInPreviewContent.gone()
+                        with(clPreviewContentImage) {
+                            clInPreviewContentImage.visible()
+                            icImageContent.bindImageContent(uiModel, true)
+                        }
+                        stopLoadingPreViewShimmer()
                     }
-                } else {
-                    groupPreview.gone()
+                    link.isNotEmpty() -> {
+                        clPreviewContentImage.clInPreviewContentImage.gone()
+                        if (!clPreviewIconContent.clInPreviewIconContent.isVisible &&
+                            !clPreviewContent.clInPreviewContent.isVisible
+                        ) {
+                            startLoadingPreViewShimmer()
+                        }
+                        link.firstOrNull()?.let {
+                            LinkParser(it.url, object : ParserCallback {
+                                override fun onData(linkData: LinkData) {
+                                    if (linkData.imageUrl.isNullOrBlank()) {
+                                        onBindContentIconWeb(linkData)
+                                    } else {
+                                        onBindContentImageWeb(linkData)
+                                    }
+                                }
+
+                                override fun onError(exception: Exception) {
+                                    clPreviewIconContent.clInPreviewIconContent.gone()
+                                    clPreviewContent.clInPreviewContent.gone()
+                                }
+                            }).parse()
+
+                        }
+                    }
+                    else -> {
+                        stopLoadingPreViewShimmer()
+                        clPreviewIconContent.clInPreviewIconContent.gone()
+                        clPreviewContent.clInPreviewContent.gone()
+                        clPreviewContentImage.clInPreviewContentImage.gone()
+                    }
                 }
+
+            }
+        }
+    }
+
+    private fun onBindContentIconWeb(linkUiModel: LinkData) {
+        stopLoadingPreViewShimmer()
+        with(binding.clPreviewIconContent) {
+            clInPreviewIconContent.visible()
+            with(linkUiModel) {
+                ivPerviewIconUrl.loadIconImage(favicon ?: "")
+                tvIconPreview.text = url
+                tvPreviewIconHeader.text = title
+                tvPreviewIconContent.text = description
+            }
+        }
+    }
+
+    private fun onBindContentImageWeb(linkUiModel: LinkData) {
+        stopLoadingPreViewShimmer()
+        with(binding.clPreviewContent) {
+            clInPreviewContent.visible()
+            with(linkUiModel) {
+                ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
+                tvPreviewUrl.text = url
+                tvPreviewHeader.text = title
+                tvPreviewContent.text = description
+            }
+        }
+    }
+
+    private fun stopLoadingPreViewShimmer() {
+        with(binding) {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
+    }
+
+    private fun startLoadingPreViewShimmer() {
+        with(binding) {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
             }
         }
     }

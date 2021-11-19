@@ -142,12 +142,12 @@ data class ContentUiModel(
 
 fun FeedContentResponse.toContentUiModel(): ContentUiModel {
     return ContentUiModel(
-        id = id,
-        featureSlug = feature.slug,
+        id = id ?: "",
+        featureSlug = feature?.slug ?: "",
         circleSlug = circle?.slug ?: "",
         contentType = payload.type,
-        created = created,
-        updated = updated,
+        created = created ?: "",
+        updated = updated ?: "",
         payLoadUiModel = payload.toPayloadUiModel()
     )
 }
@@ -155,7 +155,7 @@ fun FeedContentResponse.toContentUiModel(): ContentUiModel {
 fun FeedViewContentResponse.toViewContentUiModel(): ContentUiModel {
     return ContentUiModel(
         id = id,
-        featureSlug = feature.slug,
+        featureSlug = feature.slug ?: "",
         circleSlug = circle?.slug ?: "",
         contentType = payload.type,
         created = created,
@@ -181,7 +181,7 @@ data class PayLoadUiModel(
     val reCastedUiModel: RecastedUiModel = RecastedUiModel(),
     val author: AuthorUiModel = AuthorUiModel(),
     val featureContent: FeatureUiModel? = null,
-    val replyUiModel: List<ReplyUiModel>? = null,
+    var replyUiModel: List<ReplyUiModel>? = null,
     val replyedUiModel: ReplyUiModel? = null
 ) : Parcelable
 
@@ -253,9 +253,9 @@ fun PayloadContent.toPayloadContentUiModel(): PayloadContentUiModel {
 }
 
 fun Feature.toFeatureUiModel() = FeatureUiModel(
-    slug = slug,
-    name = name,
-    key = key
+    slug = slug ?: "",
+    name = name ?: "",
+    key = key ?: ""
 )
 
 @Parcelize
@@ -273,6 +273,15 @@ data class ReplyUiModel(
     var author: AuthorUiModel
 ) : Parcelable
 
+fun ContentUiModel.toReplyComment(): ReplyUiModel {
+    return ReplyUiModel(
+        id = id,
+        created = payLoadUiModel.created,
+        message = payLoadUiModel.contentMessage,
+        author = payLoadUiModel.author
+    )
+}
+
 fun ReplyResponse.toReplyUiModel() =
     ReplyUiModel(
         id = id,
@@ -289,7 +298,7 @@ fun AuthorComment.toAuthorUiModel() =
         followed = followed ?: false,
         id = id,
         type = type,
-        verifiedEmail = verified ?: false
+        verifiedEmail = verified?.email ?: false
     )
 
 @Parcelize
@@ -354,7 +363,7 @@ fun LikedResponse.toLikedUiModel() =
 
 @Parcelize
 data class CommentedUiModel(
-    val count: Int = 0,
+    var count: Int = 0,
     var commented: Boolean = false,
     val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable
@@ -371,7 +380,7 @@ fun CommentedResponse.toCommentedUiModel() =
 
 @Parcelize
 data class RecastedUiModel(
-    val count: Int = 0,
+    var count: Int = 0,
     var recasted: Boolean = false,
     val participantUiModel: List<ParticipantUiModel> = emptyList()
 ) : Parcelable

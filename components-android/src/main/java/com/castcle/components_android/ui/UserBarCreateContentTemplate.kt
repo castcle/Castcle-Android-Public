@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutUserBarContentTemplateBinding
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.extensions.loadCircleImage
-import com.castcle.extensions.visibleOrGone
+import com.castcle.extensions.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -49,7 +48,7 @@ class UserBarCreateContentTemplate(
             with(itemUiModel.payLoadUiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
                 tvUserName.text = author.displayName
-                tvStatusFollow.visibleOrGone(author.followed)
+                tvStatusFollow.gone()
             }
         }
     }

@@ -11,9 +11,8 @@ import com.castcle.android.databinding.DialogFragmentRecastBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.setting.PageUiModel
-import com.castcle.common_model.model.userprofile.UserPage
-import com.castcle.data.staticmodel.UserRecastStatic
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -49,12 +48,16 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+
     private lateinit var adapterRecast: RecastAdapter
 
     private val dialogArgs: RecastDialogFragmentArgs by navArgs()
 
     private val currentCoutent: ContentUiModel
         get() = dialogArgs.contentUiModel
+
+    private var unReCasted: Boolean = false
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> DialogFragmentRecastBinding
@@ -112,7 +115,16 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
         }.addToDisposables()
 
         viewModel.onSuccess.subscribe {
-            handleNavigateResultBack()
+            displayMessage(
+                localizedResources.getString(
+                    R.string.recast_title_recasted
+                )
+            )
+            if (unReCasted) {
+                handleNavigateResultUnReCastBack()
+            } else {
+                handleNavigateResultBack()
+            }
         }.addToDisposables()
 
         viewModel.onError.subscribe {
@@ -134,6 +146,7 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
                 handleBindSelectPage()
             }
             if (currentCoutent.payLoadUiModel.reCastedUiModel.recasted) {
+                unReCasted = true
                 icRecastPost.tvDisplayTitle.text =
                     requireContext().getString(R.string.recast_title_unrecast)
             }
@@ -159,6 +172,11 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
         onBoardNavigator.findNavController().popBackStack()
     }
 
+    private fun handleNavigateResultUnReCastBack() {
+        setNavigationResult(onBoardNavigator, KEY_REQUEST_UNRECAST, currentCoutent)
+        onBoardNavigator.findNavController().popBackStack()
+    }
+
     private fun handleBindSelectPage() {
         binding.flRoot.visible()
         binding.flRecastRoot.gone()
@@ -172,3 +190,5 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
 
 const val CODE_REQUEST: Int = 10
 const val KEY_REQUEST: String = "REC-001"
+const val KEY_REQUEST_UNRECAST: String = "URC-001"
+const val KEY_REQUEST_COMMENTED_COUNT: String = "COM-001"

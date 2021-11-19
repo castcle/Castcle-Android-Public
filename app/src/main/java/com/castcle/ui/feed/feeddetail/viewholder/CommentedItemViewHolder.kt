@@ -115,9 +115,18 @@ class CommentedItemViewHolder(
 
     private fun onBindLikeComment(likedUiModel: LikedUiModel) {
         with(binding) {
-            tvLiked.text = binding.root.context.getString(
-                R.string.comment_item_like
-            ).format(likedUiModel.count)
+            with(tvLiked) {
+                if (likedUiModel.liked) {
+                    isActivated = likedUiModel.liked
+                    setTextColor(binding.root.context.getColorResource(R.color.blue))
+                } else {
+                    isActivated = likedUiModel.liked
+                    setTextColor(binding.root.context.getColorResource(R.color.white))
+                }
+                text = binding.root.context.getString(
+                    R.string.comment_item_like
+                ).format(likedUiModel.count)
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.castcle.common_model.model.search.domain
 
+import com.castcle.common_model.model.userprofile.domain.ImageResponse
+import com.castcle.common_model.model.userprofile.domain.ImagesRequest
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -46,7 +48,7 @@ data class Follow(
     @SerializedName("aggregator")
     val aggregator: Aggregator,
     @SerializedName("avatar")
-    val avatar: String,
+    val avatar: ImageResponse,
     @SerializedName("castcleId")
     val castcleId: String,
     @SerializedName("count")
@@ -90,5 +92,7 @@ data class Aggregator(
     @SerializedName("message")
     val message: String,
     @SerializedName("type")
-    val type: String
+    val type: String,
+    @SerializedName("count")
+    val count: String
 )

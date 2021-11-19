@@ -3,7 +3,6 @@ package com.castcle.ui.feed.feeddetail
 import android.annotation.SuppressLint
 import android.view.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +11,8 @@ import com.castcle.android.databinding.FragmentFeedDetailBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
-import com.castcle.common_model.model.feed.CommentRequest
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ReplyCommentRequest
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.setting.PageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
@@ -22,6 +21,7 @@ import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonMockAdapter
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST_COMMENTED_COUNT
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -80,6 +80,10 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         get() = feedFetaailArgs.isContent
 
     private lateinit var userProfile: User
+
+    private var commentId: String = ""
+
+    private var commentLikeStatus: Boolean = false
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -199,9 +203,14 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             )
             ivToolbarLogoButton
                 .subscribeOnClick {
-                    findNavController().navigateUp()
+                    navigatePopBack()
                 }.addToDisposables()
         }
+    }
+
+    private fun navigatePopBack() {
+        setNavigationResult(onBoardNavigator, KEY_REQUEST_COMMENTED_COUNT, commentedCount)
+        onBoardNavigator.findNavController().popBackStack()
     }
 
     @SuppressLint("CheckResult")
@@ -246,12 +255,15 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     private fun handlerCommentedLike(item: CommentItemClick) {
         when (item) {
             is CommentItemClick.CommentedLikeChildClick -> {
-                onLikedComment(item.commentedId, item.replyId, item.likeStatus)
+                onLikedReplyComment(item.commentedId, item.replyId, item.likeStatus)
             }
             is CommentItemClick.CommentedLikedItemClick -> {
+                commentId = item.contentUiModel.id
+                commentLikeStatus = item.contentUiModel.payLoadUiModel.likedUiModel.liked
+
                 onLikedComment(
-                    contentUiModel.payLoadUiModel.contentId,
-                    item.contentUiModel.id,
+                    contentId = contentUiModel.payLoadUiModel.contentId,
+                    commentId = item.contentUiModel.id,
                     item.contentUiModel.payLoadUiModel.likedUiModel.liked
                 )
             }
@@ -260,53 +272,70 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
-    private fun onLikedComment(contentId: String, commentId: String, likeStatus: Boolean) {
+    private fun onLikedReplyComment(contentId: String, commentId: String, likeStatus: Boolean) {
         val commentedRequest = LikeCommentRequest(
             authorId = userProfile.castcleId,
-            feedItemId = contentId,
             commentId = commentId,
+            contentId = contentId,
             likeStatue = likeStatus
         )
         viewModel.likedComment(commentedRequest)
+        onUpdateLikedComment(commentLikeStatus, commentId)
+        onClearStatus()
+    }
+
+    private fun onLikedComment(contentId: String, commentId: String, likeStatus: Boolean) {
+        val commentedRequest = LikeCommentRequest(
+            authorId = userProfile.castcleId,
+            commentId = commentId,
+            contentId = contentId,
+            likeStatue = likeStatus
+        )
+        viewModel.likedComment(commentedRequest)
+        onUpdateLikedComment(commentLikeStatus, commentId)
+        onClearStatus()
     }
 
     private fun handlerReplyClickItem(it: CommentItemClick.CommentReplyClick) {
         onBindStartComment()
         with(binding.itemComment) {
             val castcleId = it.contentUiModel.payLoadUiModel.author.castcleId
+            commentId = it.contentUiModel.id
+            commentLikeStatus = it.contentUiModel.payLoadUiModel.likedUiModel.liked
+
             with(etInputMessage) {
-                setText(
-                    MENTION_CASTCLE_ID.format(castcleId)
-                )
+                setText(MENTION_CASTCLE_ID.format(castcleId))
                 setSelection(etInputMessage.text.length)
                 onReplyComment = true
             }
         }
     }
 
+    private fun getReplyCommentRequest(): ReplyCommentRequest {
+        return ReplyCommentRequest(
+            message = binding.itemComment.etInputMessage.text.toString(),
+            contentId = contentUiModel.payLoadUiModel.contentId,
+            commentId = commentId,
+            authorId = userProfile.castcleId
+        )
+    }
+
     private fun onSentReplyComment() {
         with(binding.itemComment) {
-            val commentRequest = CommentRequest(
-                message = etInputMessage.text.toString(),
-                feedItemId = getContentId(),
-                authorId = userProfile.castcleId
-            )
+            val commentRequest = getReplyCommentRequest()
             if (etInputMessage.text.isNotBlank()) {
                 sentReplyComment(commentRequest)
             }
         }
     }
 
-    private fun getContentId(): String {
-        return if (onReplyComment) {
-            contentUiModel.payLoadUiModel.contentId
+    private fun sentReplyComment(commentRequest: ReplyCommentRequest) {
+        if (onReplyComment) {
+            viewModel.input.setReplyComment(commentRequest)
         } else {
-            contentUiModel.payLoadUiModel.contentId
+            adapterMockCommon.onUpdateItemCommentedCount()
+            viewModel.input.setComment(commentRequest)
         }
-    }
-
-    private fun sentReplyComment(commentRequest: CommentRequest) {
-        viewModel.input.setComment(commentRequest)
     }
 
     override fun bindViewModel() {
@@ -336,6 +365,19 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }.addToDisposables()
     }
 
+    private fun onUpdateLikedComment(likeStatus: Boolean, commentId: String) {
+        if (!likeStatus) {
+            adapterComment.onUpdateLiked(commentId)
+        } else {
+            adapterComment.onUpdateUnLiked(commentId)
+        }
+    }
+
+    private fun onClearStatus() {
+        commentLikeStatus = false
+        commentId = ""
+    }
+
     private fun onBindUserProfileComment(userAndPage: PageHeaderUiModel) {
         with(binding.itemComment) {
             userAndPage.pageUiItem.firstOrNull()?.avatarUrl?.let {
@@ -350,19 +392,27 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         } else {
             adapterComment.hideLoading()
         }
+        onEmptyReply()
     }
 
+    private var commentedCount = 0
+
+    @SuppressLint("NotifyDataSetChanged")
     private fun onBindCommentedItem(list: List<ContentUiModel>) {
         if (list.isNotEmpty()) {
-            onEmptyReply()
             handleEmptyState(false)
             adapterComment.uiModels = list
+            if (adapterComment.uiModels.isNotEmpty()) {
+                adapterComment.notifyDataSetChanged()
+            }
+            commentedCount = list.size
         } else {
             handleEmptyState(true)
         }
     }
 
     private fun onEmptyReply() {
+        onReplyComment = false
         with(binding.itemComment) {
             etInputMessage.setText("")
         }

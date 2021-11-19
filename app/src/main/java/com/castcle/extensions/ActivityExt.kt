@@ -8,6 +8,7 @@ import android.net.Uri
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import com.castcle.android.R
+import com.castcle.common_model.model.webview.WebViewRequest
 import com.castcle.ui.onboard.OnBoardActivity
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

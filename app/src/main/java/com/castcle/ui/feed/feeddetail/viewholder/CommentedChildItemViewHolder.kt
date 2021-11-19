@@ -2,11 +2,11 @@ package com.castcle.ui.feed.feeddetail.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.castcle.android.R
 import com.castcle.android.components_android.databinding.ItemCommentChildTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ReplyUiModel
-import com.castcle.extensions.loadCircleImage
-import com.castcle.extensions.toTime
+import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.CommentItemClick
 import com.castcle.ui.feed.feeddetail.CommentedChildAdapter
@@ -65,6 +65,15 @@ class CommentedChildItemViewHolder(
                     tvDataTime.setTimeAgo(it)
                 }
                 tvCommentMessage.text = message
+                with(tvLiked) {
+//                    if (likedUiModel.liked) {
+//                        setTextColor(binding.root.context.getColorResource(R.color.blue))
+//                        isActivated = likedUiModel.liked
+//                    }
+                    text = binding.root.context.getString(
+                        R.string.comment_item_like
+                    ).format(0)
+                }
             }
         }
     }

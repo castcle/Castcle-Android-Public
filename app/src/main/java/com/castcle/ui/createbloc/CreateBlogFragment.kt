@@ -321,7 +321,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             mode = ImagePickerMode.MULTIPLE // default is multi image mode
             language = "en" // Set image picker language
 
-            theme = R.style.ef_CustomToolbarTheme
+            theme = R.style.ImagePickerTheme
             arrowColor = Color.WHITE // set toolbar arrow up color
             folderTitle = "Folder" // folder selection title
             imageTitle = "Tap to select" // image selection title

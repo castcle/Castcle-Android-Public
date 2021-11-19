@@ -65,12 +65,12 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(CreateBlogFragmentViewModel::class.java)
 
+
     override fun onResume() {
         super.onResume()
         with(requireActivity()) {
             softInputMode = getSoftInputMode()
-
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }
     }
 
@@ -193,6 +193,14 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         viewModel.onSuccess.subscribe {
             navigateToFeed()
         }.addToDisposables()
+
+        viewModel.onError.subscribe {
+            displayError(it)
+        }.addToDisposables()
+
+        viewModel.showLoading.subscribe {
+            binding.groupLoading.visibleOrGone(it)
+        }.addToDisposables()
     }
 
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
@@ -205,31 +213,6 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
                 textFormatCount.format(messageCount.first, messageCount.second)
             }
         }
-    }
-
-    private fun fetchMentionUser(): MutableList<ContentUiModel> {
-        return getFeedResponse().payload.toContentFeedUiModel().feedContentUiModel
-    }
-
-    private fun getFeedResponse(): FeedResponse {
-        return Gson().fromJson(
-            JSONObject(readJSONFromAsset() ?: "").toString(),
-            FeedResponse::class.java
-        )
-    }
-
-    private fun readJSONFromAsset(): String? {
-        val json: String?
-        try {
-            val inputStream: InputStream? = context?.resources?.openRawResource(
-                R.raw.feed_mock
-            )
-            json = inputStream?.bufferedReader().use { it?.readText() }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
     }
 
     private fun handleOnError(case: Throwable) {

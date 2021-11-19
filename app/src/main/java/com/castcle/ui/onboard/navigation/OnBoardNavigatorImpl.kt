@@ -12,6 +12,7 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
+import com.castcle.common_model.model.webview.WebViewRequest
 import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.containsSomeOf
 import com.castcle.localization.LocalizedResources
@@ -135,6 +136,11 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.dialogLoginFragment -> {
                         navController.navigate(
                             R.id.actionDialogLoginFragmentToLoginFragment
+                        )
+                    }
+                    R.id.completeFragment -> {
+                        navController.navigate(
+                            R.id.actionCompleteFragmentToLoginFragment
                         )
                     }
                     else -> {
@@ -326,7 +332,8 @@ class OnBoardNavigatorImpl @Inject constructor(
     ) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.verifyEmailFragment -> {
                         navController.navigate(
@@ -586,7 +593,8 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.feedFragment -> {
                         navController.navigate(
@@ -735,6 +743,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                             CreatePasswordFragmentArgs(verificationUiModel).toBundle()
                         )
                     }
+                    R.id.verifyOtpFragment -> {
+                        navController.navigate(
+                            R.id.actionVerifyOtpFragmentToCreatePasswordFragment,
+                            CreatePasswordFragmentArgs(verificationUiModel).toBundle()
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -746,17 +760,23 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToCompleteFragment(onDeletePage: Boolean, onAccountPage: Boolean) {
+    override fun navigateToCompleteFragment(
+        onDeletePage: Boolean,
+        onAccountPage: Boolean,
+        onForGotPass: Boolean
+    ) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.createPasswordFragment -> {
                         navController.navigate(
                             R.id.actionCreatePasswordToCompleteFragment,
                             CompleteFragmentArgs(
                                 onDeletePage = onAccountPage,
-                                onDeleteAccount = onAccountPage
+                                onDeleteAccount = onAccountPage,
+                                onForgotPassword = onForGotPass
                             ).toBundle()
                         )
                     }
@@ -783,7 +803,8 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.feedFragment -> {
                         navController.navigate(
@@ -987,7 +1008,8 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToDialogChooseFragment() {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.profileFragment -> {
                         navController.navigate(
@@ -1030,7 +1052,8 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToProfileChooseDialogFragment() {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.profileFragment -> {
                         navController.navigate(
@@ -1051,7 +1074,8 @@ class OnBoardNavigatorImpl @Inject constructor(
     override fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph -> {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.profileFragment -> {
                         navController.navigate(
@@ -1078,6 +1102,49 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.settingFragment -> {
                         navController.navigate(
                             R.id.actionSettingFragmentToNotificationFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToForgotPassword() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.loginFragment -> {
+                        navController.navigate(
+                            R.id.actionLoginFragmentToSearchAccountFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToVerifyOtpFragment(otpRequest: ProfileBundle.ProfileOtp) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.searchAccountFragment -> {
+                        navController.navigate(
+                            R.id.actionSearchAccountFragmentToVerifyFragment,
+                            VerifyEmailFragmentArgs(otpRequest).toBundle()
                         )
                     }
                     else -> {

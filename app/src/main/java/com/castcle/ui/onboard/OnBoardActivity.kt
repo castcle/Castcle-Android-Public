@@ -190,6 +190,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.deletePageFragment,
                 R.id.profileChooseDialogFragment,
                 R.id.notificationFragment,
+                R.id.verifyOtpFragment,
+                R.id.searchAccountFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

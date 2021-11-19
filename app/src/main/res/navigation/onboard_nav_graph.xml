@@ -103,6 +103,14 @@
         <action
             android:id="@+id/actionLoginFragmentToGreetingFragment"
             app:destination="@id/greetingFragment" />
+
+        <action
+            android:id="@+id/actionLoginFragmentToSearchAccountFragment"
+            app:destination="@id/searchAccountFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -231,9 +239,9 @@
             app:destination="@id/profile_nav_graph"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
+            app:launchSingleTop="true"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:launchSingleTop="true"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />
 
@@ -331,6 +339,11 @@
             android:defaultValue="false"
             app:argType="boolean" />
 
+        <argument
+            android:name="onForgotPassword"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/actionCompleteFragmentToSettingFragment"
             app:destination="@id/setting_nav_graph"
@@ -351,4 +364,35 @@
             android:name="contentUiModel"
             app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
     </fragment>
+
+    <fragment
+        android:id="@+id/searchAccountFragment"
+        android:name="com.castcle.ui.forgotpassword.searchaccount.SearchAccountFragment">
+
+        <action
+            android:id="@+id/actionSearchAccountFragmentToVerifyFragment"
+            app:destination="@id/verifyOtpFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/verifyOtpFragment"
+        android:name="com.castcle.ui.forgotpassword.verifyotp.VerifyOtpFragment">
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
+
+        <action
+            android:id="@+id/actionVerifyOtpFragmentToCreatePasswordFragment"
+            app:destination="@id/createPasswordFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
 </navigation>

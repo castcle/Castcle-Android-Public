@@ -98,9 +98,9 @@
     </style>
 
     <style name="ImagePickerTheme" parent="ef_CustomToolbarTheme">
-        <item name="colorPrimary">#607D8B</item>
-        <item name="colorPrimaryDark">#455A64</item>
-        <item name="colorAccent">@color/ef_colorAccent</item>
+        <item name="colorPrimary">@color/black_nero</item>
+        <item name="colorPrimaryDark">@color/black_nero</item>
+        <item name="colorAccent">@color/black_tranparen_80</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">

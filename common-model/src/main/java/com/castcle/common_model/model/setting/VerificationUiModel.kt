@@ -30,7 +30,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class VerificationUiModel(
     val refCode: String,
-    val expiresTime: String
+    val expiresTime: String,
+    var forgotPassword: Boolean = false
 ) : Parcelable
 
 fun VerificationResponse.toVerificationUiModel() =

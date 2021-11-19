@@ -114,7 +114,15 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
                     onError = ::handlerError
                 ).addToDisposables()
             }
+
+            tvForgetPass.subscribeOnClick {
+                handlerNavigateToForgotPassword()
+            }.addToDisposables()
         }
+    }
+
+    private fun handlerNavigateToForgotPassword(){
+        onBoardNavigator.navigateToForgotPassword()
     }
 
     private fun handlerError(error: Throwable) {

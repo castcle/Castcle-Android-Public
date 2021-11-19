@@ -74,6 +74,8 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val castcleId: String
 
+    abstract val isGuestMode: Boolean
+
     abstract fun likedContent(
         likeContentRequest: LikeContentRequest
     ): Completable

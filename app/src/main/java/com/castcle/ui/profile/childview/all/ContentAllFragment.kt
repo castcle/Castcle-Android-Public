@@ -15,6 +15,7 @@ import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST_UNRECAST
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -137,32 +138,31 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                     handleEmptyState(isError)
                 }
                 if (!isLoading) {
-                    stopLoadingShimmer()
+//                    stopLoadingShimmer()
                     activityViewModel.onProfileLoading(false)
-
                 }
             }
         }
     }
 
-    private fun startLoadingShimmer() {
-        with(binding) {
-            skeletonLoading.shimmerLayoutLoading.run {
-                startShimmer()
-                visible()
-            }
-        }
-    }
-
-    private fun stopLoadingShimmer() {
-        with(binding) {
-            skeletonLoading.shimmerLayoutLoading.run {
-                stopShimmer()
-                setShimmer(null)
-                gone()
-            }
-        }
-    }
+//    private fun startLoadingShimmer() {
+//        with(binding) {
+//            skeletonLoading.shimmerLayoutLoading.run {
+//                startShimmer()
+//                visible()
+//            }
+//        }
+//    }
+//
+//    private fun stopLoadingShimmer() {
+//        with(binding) {
+//            skeletonLoading.shimmerLayoutLoading.run {
+//                stopShimmer()
+//                setShimmer(null)
+//                gone()
+//            }
+//        }
+//    }
 
     private fun handleContentClick(click: Click) {
         when (click) {
@@ -212,11 +212,12 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
             authorId = viewModel.castcleId,
             likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
         )
+        adapterPagingCommon.updateStateItemLike(contentUiModel)
+
         viewModel.likedContent(
             likeContentRequest
-        ).subscribeBy(onComplete = {
-            adapterPagingCommon.updateStateItemLike(contentUiModel)
-        }, onError = {
+        ).subscribeBy(onError = {
+            adapterPagingCommon.updateStateItemUnLike(contentUiModel)
             displayError(it)
         }).addToDisposables()
     }
@@ -230,10 +231,18 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
 
         getNavigationResult<ContentUiModel>(
             onBoardNavigator,
-            R.id.dialogRecastFragment,
+            R.id.profileFragment,
             KEY_REQUEST,
             onResult = {
                 adapterPagingCommon.updateStateItemRecast(it)
+            })
+
+        getNavigationResult<ContentUiModel>(
+            onBoardNavigator,
+            R.id.profileFragment,
+            KEY_REQUEST_UNRECAST,
+            onResult = {
+                adapterPagingCommon.updateStateItemUnRecast(it)
             })
     }
 

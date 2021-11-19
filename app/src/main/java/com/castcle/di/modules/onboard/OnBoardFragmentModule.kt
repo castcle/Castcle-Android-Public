@@ -5,6 +5,8 @@ import com.castcle.di.modules.blog.CreateQuoteFragmentViewModelModule
 import com.castcle.di.modules.common.dialog.*
 import com.castcle.di.modules.feed.FeedDetailFragmentViewModelModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
+import com.castcle.di.modules.forgotpass.SearchAccountFragmentViewModelModule
+import com.castcle.di.modules.forgotpass.VerifyOtpFragmentViewModelModule
 import com.castcle.di.modules.login.*
 import com.castcle.di.modules.notification.NotificationFragmentViewModelModule
 import com.castcle.di.modules.profile.*
@@ -21,6 +23,8 @@ import com.castcle.ui.createbloc.CreateQuoteFragment
 import com.castcle.ui.feed.FeedFragment
 import com.castcle.ui.feed.FeedMockFragment
 import com.castcle.ui.feed.feeddetail.FeedDetailFragment
+import com.castcle.ui.forgotpassword.searchaccount.SearchAccountFragment
+import com.castcle.ui.forgotpassword.verifyotp.VerifyOtpFragment
 import com.castcle.ui.login.LoginFragment
 import com.castcle.ui.profile.CropAvatarImageFragment
 import com.castcle.ui.profile.ProfileFragment
@@ -272,4 +276,12 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [NotificationFragmentViewModelModule::class])
     fun systemnotificationFragment(): SystemNotificationFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [SearchAccountFragmentViewModelModule::class])
+    fun searchAccountFragment(): SearchAccountFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [VerifyOtpFragmentViewModelModule::class])
+    fun verifyOtpFragment(): VerifyOtpFragment
 }

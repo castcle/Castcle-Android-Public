@@ -327,6 +327,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         binding.flCoverLoading.visibleOrGone(it)
     }
 
+    private fun onGuestMode(enable: () -> Unit, disable: () -> Unit) {
+        if (viewModel.isGuestMode) {
+            disable.invoke()
+        } else {
+            enable.invoke()
+        }
+    }
+
     private fun onBindProfile(user: User) {
         profileTypeState = ProfileType.PROFILE_TYPE_ME
         userProfile = user
@@ -341,31 +349,43 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 tvProfileOverView.text = this
             }
             ivAddAvatar.subscribeOnClick {
-                onNavigateToDialogChooseFragment(
-                    PhotoSelectedState.AVATAR_SELECT
-                )
+                onGuestMode(enable = {
+                    onNavigateToDialogChooseFragment()
+                }, disable = {})
             }.addToDisposables()
 
             ivAvatarProfile.loadCircleImage(user.avatar)
 
             btViewProfile.subscribeOnClick {
-                onNavigateToEditProfileOrPage()
+                onGuestMode(enable = {
+                    onNavigateToEditProfileOrPage()
+                }, disable = {})
             }.addToDisposables()
 
             ivEditProfile.subscribeOnClick {
-                onNavigateToChooseProfileEdit()
+                onGuestMode(enable = {
+                    onNavigateToChooseProfileEdit()
+                }, disable = {})
             }.addToDisposables()
         }
         with(binding) {
             ivAddCover.subscribeOnClick {
-                onNavigateToDialogChooseFragment(
-                    PhotoSelectedState.COVER_SELECT
-                )
+                onGuestMode(enable = {
+                    onNavigateToDialogChooseFragment(
+                        PhotoSelectedState.COVER_SELECT
+                    )
+                }, disable = {})
             }.addToDisposables()
 
             ivProfileCover.loadImageWithCache(user.cover)
             tbProfile.tvToolbarTitle.text = user.castcleId
         }
+    }
+
+    private fun onNavigateToDialogChooseFragment() {
+        onNavigateToDialogChooseFragment(
+            PhotoSelectedState.AVATAR_SELECT
+        )
     }
 
     private fun onNavigateToChooseProfileEdit() {
@@ -386,7 +406,15 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             ivAvatarProfile.loadCircleImage(user.avatar)
 
             ivEditProfile.subscribeOnClick {
-                onNavigateToChooseProfileEdit()
+                onGuestMode(enable = {
+                    onNavigateToChooseProfileEdit()
+                }, disable = {})
+            }.addToDisposables()
+
+            btViewProfile.subscribeOnClick {
+                onGuestMode(enable = {
+                    onNavigateToEditProfileOrPage()
+                }, disable = {})
             }.addToDisposables()
 
             if (isMe) {
@@ -405,9 +433,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
         with(binding) {
             ivAddCover.subscribeOnClick {
-                onNavigateToDialogChooseFragment(
-                    PhotoSelectedState.COVER_PAGE_SELECT
-                )
+                onGuestMode(enable = {
+                    onNavigateToDialogChooseFragment(
+                        PhotoSelectedState.COVER_PAGE_SELECT
+                    )
+                }, disable = {})
             }.addToDisposables()
             ivProfileCover.loadImageWithCache(user.cover)
             tbProfile.tvToolbarTitle.text = user.castcleId
@@ -422,13 +452,17 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             btFollow.text = localizedResources.getString(R.string.profile_edit_profile)
 
             btFollow.subscribeOnClick {
-                onNavigateToEditProfileOrPage()
+                onGuestMode(enable = {
+                    onNavigateToEditProfileOrPage()
+                }, disable = {})
             }.addToDisposables()
 
             ivAddAvatar.subscribeOnClick {
-                onNavigateToDialogChooseFragment(
-                    PhotoSelectedState.AVATAR_PAGE_SELECT
-                )
+                onGuestMode(enable = {
+                    onNavigateToDialogChooseFragment(
+                        PhotoSelectedState.AVATAR_PAGE_SELECT
+                    )
+                }, disable = {})
             }.addToDisposables()
         }
     }
@@ -461,7 +495,18 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 mediumLinks = userProfile.mediumLinks,
                 websiteLinks = userProfile.websiteLinks
             )
-        }, onProfileYou = {})
+        }, onProfileYou = {
+            profileBundle = ProfileBundle.ViewProfile(
+                castcleId = userProfile.castcleId,
+                overview = userProfile.overview,
+                dob = userProfile.dob,
+                facebookLinks = userProfile.facebookLinks,
+                twitterLinks = userProfile.twitterLinks,
+                youtubeLinks = userProfile.youtubeLinks,
+                mediumLinks = userProfile.mediumLinks,
+                websiteLinks = userProfile.websiteLinks
+            )
+        })
 
         return profileBundle
     }

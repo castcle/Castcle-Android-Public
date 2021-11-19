@@ -1,5 +1,6 @@
 package com.castcle.ui.feed.feeddetail
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
@@ -13,6 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.extensions.LayoutContainer
+import kotlin.math.abs
 import kotlin.properties.Delegates
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -55,6 +57,7 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun onInsertComment(commented: ContentUiModel) {
         uiModels.toMutableList().add(commented)
         if (uiModels.isEmpty()) {
@@ -62,6 +65,36 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         } else {
             notifyItemInserted(uiModels.lastIndex.plus(1))
         }
+    }
+
+    fun onUpdateLiked(commentedId: String) {
+        val updateLiked = uiModels
+        var index = 0
+        updateLiked.find {
+            it?.id == commentedId
+        }?.apply {
+            index = uiModels.indexOf(this)
+            payLoadUiModel.likedUiModel.liked = true
+            payLoadUiModel.likedUiModel.count =
+                payLoadUiModel.likedUiModel.count.plus(1)
+        }
+        uiModels = updateLiked
+        notifyItemChanged(index)
+    }
+
+    fun onUpdateUnLiked(commentedId: String) {
+        val updateLiked = uiModels
+        var index = 0
+        updateLiked.find {
+            it?.id == commentedId
+        }?.apply {
+            index = uiModels.indexOf(this)
+            payLoadUiModel.likedUiModel.liked = false
+            payLoadUiModel.likedUiModel.count =
+                abs(payLoadUiModel.likedUiModel.count - 1)
+        }
+        uiModels = updateLiked
+        notifyItemChanged(index)
     }
 
     override fun getItemViewType(position: Int): Int {

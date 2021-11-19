@@ -243,6 +243,11 @@
             android:defaultValue="false"
             app:argType="boolean" />
 
+        <argument
+            android:name="onForgotPassword"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/actionCompleteFragmentToSettingFragment"
             app:destination="@id/setting_nav_graph"
@@ -274,4 +279,50 @@
             app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
     </fragment>
 
+    <fragment
+        android:id="@+id/aboutYouFragment"
+        android:name="com.castcle.ui.signin.aboutyou.AboutYouFragment"
+        tools:layout="@layout/fragment_about_you">
+
+        <action
+            android:id="@+id/actionAboutYouFragmentToFeedFragment"
+            app:destination="@id/feedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/actionAboutYouFragmentToAddLinksFragment"
+            app:destination="@id/addLinksFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionAboutYouFragmentToProfileFragment"
+            app:destination="@id/profile_nav_graph"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+
+        <argument
+            android:name="isCreatePage"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
+
+        <deepLink app:uri="@string/deep_link_path_https_about_you" />
+        <deepLink app:uri="@string/nav_deep_link_about_you" />
+    </fragment>
 </navigation>

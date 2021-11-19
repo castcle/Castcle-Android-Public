@@ -1,11 +1,12 @@
 package com.castcle.networking.api.auth.network
 
 import com.castcle.common_model.model.engagement.EngagementRequest
+import com.castcle.common_model.model.engagement.domain.OtpRequest
+import com.castcle.common_model.model.engagement.domain.VerifyOtpRequest
 import com.castcle.common_model.model.login.domain.LoginRequest
 import com.castcle.common_model.model.login.domain.LoginResponse
 import com.castcle.common_model.model.setting.domain.*
 import com.castcle.common_model.model.signin.domain.*
-import com.castcle.common_model.model.signin.domain.AuthExsitResponse
 import com.castcle.networking.api.response.TokenResponse
 import io.reactivex.Flowable
 import retrofit2.Response
@@ -90,4 +91,14 @@ interface AuthenticationApi {
     fun onEngagements(
         @Body engagementRequest: EngagementRequest
     ): Flowable<Response<Unit>>
+
+    @POST("/authentications/requestOTP")
+    fun requestOtp(
+        @Body otpRequest: OtpRequest
+    ): Flowable<Response<VerificationResponse>>
+
+    @POST("authentications/verificationOTP")
+    fun requestVerifyOtp(
+        @Body verifyOtpRequest: VerifyOtpRequest
+    ): Flowable<Response<VerificationResponse>>
 }

@@ -306,27 +306,30 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         RecastRequest(
             reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
             contentId = contentUiModel.payLoadUiModel.contentId,
-            authorId = contentUiModel.payLoadUiModel.author.id
+            authorId = _castUserProfile.value?.castcleId ?: ""
         ).run {
             postReCastContent(this)
                 .subscribeBy(
+                    onSuccess = {
+                        _onSuccess.onNext(true)
+                    },
                     onError = {
                         _error.onNext(it)
+                        _showLoading.onNext(true)
                     }
                 ).addToDisposables()
         }
     }
 
     @SuppressLint("CheckResult")
-    private fun postReCastContent(recastRequest: RecastRequest): Completable {
+    private fun postReCastContent(recastRequest: RecastRequest): Single<ContentUiModel> {
         return quoteCastContentSingleUseCase.execute(
             recastRequest
-        ).doOnSuccess {
-            _onSuccess.onNext(true)
-        }.onErrorReturn {
-            Completable.error(it)
-            ContentUiModel()
-        }.ignoreElement()
+        ).doOnSubscribe {
+            _showLoading.onNext(true)
+        }.doFinally {
+            _showLoading.onNext(false)
+        }
     }
 
     override fun onClearState() {
