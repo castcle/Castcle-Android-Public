@@ -1,6 +1,5 @@
 package com.castcle.ui.createbloc
 
-import android.net.Uri
 import android.view.*
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
@@ -11,8 +10,7 @@ import com.castcle.android.databinding.FragmentCreateQuoteBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.api.response.FeedResponse
-import com.castcle.common_model.model.feed.toContentFeedUiModel
+import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
@@ -22,10 +20,7 @@ import com.castcle.ui.base.*
 import com.castcle.ui.createbloc.adapter.CommonQuoteCastAdapter
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.google.gson.Gson
 import io.reactivex.rxkotlin.subscribeBy
-import org.json.JSONObject
-import java.io.InputStream
 import javax.inject.Inject
 
 
@@ -44,6 +39,11 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private val currentCoutent: ContentUiModel
         get() = quoteFragmentArgs.contentUiModel
+
+    private val profileBundle: ProfileBundle
+        get() = quoteFragmentArgs.profileBundle
+
+    private val currentUserPage = profileBundle as ProfileBundle.ReCastPage
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -127,7 +127,10 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         commonMockAdapter.uiModels = listOf(currentCoutent)
 
         binding.btCast.subscribeOnClick {
-            viewModel.input.quoteCasteContent(currentCoutent)
+            viewModel.input.quoteCasteContent(
+                currentCoutent,
+                currentUserPage.castcleId
+            )
         }
     }
 
@@ -172,10 +175,12 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-        if (!viewModel.isGuestMode) {
+        if (currentUserPage.displayName.isEmpty()) {
             viewModel.fetchCastUserProfile()
                 .subscribe()
                 .addToDisposables()
+        } else {
+            binding.utUserBar.bindUiModel(currentUserPage)
         }
 
         viewModel.userProfileUiModel.observe(this, {

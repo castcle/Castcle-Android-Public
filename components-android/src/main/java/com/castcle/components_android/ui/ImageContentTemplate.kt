@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutImageContentTemplateBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.adapter.ImageTemplateFloxBoxAdapter
 import com.castcle.components_android.ui.base.addToDisposables
@@ -69,7 +70,7 @@ class ImageContentTemplate(
         fbLayoutManager.alignItems = AlignItems.FLEX_START
     }
 
-    fun  bindImageContent(itemUiModel: ContentUiModel, onMargin: Boolean = false) {
+    fun bindImageContent(itemUiModel: ContentUiModel, onMargin: Boolean = false) {
         with(binding) {
             if (onMargin) {
                 rcImageContentOnMargin.visible()

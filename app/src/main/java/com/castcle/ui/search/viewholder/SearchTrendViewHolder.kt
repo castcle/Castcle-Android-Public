@@ -48,7 +48,7 @@ class SearchTrendViewHolder(
             with(binding) {
                 tvTrend.text = binding.root.context
                     .getString(R.string.search_is_trend).format(
-                        uiModel.rank.plus(1)
+                        uiModel.rank
                     )
                 tvTrendCount.text = binding.root.context
                     .getString(R.string.search_cast_count).format(

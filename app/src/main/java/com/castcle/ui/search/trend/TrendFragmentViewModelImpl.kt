@@ -1,9 +1,22 @@
 package com.castcle.ui.search.trend
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
+import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.usecase.feed.LikeContentCompletableUseCase
+import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -33,11 +46,29 @@ import javax.inject.Inject
 
 class TrendFragmentViewModelImpl @Inject constructor(
     private val trendRepository: FeedRepository,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
+    private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
 ) : TrendFragmentViewModel() {
 
     private lateinit var _feedTrendResponse: Flow<PagingData<ContentUiModel>>
     override val feedTrendResponse: Flow<PagingData<ContentUiModel>>
         get() = _feedTrendResponse
+
+    override val isGuestMode: Boolean
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
+
+    private var _onUpdateContentLike = BehaviorSubject.create<Unit>()
+    override val onUpdateContentLike: Observable<Unit>
+        get() = _onUpdateContentLike
+
+    private val _error = PublishSubject.create<Throwable>()
+    override val onError: Observable<Throwable>
+        get() = _error
+
+    private var _cacheUserProfile = MutableLiveData<User>()
+    override val userProfile: LiveData<User>
+        get() = _cacheUserProfile
 
     override fun getTesnds(contentRequestHeader: FeedRequestHeader) =
         launchPagingAsync({
@@ -45,4 +76,42 @@ class TrendFragmentViewModelImpl @Inject constructor(
         }, onSuccess = {
             _feedTrendResponse = it
         })
+
+    override fun fetchUserProfile() {
+        cachedUserProfileSingleUseCase.execute(Unit)
+            .firstOrError()
+            .subscribeBy(
+                onSuccess = {
+                    setCacUserProfile(it)
+                }, onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
+    }
+
+    private fun setCacUserProfile(user: Optional<User>) {
+        if (user.isPresent) {
+            _cacheUserProfile.value = user.get()
+        }
+    }
+
+    override fun updateLikeContent(likeContentRequest: LikeContentRequest) {
+        postLikeContent(likeContentRequest)
+            .subscribeBy(
+                onComplete = {
+                    _onUpdateContentLike.onNext(Unit)
+                },
+                onError = {
+                    _error.onNext(it)
+                }
+            )
+            .addToDisposables()
+    }
+
+    private fun postLikeContent(contentUiModel: LikeContentRequest): Completable {
+        return likeContentCompletableUseCase
+            .execute(contentUiModel).doOnError {
+                _error.onNext(it)
+            }
+    }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
+import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
@@ -138,31 +139,33 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                     handleEmptyState(isError)
                 }
                 if (!isLoading) {
-//                    stopLoadingShimmer()
+                    stopLoadingShimmer()
                     activityViewModel.onProfileLoading(false)
+                } else {
+                    startLoadingShimmer()
                 }
             }
         }
     }
 
-//    private fun startLoadingShimmer() {
-//        with(binding) {
-//            skeletonLoading.shimmerLayoutLoading.run {
-//                startShimmer()
-//                visible()
-//            }
-//        }
-//    }
-//
-//    private fun stopLoadingShimmer() {
-//        with(binding) {
-//            skeletonLoading.shimmerLayoutLoading.run {
-//                stopShimmer()
-//                setShimmer(null)
-//                gone()
-//            }
-//        }
-//    }
+    private fun startLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
+            }
+        }
+    }
+
+    private fun stopLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
+    }
 
     private fun handleContentClick(click: Click) {
         when (click) {
@@ -252,7 +255,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
         with(binding.empState) {
             visibleOrGone(show)
-            bindUiState(com.castcle.common_model.model.empty.EmptyState.FEED_EMPTY)
+            bindUiState(EmptyState.FEED_EMPTY)
         }
     }
 

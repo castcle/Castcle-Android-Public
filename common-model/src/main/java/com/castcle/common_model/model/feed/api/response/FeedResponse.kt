@@ -70,8 +70,8 @@ data class FeedViewContentResponse(
     @SerializedName("aggregator") var aggregator: Aggregator,
     @SerializedName("type") var type: String,
     @SerializedName("payload") var payload: ViewPayloadResponse,
-    @SerializedName("createAt") var created: String,
-    @SerializedName("updateAt") var updated: String,
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
 )
 
 data class Feature(
@@ -82,10 +82,10 @@ data class Feature(
 )
 
 data class Circle(
-    @SerializedName("id") var id: String,
-    @SerializedName("slug") var slug: String,
-    @SerializedName("name") var name: String,
-    @SerializedName("key") var key: String
+    @SerializedName("id") var id: String? = null,
+    @SerializedName("slug") var slug: String? = null,
+    @SerializedName("name") var name: String? = null,
+    @SerializedName("key") var key: String? = null
 )
 
 data class Aggregator(
@@ -105,8 +105,8 @@ data class PayloadResponse(
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: AuthorComment,
-    @SerializedName("createAt") var created: String,
-    @SerializedName("updateAt") var updated: String,
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 
@@ -120,15 +120,15 @@ data class ViewPayloadResponse(
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: ViewAuthor,
-    @SerializedName("createAt") var created: String,
-    @SerializedName("updateAt") var updated: String,
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 
 data class ReplyResponse(
     @SerializedName("id") var id: String,
     @SerializedName("message") var message: String,
-    @SerializedName("createAt") var created: String,
+    @SerializedName("createdAt") var created: String,
     @SerializedName("author") var author: AuthorComment,
 )
 

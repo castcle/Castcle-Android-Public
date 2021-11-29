@@ -16,17 +16,11 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <include
-                android:id="@+id/tbToolBar"
-                layout="@layout/toolbar_castcle_common_collapsing"
-                android:elevation="@dimen/_4sdp" />
-
-            <include
                 android:id="@+id/tbTrendSearch"
                 layout="@layout/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="bottom"
-                android:layout_marginTop="@dimen/_45sdp"
                 android:elevation="@dimen/_4sdp" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -62,15 +56,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <include
-                android:id="@+id/skeletonLoading"
-                layout="@layout/layout_feed_shimmer_load"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vpPageContent"

@@ -59,6 +59,15 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+        <com.castcle.components_android.ui.WhatYouMindTemplate
+            android:id="@+id/wtWhatYouMind"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:whatYouMind_input="@string/feed_what_you_mind_bar" />
 
         <com.google.android.material.tabs.TabLayout
             style="@style/ContentTabStyle"

@@ -34,8 +34,8 @@ data class ContentCommentedResponse(
 data class CommentedDataResponse(
     @SerializedName("author")
     val author: Author,
-    @SerializedName("createAt")
-    val createAt: String,
+    @SerializedName("createdAt")
+    val createdAt: String,
     @SerializedName("hasHistory")
     val hasHistory: Boolean? = null,
     @SerializedName("id")
@@ -46,6 +46,6 @@ data class CommentedDataResponse(
     val message: String,
     @SerializedName("reply")
     val reply: List<ReplyResponse>,
-    @SerializedName("updateAt")
+    @SerializedName("updatedAt")
     val updateAt: String
 )

@@ -63,6 +63,11 @@ interface AuthenticationApi {
         @Body registerRequest: RegisterRequest
     ): Flowable<Response<TokenResponse>>
 
+    @POST("authentications/loginWithSocial")
+    fun registerWithSocial(
+        @Body registerRequest: RegisterWithSocialRequest
+    ): Flowable<Response<TokenResponse>>
+
     @POST("authentications/requestLinkVerify")
     fun checkrRquestLinkVerify(): Flowable<Response<Unit>>
 

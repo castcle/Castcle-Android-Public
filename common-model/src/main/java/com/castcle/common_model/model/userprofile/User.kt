@@ -33,24 +33,24 @@ data class User(
     @PrimaryKey
     @ColumnInfo(name = "castcle_id") val castcleId: String,
     @ColumnInfo(name = "displayName") val displayName: String,
-    @ColumnInfo(name = "id") val id: String,
-    @ColumnInfo(name = "dob") val dob: String,
-    @ColumnInfo(name = "email") val email: String,
+    @ColumnInfo(name = "id") val id: String = "",
+    @ColumnInfo(name = "dob") val dob: String = "",
+    @ColumnInfo(name = "email") val email: String = "",
     @ColumnInfo(name = "avatar") val avatar: String,
-    @ColumnInfo(name = "avatarThumbnail") val avatarThumbnail: String,
-    @ColumnInfo(name = "cover") val cover: String,
-    @ColumnInfo(name = "followed") val followed: Boolean,
-    @ColumnInfo(name = "followers_count") val followersCount: Int,
-    @ColumnInfo(name = "following_count") val followingCount: Int,
-    @ColumnInfo(name = "overview") val overview: String,
+    @ColumnInfo(name = "avatarThumbnail") val avatarThumbnail: String = "",
+    @ColumnInfo(name = "cover") val cover: String = "",
+    @ColumnInfo(name = "followed") val followed: Boolean = false,
+    @ColumnInfo(name = "followers_count") val followersCount: Int = 0,
+    @ColumnInfo(name = "following_count") val followingCount: Int = 0,
+    @ColumnInfo(name = "overview") val overview: String = "",
     @ColumnInfo(name = "verified") val verified: Boolean = false,
     @ColumnInfo(name = "mobile") val mobile: Boolean = false,
     @ColumnInfo(name = "official") val official: Boolean = false,
-    @ColumnInfo(name = "facebook_links") val facebookLinks: String,
-    @ColumnInfo(name = "medium_links") val mediumLinks: String,
-    @ColumnInfo(name = "twitter_links") val twitterLinks: String,
-    @ColumnInfo(name = "website_links") val websiteLinks: String,
-    @ColumnInfo(name = "youtube_links") val youtubeLinks: String
+    @ColumnInfo(name = "facebook_links") val facebookLinks: String = "",
+    @ColumnInfo(name = "medium_links") val mediumLinks: String = "",
+    @ColumnInfo(name = "twitter_links") val twitterLinks: String = "",
+    @ColumnInfo(name = "website_links") val websiteLinks: String = "",
+    @ColumnInfo(name = "youtube_links") val youtubeLinks: String = ""
 )
 
 fun UserProfileResponse.toUserProfile(): User {

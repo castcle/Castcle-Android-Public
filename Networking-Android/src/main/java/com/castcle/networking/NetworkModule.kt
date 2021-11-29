@@ -92,7 +92,30 @@ class NetworkModule {
             sessionManagerRepository = sessionManagerRepository
         )
     }
+
+    @TwitterAuthentication
+    @Provides
+    fun provideTwitterRetrofit(
+        context: Context,
+        apiEndPointUrl: ApiEndPointUrl,
+        tokenRefresher: TokenRefresher,
+        sessionEnvironment: SessionEnvironment,
+        secureStorage: SecureStorage,
+        sessionManagerRepository: SessionManagerRepository
+    ): Retrofit {
+        return CoreApi.retrofitService(
+            context = context,
+            apiEndPointUrl = apiEndPointUrl,
+            sessionVariable = sessionEnvironment,
+            tokenRefresher = tokenRefresher,
+            secureStorage = secureStorage,
+            sessionManagerRepository = sessionManagerRepository
+        )
+    }
 }
 
 @Qualifier
 annotation class NonAuthentication
+
+@Qualifier
+annotation class TwitterAuthentication

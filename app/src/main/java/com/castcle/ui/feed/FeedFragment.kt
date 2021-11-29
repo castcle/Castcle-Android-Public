@@ -3,10 +3,10 @@ package com.castcle.ui.feed
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.RemoteMediator
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
@@ -16,13 +16,15 @@ import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.data.staticmodel.FeedContentType
+import com.castcle.data.staticmodel.ModeType
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
+import com.castcle.ui.common.dialog.dialogeditcontent.EditContentState
+import com.castcle.ui.common.dialog.dialogeditcontent.KEY_CHOOSE_EDIT_REQUEST
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST_COMMENTED_COUNT
 import com.castcle.ui.common.events.Click
@@ -31,6 +33,7 @@ import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,8 +72,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     override fun initViewModel() {
         if (!viewModel.isGuestMode) {
             viewModel.fetchUserProfile()
-                .subscribe()
-                .addToDisposables()
+                .subscribeBy(
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
         }
         viewModel.getTopTrends()
     }
@@ -101,7 +107,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             tvToolbarTitle.text = localizedResources.getString(R.string.feed_title_toolbar)
             if (guestMode) {
                 ivToolbarProfileButton.subscribeOnClick {
-                    navigateToNotiflyLoginDialog()
+                    navigateToNotifyLoginDialog()
                 }
             } else {
                 ivToolbarProfileButton.setImageDrawable(
@@ -114,14 +120,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 }
             }
         }
-    }
-
-    private fun navigateToNotiflyLoginDialog() {
-        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
-    }
-
-    private fun navigateToSettingFragment() {
-        onBoardNavigator.navigateToSettingFragment()
     }
 
     override fun bindViewEvents() {
@@ -176,6 +174,42 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         viewModel.onUpdateContentLike.subscribe().addToDisposables()
     }
 
+    override fun bindViewModel() {
+        viewModel.checkCastPostWithImageStatus().subscribe {
+            if (it) {
+                displayErrorMessage(localizedResources.getString(R.string.cast_post_status_success))
+            }
+        }.addToDisposables()
+
+        viewModel.userProfile.observe(this, {
+            onBindWhatYouMind(it)
+        })
+
+        activityViewModel.userRefeshProfile.subscribe {
+            onBindWhatYouMindData(it)
+        }.addToDisposables()
+
+        viewModel.onError.subscribe {
+            handleOnError(it)
+        }.addToDisposables()
+
+        viewModel.trendsResponse.observe(this, {
+            onBindFilterItem(it)
+        })
+
+        viewModel.castPostResponse.observe(viewLifecycleOwner, {
+            adapterPagingCommon.refresh()
+        })
+    }
+
+    private fun navigateToNotifyLoginDialog() {
+        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+    }
+
+    private fun navigateToSettingFragment() {
+        onBoardNavigator.navigateToSettingFragment()
+    }
+
     private fun handleEmptyState(show: Boolean) {
         with(binding) {
             clFilter.visibleOrGone(!show)
@@ -196,7 +230,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }
     }
 
-
     private fun stopLoadingShimmer() {
         with(binding) {
             skeletonLoading.shimmerLayoutLoading.run {
@@ -212,53 +245,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             viewModel.input.setDefaultFeedRequestHeader()
             adapterFilterAdapter.selectedFilterDefault()
         }
-    }
-
-    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
-        val deeplinkType = if (contentUiModel.payLoadUiModel.author.castcleId ==
-            viewModel.userProfile.value?.castcleId
-        ) {
-            ProfileType.PROFILE_TYPE_ME.type
-        } else {
-            contentUiModel.payLoadUiModel.author.type
-        }
-        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, deeplinkType)
-    }
-
-    private fun handleLikeClick(contentUiModel: ContentUiModel) {
-        guestEnable(enable = {
-            baseContentUiModel = contentUiModel
-            val likeContentRequest = LikeContentRequest(
-                contentId = contentUiModel.payLoadUiModel.contentId,
-                feedItemId = contentUiModel.payLoadUiModel.contentId,
-                authorId = viewModel.userProfile.value?.castcleId ?: "",
-                likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
-            )
-            if (!contentUiModel.payLoadUiModel.likedUiModel.liked) {
-                adapterPagingCommon.updateStateItemLike(contentUiModel)
-            } else {
-                adapterPagingCommon.updateStateItemUnLike(contentUiModel)
-            }
-            viewModel.input.updateLikeContent(likeContentRequest)
-        }, disable = {
-            navigateToNotiflyLoginDialog()
-        })
-    }
-
-    private fun handleRecastClick(contentUiModel: ContentUiModel) {
-        guestEnable(enable = {
-            navigateToRecastDialogFragment(contentUiModel)
-        }, disable = {
-            navigateToNotiflyLoginDialog()
-        })
-    }
-
-    private fun handleCommentClick(contentUiModel: ContentUiModel) {
-        guestEnable(enable = {
-            navigateToFeedDetailFragment(contentUiModel)
-        }, disable = {
-            navigateToNotiflyLoginDialog()
-        })
     }
 
     private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
@@ -302,40 +288,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             val feedRequestHeader = FeedRequestHeader(
                 featureSlug = FeedContentType.FEED_SLUG.type,
                 circleSlug = FeedContentType.CIRCLE_SLUG_FORYOU.type,
-                hashtag = itemFilter.slug
+                hashtag = itemFilter.slug,
+                mode = ModeType.MODE_CURRENT.type
             )
             viewModel.setFetchFeedContent(feedRequestHeader)
         }
-    }
-
-    override fun bindViewModel() {
-        viewModel.checkCastPostWithImageStatus().subscribe {
-            if (it) {
-                displayErrorMessage(localizedResources.getString(R.string.cast_post_status_success))
-            }
-        }.addToDisposables()
-
-        viewModel.userProfile.observe(this, {
-            onBindWhatYouMind(it)
-        })
-
-        activityViewModel.userRefeshProfile.subscribe {
-            onBindWhatYouMindData(it)
-        }.addToDisposables()
-
-        viewModel.onError.subscribe {
-            handleOnError(it)
-        }.addToDisposables()
-
-        viewModel.trendsResponse.observe(this, {
-            onBindFilterItem(it)
-        })
-
-        viewModel.castPostResponse.subscribeBy(
-            onNext = {
-                onBindCastPostSuccess(it)
-            }, onError = { displayError(it) }
-        ).addToDisposables()
     }
 
     private fun onBindCastPostSuccess(content: ContentUiModel) {
@@ -368,7 +325,61 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             is FeedItemClick.FeedImageClick -> {
                 handleImageItemClick(click.position, click.contentUiModel)
             }
+            is FeedItemClick.EditContentClick -> {
+                handleEditContentClick(click.contentUiModel)
+            }
         }
+    }
+
+    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
+        var profileType = ""
+        checkContentIsMe(contentUiModel.payLoadUiModel.author.castcleId,
+            onPage = {
+                profileType = ProfileType.PROFILE_TYPE_PAGE.type
+            }, onMe = {
+                profileType = ProfileType.PROFILE_TYPE_ME.type
+            }, onView = {
+                profileType = ProfileType.PROFILE_TYPE_PEOPLE.type
+            }
+        )
+
+        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, profileType)
+    }
+
+    private fun handleLikeClick(contentUiModel: ContentUiModel) {
+        guestEnable(enable = {
+            baseContentUiModel = contentUiModel
+            val likeContentRequest = LikeContentRequest(
+                contentId = contentUiModel.payLoadUiModel.contentId,
+                feedItemId = contentUiModel.payLoadUiModel.contentId,
+                authorId = viewModel.userProfile.value?.castcleId ?: "",
+                likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+            )
+            if (!contentUiModel.payLoadUiModel.likedUiModel.liked) {
+                adapterPagingCommon.updateStateItemLike(contentUiModel)
+            } else {
+                adapterPagingCommon.updateStateItemUnLike(contentUiModel)
+            }
+            viewModel.input.updateLikeContent(likeContentRequest)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun handleRecastClick(contentUiModel: ContentUiModel) {
+        guestEnable(enable = {
+            navigateToRecastDialogFragment(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun handleCommentClick(contentUiModel: ContentUiModel) {
+        guestEnable(enable = {
+            navigateToFeedDetailFragment(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
     }
 
     private fun handleImageItemClick(position: Int, contentUiModel: ContentUiModel) {
@@ -385,6 +396,66 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             .allowSwipeToDismiss(true)
             .allowZooming(true)
             .show()
+    }
+
+    private fun handleEditContentClick(contentUiModel: ContentUiModel) {
+        guestEnable(enable = {
+            handleOptionalContentClick(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun handleOptionalContentClick(contentUiModel: ContentUiModel) {
+        getNavigationResult<EditContentState>(
+            onBoardNavigator,
+            R.id.feedFragment,
+            KEY_CHOOSE_EDIT_REQUEST,
+            onResult = {
+                handlerOptionalState(it, contentUiModel)
+            })
+        checkContentIsMe(contentUiModel.payLoadUiModel.author.castcleId, onMe = {
+            onBoardNavigator.navigateToEditContentDialogFragment()
+        }, onView = {
+
+        }, onPage = {
+            onBoardNavigator.navigateToEditContentDialogFragment()
+        })
+    }
+
+    private fun handlerOptionalState(
+        editContentState: EditContentState,
+        contentUiModel: ContentUiModel
+    ) {
+        checkContentIsMe(contentUiModel.payLoadUiModel.author.castcleId, onMe = {
+            if (editContentState == EditContentState.DELETE_CONTENT) {
+                viewModel.input.deleteContentFeed(
+                    contentId = contentUiModel.payLoadUiModel.contentId
+                ).subscribeBy(
+                    onComplete = {
+                        onBindDeleteContentItem(contentUiModel)
+                    }, onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            } else {
+                viewModel.input.deleteContentFeed(
+                    contentId = contentUiModel.payLoadUiModel.contentId
+                ).subscribeBy(
+                    onComplete = {
+                        onBindDeleteContentItem(contentUiModel)
+                    }, onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+        }, onPage = {
+
+        }, onView = {})
+    }
+
+    private fun onBindDeleteContentItem(contentUiModel: ContentUiModel) {
+        adapterPagingCommon.updateDeleteContent(contentUiModel)
     }
 
     private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
@@ -404,6 +475,22 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         binding.wtWhatYouMind.clickStatus.subscribe {
             navigateToProfile(user.castcleId, ProfileType.PROFILE_TYPE_ME.type)
         }.addToDisposables()
+    }
+
+    private fun checkContentIsMe(
+        castcleId: String,
+        onMe: () -> Unit,
+        onPage: () -> Unit,
+        onView: () -> Unit
+    ) {
+        viewModel.checkContentIsMe(castcleId,
+            onProfileMe = {
+                onMe.invoke()
+            }, onPageMe = {
+                onPage.invoke()
+            }, non = {
+                onView.invoke()
+            })
     }
 
     private fun onBindWhatYouMindData(user: User) {
@@ -427,20 +514,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         } else {
             enable.invoke()
         }
-    }
-
-    private fun handleNavigateOnClick(click: TemplateClicks) {
-        when (click) {
-            is TemplateClicks.AvatarClick -> {
-                navigateByDeepLink(click.deepLink)
-            }
-            else -> {
-            }
-        }
-    }
-
-    private fun navigateByDeepLink(url: String) {
-        onBoardNavigator.navigateByDeepLink(url.toUri())
     }
 
     private fun onRefreshProfile() {

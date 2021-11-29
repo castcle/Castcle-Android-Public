@@ -1,6 +1,10 @@
 package com.castcle.ui.common.dialog
 
+import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
+import com.castcle.common_model.model.signin.domain.RegisterWithSocialRequest
+import com.castcle.networking.api.response.TokenResponse
 import com.castcle.ui.base.BaseViewModel
+import io.reactivex.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -26,4 +30,14 @@ import com.castcle.ui.base.BaseViewModel
 //
 //  Created by sklim on 23/8/2021 AD at 12:49.
 
-abstract class NotiflyLoginDialogViewModel : BaseViewModel()
+abstract class NotiflyLoginDialogViewModel : BaseViewModel() {
+    abstract val showLoading: Observable<Boolean>
+
+    abstract val error: Observable<Throwable>
+
+    abstract fun checkHasEmail(email: String): Single<AuthVerifyBaseUiModel.EmailVerifyUiModel>
+
+    abstract fun authRegisterWithSocial(
+        registerRequest: RegisterWithSocialRequest
+    ): Single<TokenResponse>
+}

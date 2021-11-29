@@ -2,7 +2,7 @@ package com.castcle.ui.search.trend.childview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -10,8 +10,9 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.FeedContentType
-import com.castcle.data.staticmodel.TabContentStatic
 import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
@@ -21,6 +22,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.search.trend.TrendFragmentViewModel
+import com.stfalcon.imageviewer.StfalconImageViewer
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -85,8 +87,9 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
             hashtag = trendSlug
         )
         viewModel.getTesnds(feedRequestHeader)
-        with(binding) {
-            rvContent.adapter = CommonAdapter().also {
+        with(binding.rvContent) {
+            itemAnimator = null
+            adapter = CommonAdapter().also {
                 adapterPagingCommon = it
             }
         }
@@ -96,7 +99,36 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
                 val refresher = loadStates.refresh
                 val displayEmpty = (refresher is LoadState.NotLoading &&
                     !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                handleEmptyState(displayEmpty)
+                val isError = loadStates.refresh is LoadState.Error
+                val isLoading = loadStates.refresh is LoadState.Loading
+                if (isError) {
+                    handleEmptyState(isError)
+                }
+                if (!isLoading) {
+                    stopLoadingShimmer()
+                    activityViewModel.onProfileLoading(false)
+                } else {
+                    startLoadingShimmer()
+                }
+            }
+        }
+    }
+
+    private fun startLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
+            }
+        }
+    }
+
+    private fun stopLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
             }
         }
     }
@@ -115,6 +147,9 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
             is FeedItemClick.FeedCommentClick -> {
                 handleCommentClick(click.contentUiModel)
             }
+            is FeedItemClick.FeedImageClick -> {
+                handleImageItemClick(click.position, click.contentUiModel)
+            }
         }
     }
 
@@ -126,26 +161,81 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
         onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
     }
 
+    private lateinit var baseContentUiModel: ContentUiModel
+
     private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
-        val deepLink = makeDeepLinkUrl(
-            requireContext(), Input(
-                type = DeepLinkTarget.USER_PROFILE_YOU,
-                contentData = contentUiModel.payLoadUiModel.author.displayName
-            )
-        ).toString()
-        navigateByDeepLink(deepLink)
+        val deeplinkType = if (contentUiModel.payLoadUiModel.author.castcleId ==
+            activityViewModel.userRefeshProfile.blockingFirst()?.castcleId ?: ""
+        ) {
+            ProfileType.PROFILE_TYPE_ME.type
+        } else {
+            contentUiModel.payLoadUiModel.author.type
+        }
+        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, deeplinkType)
     }
 
-    private fun navigateByDeepLink(url: String) {
-        onBoardNavigator.navigateByDeepLink(url.toUri())
+    private fun navigateToProfile(castcleId: String, profileType: String) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, profileType)
     }
 
     private fun handleLikeClick(contentUiModel: ContentUiModel) {
+        guestEnable(enable = {
+            baseContentUiModel = contentUiModel
+            val likeContentRequest = LikeContentRequest(
+                contentId = contentUiModel.payLoadUiModel.contentId,
+                feedItemId = contentUiModel.payLoadUiModel.contentId,
+                authorId = viewModel.userProfile.value?.castcleId ?: "",
+                likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+            )
+            if (!contentUiModel.payLoadUiModel.likedUiModel.liked) {
+                adapterPagingCommon.updateStateItemLike(contentUiModel)
+            } else {
+                adapterPagingCommon.updateStateItemUnLike(contentUiModel)
+            }
+            viewModel.updateLikeContent(likeContentRequest)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
 
+    private fun navigateToNotifyLoginDialog() {
+        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+    }
+
+    private fun guestEnable(disable: () -> Unit, enable: () -> Unit) {
+        if (viewModel.isGuestMode) {
+            disable.invoke()
+        } else {
+            enable.invoke()
+        }
     }
 
     private fun handleRecastClick(contentUiModel: ContentUiModel) {
-        navigateToRecastDialogFragment(contentUiModel)
+        guestEnable(enable = {
+            navigateToRecastDialogFragment(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentUiModel) {
+        val image = contentUiModel.payLoadUiModel.photo.imageContent.map {
+            it.imageOrigin
+        }
+        val imagePosition = when (contentUiModel.payLoadUiModel.photo.imageContent.size) {
+            1 -> 0
+            else -> position
+        }
+        StfalconImageViewer.Builder(context, image, ::loadPosterImage)
+            .withStartPosition(imagePosition)
+            .withHiddenStatusBar(true)
+            .allowSwipeToDismiss(true)
+            .allowZooming(true)
+            .show()
+    }
+
+    private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
+        imageView.loadImageWithoutTransformation(imageUrl)
     }
 
     private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {

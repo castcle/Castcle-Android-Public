@@ -60,14 +60,16 @@ class RecastDialogViewModelImpl @Inject constructor(
     override val onError: Observable<Throwable>
         get() = _error
 
-    private val _userPageUiModel = SingleLiveEvent<PageHeaderUiModel>()
-    override val userPageUiModel: SingleLiveEvent<PageHeaderUiModel>
+    private val _userPageUiModel = SingleLiveEvent<PageHeaderUiModel?>()
+    override val userPageUiModel: SingleLiveEvent<PageHeaderUiModel?>
         get() = _userPageUiModel
 
     private val _contentUiModel = MutableLiveData<ContentUiModel>()
 
     override fun recastContent(contentUiModel: ContentUiModel) {
-        val castcleId = _userPageUiModel.value?.pageUiItem?.get(0)?.castcleId ?: ""
+        val castcleId = _userPageUiModel.value?.pageUiItem?.find {
+            it.selected
+        }?.castcleId ?: ""
 
         RecastRequest(
             reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
@@ -127,5 +129,16 @@ class RecastDialogViewModelImpl @Inject constructor(
             _error.onNext(it)
             ContentUiModel()
         }.ignoreElement()
+    }
+
+    override fun onPageSelected(pageUiModel: PageUiModel) {
+        val pageUiModels = _userPageUiModel.value
+        pageUiModels?.pageUiItem?.map {
+            it.selected = false
+        }
+        pageUiModels?.pageUiItem?.indexOf(pageUiModel)?.let {
+            pageUiModels.pageUiItem[it].selected = !pageUiModels.pageUiItem[it].selected
+        }
+        _userPageUiModel.value = pageUiModels
     }
 }

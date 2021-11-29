@@ -81,8 +81,14 @@ interface UserApi {
         @Body createContentRequest: CreateContentRequest
     ): Flowable<Response<CreateCastResponse>>
 
-    @PUT("users/{castcleId}/follow")
+    @PUT("users/{castcleId}/following")
     fun createFollowUser(
+        @Path("castcleId") castcleId: String,
+        @Body followRequest: FollowRequest,
+    ): Flowable<Response<Unit>>
+
+    @PUT("users/{castcleId}/unfollow")
+    fun createUnFollowUser(
         @Path("castcleId") castcleId: String,
         @Body followRequest: FollowRequest,
     ): Flowable<Response<Unit>>

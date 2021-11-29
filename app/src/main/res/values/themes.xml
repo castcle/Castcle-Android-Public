@@ -104,8 +104,7 @@
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/transparent</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/castcle_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/castcle_logo_splash</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/Theme.Castcle</item>
     </style>

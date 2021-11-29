@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="version_app" translatable="false">V.1.0.0 (14)</string>
+    <string name="version_app" translatable="false">V.1.0.0 (16)</string>
     <string name="link_scheme" translatable="false">https</string>
     <string name="deep_link_path_prefix" translatable="false">/</string>
 
@@ -23,4 +23,8 @@
     <string name="deep_link_path_https_about_you" translatable="false">.*/about-you</string>
     <string name="deep_link_path_https_profile" translatable="false">.*/profile/{me}/{id}</string>
     <string name="deep_link_path_https_recast_dialog" translatable="false">.*/recast-dialog</string>
+
+    <string name="twitter_app_id" translatable="false">K9p1iIR62T2l4jnnS2HXJ3eyI</string>
+    <string name="twitter_app_secret" translatable="false">SRufjpAQTNTiBGkYkLEbPcUKrj8hd1S1rRHPmYbkdPtqOETXGS</string>
+    <string name="gsc_web_client_id" translatable="false">946784514991-ld1lttpv93slvt085s5501e8e01l3p21.apps.googleusercontent.com</string>
 </resources>

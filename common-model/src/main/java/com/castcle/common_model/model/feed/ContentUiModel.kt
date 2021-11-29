@@ -266,6 +266,14 @@ data class FeatureUiModel(
 ) : Parcelable
 
 @Parcelize
+data class CircleUiModel(
+    var id: String? = null,
+    var slug: String? = null,
+    var name: String? = null,
+    var key: String? = null
+) : Parcelable
+
+@Parcelize
 data class ReplyUiModel(
     var id: String,
     var created: String,
@@ -310,6 +318,7 @@ data class PhotoUiModel(
 @Parcelize
 data class ImageContentUiModel(
     val imageOrigin: String = "",
+    val imageLarge: String = "",
     val imageThumbnail: String = "",
     val imageFullHd: String = "",
 ) : Parcelable
@@ -332,9 +341,9 @@ fun ImageResponse.toImageContentUiModel(): ImageContentUiModel {
 
 @Parcelize
 data class LinkUiModel(
-    val type: String,
-    val url: String,
-    val imagePreview: String
+    val type: String = "",
+    val url: String = "",
+    val imagePreview: String = ""
 ) : Parcelable
 
 fun LinkResponse.toLinkUiModel(): LinkUiModel {

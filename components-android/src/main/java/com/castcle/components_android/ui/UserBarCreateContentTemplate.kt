@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutUserBarContentTemplateBinding
 import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.extensions.*
+import com.castcle.common_model.model.login.domain.ProfileBundle
+import com.castcle.extensions.gone
+import com.castcle.extensions.loadCircleImage
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -48,6 +50,16 @@ class UserBarCreateContentTemplate(
             with(itemUiModel.payLoadUiModel) {
                 ivAvatar.loadCircleImage(author.avatar)
                 tvUserName.text = author.displayName
+                tvStatusFollow.gone()
+            }
+        }
+    }
+
+    fun bindUiModel(itemUiModel: ProfileBundle.ReCastPage) {
+        with(binding) {
+            with(itemUiModel) {
+                ivAvatar.loadCircleImage(avaterUrl)
+                tvUserName.text = displayName
                 tvStatusFollow.gone()
             }
         }

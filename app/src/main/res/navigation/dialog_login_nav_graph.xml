@@ -19,6 +19,13 @@
         <action
             android:id="@+id/actionDialogLoginFragmentToGreetingFragment"
             app:destination="@id/greetingFragment" />
-    </dialog>
 
+        <action
+            android:id="@+id/actionDialogLoginFragmentToTwitterLoginFragment"
+            app:destination="@id/twitterLoginFragment" />
+
+        <action
+            android:id="@+id/actionDialogLoginFragmentToCreateAccountFragment"
+            app:destination="@id/createAccountFragment" />
+    </dialog>
 </navigation>

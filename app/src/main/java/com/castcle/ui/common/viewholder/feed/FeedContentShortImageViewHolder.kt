@@ -92,6 +92,14 @@ class FeedContentShortImageViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -108,7 +116,11 @@ class FeedContentShortImageViewHolder(
             }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentMessage
+                if (contentMessage.isNotBlank()) {
+                    tvFeedContent.appendLinkText(contentMessage)
+                } else {
+                    tvFeedContent.gone()
+                }
                 ftFooter.bindUiModel(uiModel)
                 with(clPreviewContentImage) {
                     clInPreviewContentImage.visible()

@@ -46,8 +46,8 @@ data class PayloadProfileContentResponse(
     @SerializedName("recasted") var recastedResponse: RecastedResponse? = null,
     @SerializedName("quoteCast") var quoteCast: QuoteCast,
     @SerializedName("author") var author: Author,
-    @SerializedName("createAt") var created: String,
-    @SerializedName("updateAt") var updated: String,
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
     @SerializedName("reply") var reply: List<ReplyResponse>? = null
 )
 

@@ -3,6 +3,7 @@ package com.castcle.ui.common.dialog.recast
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.setting.PageHeaderUiModel
+import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.ui.util.SingleLiveEvent
 import io.reactivex.Observable
@@ -39,9 +40,11 @@ abstract class RecastDialogViewModel : BaseViewModel() {
 
     abstract fun fetchUserProfile()
 
-    abstract val userPageUiModel: SingleLiveEvent<PageHeaderUiModel>
+    abstract val userPageUiModel: SingleLiveEvent<PageHeaderUiModel?>
 
     abstract val input: Input
+
+    abstract fun onPageSelected(pageUiModel: PageUiModel)
 
     interface Input {
         fun recastContent(contentUiModel: ContentUiModel)

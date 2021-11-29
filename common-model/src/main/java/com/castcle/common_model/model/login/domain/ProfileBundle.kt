@@ -100,6 +100,13 @@ sealed class ProfileBundle : Parcelable {
         var refCode: String = "",
         var expiresTime: String = "",
     ) : ProfileBundle()
+
+    @Parcelize
+    data class ReCastPage(
+        var castcleId: String = "",
+        val displayName: String = "",
+        val avaterUrl: String = ""
+    ) : ProfileBundle()
 }
 
 fun ProfileBundle.ProfileWithEmail.toCreatePage(): ProfileBundle.CreatePage {

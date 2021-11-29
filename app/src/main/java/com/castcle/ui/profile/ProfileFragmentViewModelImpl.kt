@@ -163,8 +163,8 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override fun putToFollowUser(castcleIdToFoller: String): Completable {
         return putToFollowUserCompletableUseCase.execute(
             FollowRequest(
-                castcleIdFollower = castcleIdToFoller,
-                castcleId = castcleId
+                castcleIdFollower = castcleId,
+                targetCastcleId = castcleIdToFoller
             )
         ).doOnSubscribe {
             _showLoading.onNext(true)

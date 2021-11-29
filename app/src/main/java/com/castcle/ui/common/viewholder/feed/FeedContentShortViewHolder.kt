@@ -95,6 +95,14 @@ class FeedContentShortViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -104,7 +112,7 @@ class FeedContentShortViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
-
+            stopLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
@@ -112,77 +120,8 @@ class FeedContentShortViewHolder(
             }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentMessage
+                tvFeedContent.appendLinkText(contentMessage)
                 ftFooter.bindUiModel(uiModel)
-                when {
-                    link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
-                        clPreviewIconContent.clInPreviewIconContent.gone()
-                        clPreviewContent.clInPreviewContent.gone()
-                        with(clPreviewContentImage) {
-                            clInPreviewContentImage.visible()
-                            icImageContent.bindImageContent(uiModel, true)
-                        }
-                        stopLoadingPreViewShimmer()
-                    }
-                    link.isNotEmpty() -> {
-                        clPreviewContentImage.clInPreviewContentImage.gone()
-                        if (!clPreviewIconContent.clInPreviewIconContent.isVisible &&
-                            !clPreviewContent.clInPreviewContent.isVisible
-                        ) {
-                            startLoadingPreViewShimmer()
-                        }
-                        link.firstOrNull()?.let {
-                            LinkParser(it.url, object : ParserCallback {
-                                override fun onData(linkData: LinkData) {
-                                    if (linkData.imageUrl.isNullOrBlank()) {
-                                        onBindContentIconWeb(linkData)
-                                    } else {
-                                        onBindContentImageWeb(linkData)
-                                    }
-                                }
-
-                                override fun onError(exception: Exception) {
-                                    clPreviewIconContent.clInPreviewIconContent.gone()
-                                    clPreviewContent.clInPreviewContent.gone()
-                                }
-                            }).parse()
-
-                        }
-                    }
-                    else -> {
-                        stopLoadingPreViewShimmer()
-                        clPreviewIconContent.clInPreviewIconContent.gone()
-                        clPreviewContent.clInPreviewContent.gone()
-                        clPreviewContentImage.clInPreviewContentImage.gone()
-                    }
-                }
-
-            }
-        }
-    }
-
-    private fun onBindContentIconWeb(linkUiModel: LinkData) {
-        stopLoadingPreViewShimmer()
-        with(binding.clPreviewIconContent) {
-            clInPreviewIconContent.visible()
-            with(linkUiModel) {
-                ivPerviewIconUrl.loadIconImage(favicon ?: "")
-                tvIconPreview.text = url
-                tvPreviewIconHeader.text = title
-                tvPreviewIconContent.text = description
-            }
-        }
-    }
-
-    private fun onBindContentImageWeb(linkUiModel: LinkData) {
-        stopLoadingPreViewShimmer()
-        with(binding.clPreviewContent) {
-            clInPreviewContent.visible()
-            with(linkUiModel) {
-                ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
-                tvPreviewUrl.text = url
-                tvPreviewHeader.text = title
-                tvPreviewContent.text = description
             }
         }
     }
@@ -193,15 +132,6 @@ class FeedContentShortViewHolder(
                 stopShimmer()
                 setShimmer(null)
                 gone()
-            }
-        }
-    }
-
-    private fun startLoadingPreViewShimmer() {
-        with(binding) {
-            inShimmerContentLoading.shimmerLayoutLoading.run {
-                startShimmer()
-                visible()
             }
         }
     }

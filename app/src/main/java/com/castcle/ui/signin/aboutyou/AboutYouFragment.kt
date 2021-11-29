@@ -2,6 +2,7 @@ package com.castcle.ui.signin.aboutyou
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
@@ -564,16 +565,31 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     private fun handlerSkip() {
         if (isCreatePage) {
-            onNavigateToProfile()
+            handleNavigateToProfileClick()
         } else {
             onNavigateToFeedFragment()
         }
     }
 
+    private fun handleNavigateToProfileClick() {
+        val deepLink = makeDeepLinkUrl(
+            requireContext(), Input(
+                type = DeepLinkTarget.USER_PROFILE_PAGE,
+                contentData = castcleId
+            )
+        ).toString()
+        navigateByDeepLink(deepLink)
+    }
+
+    private fun navigateByDeepLink(url: String) {
+        onBoardNavigator.navigateByDeepLink(url.toUri())
+    }
+
     private fun onNavigateToProfile() {
-        onBoardNavigator.navigateToProfileFragment(
-            castcleId, PROFILE_TYPE_PAGE
-        )
+        handleNavigateToProfileClick()
+//        onBoardNavigator.navigateToProfileFragment(
+//            castcleId, PROFILE_TYPE_PAGE
+//        )
     }
 
     private fun onNavigateToFeedFragment() {

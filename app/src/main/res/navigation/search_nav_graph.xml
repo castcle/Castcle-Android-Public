@@ -9,7 +9,6 @@
     <include app:graph="@navigation/dialog_recast_nav_graph" />
     <include app:graph="@navigation/bloc_nav_graph" />
     <include app:graph="@navigation/setting_nav_graph" />
-    <include app:graph="@navigation/profile_nav_graph" />
     <include app:graph="@navigation/login_nav_graph" />
 
     <fragment
@@ -56,6 +55,34 @@
         <action
             android:id="@+id/actionTrendFragmentToLoginFragment"
             app:destination="@id/loginFragment" />
+
+        <action
+            android:id="@+id/actionTrendFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
+
+        <action
+            android:id="@+id/actionTrendFragmentToFeedDetailFragment"
+            app:destination="@id/feedDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionTrendFragmentToCreateQuoteFragment"
+            app:destination="@id/createQuoteFragment" />
+
+        <action
+            android:id="@+id/actionTrendFragmentToProfileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionTrendFragmentToEditContentDialogFragment"
+            app:destination="@id/editContentDialogFragment" />
 
         <argument
             android:name="trendSlug"
@@ -277,6 +304,10 @@
         <argument
             android:name="contentUiModel"
             app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
     </fragment>
 
     <fragment
@@ -304,7 +335,7 @@
 
         <action
             android:id="@+id/actionAboutYouFragmentToProfileFragment"
-            app:destination="@id/profile_nav_graph"
+            app:destination="@id/profileFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -325,4 +356,166 @@
         <deepLink app:uri="@string/deep_link_path_https_about_you" />
         <deepLink app:uri="@string/nav_deep_link_about_you" />
     </fragment>
+
+    <fragment
+        android:id="@+id/twitterLoginFragment"
+        android:name="com.castcle.ui.login.twitterlogin.TwitterLoginFragment"
+        tools:layout="@layout/fragment_login_twitter" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.castcle.ui.profile.ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="profileType"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="isMe"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToFeedDetailFragment"
+            app:destination="@id/feedDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToProfileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToDialogChooseFragment"
+            app:destination="@id/dialogChooseFragment" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToCropAvatarImageFragment"
+            app:destination="@id/cropImageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+
+        <action
+            android:id="@+id/actionProfileFragmentToAboutYouFragment"
+            app:destination="@id/aboutYouFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToDeletePageFragment"
+            app:destination="@id/deletePageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToProfileChooseDialogFragment"
+            app:destination="@id/profileChooseDialogFragment" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
+
+        <deepLink app:uri="@string/deep_link_path_https_profile" />
+        <deepLink app:uri="@string/nav_deep_link_profile" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/dialogChooseFragment"
+        android:name="com.castcle.ui.common.dialog.chooseimage.ChooseDialogFragment"
+        tools:layout="@layout/dialog_fragment_choose" />
+
+    <fragment
+        android:id="@+id/feedDetailFragment"
+        android:name="com.castcle.ui.feed.feeddetail.FeedDetailFragment"
+        tools:layout="@layout/fragment_feed_detail">
+
+        <argument
+            android:name="contentUiModel"
+            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+
+        <argument
+            android:name="isContent"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cropImageFragment"
+        android:name="com.castcle.ui.profile.CropAvatarImageFragment"
+        tools:layout="@layout/fragment_create_profile_choose">
+
+        <argument
+            android:name="mediaFile"
+            app:argType="pl.aprilapps.easyphotopicker.MediaFile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/deletePageFragment"
+        android:name="com.castcle.ui.setting.deleteaccount.DeletePageFragment"
+        tools:layout="@layout/fragment_delete_page">
+
+        <action
+            android:id="@+id/actionDeletePageFragmentToCompleteFragment"
+            app:destination="@id/completeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/profileChooseDialogFragment"
+        android:name="com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment"
+        tools:layout="@layout/dialog_fragment_profile_choose_edit" />
+
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.castcle.ui.createpost.CreatePostFragment"
+        tools:layout="@layout/fragment_create_bloc">
+
+        <argument
+            android:name="createPostBundle"
+            app:argType="com.castcle.common_model.model.login.domain.CreatePostBundle" />
+
+        <argument
+            android:name="isFromProfile"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+    </fragment>
+
+    <dialog
+        android:id="@+id/editContentDialogFragment"
+        android:name="com.castcle.ui.common.dialog.dialogeditcontent.EditContentDialogFragment"
+        tools:layout="@layout/dialog_fragment_choose_feed_edit">
+
+        <argument
+            android:name="optionalEditBundle"
+            app:argType="com.castcle.common_model.model.feed.domain.OptionalEditBundle" />
+    </dialog>
+
 </navigation>

@@ -1,9 +1,13 @@
 package com.castcle.ui.search.trend
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
+import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -35,4 +39,16 @@ abstract class TrendFragmentViewModel : BaseViewCoroutinesModel() {
     abstract fun getTesnds(contentRequestHeader: FeedRequestHeader)
 
     abstract val feedTrendResponse: Flow<PagingData<ContentUiModel>>
+
+    abstract val isGuestMode: Boolean
+
+    abstract fun updateLikeContent(likeContentRequest: LikeContentRequest)
+
+    abstract val onUpdateContentLike: Observable<Unit>
+
+    abstract val onError: Observable<Throwable>
+
+    abstract val userProfile: LiveData<User>
+
+    abstract fun fetchUserProfile()
 }

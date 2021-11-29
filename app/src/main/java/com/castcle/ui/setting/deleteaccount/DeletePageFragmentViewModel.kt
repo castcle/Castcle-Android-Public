@@ -50,10 +50,5 @@ class DeletePageFragmentViewModelImpl @Inject constructor(
     override fun onDeleteAccount(deletePagePayload: DeleteUserPayload): Completable {
         return deleteAccountCompletableUseCase
             .execute(deletePagePayload)
-            .andThen {
-                deleteUserPageDaoSingleUseCase.execute(deletePagePayload.castcleId)
-                    .subscribe()
-                    .addToDisposables()
-            }
     }
 }

@@ -40,9 +40,19 @@ interface FeedApi {
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
         @Query(MODE) mode: String,
+        @Query(HAS_TAG) hasTag: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<FeedResponse>
+
+    @GET("feeds/guests/{circle_slug}")
+    suspend fun getFeedGuests(
+        @Path("circle_slug") circleSlug: String,
+        @Query(MODE) mode: String,
+        @Query(HAS_TAG) hasTag: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<PayLoadList>
 
     @GET("feeds/{feature_slug}/{circle_slug}")
     suspend fun getFeedByMode(
@@ -111,6 +121,11 @@ interface FeedApi {
         @Path("contentIdChild") contentIdChild: String,
         @Body commentRequest: CommentRequest,
     ): Flowable<Response<ContentCommentedResponse>>
+
+    @DELETE("contents/{contentId}")
+    fun deleteContent(
+        @Path("contentId") contentId: String,
+    ): Flowable<Response<Unit>>
 
     @DELETE("contents/{contentId}/comments/{commentId}")
     fun deleteComment(

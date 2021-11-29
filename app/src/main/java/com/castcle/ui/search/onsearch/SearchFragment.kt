@@ -251,9 +251,8 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
     }
 
     private fun onBindShowLoading(message: String) {
-        binding.groupLoding.run {
+        binding.pbLoading.run {
             visibleOrGone(message.isNotBlank())
-            binding.tvLoadingStatus.text = message
         }
     }
 

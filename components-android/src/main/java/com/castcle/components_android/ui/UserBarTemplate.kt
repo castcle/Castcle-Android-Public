@@ -8,6 +8,7 @@ import com.castcle.android.components_android.databinding.LayoutQuoteBarTemplate
 import com.castcle.android.components_android.databinding.LayoutUserBarTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.perfomer.blitz.setTimeAgo
@@ -68,6 +69,21 @@ class UserBarTemplate(
                 )
             )
         }
+        binding.ivOptional.subscribeOnClick {
+            _itemClick.onNext(
+                TemplateEventClick.OptionalClick(
+                    contentUiModel = itemUiModel
+                )
+            )
+        }.addToDisposables()
+
+        binding.tvStatusFollow.subscribeOnClick {
+            _itemClick.onNext(
+                TemplateEventClick.FollowingClick(
+                    contentUiModel = itemUiModel
+                )
+            )
+        }.addToDisposables()
     }
 
     fun bindUiModel(itemUiModel: ContentUiModel, onBindQuote: Boolean = false) {
@@ -78,7 +94,12 @@ class UserBarTemplate(
                 with(itemUiModel.payLoadUiModel) {
                     ivAvatar.loadCircleImage(author.avatar)
                     tvUserName.text = author.displayName
-//                    ivStatusFollow.gone()
+                    with(tvStatusFollow) {
+                        visibleOrGone(itemUiModel.payLoadUiModel.author.followed)
+                        subscribeOnClick {
+
+                        }.addToDisposables()
+                    }
                     created.toTime()?.let {
                         tvDataTime.setTimeAgo(it)
                     }

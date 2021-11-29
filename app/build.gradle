@@ -17,7 +17,7 @@ android {
         minSdk android_app_min_sdk_version
         targetSdk android_app_target_sdk_version
         versionCode android_app_version_code
-        versionName android_app_build_tools_version
+        versionName android_app_version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -58,6 +58,7 @@ android {
         }
         debug {
             debuggable true
+            matchingFallbacks = ['release']
         }
     }
 
@@ -210,16 +211,23 @@ dependencies {
             "com.mikhaellopez:circularimageview:$circle_image_version",
             "com.github.lyrebirdstudio:Croppy:0.2",
             "com.github.esafirm:android-image-picker:3.0.0-beta1",
-            "androidx.core:core-splashscreen:1.0.0-alpha01",
+            'androidx.core:core-splashscreen:1.0.0-alpha02',
             "com.github.stfalcon-studio:StfalconImageViewer:v1.0.1",
             "com.github.arhanashik:LinkPreview:1.2.3",
             "com.github.Shouheng88:compressor:1.5.0",
-            "com.github.perfomer:blitz:1.0.9",
+            "com.github.perfomer:blitz:1.0.9"
     )
 
+    implementation("com.twitter.sdk.android:twitter:3.3.0@aar") {
+        transitive = true
+    }
 
     implementation("com.github.bumptech.glide:glide:$glide_version") {
         exclude group: "com.android.support"
+        transitive = true
+    }
+
+    implementation('com.twitter.sdk.android:twitter:3.3.0') {
         transitive = true
     }
 

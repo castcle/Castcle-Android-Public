@@ -19,6 +19,7 @@ import com.castcle.common_model.model.signin.domain.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.toUserPage
 import com.castcle.networking.api.auth.network.AuthenticationApi
+import com.castcle.networking.api.response.TokenResponse
 import com.castcle.networking.api.response.toOAuthResponse
 import com.castcle.networking.service.operators.ApiOperators
 import com.castcle.networking.service.response.OAuthResponse
@@ -55,6 +56,8 @@ interface AuthenticationsRepository {
     fun authLoginWithEmail(loginRequest: LoginRequest): Single<LoginResponse>
 
     fun authRegister(registerRequest: RegisterRequest): Completable
+
+    fun authRegisterWithSocial(registerRequest: RegisterWithSocialRequest): Single<TokenResponse>
 
     fun authCheckEmailExsit(emailRequest: EmailRequest): Single<EmailVerifyUiModel>
 
@@ -107,6 +110,18 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .doOnSuccess {
                 updateAccessToken(it.toOAuthResponse())
             }.ignoreElement()
+    }
+
+    override fun authRegisterWithSocial(
+        registerRequest: RegisterWithSocialRequest
+    ): Single<TokenResponse> {
+        return authenticationApi
+            .registerWithSocial(registerRequest)
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .doOnSuccess {
+                updateAccessToken(it.toOAuthResponse())
+            }
     }
 
     private fun updateProfile(loginResponse: LoginResponse) {

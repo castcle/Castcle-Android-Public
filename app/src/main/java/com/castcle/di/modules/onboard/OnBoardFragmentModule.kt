@@ -1,7 +1,6 @@
 package com.castcle.di.modules.onboard
 
-import com.castcle.di.modules.blog.CreateBlogFragmentViewModelModule
-import com.castcle.di.modules.blog.CreateQuoteFragmentViewModelModule
+import com.castcle.di.modules.blog.*
 import com.castcle.di.modules.common.dialog.*
 import com.castcle.di.modules.feed.FeedDetailFragmentViewModelModule
 import com.castcle.di.modules.feed.FeedFragmentViewModelModule
@@ -16,16 +15,19 @@ import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.NotiflyLoginDialogFragment
 import com.castcle.ui.common.dialog.chooseimage.ChooseDialogFragment
+import com.castcle.ui.common.dialog.dialogeditcontent.EditContentDialogFragment
 import com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment
 import com.castcle.ui.common.dialog.recast.RecastDialogFragment
 import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.createbloc.CreateQuoteFragment
+import com.castcle.ui.createpost.CreatePostFragment
 import com.castcle.ui.feed.FeedFragment
 import com.castcle.ui.feed.FeedMockFragment
 import com.castcle.ui.feed.feeddetail.FeedDetailFragment
 import com.castcle.ui.forgotpassword.searchaccount.SearchAccountFragment
 import com.castcle.ui.forgotpassword.verifyotp.VerifyOtpFragment
 import com.castcle.ui.login.LoginFragment
+import com.castcle.ui.login.twitterlogin.TwitterLoginFragment
 import com.castcle.ui.profile.CropAvatarImageFragment
 import com.castcle.ui.profile.ProfileFragment
 import com.castcle.ui.profile.childview.all.ContentAllFragment
@@ -51,6 +53,8 @@ import com.castcle.ui.setting.page.GreetingPageFragment
 import com.castcle.ui.setting.profile.SettingProfileFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
 import com.castcle.ui.signin.aboutyou.addlink.AddLinksFragment
+import com.castcle.ui.signin.createaccount.CreateAccountFragment
+import com.castcle.ui.signin.createaccount.accountcomplete.AccountCompleteFragment
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragment
 import com.castcle.ui.signin.email.EmailFragment
 import com.castcle.ui.signin.geetingsignin.GreetingSignInFragment
@@ -284,4 +288,24 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [VerifyOtpFragmentViewModelModule::class])
     fun verifyOtpFragment(): VerifyOtpFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [TwitterLoginViewModelModule::class])
+    fun twitterLoginFragment(): TwitterLoginFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CreateAccountViewModelModule::class])
+    fun createAccountFragment(): CreateAccountFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [AccountCompleteViewModelModule::class])
+    fun accountCompleteFragment(): AccountCompleteFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [CreatePostFragmentViewModelModule::class])
+    fun createPostFragment(): CreatePostFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [EditContentDialogFragmentModule::class])
+    fun editContentDialogFragment(): EditContentDialogFragment
 }

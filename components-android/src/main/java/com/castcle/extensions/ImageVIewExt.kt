@@ -135,8 +135,7 @@ fun ImageView.loadGranularRoundedCornersContentImage(
                     bottomLeft
                 )
             )
-        )
-        .into(this)
+        ).into(this)
 }
 
 fun ImageView.loadRoundedCornersImageWithDefaultSize(

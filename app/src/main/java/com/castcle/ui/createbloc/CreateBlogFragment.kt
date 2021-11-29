@@ -1,5 +1,6 @@
 package com.castcle.ui.createbloc
 
+import android.Manifest.permission.CAMERA
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.graphics.Color
 import android.os.Environment
@@ -12,7 +13,6 @@ import com.castcle.android.databinding.FragmentCreateBlocBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.createblog.MediaItem
-import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
@@ -379,7 +379,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun requestStoragePermission(action: () -> Unit) {
         rxPermissions.permissions(
-            READ_EXTERNAL_STORAGE
+            listOf(READ_EXTERNAL_STORAGE, CAMERA)
         ).onExplainRequestReason { scope, deniedList ->
             scope.showRequestReasonDialog(
                 deniedList,

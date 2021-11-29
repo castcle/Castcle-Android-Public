@@ -86,10 +86,14 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
 
     override fun initViewModel() {
         viewModel.fetchCachedUserProfile()
-            .subscribe()
-            .addToDisposables()
-
-        viewModel.fetchUserPage()
+            .subscribeBy(
+                onComplete = {
+                    viewModel.fetchUserPage()
+                }, onError = {
+                    viewModel.fetchUserPage()
+                    displayError(it)
+                }
+            ).addToDisposables()
     }
 
     override fun setupView() {
@@ -156,12 +160,11 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.setImageDrawable(
-                context?.getDrawableRes(
-                    R.drawable.ic_hamburger_selected
-                )
-            )
+            ivToolbarProfileButton.invisible()
             tvToolbarTitle.text = localizedResources.getString(R.string.setting_title)
+            ivToolbarLogoButton.setImageDrawable(
+                requireContext().getDrawableRes(R.drawable.ic_arrow_left)
+            )
             ivToolbarLogoButton
                 .subscribeOnClick {
                     findNavController().navigateUp()

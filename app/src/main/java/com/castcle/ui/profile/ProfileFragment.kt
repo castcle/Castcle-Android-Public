@@ -14,11 +14,14 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.feed.toContentUiModel
+import com.castcle.common_model.model.login.domain.CreatePostBundle
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.setting.UpLoadType
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.ImagesRequest
+import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
@@ -102,6 +105,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         get() = { inflater, container, attachToRoot ->
             FragmentProfileBinding.inflate(inflater, container, attachToRoot)
         }
+
     override val binding: FragmentProfileBinding
         get() = viewBinding as FragmentProfileBinding
 
@@ -181,7 +185,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             )
             ivToolbarLogoButton
                 .subscribeOnClick {
-                    findNavController().navigateUp()
+                    findNavController().popBackStack()
                 }.addToDisposables()
         }
     }
@@ -202,6 +206,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             onResult = {
                 onHandlerProfileChoose(it)
             })
+
+        binding.wtWhatYouMind.clickStatus.subscribe {
+            handlerWhatYouMindClick(it)
+        }.addToDisposables()
     }
 
     private fun onHandlerProfileChoose(state: ProfileEditState) {
@@ -338,12 +346,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     private fun onBindProfile(user: User) {
         profileTypeState = ProfileType.PROFILE_TYPE_ME
         userProfile = user
+
+        onBindWhatYouMind(user)
+
         with(binding.profileMe) {
             tvFollowingCount.text = user.followersCount.toCount()
             tvFollowersCount.text = user.followersCount.toCount()
             tvProfileName.text = user.displayName
             tvProfileCastcleId.text = user.castcleId
-
             with(user.overview) {
                 tvProfileOverView.visibleOrInvisible(!isEmpty())
                 tvProfileOverView.text = this
@@ -378,7 +388,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }.addToDisposables()
 
             ivProfileCover.loadImageWithCache(user.cover)
-            tbProfile.tvToolbarTitle.text = user.castcleId
+            tbProfile.tvToolbarTitle.text = user.displayName
         }
     }
 
@@ -394,6 +404,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     private fun onBindViewProfile(user: User) {
         userProfile = user
+
         with(binding.profileYou) {
             tvFollowingCount.text = user.followingCount.toCount()
             tvFollowersCount.text = user.followersCount.toCount()
@@ -420,9 +431,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             if (isMe) {
                 profileTypeState = ProfileType.PROFILE_TYPE_PAGE
                 onBindEditImagePage()
+                onBindWhatYouMind(user)
             } else {
                 profileTypeState = ProfileType.PROFILE_TYPE_PEOPLE
                 binding.ivAddCover.gone()
+                binding.wtWhatYouMind.gone()
                 btFollow.visibleOrGone(!user.followed)
                 if (btFollow.isVisible) {
                     btFollow.subscribeOnClick {
@@ -442,6 +455,46 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             ivProfileCover.loadImageWithCache(user.cover)
             tbProfile.tvToolbarTitle.text = user.castcleId
         }
+    }
+
+    private fun onBindWhatYouMind(user: User) {
+        user.toContentUiModel().apply {
+            deepLink = makeDeepLinkUrl(
+                requireContext(), Input(
+                    type = DeepLinkTarget.USER_PROFILE_ME,
+                    contentData = user.castcleId
+                )
+            ).toString()
+        }.run(binding.wtWhatYouMind::bindUiModel)
+    }
+
+    private fun getCreatePostBundle(): CreatePostBundle {
+        return if (profileType == PROFILE_TYPE_ME) {
+            CreatePostBundle.CreatePostProfileBundle(
+                displayName = userProfile.displayName,
+                castcleId = userProfile.castcleId,
+                avaterUrl = userProfile.avatar,
+                verifyed = userProfile.verified
+            )
+        } else {
+            CreatePostBundle.CreatePostPageBundle(
+                displayName = userProfile.displayName,
+                castcleId = userProfile.castcleId,
+                avaterUrl = userProfile.avatar,
+                verifyed = userProfile.verified
+            )
+        }
+    }
+
+    private fun handlerWhatYouMindClick(it: TemplateClicks?) {
+        if (it is TemplateClicks.CreatePostClick) {
+            val createPostBundle = getCreatePostBundle()
+            navigateToCreatePost(createPostBundle)
+        }
+    }
+
+    private fun navigateToCreatePost(createPostBundle: CreatePostBundle) {
+        onBoardNavigator.navigateToCreatePostFragment(createPostBundle, true)
     }
 
     private fun onBindEditImagePage() {

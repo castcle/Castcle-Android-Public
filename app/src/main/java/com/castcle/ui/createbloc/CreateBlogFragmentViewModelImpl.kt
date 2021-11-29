@@ -302,11 +302,14 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         }
     }
 
-    override fun quoteCasteContent(contentUiModel: ContentUiModel) {
+    override fun quoteCasteContent(
+        contentUiModel: ContentUiModel,
+        castcleId: String
+    ) {
         RecastRequest(
             reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
             contentId = contentUiModel.payLoadUiModel.contentId,
-            authorId = _castUserProfile.value?.castcleId ?: ""
+            authorId = castcleId
         ).run {
             postReCastContent(this)
                 .subscribeBy(

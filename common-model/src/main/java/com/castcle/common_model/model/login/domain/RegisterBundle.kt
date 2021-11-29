@@ -35,4 +35,18 @@ sealed class RegisterBundle : Parcelable {
         var email: String = "",
         var password: String? = "",
     ) : RegisterBundle()
+
+    @Parcelize
+    data class RegisterWithSocial(
+        var provider: String = "",
+        var email: String = "",
+        var userName: String = "",
+        var userId: String = "",
+        var userAvatar: String = "",
+        var authToken: String = "",
+    ) : RegisterBundle()
 }
+
+const val PROVIDER_TWITTER = "twitter"
+const val PROVIDER_FACEBOOK = "facebook"
+const val PROVIDER_GOOGLE = "google"

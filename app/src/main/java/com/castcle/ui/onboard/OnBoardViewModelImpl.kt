@@ -4,17 +4,17 @@ import android.app.Activity
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.castcle.common_model.model.setting.LanguageUiModel
-import com.castcle.common_model.model.setting.ProfileType
+import com.castcle.common.lib.common.Optional
+import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.setting.*
-import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
+import com.castcle.usecase.userprofile.*
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
@@ -50,7 +50,9 @@ class OnBoardViewModelImpl @Inject constructor(
     private val getAppLanguageSingleUseCase: GetAppLanguageSingleUseCase,
     private val setAppLanguageUseCase: SetAppLanguageUseCase,
     private val setPreferredLanguageUseCase: SetPreferredLanguageUseCase,
-    private val getPreferredLanguageUseCase: GetPreferredLanguageUseCase
+    private val getPreferredLanguageUseCase: GetPreferredLanguageUseCase,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
+    private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
 ) : OnBoardViewModel() {
 
     private val _userProfile = BehaviorSubject.create<User>()
@@ -84,6 +86,65 @@ class OnBoardViewModelImpl @Inject constructor(
     private var _isContentTypeYouId = MutableLiveData<String>()
     override val isContentTypeYouId: LiveData<String>
         get() = _isContentTypeYouId
+
+    private val _userCachePage = MutableLiveData<List<String>>()
+
+    private val _userCacheProfile = MutableLiveData<User>()
+    override val userCacheProfile: LiveData<User>
+        get() = _userCacheProfile
+
+    init {
+        if (!isGuestMode) {
+            fetchUserProfile()
+        }
+    }
+
+    override fun fetchUserProfile(): Completable =
+        cachedUserProfileSingleUseCase
+            .execute(Unit)
+            .firstOrError()
+            .zipWith(
+                getCachePageDataCompletableUseCase.execute(Unit)
+            ).doOnSuccess { (user, page) ->
+                onBindCacheUserprofile(user, page)
+            }.doOnError(_error::onNext)
+            .ignoreElement()
+
+    private fun onBindCacheUserprofile(user: Optional<User>, page: PageHeaderUiModel?) {
+        setUserProfileData(user)
+        if (user.isPresent) {
+            page?.pageUiItem?.map {
+                it.castcleId
+            }?.apply {
+                toMutableList().add(0, user.get().castcleId)
+            }.run {
+                _userCachePage.value = this
+            }
+        }
+    }
+
+    override fun checkContentIsMe(
+        castcleId: String,
+        onProfileMe: () -> Unit,
+        onPageMe: () -> Unit,
+        non: () -> Unit
+    ) {
+        if (_userProfile.value?.castcleId == castcleId) {
+            onProfileMe.invoke()
+            return
+        }
+        if (_userCachePage.value?.contains(castcleId) == true) {
+            onPageMe.invoke()
+            return
+        }
+        non.invoke()
+    }
+
+    private fun setUserProfileData(user: Optional<User>) {
+        if (user.isPresent) {
+            _userCacheProfile.value = user.get()
+        }
+    }
 
     override fun setContentTypeYouId(isContentId: String) {
         _isContentTypeYouId.value = isContentId

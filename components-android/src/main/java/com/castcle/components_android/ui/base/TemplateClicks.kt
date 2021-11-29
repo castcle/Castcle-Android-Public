@@ -24,4 +24,6 @@ sealed class TemplateClicks(val deepLink: String) {
         deeplink: String = "",
         val contentUiModel: ContentUiModel
     ) : TemplateClicks(deeplink)
+
+    object CreatePostClick : TemplateClicks("")
 }

@@ -15,6 +15,7 @@ import java.io.IOException
 import java.net.SocketException
 import javax.inject.Inject
 
+
 class CastcleApplication : DaggerApplication(), Configuration.Provider {
 
     @Inject lateinit var appCenterAnalytics: AppCenterAnalytics

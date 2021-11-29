@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_8sdp"
         android:orientation="horizontal"
+        android:animateLayoutChanges="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="@id/tvAddPage"
         app:layout_constraintStart_toStartOf="@id/tvPageTitle"

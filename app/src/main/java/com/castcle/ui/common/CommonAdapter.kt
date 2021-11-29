@@ -62,8 +62,14 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
     @SuppressLint("NotifyDataSetChanged")
     fun updateContentPost(contentUiModel: ContentUiModel) {
         val content = snapshot()
-        content.items.toMutableList().add(0, contentUiModel)
+        content.items.toMutableList().addAll(0, listOf(contentUiModel))
         notifyItemInserted(0)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateDeleteContent(contentUiModel: ContentUiModel) {
+        val index = snapshot().indexOf(contentUiModel)
+        notifyItemRemoved(index)
     }
 
     @SuppressLint("NotifyDataSetChanged")

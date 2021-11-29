@@ -11,17 +11,22 @@ import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.setting.PageHeaderUiModel
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.ModeType
 import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.ui.util.SingleLiveEvent
+import com.castcle.usecase.feed.DeleteContentCompletableUseCase
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.search.GetTopTrendsSingleUseCase
+import com.castcle.usecase.setting.GetCachePageDataCompletableUseCase
 import com.castcle.usecase.userprofile.*
 import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +66,9 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val feedNonAuthRepository: FeedRepository,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase,
-    private val checkCastUpLoadingFlowableCase: CheckCastUpLoadingFlowableCase
+    private val checkCastUpLoadingFlowableCase: CheckCastUpLoadingFlowableCase,
+    private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
+    private val deleteContentCompletableUseCase: DeleteContentCompletableUseCase
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -100,8 +107,15 @@ class FeedFragmentViewModelImpl @Inject constructor(
 
     private var _queryFeedRequest = MutableStateFlow(defaultFeedRequestHeader)
 
+    private val _userCachePage = MutableLiveData<List<String>>()
+
     init {
-        getAllFeedContent(_queryFeedRequest)
+        if (isGuestMode) {
+//            getAllFeedGustsContent(_queryFeedRequest)
+            getAllFeedContent(_queryFeedRequest)
+        } else {
+            getAllFeedContent(_queryFeedRequest)
+        }
     }
 
     private val _feedContentMock = MutableLiveData<List<ContentUiModel>>()
@@ -119,11 +133,45 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override fun fetchUserProfile(): Completable =
         cachedUserProfileSingleUseCase
             .execute(Unit)
-            .doOnSubscribe { _showLoading.onNext(true) }
+            .firstOrError()
+            .zipWith(
+                getCachePageDataCompletableUseCase.execute(Unit)
+            ).doOnSuccess { (user, page) ->
+                onBindCacheUserprofile(user, page)
+            }.doOnSubscribe { _showLoading.onNext(true) }
             .doFinally { _showLoading.onNext(false) }
-            .doOnNext(::setUserProfileData)
-            .doOnError(_error::onNext).firstOrError()
+            .doOnError(_error::onNext)
             .ignoreElement()
+
+    private fun onBindCacheUserprofile(user: Optional<User>, page: PageHeaderUiModel?) {
+        setUserProfileData(user)
+        if (user.isPresent) {
+            page?.pageUiItem?.map {
+                it.castcleId
+            }?.apply {
+                toMutableList().add(0, user.get().castcleId)
+            }.run {
+                _userCachePage.value = this
+            }
+        }
+    }
+
+    override fun checkContentIsMe(
+        castcleId: String,
+        onProfileMe: () -> Unit,
+        onPageMe: () -> Unit,
+        non: () -> Unit
+    ) {
+        if (_userProfile.value?.castcleId == castcleId) {
+            onProfileMe.invoke()
+            return
+        }
+        if (_userCachePage.value?.contains(castcleId) == true) {
+            onPageMe.invoke()
+            return
+        }
+        non.invoke()
+    }
 
     override fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
         launchPagingAsync({
@@ -132,6 +180,14 @@ class FeedFragmentViewModelImpl @Inject constructor(
         }, {
             _showLoading.onNext(false)
             _feedUiMode = it
+        })
+
+    override fun getAllFeedGustsContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
+        launchPagingAsync({
+            _showLoading.onNext(true)
+            feedNonAuthRepository.getFeedGuests(feedRequest).cachedIn(viewModelScope)
+        }, {
+            _showLoading.onNext(false)
         })
 
     private var _onUpdateContentLike = BehaviorSubject.create<Unit>()
@@ -181,8 +237,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
         _trendsResponse.value = list
     }
 
-    private var _castPostResponse = BehaviorSubject.create<ContentUiModel>()
-    override val castPostResponse: Observable<ContentUiModel>
+    private var _castPostResponse = SingleLiveEvent<ContentUiModel>()
+    override val castPostResponse: SingleLiveEvent<ContentUiModel>
         get() = _castPostResponse
 
     override fun checkCastPostWithImageStatus(): Observable<Boolean> {
@@ -202,8 +258,16 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private fun checkCastPostResponse(userResponse: String) {
         if (userResponse.isNotBlank()) {
             val castPostRes = userResponse.totContentUiModel()
-            _castPostResponse.onNext(castPostRes)
+            _castPostResponse.value = castPostRes
         }
+    }
+
+    override fun deleteContentFeed(contentId: String): Completable {
+        return deleteContentCompletableUseCase.execute(
+            DeleteContentCompletableUseCase.Input(
+                contentId = contentId
+            )
+        )
     }
 
     override fun getFeedResponseMock() {

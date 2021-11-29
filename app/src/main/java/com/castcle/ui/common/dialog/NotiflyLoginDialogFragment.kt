@@ -1,19 +1,34 @@
 package com.castcle.ui.common.dialog
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.castcle.android.R
 import com.castcle.android.databinding.DialogFragmentNotiflyLoginBinding
 import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.login.domain.*
+import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
+import com.castcle.common_model.model.signin.domain.RegisterWithSocialPayLoad
+import com.castcle.common_model.model.signin.domain.RegisterWithSocialRequest
 import com.castcle.extensions.openUri
+import com.castcle.networking.api.response.TokenResponse
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import io.reactivex.rxkotlin.subscribeBy
+import timber.log.Timber
 import javax.inject.Inject
+
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -42,7 +57,23 @@ import javax.inject.Inject
 class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDialogViewModel>(),
     BaseFragmentCallbacks, ViewBindingInflater<DialogFragmentNotiflyLoginBinding> {
 
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    private lateinit var startActivityForResult: ActivityResultLauncher<Intent>
+
+    private lateinit var googleSignInAccount: GoogleSignInAccount
+
+    private var providerSocial = ""
+
+    private var email = ""
+
+    private var authToken = ""
+
+    private var userName = ""
+
+    private var avatarImage = ""
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> DialogFragmentNotiflyLoginBinding
@@ -70,6 +101,120 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
 
     override fun setupView() {
         initBottomSheetDialog()
+        startActivityForResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    googleSignInAccount = task.getResult(ApiException::class.java)
+                    loginWithSocial()
+                    Timber.d("firebaseAuthWithGoogle:" + googleSignInAccount.id)
+                } catch (e: ApiException) {
+                    // Google Sign In failed, update UI appropriately
+                    Timber.tag("GOOGLE").w(e, "Google sign in failed")
+                }
+            }
+        }
+    }
+
+    private fun loginWithSocial() {
+        val requestLoginSocial = getRequestSocialLogin()
+        viewModel.authRegisterWithSocial(requestLoginSocial).subscribeBy(
+            onSuccess = {
+                handlerLoginResponse(it)
+            }, onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handlerLoginResponse(it: TokenResponse) {
+        checkHasEmail(email)
+        //When has email or user in system that be login and should Navigate to Feed and
+    }
+
+    private fun getRequestSocialLogin(): RegisterWithSocialRequest {
+        var requestSocial = RegisterWithSocialRequest()
+        handleSocialState(
+            onGoogle = {
+                with(googleSignInAccount) {
+                    userName = displayName ?: ""
+                    this@NotiflyLoginDialogFragment.email = email ?: ""
+                    authToken = idToken ?: ""
+                    avatarImage = photoUrl?.toString() ?: ""
+                }
+                requestSocial = RegisterWithSocialRequest(
+                    provider = providerSocial,
+                    payload = RegisterWithSocialPayLoad(
+                        authToken = googleSignInAccount.idToken ?: ""
+                    )
+                )
+            },
+            onFaceBook = {
+                requestSocial = RegisterWithSocialRequest(
+                    provider = providerSocial,
+                    payload = RegisterWithSocialPayLoad(
+                        authToken = googleSignInAccount.idToken ?: ""
+                    )
+                )
+            },
+            onTwitter = {
+                requestSocial = RegisterWithSocialRequest()
+            }
+        )
+        return requestSocial
+    }
+
+    private fun handleSocialState(
+        onGoogle: () -> Unit,
+        onFaceBook: () -> Unit,
+        onTwitter: () -> Unit
+    ) {
+        when (providerSocial) {
+            PROVIDER_GOOGLE -> {
+                onGoogle.invoke()
+            }
+            PROVIDER_TWITTER -> {
+                onTwitter.invoke()
+            }
+            PROVIDER_FACEBOOK -> {
+                onFaceBook.invoke()
+            }
+            else -> RegisterWithSocialRequest()
+        }
+    }
+
+    private fun checkHasEmail(email: String) {
+        viewModel.checkHasEmail(email = email ?: "").subscribeBy(
+            onSuccess = {
+                onHasEmail(it)
+            }, onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun onHasEmail(
+        emailUiVerify: AuthVerifyBaseUiModel.EmailVerifyUiModel,
+    ) {
+        if (emailUiVerify.exist) {
+            //Merge Account
+        } else {
+            onNavigateToCreateDisplayName()
+        }
+    }
+
+    private fun onNavigateToCreateDisplayName() {
+        val registerBundle = RegisterBundle.RegisterWithSocial(
+            provider = PROVIDER_GOOGLE,
+            userName = userName,
+            email = email,
+            authToken = authToken,
+            userAvatar = avatarImage
+        )
+        onBoardNavigator.navigateToCreateAccountFragment(registerBundle)
     }
 
     private fun initBottomSheetDialog() {
@@ -105,11 +250,35 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
                     navigateToRegisterFragment()
                 }.addToDisposables()
 
+                clLoginWithGoogle.subscribeOnClick {
+                    providerSocial = PROVIDER_GOOGLE
+                    loginWithGoogle()
+                }.addToDisposables()
+
                 clLoginWithTwitter.subscribeOnClick {
-                    openWebView(REQUEST_TOKEN_TWITTWE)
+                    providerSocial = PROVIDER_TWITTER
+                    navigateToTwitterLoginFragment()
+                }.addToDisposables()
+
+                clLoginWithFackbook.subscribeOnClick {
+                    providerSocial = PROVIDER_FACEBOOK
                 }.addToDisposables()
             }
         }
+    }
+
+    private fun loginWithGoogle() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.gsc_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult.launch(signInIntent)
+    }
+
+    private fun navigateToTwitterLoginFragment() {
+        onBoardNavigator.navigateToTwitterLoginFragment()
     }
 
     private fun navigateToRegisterFragment() {
@@ -139,5 +308,3 @@ const val STATIC_LINK_MENIFESTO =
     "https://docs.castcle.com/"
 const val STATIC_LINK_WHITEPAPER =
     "https://documents.castcle.com/castcle-whitepaper-v1_3.pdf"
-
-private const val REQUEST_TOKEN_TWITTWE = "https://api.twitter.com/oauth/request_token?oauth_callback"

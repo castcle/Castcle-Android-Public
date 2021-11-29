@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "946784514991-m35nhdvek2pm9rdlrk1bi2pgbkl7l0k9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.castcle.android.dev",
+            "certificate_hash": "8664cb2c5340f64eba5f63e537ecda18f024e02e"
+          }
+        },
+        {
           "client_id": "946784514991-ld1lttpv93slvt085s5501e8e01l3p21.apps.googleusercontent.com",
           "client_type": 3
         }

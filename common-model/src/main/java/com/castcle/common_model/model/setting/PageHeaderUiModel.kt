@@ -38,6 +38,7 @@ data class PageUiModel(
     val displayName: String = "",
     val pageType: String = "",
     val verifyEmail: Boolean = false,
+    var selected: Boolean = false,
     val addPage: Boolean = false
 )
 
@@ -49,7 +50,8 @@ fun User.toPageHeaderUiModel() =
                 avatarUrl = avatar,
                 verifyEmail = verified,
                 displayName = displayName,
-                pageType = ProfileType.PROFILE_TYPE_ME.type
+                pageType = ProfileType.PROFILE_TYPE_ME.type,
+                selected = true
             )
         )
     )

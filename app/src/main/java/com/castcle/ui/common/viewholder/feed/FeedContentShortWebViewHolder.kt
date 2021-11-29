@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -92,11 +93,20 @@ class FeedContentShortWebViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun bindUiModel(uiModel: ContentUiModel) {
         super.bindUiModel(uiModel)
 
@@ -108,11 +118,12 @@ class FeedContentShortWebViewHolder(
             }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentMessage
+                tvFeedContent.appendLinkText(contentMessage)
                 ftFooter.bindUiModel(uiModel)
 
-                if(!clPreviewIconContent.clInPreviewIconContent.isVisible
-                    && !clPreviewContent.clInPreviewContent.isVisible){
+                if (!clPreviewIconContent.clInPreviewIconContent.isVisible
+                    && !clPreviewContent.clInPreviewContent.isVisible
+                ) {
                     link.firstOrNull()?.let {
                         LinkParser(it.url, object : ParserCallback {
                             override fun onData(linkData: LinkData) {

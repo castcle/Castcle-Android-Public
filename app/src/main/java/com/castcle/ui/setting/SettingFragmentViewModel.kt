@@ -6,15 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.PaginationModel
 import com.castcle.common_model.model.notification.NotificationUiModel
-import com.castcle.common_model.model.setting.PageUiModel
-import com.castcle.common_model.model.setting.toPageHeaderUiModel
+import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.ui.util.SingleLiveEvent
 import com.castcle.usecase.notification.GetBadgesNotificationSingleUseCase
-import com.castcle.usecase.setting.GetUerPageSingleUseCase
-import com.castcle.usecase.setting.LogoutCompletableUseCase
+import com.castcle.usecase.setting.*
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.subscribeBy
@@ -53,7 +51,7 @@ abstract class SettingFragmentViewModel : BaseViewModel() {
 
     abstract val userPage: LiveData<List<PageUiModel>>
 
-    abstract val notificationBadgesCounts: SingleLiveEvent<NotificationUiModel>
+    abstract val notificationBadgesCounts: LiveData<NotificationUiModel>
 
     abstract fun onLogOut(activity: Activity): Completable
 
@@ -68,6 +66,7 @@ class SettingFragmentViewModelImpl @Inject constructor(
     private val logoutCompletableUseCase: LogoutCompletableUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val getUerPageSingleUseCase: GetUerPageSingleUseCase,
+    private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val getBadgesNotificationSingleUseCase: GetBadgesNotificationSingleUseCase
 ) : SettingFragmentViewModel() {
 
@@ -77,8 +76,8 @@ class SettingFragmentViewModelImpl @Inject constructor(
 
     private var _pagination = MutableLiveData<PaginationModel>()
 
-    private var _notificationBadgesCounts = SingleLiveEvent<NotificationUiModel>()
-    override val notificationBadgesCounts: SingleLiveEvent<NotificationUiModel>
+    private var _notificationBadgesCounts = MutableLiveData<NotificationUiModel>()
+    override val notificationBadgesCounts: LiveData<NotificationUiModel>
         get() = _notificationBadgesCounts
 
     private val _userProfile = MutableLiveData<User>()
@@ -96,11 +95,29 @@ class SettingFragmentViewModelImpl @Inject constructor(
     override fun fetchCachedUserProfile(): Completable =
         cachedUserProfileSingleUseCase
             .execute(Unit)
-            .doOnSubscribe { _showLoading.onNext(true) }
+            .firstOrError()
+            .zipWith(
+                getCachePageDataCompletableUseCase.execute(Unit)
+            ).doOnSubscribe { _showLoading.onNext(true) }
             .doFinally { _showLoading.onNext(false) }
-            .doOnNext(::setUserProfileData)
-            .doOnError(_error::onNext).firstOrError()
+            .doOnSuccess { (user, page) ->
+                onBindCacheUserPage(user, page)
+            }.doOnError(_error::onNext)
             .ignoreElement()
+
+
+    private fun onBindCacheUserPage(userOptional: Optional<User>, page: PageHeaderUiModel) {
+        if (userOptional.isPresent) {
+            setUserProfileData(userOptional)
+
+            val userPage = userOptional.get().toPageHeaderUiModel()
+            page.pageUiItem.toMutableList().apply {
+                add(0, userPage.pageUiItem.first())
+            }.let {
+                setUserPage(it)
+            }
+        }
+    }
 
     override fun fetchUserPage() {
         val defaultPaginate = if (_pagination.value != null) {
@@ -146,9 +163,7 @@ class SettingFragmentViewModelImpl @Inject constructor(
     }
 
     private fun setUserProfileData(user: Optional<User>) {
-        if (user.isPresent) {
-            _userProfile.value = user.get()
-        }
+        _userProfile.value = user.get()
     }
 
     private fun setPaginationData(pagination: PaginationModel) {

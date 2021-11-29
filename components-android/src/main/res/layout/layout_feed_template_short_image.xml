@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.castcle.components_android.ui.custom.mention.MentionTextView
+    <com.castcle.components_android.ui.custom.socialtextview.SocialTextView
         style="@style/AppTextKanitExLight.xSmall"
         android:id="@+id/tvFeedContent"
         android:layout_width="0dp"
@@ -35,9 +35,13 @@
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_12sdp"
         android:textColor="@color/white"
+        app:hashtagColor="@color/blue"
         app:layout_constraintEnd_toEndOf="@id/ubUser"
         app:layout_constraintStart_toStartOf="@id/ubUser"
         app:layout_constraintTop_toBottomOf="@id/ubUser"
+        app:linkTypes="mention|hashtag|phone|email|url"
+        app:mentionColor="@color/blue"
+        app:urlColor="@color/blue"
         tools:text="Win a legendary DappRadar x\b\n@MOBOX_Official #NFT.\b\nDon't miss your chance and register now:" />
 
     <include

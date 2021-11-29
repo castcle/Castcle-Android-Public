@@ -6,9 +6,9 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
-import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewCoroutinesModel
+import com.castcle.ui.util.SingleLiveEvent
 import io.reactivex.Completable
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
@@ -60,6 +60,8 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>)
 
+    abstract fun getAllFeedGustsContent(feedRequest: MutableStateFlow<FeedRequestHeader>)
+
     abstract val input: Input
 
     abstract fun setFetchFeedContent(feedRequest: FeedRequestHeader)
@@ -70,12 +72,21 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun checkCastPostWithImageStatus(): Observable<Boolean>
 
-    abstract val castPostResponse: Observable<ContentUiModel>
+    abstract val castPostResponse: SingleLiveEvent<ContentUiModel>
+
+    abstract fun checkContentIsMe(
+        castcleId: String,
+        onProfileMe: () -> Unit,
+        onPageMe: () -> Unit,
+        non: () -> Unit
+    )
 
     interface Input {
 
         fun updateLikeContent(likeContentRequest: LikeContentRequest)
 
         fun setDefaultFeedRequestHeader()
+
+        fun deleteContentFeed(contentId: String): Completable
     }
 }

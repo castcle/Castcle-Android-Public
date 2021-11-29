@@ -45,6 +45,7 @@
             android:lines="1"
             android:textAlignment="textStart"
             android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@id/tvToolbarTitleAction"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivToolbarLogoButton"
             app:layout_constraintTop_toTopOf="parent"

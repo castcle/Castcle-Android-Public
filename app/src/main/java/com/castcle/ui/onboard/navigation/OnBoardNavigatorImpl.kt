@@ -12,13 +12,13 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
-import com.castcle.common_model.model.webview.WebViewRequest
 import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.containsSomeOf
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
 import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
 import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
+import com.castcle.ui.createpost.CreatePostFragmentArgs
 import com.castcle.ui.feed.feeddetail.FeedDetailFragmentArgs
 import com.castcle.ui.profile.CropAvatarImageFragmentArgs
 import com.castcle.ui.profile.ProfileFragmentArgs
@@ -29,6 +29,7 @@ import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFra
 import com.castcle.ui.setting.deleteaccount.DeletePageFragmentArgs
 import com.castcle.ui.signin.aboutyou.AboutYouFragmentArgs
 import com.castcle.ui.signin.aboutyou.addlink.AddLinksFragmentArgs
+import com.castcle.ui.signin.createaccount.CreateAccountFragmentArgs
 import com.castcle.ui.signin.createdisplayname.CreateDisplayNameFragmentArgs
 import com.castcle.ui.signin.password.PasswordFragmentArgs
 import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragmentArgs
@@ -614,6 +615,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                             RecastDialogFragmentArgs(contentUiModel).toBundle()
                         )
                     }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToRecastDialogFragment,
+                            RecastDialogFragmentArgs(contentUiModel).toBundle()
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -625,7 +632,10 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToCreateQuoteFragment(contentUiModel: ContentUiModel) {
+    override fun navigateToCreateQuoteFragment(
+        contentUiModel: ContentUiModel,
+        profileEditBundle: ProfileBundle
+    ) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph, R.id.search_nav_graph -> {
@@ -633,7 +643,19 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.dialogRecastFragment -> {
                         navController.navigate(
                             R.id.actionDialogRecastFragmentToCreateQuoteFragment,
-                            CreateQuoteFragmentArgs(contentUiModel).toBundle()
+                            CreateQuoteFragmentArgs(
+                                contentUiModel,
+                                profileEditBundle
+                            ).toBundle()
+                        )
+                    }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToCreateQuoteFragment,
+                            CreateQuoteFragmentArgs(
+                                contentUiModel,
+                                profileEditBundle
+                            ).toBundle()
                         )
                     }
                     else -> {
@@ -818,6 +840,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                             FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
                         )
                     }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToFeedDetailFragment,
+                            FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -898,6 +926,18 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.settingFragment -> {
                         navController.navigate(
                             R.id.actionSettingFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, profileType, true).toBundle()
+                        )
+                    }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, profileType, true).toBundle()
+                        )
+                    }
+                    R.id.aboutYouFragment -> {
+                        navController.navigate(
+                            R.id.actionAboutYouFragmentToProfileFragment,
                             ProfileFragmentArgs(castcle, profileType, true).toBundle()
                         )
                     }
@@ -1014,6 +1054,11 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToDialogChooseFragment
+                        )
+                    }
+                    R.id.createAccountFragment -> {
+                        navController.navigate(
+                            R.id.actionCreateAccountToChooseDialogFragment,
                         )
                     }
                     else -> {
@@ -1145,6 +1190,107 @@ class OnBoardNavigatorImpl @Inject constructor(
                         navController.navigate(
                             R.id.actionSearchAccountFragmentToVerifyFragment,
                             VerifyEmailFragmentArgs(otpRequest).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToTwitterLoginFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.dialogLoginFragment -> {
+                        navController.navigate(
+                            R.id.actionDialogLoginFragmentToTwitterLoginFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToCreateAccountFragment(registerBundle: RegisterBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph, R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.dialogLoginFragment -> {
+                        navController.navigate(
+                            R.id.actionDialogLoginFragmentToCreateAccountFragment,
+                            CreateAccountFragmentArgs(registerBundle).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToCreatePostFragment(
+        createPostBundle: CreatePostBundle,
+        isFromProfile: Boolean
+    ) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToCreatePostFragment,
+                            CreatePostFragmentArgs(createPostBundle, isFromProfile).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToEditContentDialogFragment() {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToEditContentDialogFragment
+                        )
+                    }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToEditContentDialogFragment
+                        )
+                    }
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToEditContentDialogFragment
                         )
                     }
                     else -> {

@@ -10,6 +10,7 @@ import com.castcle.android.R
 import com.castcle.android.databinding.DialogFragmentRecastBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
@@ -105,9 +106,13 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
     }
 
     override fun bindViewModel() {
-        viewModel.userPageUiModel.observe(viewLifecycleOwner, {
-            adapterRecast.uiModels = it.pageUiItem
-            onBindRecastAction(it.pageUiItem[0])
+        viewModel.userPageUiModel.observe(viewLifecycleOwner, { it ->
+            adapterRecast.uiModels = it?.pageUiItem ?: emptyList()
+            it?.pageUiItem?.find {
+                it.selected
+            }?.let {
+                onBindRecastAction(it)
+            }
         })
 
         adapterRecast.itemClick.subscribeBy {
@@ -133,7 +138,7 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
     }
 
     private fun handleClick(user: PageUiModel) {
-        adapterRecast.onPageSelected(user)
+        viewModel.onPageSelected(user)
         onBindRecastAction(user)
         handleBindRecast()
     }
@@ -160,7 +165,19 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
     }
 
     private fun navigateToCreateQuoteFragment() {
-        onBoardNavigator.navigateToCreateQuoteFragment(currentCoutent)
+        var profileBundle: ProfileBundle = ProfileBundle.ReCastPage()
+        viewModel.userPageUiModel.value?.pageUiItem?.find {
+            it.selected
+        }?.let {
+            profileBundle = ProfileBundle.ReCastPage(
+                castcleId = it.castcleId,
+                displayName = it.displayName,
+                avaterUrl = it.avatarUrl
+            )
+        }
+        onBoardNavigator.navigateToCreateQuoteFragment(
+            currentCoutent, profileBundle
+        )
     }
 
     private fun onRecastContent() {

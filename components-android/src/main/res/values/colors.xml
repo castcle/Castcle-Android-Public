@@ -27,6 +27,7 @@
     <color name="light_gray">#888F99</color>
     <color name="blue">#01D2FF</color>
     <color name="dark_blue">#1B1D21</color>
+    <color name="dark_blue_tran80">#801B1D21</color>
     <color name="blue_night">#003E8C</color>
     <color name="blue_gray">#0E82BA</color>
     <color name="red_gray">#D6C7C7</color>

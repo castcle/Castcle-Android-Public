@@ -85,7 +85,7 @@ class RecastAdapter : RecyclerView.Adapter<RecastAdapter.RecastViewHolder>(),
             with(binding) {
                 ivAvatar.loadRoundedCornersImage(uiModel.avatarUrl)
                 tvDisplayName.text = uiModel.displayName
-                ivSelected.visibleOrGone(indexCurrent == bindingAdapterPosition)
+                ivSelected.visibleOrGone(uiModel.selected)
                 clBgItem.isActivated = indexCurrent == bindingAdapterPosition
             }
             itemView.subscribeOnClick {

@@ -46,7 +46,7 @@ fun CommentedDataResponse.toContentUiModel(): ContentUiModel {
     return ContentUiModel(
         id = id,
         payLoadUiModel = PayLoadUiModel(
-            created = createAt,
+            created = createdAt,
             contentMessage = message,
             hasHistory = hasHistory ?: false,
             author = author.toAuthorUiModel(),

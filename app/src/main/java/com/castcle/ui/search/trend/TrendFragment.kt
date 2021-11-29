@@ -78,7 +78,6 @@ class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     override fun setupView() {
-        setupToolbar()
         with(binding.vpPageContent) {
             adapter = ContentTrendAdapter(this@TrendFragment).also {
                 contentTrendAdapter = it
@@ -97,19 +96,6 @@ class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
             ivToolbarLogoButton.subscribeOnClick {
                 onBoardNavigator.findNavController().navigateUp()
             }.addToDisposables()
-        }
-    }
-
-    private fun setupToolbar() {
-        with(binding.tbToolBar) {
-            tvToolbarTitle.text = localizedResources.getString(R.string.feed_title_toolbar)
-            ivToolbarProfileButton.setImageDrawable(
-                context?.getDrawableRes(
-                    R.drawable.ic_hamburger
-                )
-            )
-            ivToolbarProfileButton.subscribeOnClick {
-            }
         }
     }
 

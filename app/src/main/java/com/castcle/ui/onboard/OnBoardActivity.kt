@@ -24,6 +24,7 @@ import com.castcle.ui.base.BaseActivity
 import com.castcle.ui.base.ViewBindingContract
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.RC_CROP_IMAGE
+import com.castcle.ui.signin.createaccount.RC_CROP_IMAGE_ACCOUNT
 import com.castcle.usecase.OverrideLocaleAppImpl
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
@@ -192,6 +193,9 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.notificationFragment,
                 R.id.verifyOtpFragment,
                 R.id.searchAccountFragment,
+                R.id.trendFragment,
+                R.id.createAccountFragment,
+                R.id.createAccountCompleteFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }
@@ -234,6 +238,9 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_CROP_IMAGE) {
+            data?.data?.let { viewModel.setImageResponse(it) }
+        }
+        if (requestCode == RC_CROP_IMAGE_ACCOUNT) {
             data?.data?.let { viewModel.setImageResponse(it) }
         }
     }

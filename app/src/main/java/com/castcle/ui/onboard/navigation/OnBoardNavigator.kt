@@ -6,7 +6,6 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
-import com.castcle.common_model.model.webview.WebViewRequest
 import com.castcle.ui.base.BaseNavigator
 import pl.aprilapps.easyphotopicker.MediaFile
 
@@ -80,7 +79,10 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel)
 
-    fun navigateToCreateQuoteFragment(contentUiModel: ContentUiModel)
+    fun navigateToCreateQuoteFragment(
+        contentUiModel: ContentUiModel,
+        profileEditBundle: ProfileBundle
+    )
 
     fun navigateToLanguageFragment()
 
@@ -123,4 +125,12 @@ interface OnBoardNavigator : BaseNavigator {
     fun navigateToForgotPassword()
 
     fun navigateToVerifyOtpFragment(otpRequest: ProfileBundle.ProfileOtp)
+
+    fun navigateToTwitterLoginFragment()
+
+    fun navigateToCreateAccountFragment(registerBundle: RegisterBundle)
+
+    fun navigateToCreatePostFragment(createPostBundle: CreatePostBundle, isFromProfile: Boolean = false)
+
+    fun navigateToEditContentDialogFragment()
 }

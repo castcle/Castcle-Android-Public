@@ -99,6 +99,14 @@ class FeedContentImageViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -115,7 +123,7 @@ class FeedContentImageViewHolder(
             }
             with(uiModel.payLoadUiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentFeed
+                tvFeedContent.appendLinkText(contentMessage)
                 icImageContent.bindImageContent(uiModel)
                 ftFooter.bindUiModel(uiModel)
             }

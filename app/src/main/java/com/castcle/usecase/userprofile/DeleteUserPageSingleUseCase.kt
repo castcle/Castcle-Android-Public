@@ -41,7 +41,7 @@ class DeleteUserPageSingleUseCase @Inject constructor(
 ) {
 
     override fun create(input: String): Completable {
-        return Completable.create {
+        return Completable.fromCallable {
             userPageDao.deleteUserPageByPageId(input)
         }
     }

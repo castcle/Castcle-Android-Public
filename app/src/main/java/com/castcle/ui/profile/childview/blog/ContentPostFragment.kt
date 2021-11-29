@@ -142,34 +142,35 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
                 val isLoading = loadStates.refresh is LoadState.Loading
                 if (isError) {
                     handleEmptyState(isError)
-//                    stopLoadingShimmer()
+                    stopLoadingShimmer()
                 }
                 if (!isLoading) {
-//                    stopLoadingShimmer()
+                    binding.swiperefresh.isRefreshing = false
+                    stopLoadingShimmer()
                 }
             }
         }
     }
 
-//    private fun startLoadingShimmer() {
-//        with(binding) {
-//            skeletonLoading.shimmerLayoutLoading.run {
-//                startShimmer()
-//                visible()
-//            }
-//        }
-//    }
-//
-//
-//    private fun stopLoadingShimmer() {
-//        with(binding) {
-//            skeletonLoading.shimmerLayoutLoading.run {
-//                stopShimmer()
-//                setShimmer(null)
-//                gone()
-//            }
-//        }
-//    }
+    private fun startLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
+            }
+        }
+    }
+
+
+    private fun stopLoadingShimmer() {
+        with(binding) {
+            skeletonLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
+    }
 
     private fun handleContentClick(click: Click) {
         when (click) {

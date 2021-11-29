@@ -75,6 +75,7 @@ class PageContentTemplate(
                 adapter = PageHeaderTemplateAdapter(this@PageContentTemplate).also {
                     adapterPage = it
                 }
+                itemAnimator = null
             }
 
             tvAddPage.subscribeOnClick {

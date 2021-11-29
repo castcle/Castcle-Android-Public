@@ -86,6 +86,12 @@ class WhatYouMindTemplate(
                         )
                     }.addToDisposables()
                 }
+
+                tvWathYouMind.subscribeOnClick {
+                    _clickMenu.onNext(
+                        TemplateClicks.CreatePostClick
+                    )
+                }.addToDisposables()
             }
         }
     }

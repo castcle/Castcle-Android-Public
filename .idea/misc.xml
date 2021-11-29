@@ -27,6 +27,7 @@
         <entry key="app/src/main/res/drawable/ic_close.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/drawable/ic_close_white.xml" value="0.142578125" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.21851851851851853" />
+        <entry key="app/src/main/res/drawable/ic_logo_castcle.xml" value="0.15069444444444444" />
         <entry key="app/src/main/res/drawable/ic_logo_castcle_noti.xml" value="0.14444444444444443" />
         <entry key="app/src/main/res/drawable/ic_more.xml" value="0.15833333333333333" />
         <entry key="app/src/main/res/drawable/ic_tool_bar.xml" value="0.21851851851851853" />
@@ -37,11 +38,13 @@
         <entry key="app/src/main/res/layout/bottom_create_bloc.xml" value="0.1260245901639344" />
         <entry key="app/src/main/res/layout/content_on_board.xml" value="0.16041666666666668" />
         <entry key="app/src/main/res/layout/dialog_fragment_choose.xml" value="0.13524590163934427" />
+        <entry key="app/src/main/res/layout/dialog_fragment_choose_feed_edit.xml" value="0.1" />
         <entry key="app/src/main/res/layout/dialog_fragment_chooset.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_fragment_notifly_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_fragment_profile_choose_edit.xml" value="0.3296296296296296" />
         <entry key="app/src/main/res/layout/dialog_fragment_recast.xml" value="0.3132716049382716" />
         <entry key="app/src/main/res/layout/fragment_about_you.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_account_completed.xml" value="0.15095628415300547" />
         <entry key="app/src/main/res/layout/fragment_add_links.xml" value="0.14959016393442623" />
         <entry key="app/src/main/res/layout/fragment_app_language.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_change_password.xml" value="0.1407103825136612" />
@@ -50,6 +53,7 @@
         <entry key="app/src/main/res/layout/fragment_content_blog.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_content_photo.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_content_post.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_create_account.xml" value="0.15095628415300547" />
         <entry key="app/src/main/res/layout/fragment_create_bloc.xml" value="0.32448979591836735" />
         <entry key="app/src/main/res/layout/fragment_create_password.xml" value="0.300399463277991" />
         <entry key="app/src/main/res/layout/fragment_create_profile.xml" value="0.335" />
@@ -66,6 +70,7 @@
         <entry key="app/src/main/res/layout/fragment_greeting_sign_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_language.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_login_twitter.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_notication_content.xml" value="0.15437158469945356" />
         <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.1635928961748634" />
         <entry key="app/src/main/res/layout/fragment_notification_content.xml" value="0.15437158469945356" />
@@ -115,7 +120,7 @@
         <entry key="app/src/main/res/layout/splash_screen.xml" value="0.20606884057971014" />
         <entry key="app/src/main/res/layout/text_input.xml" value="0.335" />
         <entry key="app/src/main/res/layout/toolbar_castcle_common.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/toolbar_castcle_common_collapsing.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/toolbar_castcle_common_collapsing.xml" value="0.26697530864197533" />
         <entry key="app/src/main/res/layout/toolbar_castcle_greeting.xml" value="0.19701086956521738" />
         <entry key="app/src/main/res/layout/toolbar_castcle_language.xml" value="0.25" />
         <entry key="app/src/main/res/layout/toolbar_castcle_notification.xml" value="0.335" />

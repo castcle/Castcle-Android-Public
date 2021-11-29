@@ -56,6 +56,23 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
+    override suspend fun getFeedGuests(
+        feedRequestHeader: MutableStateFlow<FeedRequestHeader>
+    ): Flow<PagingData<ContentFeedUiModel>> {
+        return feedRequestHeader.flatMapLatest {
+            Pager(
+                config = PagingConfig(
+                    pageSize = DEFAULT_PAGE_SIZE,
+                    prefetchDistance = DEFAULT_PREFETCH
+                ),
+                pagingSourceFactory = {
+                    FeedGuestsPagingDataSource(feedApi, it)
+                }
+            ).flow
+        }
+    }
+
     override suspend fun getTrend(
         feedRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentUiModel>> = Pager(
@@ -181,6 +198,16 @@ class FeedRepositoryImpl @Inject constructor(
         return feedApi.deleteComment(
             deleteCommentRequest.conntentId,
             deleteCommentRequest.commentId,
+        ).lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
+    override fun deleteContent(
+        deleteCommentRequest: DeleteContentRequest,
+    ): Completable {
+        return feedApi.deleteContent(
+            deleteCommentRequest.conntentId,
         ).lift(ApiOperators.mobileApiError())
             .firstOrError()
             .ignoreElement()

@@ -38,6 +38,10 @@ interface FeedRepository {
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentUiModel>>
 
+    suspend fun getFeedGuests(
+        feedRequestHeader: MutableStateFlow<FeedRequestHeader>
+    ): Flow<PagingData<ContentFeedUiModel>>
+
     suspend fun getCommented(
         commentRequest: CommentRequest
     ): Flow<PagingData<ContentUiModel>>
@@ -77,5 +81,9 @@ interface FeedRepository {
 
     fun deleteComment(
         deleteCommentRequest: DeleteCommentRequest,
+    ): Completable
+
+    fun deleteContent(
+        deleteCommentRequest: DeleteContentRequest,
     ): Completable
 }

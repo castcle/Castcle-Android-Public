@@ -22,7 +22,7 @@
     <string name="dialog_login">Login</string>
     <string name="tool_bar_skip">Skip</string>
     <string name="tool_bar_apply">Apply</string>
-    <string name="feed_what_you_mind_bar">What\'s you mind</string>
+    <string name="feed_what_you_mind_bar">What\'s you mind?</string>
     <string name="login_welcome_title">Welcome to <font color="#01D2FF">Castcle</font></string>
     <string name="login_title">Login</string>
     <string name="login_email">Email</string>
@@ -233,4 +233,12 @@ account</string>
     <string name="verify_otp_warning_error">Your OTP code is wrong please enter again</string>
     <string name="complete_fragment_button_complete">Sign in</string>
     <string name="recast_title_recasted">Recasted</string>
+    <string name="create_account_title">Create your Castcle account</string>
+    <string name="create_account_complete_decsription">A Decentralized Social Media for Everyone</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="create_account_complete_title">Welcome to Castcle</string>
+    <string name="create_account_complete_go_to_feed">Go to Feed</string>
+    <string name="create_account_complete_profile_setting">Go to Profile Setting</string>
+    <string name="dialog_content_delete">Delete Content</string>
+    <string name="dialog_content_edite">Edit Content</string>
 </resources>

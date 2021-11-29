@@ -93,4 +93,15 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract val profileContentLoading: Observable<Boolean>
 
     abstract fun onProfileLoading(onLoading: Boolean)
+
+    abstract fun fetchUserProfile(): Completable
+
+    abstract val userCacheProfile: LiveData<User>
+
+    abstract fun checkContentIsMe(
+        castcleId: String,
+        onProfileMe: () -> Unit,
+        onPageMe: () -> Unit,
+        non: () -> Unit
+    )
 }

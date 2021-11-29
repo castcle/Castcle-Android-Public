@@ -144,6 +144,7 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                     stopLoadingShimmer()
                 }
                 if (!isLoading) {
+                    binding.swiperefresh.isRefreshing = false
                     stopLoadingShimmer()
                 }
             }

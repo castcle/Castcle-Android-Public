@@ -78,6 +78,18 @@
             android:id="@+id/actionProfileFragmentToRecastDialogFragment"
             app:destination="@id/dialog_recast_nav_graph" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToCreatePostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToEditContentDialogFragment"
+            app:destination="@id/editContentDialogFragment" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
@@ -134,4 +146,21 @@
         android:id="@+id/profileChooseDialogFragment"
         android:name="com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment"
         tools:layout="@layout/dialog_fragment_profile_choose_edit" />
+
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.castcle.ui.createpost.CreatePostFragment"
+        tools:layout="@layout/fragment_create_bloc">
+
+        <argument
+            android:name="createPostBundle"
+            app:argType="com.castcle.common_model.model.login.domain.CreatePostBundle" />
+
+        <argument
+            android:name="isFromProfile"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+    </fragment>
+
 </navigation>
