@@ -30,16 +30,16 @@
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
         tools:text="DappRadar" />
 
-<!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:id="@+id/ivStatusFollow"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="@dimen/_8sdp"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/tvUserName"-->
-<!--        app:layout_constraintStart_toEndOf="@id/tvUserName"-->
-<!--        app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
-<!--        app:srcCompat="@drawable/ic_bagde_follow" />-->
+    <!--    <androidx.appcompat.widget.AppCompatImageView-->
+    <!--        android:id="@+id/ivStatusFollow"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="@dimen/_8sdp"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/tvUserName"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/tvUserName"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
+    <!--        app:srcCompat="@drawable/ic_bagde_follow" />-->
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanit.Small"
@@ -47,19 +47,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
+        android:text="@string/user_template_status_follow"
         android:textColor="@color/blue"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@id/tvUserName"
         app:layout_constraintStart_toEndOf="@id/tvUserName"
-        app:layout_constraintTop_toTopOf="@id/tvUserName"
-        tools:text="Follow" />
+        app:layout_constraintTop_toTopOf="@id/tvUserName" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivOptional"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
-        android:padding="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_4sdp"
+        android:padding="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_optional" />
@@ -90,6 +91,6 @@
         android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ivAvatar,tvUserName,ivStatusFollow,tvStatusFollow,ivOptional,ivStatusGlobe,tvDataTime" />
+        app:constraint_referenced_ids="ivAvatar,tvUserName,ivOptional,ivStatusGlobe,tvDataTime" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -95,10 +95,7 @@ class UserBarTemplate(
                     ivAvatar.loadCircleImage(author.avatar)
                     tvUserName.text = author.displayName
                     with(tvStatusFollow) {
-                        visibleOrGone(itemUiModel.payLoadUiModel.author.followed)
-                        subscribeOnClick {
-
-                        }.addToDisposables()
+                        visibleOrGone(!itemUiModel.payLoadUiModel.author.followed)
                     }
                     created.toTime()?.let {
                         tvDataTime.setTimeAgo(it)

@@ -44,7 +44,7 @@
 
         <action
             android:id="@+id/actionSearchTrendFragmentToProfileFragment"
-            app:destination="@id/profile_nav_graph" />
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <fragment

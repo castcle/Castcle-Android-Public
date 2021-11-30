@@ -241,4 +241,5 @@ account</string>
     <string name="create_account_complete_profile_setting">Go to Profile Setting</string>
     <string name="dialog_content_delete">Delete Content</string>
     <string name="dialog_content_edite">Edit Content</string>
+    <string name="user_template_status_follow">Follow</string>
 </resources>
