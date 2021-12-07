@@ -139,7 +139,7 @@ class CreatePostFragment : BaseFragment<CreatePostFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.text = context?.getString(R.string.create_blog_toolbar_title)
             context?.getColorResource(R.color.white)?.let {
                 tvToolbarTitle.setTextColor(it)

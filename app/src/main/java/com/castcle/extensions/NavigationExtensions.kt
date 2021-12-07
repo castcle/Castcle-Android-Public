@@ -19,7 +19,6 @@ package com.castcle.extensions
 import android.content.Intent
 import android.util.SparseArray
 import androidx.core.util.forEach
-import androidx.core.util.set
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -35,7 +34,8 @@ fun BottomNavigationView.setupWithNavController(
     containerId: Int,
     intent: Intent,
     onDestinationChangedListener: NavController.OnDestinationChangedListener,
-    onNavigateNotiflyLogin: (() -> Unit)
+    onNavigateNotiflyLogin: (() -> Unit),
+    onRefreshPosition: (() -> Unit)
 ): LiveData<NavController> {
     // Map of tags
     val graphIdToTagMap = SparseArray<String>()
@@ -163,7 +163,7 @@ fun BottomNavigationView.setupWithNavController(
     }
 
     // Optional: on item reselected, pop back stack to the destination of the graph
-    setupItemReselected(graphIdToTagMap, fragmentManager)
+    setupItemReselected(graphIdToTagMap, fragmentManager, onRefreshPosition)
 
     // Handle deep link
     setupDeepLinks(navGraphIds, fragmentManager, containerId, intent)
@@ -214,10 +214,14 @@ private fun BottomNavigationView.setupDeepLinks(
 
 private fun BottomNavigationView.setupItemReselected(
     graphIdToTagMap: SparseArray<String>,
-    fragmentManager: FragmentManager
+    fragmentManager: FragmentManager,
+    onRefreshPosition: () -> Unit
 ) {
     setOnItemReselectedListener { item ->
         val newlySelectedItemTag = graphIdToTagMap[item.itemId]
+        if (newlySelectedItemTag == DEFAULT_POSITION_O) {
+            onRefreshPosition.invoke()
+        }
         val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
             as NavHostFragment
         val navController = selectedFragment.navController
@@ -284,3 +288,4 @@ fun getFragmentTag(index: Int) = "bottomNavigation#$index"
 
 private const val BOTTOM_NAVIGATION_DELAY_IN_MILLISECONDS = 300L
 private const val ADOBE_ANALYTIC_DELAY_IN_MILLISECONDS = 5000L
+private const val DEFAULT_POSITION_O = "bottomNavigation#0"

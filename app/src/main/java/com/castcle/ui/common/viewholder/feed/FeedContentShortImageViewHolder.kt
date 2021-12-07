@@ -1,6 +1,7 @@
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortImageBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.gone
@@ -36,7 +37,7 @@ import com.castcle.ui.common.events.FeedItemClick
 class FeedContentShortImageViewHolder(
     val binding: LayoutFeedTemplateShortImageBinding,
     private val click: (Click) -> Unit
-) : CommonAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -100,12 +101,19 @@ class FeedContentShortImageViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
         with(binding) {
             startLoadingPreViewShimmer()
@@ -114,10 +122,10 @@ class FeedContentShortImageViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                if (contentMessage.isNotBlank()) {
-                    tvFeedContent.appendLinkText(contentMessage)
+                if (message.isNotBlank()) {
+                    tvFeedContent.appendLinkText(message)
                 } else {
                     tvFeedContent.gone()
                 }

@@ -22,6 +22,8 @@ import com.castcle.ui.base.*
 import com.castcle.ui.common.events.ImageItemClick
 import com.castcle.ui.createbloc.adapter.ImageFloxBoxAdapter
 import com.castcle.ui.createbloc.adapter.ImageGalleryAdapter
+import com.castcle.ui.createpost.LIMIT_IMAGE_SELECTED
+import com.castcle.ui.createpost.MAX_LIGHTH
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -125,7 +127,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.text = context?.getString(R.string.create_blog_toolbar_title)
             context?.getColorResource(R.color.white)?.let {
                 tvToolbarTitle.setTextColor(it)
@@ -215,7 +217,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
-        val textFormatCount = "%s/%d"
+        val textFormatCount = "%s"
         with(binding.tvCountChar) {
             if (messageCount.first > MAX_LIGHTH) {
                 setTextColor(requireContext().getColorResource(R.color.red_primary))
@@ -228,7 +230,7 @@ class CreateBlogFragment : BaseFragment<CreateBlogFragmentViewModel>(),
                 )
             } else {
                 setTextColor(requireContext().getColorResource(R.color.white))
-                text = textFormatCount.format(messageCount.first, messageCount.second)
+                text = textFormatCount.format(messageCount.second)
             }
         }
     }

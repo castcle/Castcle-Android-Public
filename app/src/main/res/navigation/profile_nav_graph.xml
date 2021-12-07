@@ -106,7 +106,7 @@
 
         <argument
             android:name="contentUiModel"
-            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+            app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />
 
         <argument
             android:name="isContent"

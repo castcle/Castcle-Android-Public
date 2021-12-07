@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/colorPrimaryVariant">
+    android:layout_height="wrap_content">
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
-        android:layout_width="@dimen/_45sdp"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_12sdp"
-        app:civ_border_width="@dimen/_2sdp"
+        app:civ_border_width="@dimen/_1sdp"
+        app:civ_border_color="@color/black_drak"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tvUserName"
         app:layout_constraintStart_toEndOf="@id/tvUserName"
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
@@ -47,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
         android:textColor="@color/blue"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@id/tvUserName"
         app:layout_constraintStart_toEndOf="@id/ivStatusFollow"
         app:layout_constraintTop_toTopOf="@id/tvUserName"

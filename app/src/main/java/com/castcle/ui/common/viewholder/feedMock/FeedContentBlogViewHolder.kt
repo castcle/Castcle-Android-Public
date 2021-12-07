@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.R
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateBlogBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
@@ -38,13 +39,12 @@ import com.castcle.ui.common.events.FeedItemClick
 class FeedContentBlogMockViewHolder(
     val binding: LayoutFeedTemplateBlogBinding,
     private val click: (Click) -> Unit
-) : CommonMockAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
-
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
@@ -84,30 +84,37 @@ class FeedContentBlogMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvHeader.text = headerFeed
-                tvContent.text = contentFeed
+                tvHeader.text = messageHeader
+                tvContent.text = message
                 when {
-                    photo.imageCover != null -> {
-                        photo.imageCover?.let {
-                            ivContentBlog.loadImageWithoutTransformation(it)
+                    photo != null -> {
+                        photo?.firstOrNull()?.let {
+                            ivContentBlog.loadImageWithoutTransformation(it.imageLarge)
                         }
                     }
                     else -> {
                         tvHeader.gone()
                         with(tvContentCover) {
                             visible()
-                            text = headerFeed
+                            text = messageHeader
                         }
                         ivContentBlog.loadImageResource(
                             R.drawable.bg_cover

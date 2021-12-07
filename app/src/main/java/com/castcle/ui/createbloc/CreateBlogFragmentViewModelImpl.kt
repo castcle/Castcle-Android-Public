@@ -303,17 +303,17 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     }
 
     override fun quoteCasteContent(
-        contentUiModel: ContentUiModel,
+        contentUiModel: ContentFeedUiModel,
         castcleId: String
     ) {
         RecastRequest(
-            reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
-            contentId = contentUiModel.payLoadUiModel.contentId,
+            reCasted = contentUiModel.recasted,
+            contentId = contentUiModel.contentId,
             authorId = castcleId
         ).run {
             postReCastContent(this)
                 .subscribeBy(
-                    onSuccess = {
+                    onComplete = {
                         _onSuccess.onNext(true)
                     },
                     onError = {
@@ -325,7 +325,7 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-    private fun postReCastContent(recastRequest: RecastRequest): Single<ContentUiModel> {
+    private fun postReCastContent(recastRequest: RecastRequest): Completable {
         return quoteCastContentSingleUseCase.execute(
             recastRequest
         ).doOnSubscribe {

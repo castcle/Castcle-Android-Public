@@ -95,7 +95,7 @@ class ImageGalleryAdapter : RecyclerView.Adapter<ImageGalleryAdapter.FilterViewH
             binding.clBackground.isActivated = mediaItemCamera.isSelected
             binding.ivImage.visible()
             binding.ivImageAction.gone()
-            binding.ivImage.loadRoundedCornersImageUri(mediaItemCamera.uri)
+            binding.ivImage.loadRoundedCornersImageUri(mediaItemCamera.uri, mediaItemCamera.uri)
         }
 
         private fun bindOpenCamera(itemCamera: MediaItem.OpenCamera) {

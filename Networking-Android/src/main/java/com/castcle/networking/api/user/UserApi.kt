@@ -1,7 +1,6 @@
 package com.castcle.networking.api.user
 
-import com.castcle.common_model.model.feed.api.response.ContentResponse
-import com.castcle.common_model.model.feed.api.response.ContentViewResponse
+import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.networking.service.common.*
@@ -47,17 +46,19 @@ interface UserApi {
     @GET("users/me/contents")
     suspend fun getUserProfileContent(
         @Query(FILTER_TYPE) filterType: String,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<ContentResponse>
+    ): Response<PayLoadList>
 
     @GET("users/{castcleId}/contents")
     suspend fun getUserViewProfileContent(
         @Path("castcleId") castcleId: String,
         @Query(FILTER_TYPE) filterType: String,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<ContentViewResponse>
+    ): Response<PayLoadList>
 
     @PUT("users/me")
     fun updateUserProfile(
@@ -102,9 +103,10 @@ interface UserApi {
     suspend fun getViewPageContent(
         @Path("castcleId") castcleId: String,
         @Query(FILTER_TYPE) filterType: String,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<ContentViewResponse>
+    ): Response<PayLoadList>
 
     @GET("/users/me/pages")
     fun getUserPage(

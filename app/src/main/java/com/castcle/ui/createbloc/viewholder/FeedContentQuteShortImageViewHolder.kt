@@ -2,6 +2,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateQuoteShortImageBinding
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortImageBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.gone
@@ -37,7 +38,7 @@ import com.castcle.ui.createbloc.adapter.CommonQuoteCastAdapter
 class FeedContentQuteShortImageViewHolder(
     val binding: LayoutFeedTemplateQuoteShortImageBinding,
     private val click: (Click) -> Unit
-) : CommonQuoteCastAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonQuoteCastAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -90,12 +91,19 @@ class FeedContentQuteShortImageViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
         with(binding) {
             startLoadingPreViewShimmer()
@@ -104,9 +112,9 @@ class FeedContentQuteShortImageViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel, true)
-                tvFeedContent.text = contentMessage
+                tvFeedContent.appendLinkText(message)
                 with(clPreviewContentImage) {
                     clInPreviewContentImage.visible()
                     icImageContent.bindImageContent(uiModel, true)

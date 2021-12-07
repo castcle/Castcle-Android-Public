@@ -32,7 +32,7 @@ data class IncludesResponse(
     @SerializedName("users")
     val users: List<IncludesUserdata>,
     @SerializedName("casts")
-    val casts: IncludesCastResponse
+    val casts: List<Payload>
 )
 
 data class IncludesCastResponse(

@@ -8,7 +8,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.*
 import com.castcle.android.R
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
@@ -89,6 +89,11 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.searchFragment -> {
                         navController.navigate(
                             R.id.actionSearchFragmentToNotiflyLoginDialoginDialogFragment
+                        )
+                    }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToNotiflyLoginDialoginDialogFragment
                         )
                     }
                     else -> {
@@ -591,7 +596,7 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+    override fun navigateToRecastDialogFragment(contentUiModel: ContentFeedUiModel) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph,
@@ -606,12 +611,6 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToRecastDialogFragment,
-                            RecastDialogFragmentArgs(contentUiModel).toBundle()
-                        )
-                    }
-                    R.id.feedMockFragment -> {
-                        navController.navigate(
-                            R.id.actionFeedMockFragmentToRecastDialogFragment,
                             RecastDialogFragmentArgs(contentUiModel).toBundle()
                         )
                     }
@@ -633,7 +632,7 @@ class OnBoardNavigatorImpl @Inject constructor(
     }
 
     override fun navigateToCreateQuoteFragment(
-        contentUiModel: ContentUiModel,
+        contentUiModel: ContentFeedUiModel,
         profileEditBundle: ProfileBundle
     ) {
         val navController = findNavController()
@@ -652,6 +651,15 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.trendFragment -> {
                         navController.navigate(
                             R.id.actionTrendFragmentToCreateQuoteFragment,
+                            CreateQuoteFragmentArgs(
+                                contentUiModel,
+                                profileEditBundle
+                            ).toBundle()
+                        )
+                    }
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToCreateQuoteFragment,
                             CreateQuoteFragmentArgs(
                                 contentUiModel,
                                 profileEditBundle
@@ -822,7 +830,10 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean) {
+    override fun navigateToFeedDetailFragment(
+        contentUiModel: ContentFeedUiModel,
+        isContent: Boolean
+    ) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph,
@@ -906,7 +917,11 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToProfileFragment(castcle: String, profileType: String) {
+    override fun navigateToProfileFragment(
+        castcle: String,
+        profileType: String,
+        isMe: Boolean
+    ) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.search_nav_graph -> {
@@ -931,8 +946,8 @@ class OnBoardNavigatorImpl @Inject constructor(
                     }
                     R.id.trendFragment -> {
                         navController.navigate(
-                            R.id.actionSettingFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType, true).toBundle()
+                            R.id.actionTrendFragmentToProfileFragment,
+                            ProfileFragmentArgs(castcle, profileType, isMe).toBundle()
                         )
                     }
                     R.id.aboutYouFragment -> {

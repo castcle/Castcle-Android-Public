@@ -1,6 +1,8 @@
 package com.castcle.common_model.model.feed
 
+import android.os.Parcelable
 import com.castcle.common_model.model.feed.api.response.*
+import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -25,11 +27,13 @@ import com.castcle.common_model.model.feed.api.response.*
 //
 //
 //  Created by sklim on 22/11/2021 AD at 13:17.
-
+@Parcelize
 data class ContentFeedUiModel(
     val id: String = "",
     val contentId: String = "",
     val authorId: String = "",
+    var authorReference: List<String> = emptyList(),
+    var contentQuoteCast: ContentFeedUiModel? = null,
     val referencedCastsId: String = "",
     val referencedCastsType: String = "",
     val message: String = "",
@@ -37,98 +41,131 @@ data class ContentFeedUiModel(
     val messageContent: String = "",
     val createdAt: String = "",
     val updatedAt: String = "",
-    var userContent: UserContent? = null,
+    var userContent: UserContent = UserContent(),
     val photo: List<ImageContentUiModel>? = null,
-    val type: String = "",
-    val featureUiModel: FeatureUiModel,
-    val circleUiModelUiModel: CircleUiModel,
+    var type: String = "",
+    val featureUiModel: FeatureUiModel = FeatureUiModel(),
+    val circleUiModelUiModel: CircleUiModel = CircleUiModel(),
     var link: LinkUiModel? = null,
-    var likeCount: Int,
+    var likeCount: Int = 0,
     var liked: Boolean = false,
-    var commentCount: Int,
+    var commentCount: Int = 0,
     var commented: Boolean = false,
-    var quoteCount: Int,
+    var quoteCount: Int = 0,
     var quoted: Boolean = false,
-    var recastCount: Int,
+    var recastCount: Int = 0,
     var recasted: Boolean = false,
-)
+    var isMindId: String = ""
+) : Parcelable
 
+@Parcelize
 data class UserContent(
     val id: String = "",
     val type: String = "",
     val castcleId: String = "",
     val displayName: String = "",
-    val followed: Boolean = false,
+    var followed: Boolean = false,
     val avatar: String = "",
     val verifiedEmail: Boolean = false,
     val verifiedMobile: Boolean = false,
     val verifiedOfficial: Boolean = false
-)
+) : Parcelable
 
-fun mapToContentFeedUiMode(payLoadList: PayLoadList): List<ContentFeedUiModel> {
+fun mapToContentFeedUiMode(
+    isMindId: String? = "",
+    payLoadList: PayLoadList
+): List<ContentFeedUiModel> {
     val contentList = mutableListOf<ContentFeedUiModel>()
-    payLoadList.payLoadLists.forEach { it ->
-        mapContentFeedUiModel(it, payLoadList.includes).run {
-            contentList.add(this)
-            if (this.referencedCastsId.isNotBlank()) {
-                payLoadList.includes?.let { contentIncludes ->
-                    mapContentFeedReference(this.referencedCastsId, contentIncludes)?.let { it ->
-                        contentList.add(it)
-                        if (it.referencedCastsId.isNotBlank()) {
-                            mapContentFeedReference(it.referencedCastsId, contentIncludes)?.let {
-                                contentList.add(it)
-                            }
-                        }
-                    }
-                }
+    val contentMain = payLoadList.payLoadLists.map {
+        mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
+    }
+    val contentMainRef = contentMain.map {
+        Pair(it.id, it.userContent.castcleId)
+    }
+
+    val contentReference = payLoadList.includes?.casts?.map {
+        mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
+    }?.onEach { contentRef ->
+        contentMainRef.filter {
+            it.first == contentRef.id
+        }.let { it ->
+            contentRef.authorReference = it.map {
+                it.second
             }
         }
+    } ?: emptyList()
+
+    contentList.apply {
+        addAll(contentMain)
+        addAll(contentReference)
     }
+
     return contentList
 }
 
+private val contentList = mutableListOf<ContentFeedUiModel>()
+
 fun mapContentFeedReference(
     referencedCastsId: String,
+    authorReferenceId: String,
     contentReference: IncludesResponse
 ): ContentFeedUiModel? {
-    return contentReference.casts.objectContent.find {
+    val userRef = mutableListOf<String>()
+    contentReference.users.find {
+        it.id == authorReferenceId
+    }?.let {
+        userRef.add(it.castcleId)
+    }
+    return contentReference.casts.find {
         it.id == referencedCastsId
-    }?.toContentFeedUiModel()
-}
-
-fun mapContentFeedUiModel(payload: Payload, includes: IncludesResponse?): ContentFeedUiModel {
-    return payload.toContentFeedUiModel().apply {
+    }?.toContentFeedUiModel()?.apply {
+        authorReference = userRef
         userContent =
-            includes?.toAuthorContent(this.authorId) ?: UserContent()
+            contentReference.toAuthorContent(authorId) ?: UserContent()
     }
 }
 
 fun mapContentFeedUiModelReference(
+    isMindId: String?,
     payload: Payload,
     includes: IncludesResponse?
 ): ContentFeedUiModel {
     return payload.toContentFeedUiModel().apply {
+        this.isMindId = isMindId ?: ""
         userContent =
             includes?.toAuthorContent(this.authorId) ?: UserContent()
+        if (referencedCastsType.isNotBlank()) {
+            type = referencedCastsType
+            if (referencedCastsType == QUOTECAST_TYPE) {
+                contentQuoteCast = mapContentRefQuote(id, includes)
+            }
+        }
     }
+}
+
+fun mapContentRefQuote(contentRefId: String, includes: IncludesResponse?): ContentFeedUiModel? {
+    return includes?.casts?.find {
+        it.id == contentRefId
+    }?.toContentFeedUiModel()
 }
 
 fun Payload.toContentFeedUiModel(): ContentFeedUiModel {
     return ContentFeedUiModel(
-        id = id,
+        id = id ?: "",
         contentId = payload.id,
         authorId = payload.authorId,
         message = payload.message,
+        type = payload.type,
         createdAt = payload.created,
         updatedAt = payload.updated,
-        photo = payload.photo.contents?.map {
+        photo = payload.photo?.contents?.map {
             it.toImageContentUiModel()
-        } ?: emptyList(),
+        },
         referencedCastsId = payload.referencedCasts?.id ?: "",
         referencedCastsType = payload.referencedCasts?.type ?: "",
         featureUiModel = feature.toFeatureUiModel(),
         circleUiModelUiModel = circle?.toCircleUiModel() ?: CircleUiModel(),
-        link = payload.links?.firstOrNull()?.toLinkUiModel() ?: LinkUiModel(),
+        link = payload.links?.firstOrNull()?.toLinkUiModel(),
         liked = payload.participate?.liked ?: false,
         likeCount = payload.metrics?.likeCount ?: 0,
         commented = payload.participate?.liked ?: false,
@@ -166,3 +203,6 @@ fun IncludesResponse.toAuthorContent(authorId: String): UserContent? {
         )
     }
 }
+
+const val RECASTED_TYPE = "recasted"
+const val QUOTECAST_TYPE = "quoted"

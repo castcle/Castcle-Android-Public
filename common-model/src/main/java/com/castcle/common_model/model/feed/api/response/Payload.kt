@@ -26,7 +26,7 @@ import com.google.gson.annotations.SerializedName
 //
 //  Created by sklim on 22/11/2021 AD at 12:23.
 data class PayLoadList(
-    @SerializedName("Payload")
+    @SerializedName("payload")
     val payLoadLists: List<Payload>,
     @SerializedName("includes")
     val includes: IncludesResponse? = null,
@@ -35,7 +35,7 @@ data class PayLoadList(
 )
 
 data class Payload(
-    @SerializedName("id") var id: String,
+    @SerializedName("id") var id: String? = null,
     @SerializedName("feature") var feature: Feature,
     @SerializedName("circle") var circle: Circle? = null,
     @SerializedName("type") var type: String,
@@ -46,7 +46,10 @@ data class Payload(
 )
 
 data class Meta(
+    @SerializedName("newestId")
     val newestId: String,// ใส่ param untilId เพื่อขอ content ถัดไป (load more)
+    @SerializedName("oldestId")
     val oldestId: String,// ใส่ param sinceId เพื่อขอ content ล่าสุด
+    @SerializedName("resultCount")
     val resultCount: Int //5..100 default 25
 )

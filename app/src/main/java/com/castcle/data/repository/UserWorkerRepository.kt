@@ -53,16 +53,6 @@ interface UserWorkerRepository {
 
     fun uppdateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User>
 
-    fun getUserPofileContent(
-        contentRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<ContentUiModel>>
-
-    fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader):
-        Flow<PagingData<ContentUiModel>>
-
-    fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader):
-        Flow<PagingData<ContentUiModel>>
-
     fun createContent(contentRequest: CreateContentRequest): Single<ContentUiModel>
 
     fun putToFollowUser(followRequest: FollowRequest): Completable
@@ -133,34 +123,6 @@ class UserWorkerRepositoryImpl @Inject constructor(
             .lift(ApiOperators.mobileApiError())
             .ignoreElements()
     }
-
-    override fun getUserPofileContent(
-        contentRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<ContentUiModel>> = Pager(config =
-    PagingConfig(
-        pageSize = DEFAULT_PAGE_SIZE,
-        prefetchDistance = DEFAULT_PREFETCH
-    ), pagingSourceFactory = {
-        UserProfilePagingDataSource(userApi, contentRequestHeader)
-    }).flow
-
-    override fun getUserViewPofileContent(feedRequestHeader: FeedRequestHeader)
-        : Flow<PagingData<ContentUiModel>> = Pager(config =
-    PagingConfig(
-        pageSize = DEFAULT_PAGE_SIZE,
-        prefetchDistance = DEFAULT_PREFETCH
-    ), pagingSourceFactory = {
-        UserViewProfilePagingDataSource(userApi, feedRequestHeader)
-    }).flow
-
-    override fun getViewPagePofileContent(feedRequestHeader: FeedRequestHeader)
-        : Flow<PagingData<ContentUiModel>> = Pager(config =
-    PagingConfig(
-        pageSize = DEFAULT_PAGE_SIZE,
-        prefetchDistance = DEFAULT_PREFETCH
-    ), pagingSourceFactory = {
-        ViewPagePagingDataSource(userApi, feedRequestHeader)
-    }).flow
 
     private val _remoteUser = BehaviorSubject.create<User>()
 

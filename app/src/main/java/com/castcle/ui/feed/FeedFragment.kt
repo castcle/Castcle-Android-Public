@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.paging.RemoteMediator
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
@@ -25,15 +24,13 @@ import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.dialogeditcontent.EditContentState
 import com.castcle.ui.common.dialog.dialogeditcontent.KEY_CHOOSE_EDIT_REQUEST
-import com.castcle.ui.common.dialog.recast.KEY_REQUEST
-import com.castcle.ui.common.dialog.recast.KEY_REQUEST_COMMENTED_COUNT
+import com.castcle.ui.common.dialog.recast.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,7 +47,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private var adapterFilterAdapter = FeedFilterAdapter()
 
-    private lateinit var baseContentUiModel: ContentUiModel
+    private lateinit var baseContentUiModel: ContentFeedUiModel
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentFeedBinding
         get() = { inflater, container, attachToRoot ->
@@ -78,7 +75,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                     }
                 ).addToDisposables()
         }
-        viewModel.getTopTrends()
     }
 
     override fun setupView() {
@@ -118,8 +114,15 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 ivToolbarProfileButton.subscribeOnClick {
                     navigateToSettingFragment()
                 }
+                ivToolbarLogoButton.subscribeOnClick {
+                    refreshPosition()
+                }.addToDisposables()
             }
         }
+    }
+
+    private fun refreshPosition() {
+        binding.rvFeedContent.smoothScrollToPosition(0)
     }
 
     override fun bindViewEvents() {
@@ -172,6 +175,10 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }
 
         viewModel.onUpdateContentLike.subscribe().addToDisposables()
+
+        activityViewModel.onRefreshPositionRes.observe(viewLifecycleOwner, {
+            refreshPosition()
+        })
     }
 
     override fun bindViewModel() {
@@ -200,6 +207,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         viewModel.castPostResponse.observe(viewLifecycleOwner, {
             adapterPagingCommon.refresh()
         })
+
     }
 
     private fun navigateToNotifyLoginDialog() {
@@ -247,27 +255,49 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }
     }
 
-    private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+    private fun navigateToRecastDialogFragment(contentUiModel: ContentFeedUiModel) {
         onBoardNavigator.navigateToRecastDialogFragment(contentUiModel)
 
-        getNavigationResult<ContentUiModel>(
-            onBoardNavigator,
-            R.id.feedFragment,
-            KEY_REQUEST,
-            onResult = {
-                adapterPagingCommon.updateStateItemRecast(it)
-            })
-
-        getNavigationResult<ContentUiModel>(
-            onBoardNavigator,
-            R.id.feedFragment,
-            KEY_REQUEST,
-            onResult = {
-                adapterPagingCommon.updateStateItemUnRecast(it)
-            })
+        if (contentUiModel.recasted) {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.feedFragment,
+                KEY_REQUEST_UNRECAST,
+                onResult = {
+                    onRecastContent(it)
+                })
+        } else {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.feedFragment,
+                KEY_REQUEST,
+                onResult = {
+                    onRecastContent(it, true)
+                })
+        }
     }
 
-    private fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel) {
+    private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
+        handlerUpdateRecasted(currentContent, onRecast)
+        viewModel.input.recastContent(currentContent).subscribeBy(
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handlerUpdateRecasted(
+        currentContent: ContentFeedUiModel,
+        onRecast: Boolean
+    ) {
+        if (onRecast) {
+            adapterPagingCommon.updateStateItemRecast(currentContent)
+        } else {
+            adapterPagingCommon.updateStateItemUnRecast(currentContent)
+        }
+    }
+
+    private fun navigateToFeedDetailFragment(contentUiModel: ContentFeedUiModel) {
         onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
         getNavigationResult<Int>(
             onBoardNavigator,
@@ -278,7 +308,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             })
     }
 
-    private fun onBindCommentedCount(count: Int, contentUiModel: ContentUiModel) {
+    private fun onBindCommentedCount(count: Int, contentUiModel: ContentFeedUiModel) {
         adapterPagingCommon.updateCommented(count, contentUiModel)
     }
 
@@ -289,13 +319,14 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 featureSlug = FeedContentType.FEED_SLUG.type,
                 circleSlug = FeedContentType.CIRCLE_SLUG_FORYOU.type,
                 hashtag = itemFilter.slug,
-                mode = ModeType.MODE_CURRENT.type
+                mode = ModeType.MODE_CURRENT.type,
+                isMeId = viewModel.userProfile.value?.castcleId ?: ""
             )
             viewModel.setFetchFeedContent(feedRequestHeader)
         }
     }
 
-    private fun onBindCastPostSuccess(content: ContentUiModel) {
+    private fun onBindCastPostSuccess(content: ContentFeedUiModel) {
         adapterPagingCommon.updateContentPost(content)
         binding.rvFeedContent.scrollToPosition(0)
     }
@@ -328,12 +359,29 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             is FeedItemClick.EditContentClick -> {
                 handleEditContentClick(click.contentUiModel)
             }
+            is FeedItemClick.FeedFollowingClick -> {
+                handleFeedFollowingClick(click.contentUiModel)
+            }
         }
     }
 
-    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
+    private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {
+        activityViewModel.putToFollowUser(contentUiModel.userContent.castcleId).subscribeBy(
+            onComplete = {
+                displayMessage(
+                    localizedResources.getString(R.string.feed_content_following_status)
+                        .format(contentUiModel.userContent.castcleId)
+                )
+                adapterPagingCommon.updateStateItemFollowing(contentUiModel)
+            }, onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handleNavigateAvatarClick(contentUiModel: ContentFeedUiModel) {
         var profileType = ""
-        checkContentIsMe(contentUiModel.payLoadUiModel.author.castcleId,
+        checkContentIsMe(contentUiModel.userContent.castcleId,
             onPage = {
                 profileType = ProfileType.PROFILE_TYPE_PAGE.type
             }, onMe = {
@@ -343,19 +391,19 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             }
         )
 
-        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, profileType)
+        navigateToProfile(contentUiModel.userContent.castcleId, profileType)
     }
 
-    private fun handleLikeClick(contentUiModel: ContentUiModel) {
+    private fun handleLikeClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
             baseContentUiModel = contentUiModel
             val likeContentRequest = LikeContentRequest(
-                contentId = contentUiModel.payLoadUiModel.contentId,
-                feedItemId = contentUiModel.payLoadUiModel.contentId,
+                contentId = contentUiModel.contentId,
+                feedItemId = contentUiModel.id,
                 authorId = viewModel.userProfile.value?.castcleId ?: "",
-                likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+                likeStatus = contentUiModel.liked
             )
-            if (!contentUiModel.payLoadUiModel.likedUiModel.liked) {
+            if (!contentUiModel.liked) {
                 adapterPagingCommon.updateStateItemLike(contentUiModel)
             } else {
                 adapterPagingCommon.updateStateItemUnLike(contentUiModel)
@@ -366,7 +414,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         })
     }
 
-    private fun handleRecastClick(contentUiModel: ContentUiModel) {
+    private fun handleRecastClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
             navigateToRecastDialogFragment(contentUiModel)
         }, disable = {
@@ -374,7 +422,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         })
     }
 
-    private fun handleCommentClick(contentUiModel: ContentUiModel) {
+    private fun handleCommentClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
             navigateToFeedDetailFragment(contentUiModel)
         }, disable = {
@@ -382,11 +430,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         })
     }
 
-    private fun handleImageItemClick(position: Int, contentUiModel: ContentUiModel) {
-        val image = contentUiModel.payLoadUiModel.photo.imageContent.map {
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentFeedUiModel) {
+        val image = contentUiModel.photo?.map {
             it.imageOrigin
         }
-        val imagePosition = when (contentUiModel.payLoadUiModel.photo.imageContent.size) {
+        val imagePosition = when (contentUiModel.photo?.size) {
             1 -> 0
             else -> position
         }
@@ -398,7 +446,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             .show()
     }
 
-    private fun handleEditContentClick(contentUiModel: ContentUiModel) {
+    private fun handleEditContentClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
             handleOptionalContentClick(contentUiModel)
         }, disable = {
@@ -406,7 +454,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         })
     }
 
-    private fun handleOptionalContentClick(contentUiModel: ContentUiModel) {
+    private fun handleOptionalContentClick(contentUiModel: ContentFeedUiModel) {
         getNavigationResult<EditContentState>(
             onBoardNavigator,
             R.id.feedFragment,
@@ -414,7 +462,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             onResult = {
                 handlerOptionalState(it, contentUiModel)
             })
-        checkContentIsMe(contentUiModel.payLoadUiModel.author.castcleId, onMe = {
+        checkContentIsMe(contentUiModel.userContent.castcleId, onMe = {
             onBoardNavigator.navigateToEditContentDialogFragment()
         }, onView = {
 
@@ -425,12 +473,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handlerOptionalState(
         editContentState: EditContentState,
-        contentUiModel: ContentUiModel
+        contentUiModel: ContentFeedUiModel
     ) {
-        checkContentIsMe(contentUiModel.payLoadUiModel.author.castcleId, onMe = {
+        checkContentIsMe(contentUiModel.userContent.castcleId, onMe = {
             if (editContentState == EditContentState.DELETE_CONTENT) {
                 viewModel.input.deleteContentFeed(
-                    contentId = contentUiModel.payLoadUiModel.contentId
+                    contentId = contentUiModel.contentId
                 ).subscribeBy(
                     onComplete = {
                         onBindDeleteContentItem(contentUiModel)
@@ -440,7 +488,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 ).addToDisposables()
             } else {
                 viewModel.input.deleteContentFeed(
-                    contentId = contentUiModel.payLoadUiModel.contentId
+                    contentId = contentUiModel.contentId
                 ).subscribeBy(
                     onComplete = {
                         onBindDeleteContentItem(contentUiModel)
@@ -454,7 +502,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }, onView = {})
     }
 
-    private fun onBindDeleteContentItem(contentUiModel: ContentUiModel) {
+    private fun onBindDeleteContentItem(contentUiModel: ContentFeedUiModel) {
         adapterPagingCommon.updateDeleteContent(contentUiModel)
     }
 

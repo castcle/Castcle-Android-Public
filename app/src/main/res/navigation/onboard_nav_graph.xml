@@ -51,6 +51,10 @@
             android:id="@+id/actionFeedFragmentToEditContentDialogFragment"
             app:destination="@id/editContentDialogFragment" />
 
+        <action
+            android:id="@+id/actionFeedFragmentToCreateQuoteFragment"
+            app:destination="@id/createQuoteFragment" />
+
         <deepLink app:uri="@string/nav_deep_link_feed" />
     </fragment>
 
@@ -61,24 +65,12 @@
 
         <argument
             android:name="contentUiModel"
-            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+            app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />
 
         <argument
             android:name="isContent"
             android:defaultValue="false"
             app:argType="boolean" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/feedMockFragment"
-        android:name="com.castcle.ui.feed.FeedMockFragment"
-        tools:layout="@layout/fragment_feed">
-
-        <action
-            android:id="@+id/actionFeedMockFragmentToRecastDialogFragment"
-            app:destination="@id/dialog_recast_nav_graph" />
-
-        <deepLink app:uri="castcle-dev://feed-mock" />
     </fragment>
 
     <fragment
@@ -360,11 +352,13 @@
     <fragment
         android:id="@+id/createQuoteFragment"
         android:name="com.castcle.ui.createbloc.CreateQuoteFragment"
-        tools:layout="@layout/fragment_create_bloc">
+        tools:layout="@layout/fragment_create_quote">
+
+        <deepLink app:uri="castcle-dev://create-quote" />
 
         <argument
             android:name="contentUiModel"
-            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+            app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />
 
         <argument
             android:name="profileBundle"

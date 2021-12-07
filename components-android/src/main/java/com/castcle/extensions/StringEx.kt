@@ -34,6 +34,9 @@ fun Int.toCount(): String {
     val suffixChars = "KMGTPE"
     val formatter = DecimalFormat("###.#")
 
+    if(this == 0){
+        return ""
+    }
     if (this < 1000) {
         return this.toString()
     }

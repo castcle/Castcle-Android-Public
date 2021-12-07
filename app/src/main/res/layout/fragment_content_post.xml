@@ -34,6 +34,7 @@
             android:id="@+id/rvContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:animateLayoutChanges="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"

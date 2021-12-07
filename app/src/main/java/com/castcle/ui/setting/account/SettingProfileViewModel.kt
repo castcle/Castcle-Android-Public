@@ -1,13 +1,8 @@
-package com.castcle.usecase.feed
+package com.castcle.ui.setting.account
 
-import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.RecastRequest
-import com.castcle.data.error.RecastError
-import com.castcle.networking.api.feed.datasource.FeedRepository
-import com.castcle.usecase.base.SingleUseCase
-import io.reactivex.Single
-import javax.inject.Inject
+import com.castcle.common_model.model.setting.SettingMenuUiModel
+import com.castcle.ui.base.BaseViewModel
+import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -31,18 +26,8 @@ import javax.inject.Inject
 //  or have any questions.
 //
 //
-//  Created by sklim on 2/9/2021 AD at 11:34.
+//  Created by sklim on 30/9/2021 AD at 12:30.
 
-class RecastContentSingleUseCase @Inject constructor(
-    rxSchedulerProvider: RxSchedulerProvider,
-    private val feedRepository: FeedRepository
-) : SingleUseCase<RecastRequest, ContentUiModel>(
-    rxSchedulerProvider.io(),
-    rxSchedulerProvider.main(),
-    ::RecastError
-) {
-
-    override fun create(input: RecastRequest): Single<ContentUiModel> {
-        return feedRepository.recastContentPost(input)
-    }
+abstract class SettingProfileViewModel : BaseViewModel() {
+    abstract fun getProfileSettingMenu(): Observable<List<SettingMenuUiModel>>
 }

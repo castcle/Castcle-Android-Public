@@ -106,10 +106,4 @@ abstract class OnBoardActivityModule {
     abstract fun userProfileRepository(
         userRepository: UserProfileRepositoryImpl
     ): UserProfileRepository
-
-    @Binds
-    @ActivityScope
-    abstract fun commentRepository(
-        commentRepository: CommentRepositoryImpl
-    ): CommentRepository
 }

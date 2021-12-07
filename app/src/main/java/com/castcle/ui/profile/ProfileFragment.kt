@@ -100,6 +100,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     private lateinit var profileBundle: ProfileBundle
 
+    private var followState = false
+
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentProfileBinding
         get() = { inflater, container, attachToRoot ->
@@ -350,8 +352,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         onBindWhatYouMind(user)
 
         with(binding.profileMe) {
-            tvFollowingCount.text = user.followersCount.toCount()
-            tvFollowersCount.text = user.followersCount.toCount()
+            tvFollowingCount.text = getContentCount(user.followingCount)
+            tvFollowersCount.text = getContentCount(user.followersCount)
             tvProfileName.text = user.displayName
             tvProfileCastcleId.text = user.castcleId
             with(user.overview) {
@@ -406,8 +408,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         userProfile = user
 
         with(binding.profileYou) {
-            tvFollowingCount.text = user.followingCount.toCount()
-            tvFollowersCount.text = user.followersCount.toCount()
+            tvFollowingCount.text = getContentCount(user.followingCount)
+            tvFollowersCount.text = getContentCount(user.followersCount)
             tvProfileName.text = user.displayName
             tvProfileCastcleId.text = user.castcleId
             with(user.overview) {
@@ -415,12 +417,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 tvProfileOverView.text = this
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
-
-            ivEditProfile.subscribeOnClick {
-                onGuestMode(enable = {
-                    onNavigateToChooseProfileEdit()
-                }, disable = {})
-            }.addToDisposables()
 
             btViewProfile.subscribeOnClick {
                 onGuestMode(enable = {
@@ -430,18 +426,22 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
             if (isMe) {
                 profileTypeState = ProfileType.PROFILE_TYPE_PAGE
+                ivEditProfile.subscribeOnClick {
+                    onGuestMode(enable = {
+                        onNavigateToChooseProfileEdit()
+                    }, disable = {})
+                }.addToDisposables()
                 onBindEditImagePage()
                 onBindWhatYouMind(user)
             } else {
                 profileTypeState = ProfileType.PROFILE_TYPE_PEOPLE
                 binding.ivAddCover.gone()
                 binding.wtWhatYouMind.gone()
-                btFollow.visibleOrGone(!user.followed)
-                if (btFollow.isVisible) {
-                    btFollow.subscribeOnClick {
-                        handlerFollow(user.castcleId)
-                    }.addToDisposables()
-                }
+                followState = user.followed
+                btFollow.subscribeOnClick {
+                    handlerFollow(user.castcleId)
+                }.addToDisposables()
+                onBindStateFollowButton(user.followed)
             }
         }
         with(binding) {
@@ -454,6 +454,24 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }.addToDisposables()
             ivProfileCover.loadImageWithCache(user.cover)
             tbProfile.tvToolbarTitle.text = user.castcleId
+        }
+    }
+
+    private fun getContentCount(count: Int): String {
+        return if (count != 0) {
+            count.toCount()
+        } else {
+            "0"
+        }
+    }
+
+    private fun onBindStateFollowButton(follow: Boolean) {
+        with(binding.profileYou) {
+            if (follow) {
+                btFollow.text = localizedResources.getString(R.string.profile_unfollow)
+            } else {
+                btFollow.text = localizedResources.getString(R.string.profile_follow)
+            }
         }
     }
 
@@ -570,9 +588,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun handlerFollow(castcleId: String) {
+        followState = !followState
         viewModel.putToFollowUser(castcleId).subscribeBy(
             onComplete = {
-                onBindFollowedComplete()
+                onBindStateFollowButton(followState)
             }, onError = {
                 handlerShowLoading(false)
                 handlerOnShowMessageError(it)
@@ -582,12 +601,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     private fun handlerOnShowMessageError(error: Throwable) {
         displayError(error)
-    }
-
-    private fun onBindFollowedComplete() {
-        with(binding.profileYou) {
-            btFollow.visibleOrGone(false)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

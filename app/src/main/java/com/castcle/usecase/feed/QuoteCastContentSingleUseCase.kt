@@ -5,7 +5,9 @@ import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.RecastRequest
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.usecase.base.CompletableUseCase
 import com.castcle.usecase.base.SingleUseCase
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -36,13 +38,13 @@ import javax.inject.Inject
 class QuoteCastContentSingleUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val feedRepository: FeedRepository
-) : SingleUseCase<RecastRequest, ContentUiModel>(
+) : CompletableUseCase<RecastRequest>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::Ignored
 ) {
 
-    override fun create(input: RecastRequest): Single<ContentUiModel> {
+    override fun create(input: RecastRequest): Completable {
         return feedRepository.quoteCastContentPost(input)
     }
 }

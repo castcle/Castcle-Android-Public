@@ -3,6 +3,7 @@ package com.castcle.ui.common.viewholder.feedMock
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateImageBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.gone
@@ -37,7 +38,7 @@ import com.castcle.ui.common.events.FeedItemClick
 class FeedContentImageMockViewHolder(
     val binding: LayoutFeedTemplateImageBinding,
     private val click: (Click) -> Unit
-) : CommonMockAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -82,12 +83,19 @@ class FeedContentImageMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
@@ -96,9 +104,9 @@ class FeedContentImageMockViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentFeed
+                tvFeedContent.text = message
                 icImageContent.bindImageContent(uiModel)
                 ftFooter.bindUiModel(uiModel)
             }

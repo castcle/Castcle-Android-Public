@@ -313,7 +313,7 @@ class CreatePostFragmentViewModelImpl @Inject constructor(
         ).run {
             postReCastContent(this)
                 .subscribeBy(
-                    onSuccess = {
+                    onComplete = {
                         _onSuccess.onNext(true)
                     },
                     onError = {
@@ -325,7 +325,7 @@ class CreatePostFragmentViewModelImpl @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-    private fun postReCastContent(recastRequest: RecastRequest): Single<ContentUiModel> {
+    private fun postReCastContent(recastRequest: RecastRequest): Completable {
         return quoteCastContentSingleUseCase.execute(
             recastRequest
         ).doOnSubscribe {

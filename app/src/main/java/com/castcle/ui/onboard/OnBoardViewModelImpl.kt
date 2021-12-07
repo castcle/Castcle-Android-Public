@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.domain.FollowRequest
+import com.castcle.ui.util.SingleLiveEvent
 import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.setting.*
 import com.castcle.usecase.userprofile.*
@@ -53,6 +55,8 @@ class OnBoardViewModelImpl @Inject constructor(
     private val getPreferredLanguageUseCase: GetPreferredLanguageUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
+    private val putToFollowUserCompletableUseCase: PutToFollowUserCompletableUseCase,
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
 ) : OnBoardViewModel() {
 
     private val _userProfile = BehaviorSubject.create<User>()
@@ -98,6 +102,9 @@ class OnBoardViewModelImpl @Inject constructor(
             fetchUserProfile()
         }
     }
+
+    override val castcleId: String
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     override fun fetchUserProfile(): Completable =
         cachedUserProfileSingleUseCase
@@ -305,5 +312,22 @@ class OnBoardViewModelImpl @Inject constructor(
 
     override fun onProfileLoading(onLoading: Boolean) {
         _profileContentLoading.onNext(onLoading)
+    }
+
+    private var _onRefreshPositionRes = SingleLiveEvent<Unit>()
+    override val onRefreshPositionRes: SingleLiveEvent<Unit>
+        get() = _onRefreshPositionRes
+
+    override fun onRefreshPosition() {
+        _onRefreshPositionRes.value = Unit
+    }
+
+    override fun putToFollowUser(castcleId: String): Completable {
+        return putToFollowUserCompletableUseCase.execute(
+            FollowRequest(
+                castcleIdFollower = this.castcleId,
+                targetCastcleId = castcleId
+            )
+        )
     }
 }

@@ -1,6 +1,6 @@
 package com.castcle.networking.api.user
 
-import android.net.Uri
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.castcle.common_model.model.feed.*
@@ -32,30 +32,40 @@ import com.castcle.common_model.model.feed.*
 class ViewPagePagingDataSource(
     private val userApi: UserApi,
     private val feedRequestHeader: FeedRequestHeader
-) : PagingSource<Int, ContentUiModel>() {
+) : PagingSource<Int, ContentFeedUiModel>() {
 
+    private var oldestId: String = ""
+    private var nextPage: Int = 0
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentUiModel> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentFeedUiModel> {
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
             val response = userApi.getViewPageContent(
                 pageNumber = pageNumber,
                 pageSize = pageSize,
+                unitId = feedRequestHeader.oldestId,
                 filterType = feedRequestHeader.type,
                 castcleId = feedRequestHeader.castcleId
             )
+            nextPage = pageNumber
+            oldestId = feedRequestHeader.oldestId
+
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toViewContentUiModel()
+            val data = pagedResponse?.let { mapToContentFeedUiMode(feedRequestHeader.isMeId,it) }
             var nextPageNumber: Int? = null
-            if (pagedResponse?.pagination?.next != null) {
-                val uri = Uri.parse(pagedResponse.pagination.next.toString())
-                val nextPageQuery = uri.getQueryParameter("page")
-                nextPageNumber = nextPageQuery?.toInt()
+
+            if (pagedResponse?.meta?.oldestId != null &&
+                pagedResponse.meta.oldestId.isNotBlank() &&
+                pagedResponse.meta.oldestId != oldestId
+            ) {
+                feedRequestHeader.oldestId = pagedResponse.meta.oldestId
+                nextPageNumber = nextPage.plus(1)
             }
+            Log.d("NEXT-PAGE", "$nextPageNumber")
 
             LoadResult.Page(
-                data = data?.feedContentUiModel.orEmpty(),
+                data = data.orEmpty(),
                 prevKey = null,
                 nextKey = nextPageNumber
             )
@@ -64,5 +74,5 @@ class ViewPagePagingDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ContentUiModel>): Int = 1
+    override fun getRefreshKey(state: PagingState<Int, ContentFeedUiModel>): Int = 1
 }

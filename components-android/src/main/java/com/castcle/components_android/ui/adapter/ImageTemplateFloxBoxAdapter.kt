@@ -5,7 +5,7 @@ import android.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.components_android.databinding.ItemImageTemplatePreviewBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ImageContentUiModel
 import com.castcle.components_android.ui.CORNER
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
@@ -48,7 +48,7 @@ class ImageTemplateFloxBoxAdapter :
 
     private var selectedPosition = 0
 
-    lateinit var baseContentUiModel: ContentUiModel
+    lateinit var baseContentUiModel: ContentFeedUiModel
 
     private var _imageItemClick = BehaviorSubject.create<TemplateEventClick>()
     val imageItemClick: Observable<TemplateEventClick>
@@ -109,7 +109,10 @@ class ImageTemplateFloxBoxAdapter :
                 }
                 when (items.size) {
                     1 -> {
-                        loadRoundedCornersImageUri(mediaItemCamera.imageThumbnail)
+                        loadRoundedCornersImageUri(
+                            mediaItemCamera.imageOrigin,
+                            mediaItemCamera.imageThumbnail,
+                        )
                     }
                     2 -> {
                         when (adapterPosition) {
@@ -124,7 +127,7 @@ class ImageTemplateFloxBoxAdapter :
                             1 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     topRight = CORNER,
                                     bottomRight = CORNER
                                 )
@@ -136,21 +139,21 @@ class ImageTemplateFloxBoxAdapter :
                             0 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     topLeft = CORNER
                                 )
                             }
                             1 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     topRight = CORNER
                                 )
                             }
                             2 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     bottomLeft = CORNER,
                                     bottomRight = CORNER
                                 )
@@ -162,28 +165,28 @@ class ImageTemplateFloxBoxAdapter :
                             0 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     topLeft = CORNER,
                                 )
                             }
                             1 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     topRight = CORNER,
                                 )
                             }
                             2 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     bottomLeft = CORNER
                                 )
                             }
                             3 -> {
                                 loadGranularRoundedCornersContentImage(
                                     mediaItemCamera.imageOrigin,
-                                    mediaItemCamera.imageThumbnail,
+                                    mediaItemCamera.imageLarge,
                                     bottomRight = CORNER
                                 )
                             }

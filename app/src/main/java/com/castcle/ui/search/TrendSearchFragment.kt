@@ -9,7 +9,7 @@ import com.castcle.android.databinding.ToolbarCastcleCommonBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.search.SearchUiModel
-import com.castcle.extensions.getDrawableRes
+import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.events.Click
@@ -68,20 +68,8 @@ class TrendSearchFragment : BaseFragment<TrendSearchViewModel>(),
         with(toolbarBinding) {
             tvToolbarTitle.text =
                 localizedResources.getString(com.castcle.android.R.string.feed_title_toolbar)
-            if (guestMode) {
-                ivToolbarProfileButton.subscribeOnClick {
-                    navigateToNotiflyLoginDialog()
-                }
-            } else {
-                ivToolbarProfileButton.setImageDrawable(
-                    context?.getDrawableRes(
-                        R.drawable.ic_hamburger
-                    )
-                )
-                ivToolbarProfileButton.subscribeOnClick {
-                    navigateToSettingFragment()
-                }
-            }
+            tvToolbarTitle.setTextColor(requireContext().getColorResource(R.color.white))
+            ivToolbarProfileButton.invisible()
         }
     }
 

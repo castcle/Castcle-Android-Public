@@ -203,7 +203,7 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     private fun setupEditProfileToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.text = localizedResources.getString(R.string.profile_edit_profile)
             tvToolbarTitle.setTextColor(requireContext().getColorResource(R.color.white))
             ivToolbarLogoButton

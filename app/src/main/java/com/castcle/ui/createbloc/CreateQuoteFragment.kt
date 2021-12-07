@@ -9,13 +9,14 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentCreateQuoteBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.components_android.ui.custom.mention.MentionView
 import com.castcle.components_android.ui.custom.mention.adapter.MentionArrayAdapter
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.createbloc.adapter.CommonQuoteCastAdapter
 import com.castcle.ui.onboard.OnBoardActivity
@@ -31,19 +32,19 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+
     private var softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
 
     private lateinit var commonMockAdapter: CommonQuoteCastAdapter
 
     private val quoteFragmentArgs: CreateQuoteFragmentArgs by navArgs()
 
-    private val currentCoutent: ContentUiModel
+    private val currentContent: ContentFeedUiModel
         get() = quoteFragmentArgs.contentUiModel
 
     private val profileBundle: ProfileBundle
         get() = quoteFragmentArgs.profileBundle
-
-    private val currentUserPage = profileBundle as ProfileBundle.ReCastPage
 
     override val toolbarBindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
@@ -99,9 +100,9 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
-            tvToolbarTitle.text = context?.getString(R.string.create_blog_toolbar_title)
-            context?.getColorResource(R.color.white)?.let {
+            tvToolbarTitleAction.invisible()
+            tvToolbarTitle.text = localizedResources.getString(R.string.create_blog_toolbar_title)
+            requireContext().getColorResource(R.color.white).let {
                 tvToolbarTitle.setTextColor(it)
             }
             ivToolbarLogoButton
@@ -124,11 +125,12 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
             }
         }
 
-        commonMockAdapter.uiModels = listOf(currentCoutent)
+        commonMockAdapter.uiModels = listOf(currentContent)
 
+        val currentUserPage = profileBundle as ProfileBundle.ReCastPage
         binding.btCast.subscribeOnClick {
             viewModel.input.quoteCasteContent(
-                currentCoutent,
+                currentContent,
                 currentUserPage.castcleId
             )
         }
@@ -175,6 +177,7 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
+        val currentUserPage = profileBundle as ProfileBundle.ReCastPage
         if (currentUserPage.displayName.isEmpty()) {
             viewModel.fetchCastUserProfile()
                 .subscribe()
@@ -209,13 +212,13 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     }
 
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
-        val textFormatCount = "%s/%d"
+        val textFormatCount = "%s"
         with(binding.tvCountChar) {
             text = if (messageCount.first > messageCount.second) {
                 setTextColor(requireContext().getColorResource(R.color.red_primary))
                 "${messageCount.first - MAX_LIGHTH}"
             } else {
-                textFormatCount.format(messageCount.first, messageCount.second)
+                textFormatCount.format(messageCount.second)
             }
         }
     }

@@ -95,7 +95,10 @@ class ImageFloxBoxAdapter : RecyclerView.Adapter<ImageFloxBoxAdapter.FilterViewH
             with(binding.ivImage) {
                 when (items.size) {
                     1 -> {
-                        loadRoundedCornersImageUri(mediaItemCamera.uri)
+                        loadRoundedCornersImageUri(
+                            mediaItemCamera.uri,
+                            mediaItemCamera.uri
+                        )
                     }
                     2 -> {
                         when (bindingAdapterPosition) {

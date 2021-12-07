@@ -42,7 +42,7 @@ class FeedRepositoryImpl @Inject constructor(
     @ExperimentalCoroutinesApi
     override suspend fun getFeed(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
-    ): Flow<PagingData<ContentUiModel>> {
+    ): Flow<PagingData<ContentFeedUiModel>> {
         return feedRequestHeader.flatMapLatest {
             Pager(
                 config = PagingConfig(
@@ -75,7 +75,7 @@ class FeedRepositoryImpl @Inject constructor(
 
     override suspend fun getTrend(
         feedRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<ContentUiModel>> = Pager(
+    ): Flow<PagingData<ContentFeedUiModel>> = Pager(
         config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
         pagingSourceFactory = { TrendPagingDataSource(feedApi, feedRequestHeader) }
     ).flow
@@ -101,34 +101,16 @@ class FeedRepositoryImpl @Inject constructor(
             }.firstOrError()
     }
 
-    override suspend fun getCommented(
-        commentRequest: CommentRequest
-    ): Flow<PagingData<ContentUiModel>> = Pager(
-        config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
-        pagingSourceFactory = { CommentPagingDataSource(feedApi, commentRequest) }
-    ).flow
-
     override fun getCommentedPaging(commentRequest: CommentRequest): Single<CommentedModel> {
         return feedApi.getCommented(
             id = commentRequest.feedItemId,
-            pageSize = commentRequest.paginationModel.limit,
-            pageNumber = commentRequest.paginationModel.next ?: 0,
+            pageSize = commentRequest.metaData.resultCount,
+            unitId = commentRequest.metaData.oldestId ?: "",
         ).lift(ApiOperators.mobileApiError())
             .map {
                 it.toCommentModel()
             }.firstOrError()
     }
-
-    suspend fun insertCommented(
-        commentRequest: CommentRequest
-    ): Flow<PagingData<ContentUiModel>> = Pager(
-        config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
-        pagingSourceFactory = {
-            val dataSource = CommentPagingDataSource(feedApi, commentRequest)
-            dataSource.invalidate()
-            dataSource
-        }
-    ).flow
 
     override fun likeContent(likeContentRequest: LikeContentRequest): Completable {
         val status = if (!likeContentRequest.likeStatus) {
@@ -147,30 +129,27 @@ class FeedRepositoryImpl @Inject constructor(
 
     override fun recastContentPost(
         recastRequest: RecastRequest
-    ): Single<ContentUiModel> {
+    ): Completable {
         return if (recastRequest.reCasted) {
-            feedApi.unRecastContent(id = recastRequest.contentId, recastRequest)
-                .lift(ApiOperators.mobileApiError())
-                .map {
-                    ContentUiModel()
-                }.firstOrError()
-        } else {
             feedApi.recastContent(id = recastRequest.contentId, recastRequest)
                 .lift(ApiOperators.mobileApiError())
-                .map {
-                    it.toContentUiModel()
-                }.firstOrError()
+                .firstOrError()
+                .ignoreElement()
+        } else {
+            feedApi.unRecastContent(id = recastRequest.contentId)
+                .lift(ApiOperators.mobileApiError())
+                .firstOrError()
+                .ignoreElement()
         }
     }
 
     override fun quoteCastContentPost(
         recastRequest: RecastRequest
-    ): Single<ContentUiModel> {
+    ): Completable {
         return feedApi.quoteCastContent(id = recastRequest.contentId, recastRequest)
             .lift(ApiOperators.mobileApiError())
-            .map {
-                it.toContentUiModel()
-            }.firstOrError()
+            .firstOrError()
+            .ignoreElement()
     }
 
     override fun likeComment(

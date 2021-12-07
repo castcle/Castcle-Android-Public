@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutQuoteTemplateShortBinding
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
@@ -41,7 +41,7 @@ import com.workfort.linkpreview.util.LinkParser
 class FeedContentShortViewHolder(
     val binding: LayoutQuoteTemplateShortBinding,
     private val click: (Click) -> Unit
-) : CommonQuoteCastAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonQuoteCastAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -78,12 +78,19 @@ class FeedContentShortViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
@@ -93,12 +100,12 @@ class FeedContentShortViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel, true)
-                tvFeedContent.text = contentMessage
+                tvFeedContent.appendLinkText(message)
                 ftFooter.gone()
                 when {
-                    link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
+                    link == null && photo?.isNullOrEmpty() == false -> {
                         clPreviewIconContent.clInPreviewIconContent.gone()
                         clPreviewContent.clInPreviewContent.gone()
                         with(clPreviewContentImage) {
@@ -107,15 +114,15 @@ class FeedContentShortViewHolder(
                         }
                         stopLoadingPreViewShimmer()
                     }
-                    link.isNotEmpty() -> {
+                    link != null -> {
                         clPreviewContentImage.clInPreviewContentImage.gone()
                         if (!clPreviewIconContent.clInPreviewIconContent.isVisible &&
                             !clPreviewContent.clInPreviewContent.isVisible
                         ) {
                             startLoadingPreViewShimmer()
                         }
-                        link.firstOrNull()?.let {
-                            LinkParser(it.url, object : ParserCallback {
+                        link?.url?.let {
+                            LinkParser(it, object : ParserCallback {
                                 override fun onData(linkData: LinkData) {
                                     if (linkData.imageUrl.isNullOrBlank()) {
                                         onBindContentIconWeb(linkData)
@@ -129,7 +136,6 @@ class FeedContentShortViewHolder(
                                     clPreviewContent.clInPreviewContent.gone()
                                 }
                             }).parse()
-
                         }
                     }
                     else -> {
@@ -163,7 +169,6 @@ class FeedContentShortViewHolder(
             clInPreviewContent.visible()
             with(linkUiModel) {
                 ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
-                tvPreviewUrl.text = url
                 tvPreviewHeader.text = title
                 tvPreviewContent.text = description
             }

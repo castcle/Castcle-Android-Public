@@ -2,8 +2,7 @@ package com.castcle.ui.feed
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.userprofile.User
@@ -42,19 +41,17 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val isGuestMode: Boolean
 
-    abstract val feedContentMock: LiveData<List<ContentUiModel>>
+    abstract val feedContentMock: LiveData<List<ContentFeedUiModel>>
 
     abstract val showLoading: Observable<Boolean>
 
     abstract val onError: Observable<Throwable>
 
-    abstract fun getFeedResponseMock()
-
     abstract val userProfile: LiveData<User>
 
     abstract val onUpdateContentLike: Observable<Unit>
 
-    abstract val feedContentPage: Flow<PagingData<ContentUiModel>>
+    abstract val feedContentPage: Flow<PagingData<ContentFeedUiModel>>
 
     abstract fun fetchUserProfile(): Completable
 
@@ -82,6 +79,7 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
     )
 
     interface Input {
+        fun recastContent(contentUiModel: ContentFeedUiModel): Completable
 
         fun updateLikeContent(likeContentRequest: LikeContentRequest)
 

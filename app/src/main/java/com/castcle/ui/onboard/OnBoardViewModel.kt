@@ -7,6 +7,7 @@ import com.castcle.common_model.model.setting.LanguageUiModel
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
+import com.castcle.ui.util.SingleLiveEvent
 import io.reactivex.Completable
 import io.reactivex.Observable
 
@@ -98,10 +99,18 @@ abstract class OnBoardViewModel : BaseViewModel() {
 
     abstract val userCacheProfile: LiveData<User>
 
+    abstract fun onRefreshPosition()
+
+    abstract val onRefreshPositionRes: SingleLiveEvent<Unit>
+
     abstract fun checkContentIsMe(
         castcleId: String,
         onProfileMe: () -> Unit,
         onPageMe: () -> Unit,
         non: () -> Unit
     )
+
+    abstract fun putToFollowUser(castcleId: String): Completable
+
+    abstract val castcleId: String
 }

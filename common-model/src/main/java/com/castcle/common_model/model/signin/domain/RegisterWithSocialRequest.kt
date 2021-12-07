@@ -34,12 +34,35 @@ data class RegisterWithSocialRequest(
 )
 
 data class RegisterWithSocialPayLoad(
-    @SerializedName("userId")
-    val userId: String? = null,
-    @SerializedName("username")
-    val username: String? = null,
-    @SerializedName("avatar")
-    val avatar: String? = null,
     @SerializedName("authToken")
-    val authToken: String = ""
+    val authToken: String = "",
+    @SerializedName("authTokenSecret")
+    val authTokenSecret: String? = null,
+    @SerializedName("authVerifierToken")
+    val authVerifierToken: String? = null,
+    @SerializedName("hash")
+    val hash: String? = null,
+    @SerializedName("code")
+    val code: String? = null,
+    @SerializedName("redirectUrl")
+    val redirectUrl: String? = null,
+    @SerializedName("socialUser")
+    val socialUser: SocialUser? = null,
+)
+
+data class SocialUser(
+    @SerializedName("id")
+    val id: String = "",
+    @SerializedName("first_name")
+    val first_name: String = "",
+    @SerializedName("last_name")
+    val last_name: String = "",
+    @SerializedName("username")
+    val username: String = "",
+    @SerializedName("photo_url")
+    val photo_url: String = "",
+    @SerializedName("auth_date")
+    val auth_date: String = "",
+    @SerializedName("email")
+    val email: String = "",
 )

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_night"
+    android:background="@color/black"
     tools:context="com.castcle.ui.createbloc.CreateBlogFragment">
 
     <com.castcle.components_android.ui.UserBarCreateContentTemplate
@@ -94,6 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@color/black_night"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -114,15 +115,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_8sdp"
-            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
             android:background="@drawable/bg_bottom"
-            android:paddingStart="@dimen/_12sdp"
+            android:paddingStart="@dimen/_16sdp"
             android:paddingTop="@dimen/_4sdp"
-            android:paddingEnd="@dimen/_12sdp"
+            android:paddingEnd="@dimen/_16sdp"
             android:paddingBottom="@dimen/_4sdp"
             android:text="@string/create_blog_cast"
             android:enabled="false"
-            android:textColor="@color/light"
+            android:textColor="@color/gray_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

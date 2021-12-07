@@ -119,7 +119,7 @@ class CreateAccountFragment : BaseFragment<CreateAccountFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {
@@ -282,8 +282,6 @@ class CreateAccountFragment : BaseFragment<CreateAccountFragmentViewModel>(),
             val registerRequest = RegisterWithSocialRequest(
                 provider = registerBundle.provider,
                 payload = RegisterWithSocialPayLoad(
-                    userId = itCastcleId.primaryText,
-                    username = itDisplatName.primaryText,
                     authToken = registerBundle.authToken
                 )
             )

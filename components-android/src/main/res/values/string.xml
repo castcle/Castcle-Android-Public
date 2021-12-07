@@ -22,7 +22,7 @@
     <string name="dialog_login">Login</string>
     <string name="tool_bar_skip">Skip</string>
     <string name="tool_bar_apply">Apply</string>
-    <string name="feed_what_you_mind_bar">What\'s you mind?</string>
+    <string name="feed_what_you_mind_bar">What\'s you mind\?</string>
     <string name="login_welcome_title">Welcome to <font color="#01D2FF">Castcle</font></string>
     <string name="login_title">Login</string>
     <string name="login_email">Email</string>
@@ -123,7 +123,7 @@
     <string name="setting_display_language">Display language</string>
     <string name="setting_select_additional_languages_add">Add Language</string>
     <string name="setting_select_additional_languages">Select additional languages</string>
-    <string name="setting_select_additional_languages_description">Select additional languages for hte content you want to see on Castcle.</string>
+    <string name="setting_select_additional_languages_description">Select additional languages for the content you want to see on Castcle.</string>
     <string name="setting_display_language_description">Select your preferred language for headlines, buttons, and other text from Castcle.</string>
     <string name="error_get_language">Error has occurred. Please try again. (Error : XXX)</string>
     <string name="error_set_language">Error has occurred. Please try again. (Error: Set Language)</string>
@@ -167,8 +167,8 @@
     <string name="search_title_bar_search">World trends search</string>
     <string name="search_title_rank">Top 10 World Trends</string>
     <string name="search_loading_status">On Search by %s</string>
-    <string name="search_is_trend">%s Trends</string>
-    <string name="trend_tab_top">Top</string>
+    <string name="search_is_trend">%s Trend</string>
+    <string name="trend_tab_top">Trend</string>
     <string name="trend_tab_lastest">Lastest</string>
     <string name="trend_tab_people">People</string>
     <string name="trend_tab_photo">Photo</string>
@@ -241,5 +241,12 @@ account</string>
     <string name="create_account_complete_profile_setting">Go to Profile Setting</string>
     <string name="dialog_content_delete">Delete Content</string>
     <string name="dialog_content_edite">Edit Content</string>
+    <string name="profile_unfollow">Unfollow</string>
+    <string name="feed_detail_post_of">Post of %s</string>
+    <string name="feed_content_me_recasted">You Recasted</string>
+    <string name="feed_content_you_recasted">%s Recasted</string>
     <string name="user_template_status_follow">Follow</string>
+    <string name="setting_trems_of_service">Terms of Service</string>
+    <string name="feed_content_template_recast">%s and %d …</string>
+    <string name="feed_content_following_status">you follow %s Success</string>
 </resources>

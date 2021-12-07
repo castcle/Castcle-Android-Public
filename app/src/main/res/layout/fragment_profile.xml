@@ -78,7 +78,8 @@
             app:layout_collapseMode="pin"
             app:tabGravity="fill"
             app:tabIndicatorFullWidth="false"
-            app:tabMode="scrollable"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
             app:tabRippleColor="@color/black_tranparen_80"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 

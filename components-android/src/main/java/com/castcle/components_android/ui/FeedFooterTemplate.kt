@@ -7,10 +7,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.LayoutUserFooterTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
-import com.castcle.extensions.getColorResource
-import com.castcle.extensions.toCount
+import com.castcle.extensions.*
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -45,7 +44,7 @@ class FeedFooterTemplate(
         LayoutUserFooterTemplateBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    private lateinit var itemUiModel: ContentUiModel
+    private lateinit var itemUiModel: ContentFeedUiModel
     private val _itemClick = BehaviorSubject.create<TemplateEventClick>()
     val itemClick: BehaviorSubject<TemplateEventClick>
         get() = _itemClick
@@ -55,43 +54,43 @@ class FeedFooterTemplate(
             tvLiked.subscribeOnClick {
                 _itemClick.onNext(
                     TemplateEventClick.LikeClick(
-                        itemUiModel,
-                        itemUiModel.payLoadUiModel.likedUiModel.participantUiModel
+                        itemUiModel
                     )
                 )
             }
             tvCommented.subscribeOnClick {
                 _itemClick.onNext(
                     TemplateEventClick.CommentClick(
-                        itemUiModel,
-                        itemUiModel.payLoadUiModel.commentedUiModel.participantUiModel
+                        itemUiModel
                     )
                 )
             }
             tvReCasted.subscribeOnClick {
                 _itemClick.onNext(
                     TemplateEventClick.RecasteClick(
-                        itemUiModel,
-                        itemUiModel.payLoadUiModel.reCastedUiModel.participantUiModel
+                        itemUiModel
                     )
                 )
             }
         }
     }
 
-    fun bindUiModel(itemUiModel: ContentUiModel) {
+    fun bindUiModel(itemUiModel: ContentFeedUiModel) {
         this.itemUiModel = itemUiModel
         with(binding) {
-            with(itemUiModel.payLoadUiModel) {
-                tvLiked.text = likedUiModel.count.toCount()
-                tvLiked.setTextColor(colorActivated(likedUiModel.liked))
-                tvLiked.isActivated = likedUiModel.liked
-                tvCommented.text = commentedUiModel.count.toCount()
-                tvCommented.setTextColor(colorActivated(commentedUiModel.commented))
-                tvCommented.isActivated = commentedUiModel.commented
-                tvReCasted.text = reCastedUiModel.count.toCount()
-                tvReCasted.setTextColor(colorActivated(reCastedUiModel.recasted))
-                tvReCasted.isActivated = reCastedUiModel.recasted
+            with(itemUiModel) {
+
+                tvLiked.text = likeCount.toCount()
+                tvLiked.setTextColor(colorActivated(liked))
+                tvLiked.isActivated = liked
+
+                tvCommented.text = commentCount.toCount()
+                tvCommented.setTextColor(colorActivated(commented))
+                tvCommented.isActivated = commented
+
+                tvReCasted.text = recastCount.toCount()
+                tvReCasted.setTextColor(colorActivated(recasted))
+                tvReCasted.isActivated = recasted
             }
         }
     }

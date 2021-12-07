@@ -1,9 +1,15 @@
-package com.castcle.ui.setting.profile
+package com.castcle.usecase.feed
 
-import com.castcle.common_model.model.setting.SettingMenuUiModel
-import com.castcle.ui.base.BaseViewModel
-import io.reactivex.Observable
+import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.RecastRequest
+import com.castcle.data.error.RecastError
+import com.castcle.networking.api.feed.datasource.FeedRepository
+import com.castcle.usecase.base.CompletableUseCase
+import com.castcle.usecase.base.SingleUseCase
+import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -27,8 +33,18 @@ import io.reactivex.Single
 //  or have any questions.
 //
 //
-//  Created by sklim on 30/9/2021 AD at 12:30.
+//  Created by sklim on 2/9/2021 AD at 11:34.
 
-abstract class SettingProfileViewModel : BaseViewModel() {
-    abstract fun getProfileSettingMenu(): Observable<List<SettingMenuUiModel>>
+class RecastContentCompletableUseCase @Inject constructor(
+    rxSchedulerProvider: RxSchedulerProvider,
+    private val feedRepository: FeedRepository
+) : CompletableUseCase<RecastRequest>(
+    rxSchedulerProvider.io(),
+    rxSchedulerProvider.main(),
+    ::RecastError
+) {
+
+    override fun create(input: RecastRequest): Completable {
+        return feedRepository.recastContentPost(input)
+    }
 }

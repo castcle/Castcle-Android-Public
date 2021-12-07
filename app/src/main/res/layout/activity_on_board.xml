@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:alpha="@integer/material_motion_duration_long_2"
-            android:background="@color/black_night_tranparent_80"
+            android:background="@color/black_night"
             app:labelVisibilityMode="unlabeled"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

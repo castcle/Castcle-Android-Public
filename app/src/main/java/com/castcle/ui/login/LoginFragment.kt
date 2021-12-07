@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -68,7 +67,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.text = context?.getString(R.string.login_home)
             ivToolbarLogoButton
                 .subscribeOnClick {
@@ -85,6 +84,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
             with(ieEmail) {
                 onTextChanged = {
+                    onStatusButton(etPassword.primaryText)
                     viewModel.input.userEmail(ieEmail.primaryText)
                 }
                 onEditorActionNext = {
@@ -95,6 +95,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
             with(etPassword) {
                 setIconWithTransformation()
                 onTextChanged = {
+                    onStatusButton(it)
                     viewModel.input.password(etPassword.primaryText)
                 }
 
@@ -121,7 +122,12 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
         }
     }
 
-    private fun handlerNavigateToForgotPassword(){
+    private fun onStatusButton(password: String) {
+        binding.btLogin.isActivated =
+            password.isNotBlank() && binding.ieEmail.primaryText.isNotBlank()
+    }
+
+    private fun handlerNavigateToForgotPassword() {
         onBoardNavigator.navigateToForgotPassword()
     }
 

@@ -27,44 +27,31 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanitLight.Small"
-        android:id="@+id/tvPreviewUrl"
+        android:id="@+id/tvPreviewHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/gray_light"
+        android:maxLines="2"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@id/ivPerviewUrl"
         app:layout_constraintStart_toStartOf="@id/ivPerviewUrl"
         app:layout_constraintTop_toBottomOf="@id/ivPerviewUrl"
-        tools:text="Youtube.com" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
-        android:id="@+id/tvPreviewHeader"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@id/tvPreviewUrl"
-        app:layout_constraintStart_toStartOf="@id/tvPreviewUrl"
-        app:layout_constraintTop_toBottomOf="@id/tvPreviewUrl"
         tools:text="How does a blockchain work - Simply Explained" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Small"
+        style="@style/AppTextKanitLight.xSmall"
         android:id="@+id/tvPreviewContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="2"
         android:paddingBottom="@dimen/_12sdp"
         android:textColor="@color/gray_light"
-        app:layout_constraintEnd_toEndOf="@id/tvPreviewUrl"
-        app:layout_constraintStart_toStartOf="@id/tvPreviewUrl"
+        app:layout_constraintEnd_toEndOf="@id/tvPreviewHeader"
+        app:layout_constraintStart_toStartOf="@id/tvPreviewHeader"
         app:layout_constraintTop_toBottomOf="@id/tvPreviewHeader"
         tools:text="How does a blockchain work - Simply Explained" />
 

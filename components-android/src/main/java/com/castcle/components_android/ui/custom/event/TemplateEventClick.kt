@@ -1,7 +1,6 @@
 package com.castcle.components_android.ui.custom.event
 
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.ParticipantUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -27,40 +26,35 @@ import com.castcle.common_model.model.feed.ParticipantUiModel
 //
 //  Created by sklim on 27/8/2021 AD at 09:59.
 
-sealed class TemplateEventClick(
-    val participantUiModel: List<ParticipantUiModel>? = emptyList()
-) {
+sealed class TemplateEventClick {
 
     class LikeClick(
-        val contentUiModel: ContentUiModel,
-        participantUiModel: List<ParticipantUiModel>
-    ) : TemplateEventClick(participantUiModel)
+        val contentUiModel: ContentFeedUiModel,
+    ) : TemplateEventClick()
 
     class CommentClick(
-        val contentUiModel: ContentUiModel,
-        participantUiModel: List<ParticipantUiModel>
-    ) : TemplateEventClick(participantUiModel)
+        val contentUiModel: ContentFeedUiModel,
+    ) : TemplateEventClick()
 
     class RecasteClick(
-        val contentUiModel: ContentUiModel,
-        participantUiModel: List<ParticipantUiModel>
-    ) : TemplateEventClick(participantUiModel)
+        val contentUiModel: ContentFeedUiModel,
+    ) : TemplateEventClick()
 
     class AvatarClick(
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : TemplateEventClick()
 
     class OptionalClick(
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : TemplateEventClick()
 
     class FollowingClick(
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : TemplateEventClick()
 
     class ImageClick(
         val imageIndex: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : TemplateEventClick()
 
     class ReTryClick() : TemplateEventClick()

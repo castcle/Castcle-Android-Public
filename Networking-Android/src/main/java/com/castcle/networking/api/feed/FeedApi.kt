@@ -1,6 +1,7 @@
 package com.castcle.networking.api.feed
 
-import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.RecastRequest
+import com.castcle.common_model.model.feed.ReplyCommentRequest
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
@@ -35,33 +36,33 @@ import retrofit2.http.*
 
 interface FeedApi {
 
-    @GET("feeds/{feature_slug}/{circle_slug}")
+    @GET("feeds/members/{feature_slug}/{circle_slug}")
     suspend fun getFeed(
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
         @Query(MODE) mode: String,
         @Query(HAS_TAG) hasTag: String,
-        @Query(PAGE_NUMBER) pageNumber: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<FeedResponse>
-
-    @GET("feeds/guests/{circle_slug}")
-    suspend fun getFeedGuests(
-        @Path("circle_slug") circleSlug: String,
-        @Query(MODE) mode: String,
-        @Query(HAS_TAG) hasTag: String,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<PayLoadList>
 
-    @GET("feeds/{feature_slug}/{circle_slug}")
+    @GET("feeds/guests")
+    suspend fun getFeedGuests(
+        @Query(UNIT_ID) unitId: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<PayLoadList>
+
+    @GET("feeds/members/{feature_slug}/{circle_slug}")
     suspend fun getFeedByMode(
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
         @Query(HAS_TAG) mode: String,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<FeedResponse>
+    ): Response<PayLoadList>
 
     @PUT("contents/{contentId}/{likeStatus}")
     fun likeFeedContent(
@@ -74,19 +75,18 @@ interface FeedApi {
     fun recastContent(
         @Path("id") id: String,
         @Body recastRequest: RecastRequest,
-    ): Flowable<Response<FeedContentResponse>>
+    ): Flowable<Response<Unit>>
 
-    @DELETE("contents/{id}/recasted")
+    @DELETE("contents/{id}")
     fun unRecastContent(
         @Path("id") id: String,
-        @Body recastRequest: RecastRequest,
     ): Flowable<Response<Unit>>
 
     @POST("contents/{id}/quotecast")
     fun quoteCastContent(
         @Path("id") id: String,
         @Body recastRequest: RecastRequest,
-    ): Flowable<Response<FeedContentResponse>>
+    ): Flowable<Response<Unit>>
 
     @GET("contents/{id}/comments")
     suspend fun getComments(
@@ -98,7 +98,7 @@ interface FeedApi {
     @GET("contents/{id}/comments")
     fun getCommented(
         @Path("id") id: String,
-        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Flowable<Response<ContentCommentResponse>>
 
@@ -115,13 +115,6 @@ interface FeedApi {
         @Body commentRequest: ReplyCommentRequest,
     ): Flowable<Response<ContentCommentedResponse>>
 
-    @PUT("contents/{contentId}/comments/{contentIdChild}")
-    fun sentCommentChild(
-        @Path("contentId") contentId: String,
-        @Path("contentIdChild") contentIdChild: String,
-        @Body commentRequest: CommentRequest,
-    ): Flowable<Response<ContentCommentedResponse>>
-
     @DELETE("contents/{contentId}")
     fun deleteContent(
         @Path("contentId") contentId: String,
@@ -131,7 +124,7 @@ interface FeedApi {
     fun deleteComment(
         @Path("contentId") contentId: String,
         @Path("commentId") contentIdChild: String,
-    ): Flowable<Response<ContentCommentedResponse>>
+    ): Flowable<Response<Unit>>
 
     @PUT("contents/{contentId}/comments/{commentId}/{likeStatus}")
     fun likeComment(
@@ -139,11 +132,5 @@ interface FeedApi {
         @Path("commentId") commentId: String,
         @Path("likeStatus") likeStatus: String,
         @Body likedRequest: LikeCommentRequest,
-    ): Flowable<Response<ContentCommentedResponse>>
-
-    @PUT("contents/{contentId}/comments/{contentIdChild}/unliked")
-    fun unlikeComment(
-        @Path("contentId") contentId: String,
-        @Body commentRequest: CommentRequest,
-    ): Flowable<Response<ContentCommentedResponse>>
+    ): Flowable<Response<Unit>>
 }

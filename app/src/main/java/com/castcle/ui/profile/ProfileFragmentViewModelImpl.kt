@@ -5,15 +5,13 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.data.repository.UserProfileRepository
-import com.castcle.usecase.feed.LikeCommentCompletableUseCase
-import com.castcle.usecase.feed.LikeContentCompletableUseCase
+import com.castcle.usecase.feed.*
 import com.castcle.usecase.userprofile.*
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -61,14 +59,15 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
+    private val recastContentSingleUseCase: RecastContentCompletableUseCase
 ) : ProfileFragmentViewModel() {
 
     override val isGuestMode: Boolean
         get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
-    private var _userProfileContentRes = flowOf<PagingData<ContentUiModel>>()
+    private var _userProfileContentRes = flowOf<PagingData<ContentFeedUiModel>>()
 
-    private lateinit var _userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
+    private lateinit var _userViewProfileContentRes: Flow<PagingData<ContentFeedUiModel>>
 
     private var _userProfileData = MutableLiveData<User>()
 
@@ -113,10 +112,10 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         _userProfileData.value = userData
     }
 
-    override val userProfileContentRes: Flow<PagingData<ContentUiModel>>
+    override val userProfileContentRes: Flow<PagingData<ContentFeedUiModel>>
         get() = _userProfileContentRes
 
-    override val userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
+    override val userViewProfileContentRes: Flow<PagingData<ContentFeedUiModel>>
         get() = _userViewProfileContentRes
 
     override fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader) {
@@ -225,5 +224,14 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         return likeContentCompletableUseCase.execute(
             likeContentRequest
         )
+    }
+
+    override fun recastContent(castcleId: String, contentUiModel: ContentFeedUiModel): Completable {
+        val recastRequest = RecastRequest(
+            reCasted = contentUiModel.recasted,
+            contentId = contentUiModel.contentId,
+            authorId = castcleId
+        )
+        return recastContentSingleUseCase.execute(recastRequest)
     }
 }

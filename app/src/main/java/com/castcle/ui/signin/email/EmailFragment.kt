@@ -79,7 +79,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {

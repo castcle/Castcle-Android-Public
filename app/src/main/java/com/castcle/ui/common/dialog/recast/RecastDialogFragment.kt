@@ -9,7 +9,7 @@ import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.DialogFragmentRecastBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.extensions.*
@@ -55,7 +55,7 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
 
     private val dialogArgs: RecastDialogFragmentArgs by navArgs()
 
-    private val currentCoutent: ContentUiModel
+    private val currentCoutent: ContentFeedUiModel
         get() = dialogArgs.contentUiModel
 
     private var unReCasted: Boolean = false
@@ -150,13 +150,17 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
             clSelectedRecast.subscribeOnClick {
                 handleBindSelectPage()
             }
-            if (currentCoutent.payLoadUiModel.reCastedUiModel.recasted) {
+            if (currentCoutent.recasted) {
                 unReCasted = true
                 icRecastPost.tvDisplayTitle.text =
                     requireContext().getString(R.string.recast_title_unrecast)
             }
             icRecastPost.clRecastPost.subscribeOnClick {
-                onRecastContent()
+                if (unReCasted) {
+                    handleNavigateResultUnReCastBack()
+                } else {
+                    handleNavigateResultBack()
+                }
             }
             icQuotecastPost.clQuotecastPost.subscribeOnClick {
                 navigateToCreateQuoteFragment()
@@ -178,10 +182,6 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
         onBoardNavigator.navigateToCreateQuoteFragment(
             currentCoutent, profileBundle
         )
-    }
-
-    private fun onRecastContent() {
-        viewModel.input.recastContent(currentCoutent)
     }
 
     private fun handleNavigateResultBack() {
@@ -208,4 +208,5 @@ class RecastDialogFragment : BaseBottomSheetDialogFragment<RecastDialogViewModel
 const val CODE_REQUEST: Int = 10
 const val KEY_REQUEST: String = "REC-001"
 const val KEY_REQUEST_UNRECAST: String = "URC-001"
+const val KEY_REQUEST_QUOTE_CAST: String = "QC-001"
 const val KEY_REQUEST_COMMENTED_COUNT: String = "COM-001"

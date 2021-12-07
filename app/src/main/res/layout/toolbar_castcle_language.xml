@@ -18,14 +18,14 @@
         app:srcCompat="@drawable/ic_arrow_left" />
 
     <TextView
-        style="@style/AppTextKanit.Medium"
+        style="@style/AppTextKanit.Regular"
         android:id="@+id/tvToolbarTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/setting_language_title"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivToolbarProfileButton"

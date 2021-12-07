@@ -53,7 +53,7 @@
         android:layout_marginTop="@dimen/_24sdp"
         android:src="@drawable/ic_avatar_placeholder"
         app:civ_border="@color/white"
-        app:civ_border_width="2dp"
+        app:civ_border_width="@dimen/_1sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDescription" />
 

@@ -2,11 +2,10 @@ package com.castcle.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
-import com.castcle.common_model.model.userprofile.domain.ImagesRequest
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.userprofile.domain.ImagesRequest
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -38,9 +37,9 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
-    abstract val userProfileContentRes: Flow<PagingData<ContentUiModel>>
+    abstract val userProfileContentRes: Flow<PagingData<ContentFeedUiModel>>
 
-    abstract val userViewProfileContentRes: Flow<PagingData<ContentUiModel>>
+    abstract val userViewProfileContentRes: Flow<PagingData<ContentFeedUiModel>>
 
     abstract fun fetachUserProfileContent(contentRequestHeader: FeedRequestHeader)
 
@@ -79,4 +78,6 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
     abstract fun likedContent(
         likeContentRequest: LikeContentRequest
     ): Completable
+
+    abstract fun recastContent(castcleId: String, contentUiModel: ContentFeedUiModel): Completable
 }

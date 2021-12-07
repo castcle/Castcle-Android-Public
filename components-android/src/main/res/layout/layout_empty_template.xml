@@ -19,7 +19,7 @@
         tools:srcCompat="@drawable/ic_feed_empty_state" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanit.Medium"
+        style="@style/AppTextKanit.Regular"
         android:id="@+id/tvEmptyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         tools:text="Trouble Loading News Feed" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitExLight.Medium"
+        style="@style/AppTextKanitExLight.Small"
         android:id="@+id/tvEmptySubTitleAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         tools:text="Tap to Retry" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitExLight.Medium"
+        style="@style/AppTextKanitExLight.Small"
         android:id="@+id/tvEmptySubTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

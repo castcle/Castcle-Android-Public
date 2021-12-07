@@ -10,7 +10,7 @@
         style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvWathYouMind"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_35sdp"
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
@@ -19,15 +19,17 @@
         android:paddingStart="@dimen/_16sdp"
         android:paddingTop="@dimen/_10sdp"
         android:paddingBottom="@dimen/_10sdp"
+        android:text="@string/feed_what_you_mind_bar"
         android:textAlignment="viewStart"
+        android:textAllCaps="false"
         android:textColor="@color/gray_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ivAvatar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="What's in your mind?" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvSearchWold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,9 +54,12 @@
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:layout_marginEnd="@dimen/_12sdp"
+        app:civ_border_color="@color/black_drak"
+        app:civ_border_width="@dimen/_1sdp"
+        app:civ_circle_color="@color/black_drak"
         app:layout_constraintBottom_toBottomOf="@id/tvWathYouMind"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvWathYouMind"

@@ -10,7 +10,7 @@ import com.castcle.android.components_android.databinding.LayoutEmptyTemplateBin
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.empty.EmptyState.*
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
@@ -48,7 +48,7 @@ class EmptyStateTemplate(
         LayoutEmptyTemplateBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    private lateinit var itemUiModel: ContentUiModel
+    private lateinit var itemUiModel: ContentFeedUiModel
     private val _itemClick = BehaviorSubject.create<TemplateEventClick>()
     val itemClick: BehaviorSubject<TemplateEventClick>
         get() = _itemClick
@@ -58,8 +58,7 @@ class EmptyStateTemplate(
             tvEmptySubTitleAction.subscribeOnClick {
                 _itemClick.onNext(
                     TemplateEventClick.LikeClick(
-                        itemUiModel,
-                        itemUiModel.payLoadUiModel.likedUiModel.participantUiModel
+                        itemUiModel
                     )
                 )
             }
@@ -113,7 +112,7 @@ class EmptyStateTemplate(
                     context.getString(R.string.empty_state_search_subtitle)
                 )
             }
-            COMMENT_EMPTY->{
+            COMMENT_EMPTY -> {
                 Triple(
                     context.getDrawableRes(R.drawable.ic_empty_comment),
                     context.getString(R.string.empty_state_comment),

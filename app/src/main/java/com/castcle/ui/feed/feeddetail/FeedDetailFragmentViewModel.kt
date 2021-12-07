@@ -2,14 +2,13 @@ package com.castcle.ui.feed.feeddetail
 
 import androidx.lifecycle.*
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.UserPage
-import com.castcle.data.repository.CommentRepository
+import com.castcle.extensions.getLocalDateTimeNow
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import com.castcle.ui.util.SingleLiveEvent
@@ -22,6 +21,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
+import java.util.Collections.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -83,8 +83,6 @@ abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
     abstract val likedSuccess: Observable<Boolean>
 
     interface Input {
-        fun getCommented(feedContentId: String)
-
         fun setComment(commentRequest: ReplyCommentRequest)
 
         fun setReplyComment(commentRequest: ReplyCommentRequest)
@@ -94,7 +92,6 @@ abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
 class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val feedRepository: FeedRepository,
     private val sentCommentSingleUseCase: SentCommentSingleUseCase,
-    private val commentRepository: CommentRepository,
     private val likeCommentCompletableUseCase: LikeCommentCompletableUseCase,
     private val deleteCommentCompletableUseCase: DeleteCommentCompletableUseCase,
     private val getCommentedPagingSingleUseCase: GetCommentedPagingSingleUseCase,
@@ -130,7 +127,7 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     override val onRefreshComment: Observable<Unit>
         get() = _onRefreshComment
 
-    private var _commentedId = BehaviorSubject.create<CommentRequest>()
+    private var _commentedRequest = BehaviorSubject.create<CommentRequest>()
 
     private var _commentedResponses =
         BehaviorSubject.create<List<ContentUiModel>>()
@@ -145,22 +142,11 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     override val userPageUiModel: SingleLiveEvent<PageHeaderUiModel>
         get() = _userPageUiModel
 
-    override fun getCommented(feedContentId: String) {
-        getCommentedPaging(CommentRequest(feedItemId = feedContentId))
-    }
-
     private var totalPages: Int = 1
     private var nextPage: Int = 1
 
-    private fun getCommentedPaging(commentRequest: CommentRequest) = launchPagingAsync({
-        _showLoading.onNext(true)
-        commentRepository.getCommentMediator(commentRequest).cachedIn(viewModelScope)
-    }, {
-        _showLoading.onNext(false)
-        _commentedResponse = it
-    })
-
     override fun setComment(commentRequest: ReplyCommentRequest) {
+        onUpdateComment(commentRequest)
         sentCommentSingleUseCase.execute(commentRequest)
             .doOnSubscribe { _showLoading.onNext(true) }
             .doOnError { _error.onNext(it) }
@@ -184,6 +170,27 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
             ).addToDisposables()
     }
 
+    private fun onUpdateComment(commentRequest: ReplyCommentRequest) {
+        val userProfile = _userProfile.value
+        val newComment = ContentUiModel(
+            payLoadUiModel = PayLoadUiModel(
+                created = getLocalDateTimeNow(),
+                updated = getLocalDateTimeNow(),
+                author = AuthorUiModel(
+                    displayName = userProfile?.displayName ?: "",
+                    castcleId = userProfile?.castcleId ?: "",
+                    avatar = userProfile?.avatar ?: ""
+                ),
+                contentMessage = commentRequest.message ?: ""
+            )
+        )
+        val oldData = _commentedResponses.value ?: emptyList()
+        oldData.toMutableList().apply {
+            addAll(listOf(newComment))
+            _commentedResponses.onNext(this)
+        }
+    }
+
     private fun onBindSingleReplyCommented(
         response: ContentUiModel?,
         commentRequest: ReplyCommentRequest
@@ -203,24 +210,32 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
 
     private fun onBindSingleCommented(item: ContentUiModel) {
         val oldData = _commentedResponses.value ?: emptyList()
-        val commentedValue = oldData.toMutableList().apply {
-            addAll(listOf(item))
+        if (oldData.any {
+                it.payLoadUiModel.contentMessage == item.payLoadUiModel.contentMessage
+            }) {
+            oldData.find { itemContent ->
+                itemContent.payLoadUiModel.contentMessage == item.payLoadUiModel.contentMessage
+            }?.apply {
+                id = item.id
+            }
+            _commentedResponses.onNext(oldData)
+        } else {
+            oldData.toMutableList().apply {
+                addAll(listOf(item))
+            }
+            _commentedResponses.onNext(oldData)
         }
-        _commentedResponses.onNext(commentedValue)
     }
 
     override fun fetachCommentedPage(feedContentId: String) {
-        _commentedId.onNext(
+        _commentedRequest.onNext(
             CommentRequest(
                 feedItemId = feedContentId,
-                paginationModel = PaginationModel(
-                    limit = PAGE_SIZE_DEFAULT,
-                    next = PAGE_NUMBER_DEFAULT
-                )
+                metaData = MetaData(oldestId = "")
             )
         )
 
-        getCommentedPagingSingleUseCase.execute(_commentedId.blockingFirst())
+        getCommentedPagingSingleUseCase.execute(_commentedRequest.blockingFirst())
             .doOnSubscribe {
                 _showLoading.onNext(true)
             }.doOnError {
@@ -238,8 +253,8 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     }
 
     override fun fetachNextCommentedPage() {
-        if (_commentedId.blockingFirst().paginationModel.next == 0) return
-        getCommentedPagingSingleUseCase.execute(_commentedId.blockingFirst())
+        if (_commentedRequest.blockingFirst().metaData.oldestId.isNullOrBlank()) return
+        getCommentedPagingSingleUseCase.execute(_commentedRequest.blockingFirst())
             .doOnSubscribe {
                 _showLoading.onNext(true)
             }.doOnError {
@@ -263,10 +278,10 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
         }
 
         _commentedResponses.onNext(commentedValue)
-        _commentedId.value.apply {
-            nextPage = item.paginationModel.next ?: 0
+        _commentedRequest.value?.apply {
+            metaData = item.metaData
         }?.let {
-            _commentedId.onNext(it)
+            _commentedRequest.onNext(it)
         }
     }
 

@@ -93,7 +93,7 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {

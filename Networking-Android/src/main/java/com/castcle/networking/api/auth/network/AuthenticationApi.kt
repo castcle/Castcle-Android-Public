@@ -7,6 +7,7 @@ import com.castcle.common_model.model.login.domain.LoginRequest
 import com.castcle.common_model.model.login.domain.LoginResponse
 import com.castcle.common_model.model.setting.domain.*
 import com.castcle.common_model.model.signin.domain.*
+import com.castcle.networking.api.response.SocialTokenResponse
 import com.castcle.networking.api.response.TokenResponse
 import io.reactivex.Flowable
 import retrofit2.Response
@@ -66,7 +67,7 @@ interface AuthenticationApi {
     @POST("authentications/loginWithSocial")
     fun registerWithSocial(
         @Body registerRequest: RegisterWithSocialRequest
-    ): Flowable<Response<TokenResponse>>
+    ): Flowable<Response<SocialTokenResponse>>
 
     @POST("authentications/requestLinkVerify")
     fun checkrRquestLinkVerify(): Flowable<Response<Unit>>

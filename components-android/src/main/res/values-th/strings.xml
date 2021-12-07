@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="error_generic">Something went wrong. Please try again later.</string>
-    <string name="feed_title_toolbar">For you</string>
+    <string name="feed_title_toolbar">สำหรับคุณ</string>
     <string name="dialog_login_title">สร้างบัญชีผู้ใช้ใหม่เพื่อดำเนินการต่อ</string>
     <string name="dialog_login_sub_title">เมื่อดำเนินการต่อ แสดงว่าคุณยินยอมตาม</string>
     <string name="dialog_login_user_agreement">เงื่อนไขการใช้บริการ</string>
@@ -59,10 +59,10 @@
     <string name="verify_email_goto_setting">กลัับไปสู่หน้าฟีดตั้งค่า</string>
     <string name="sent_verify_email_title">ยังไม่ได้รับอีเมลใช่ไหม</string>
     <string name="sent_verify_email_sub_title">โปรดตรวจสอบให้แน่ใจว่าคุณทำรายละเอียดดังกล่าวครบถ้วนแล้ว</string>
-    <string name="sent_verify_email_resent">ก่อนปุ่มส่งอีกครั้ง</string>
-    <string name="sent_verify_email_decscription_1">1. อีเมลของคุณคือ <font color="#01D2FF">"%s"</font> และสามารถเข้าอีเมลป่านระบบอินเตอร์เน็ตได้ปกติหรือไม่?</string>
+    <string name="sent_verify_email_resent">กดปุ่มส่งอีกครั้ง</string>
+    <string name="sent_verify_email_decscription_1">1. อีเมลของคุณคือ <font color="#01D2FF">"%s"</font> และสามารถเข้าอีเมลผ่านระบบอินเตอร์เน็ตได้ปกติหรือไม่?</string>
     <string name="sent_verify_email_decscription_2">2.โปรดตรวจสอบอีเมลสแปม</string>
-    <string name="sent_verify_email_decscription_3">3. โปรดตรวจสอบอีีกครั้งว่ากล่องจดหมายของคุณไม่เต็มถ้าหากเต็มกรุณาลบอีเมลบางฉบับก่อนที่จะกดส่งอีกครั้ง</string>
+    <string name="sent_verify_email_decscription_3">3. โปรดตรวจสอบอีกครั้งว่ากล่องจดหมายของคุณไม่เต็มถ้าหากเต็มกรุณาลบอีเมลบางฉบับก่อนที่จะกดส่งอีกครั้ง</string>
     <string name="about_you_title">เกี่ยวกับ</string>
     <string name="about_you_overview">ภาพรวม</string>
     <string name="about_you_birthday">วันเกิดของคุณวันที่เท่าไหร่?</string>
@@ -113,8 +113,8 @@
     <string name="empty_state_page_subtitle">The link you followed may be broken, or the page may have been removed.</string>
     <string name="empty_state_noti">No Notification</string>
     <string name="empty_state_noti_subtitle">Be the first to comment.</string>
-    <string name="empty_state_search">We didn\'t find any results</string>
-    <string name="empty_state_search_subtitle">Make sure everything is spelled correctly or try different keywords.</string>
+    <string name="empty_state_search">เราไม่พบผลลัพธ์ใด ๆ</string>
+    <string name="empty_state_search_subtitle">ตรวจสอบให้แน่ใจว่าสะกดถูกต้องหรือลองใช้คำสำคัญอื่น</string>
     <string name="setting_language_title">ภาษา</string>
     <string name="language_title_search">Search</string>
     <string name="setting_display_language">ภาษาที่แสดง</string>
@@ -163,13 +163,13 @@
     <string name="empty_state_comment_subtitle">Be the first to comment.</string>
     <string name="search_title_bar">Search</string>
     <string name="search_title_bar_search">World trends search</string>
-    <string name="search_title_rank">Top 10 World Trends</string>
+    <string name="search_title_rank">10 อันดับความนิยมระดับโลก</string>
     <string name="search_loading_status">On Search by %s</string>
-    <string name="search_is_trend">%s Trends</string>
-    <string name="trend_tab_top">Top</string>
-    <string name="trend_tab_lastest">Lastest</string>
-    <string name="trend_tab_people">People</string>
-    <string name="trend_tab_photo">Photo</string>
+    <string name="search_is_trend">%s กำลังเป็นที่นิยม</string>
+    <string name="trend_tab_top">กำลังเป็นที่นิยม</string>
+    <string name="trend_tab_lastest">ล่าสุด</string>
+    <string name="trend_tab_people">ผู้คน</string>
+    <string name="trend_tab_photo">รูปภาพ</string>
     <string name="error_logout">Failed to log out. Please try again.</string>
     <string name="search_recent_search">Recent searches</string>
     <string name="search_cast_count">%s Cast</string>
@@ -209,4 +209,39 @@
     <string name="notification_tab_profile">Profile</string>
     <string name="notification_tab_page">Page</string>
     <string name="notification_tab_system">System</string>
+    <string name="forgot_password_fragment_title">Account search</string>
+    <string name="forgot_password_fragment_description">Enter your email again to find your
+account</string>
+    <string name="create_cast_warning_message">Is massage maximum Character</string>
+    <string name="register_warning_message">Castcle Id already been Exists</string>
+    <string name="edite_page_success_message">Update Page success</string>
+    <string name="cast_post_status_success">Create Post Success</string>
+    <string name="search_account_title">Account search</string>
+    <string name="search_account_description">Enter your email again to find your account</string>
+    <string name="for_got_password_tool_bar">ลืมรหัสผ่าน</string>
+    <string name="for_got_password_title">รีเซ็ตรหัสผ่านของคุณ</string>
+    <string name="for_got_password_description">"คุณต้องการรับรหัสเพื่อรีเซ็ตรหัสผ่านใหม่ใน Email ที่คุณสมัคร</string>
+    <string name="for_got_password_action_title">ส่งรหัสไปทางอีเมล</string>
+    <string name="verify_otp_title">กรอกรหัส 6 หลัก</string>
+    <string name="verify_otp_message">เราได้ส่งรหัส OTP ไปทางอีเมล %s</string>
+    <string name="verify_otp_warning">ยังไม่ได้รับ ?</string>
+    <string name="verify_otp_warning_sent"><font color="#01D2FF">ส่งอีกครั้ง</font></string>
+    <string name="verify_otp_warning_re_sent">อีกอีกครั้ง %s วินาที</string>
+    <string name="verify_otp_warning_error">รหัส OTP ของคุณผิดกรุณา ใส่ OTP ให้ถูกต้อง</string>
+    <string name="complete_fragment_button_complete">Sign in</string>
+    <string name="recast_title_recasted">Recasted</string>
+    <string name="create_account_title">Create your Castcle account</string>
+    <string name="create_account_complete_decsription">A Decentralized Social Media for Everyone</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="create_account_complete_title">Welcome to Castcle</string>
+    <string name="create_account_complete_go_to_feed">Go to Feed</string>
+    <string name="create_account_complete_profile_setting">Go to Profile Setting</string>
+    <string name="dialog_content_delete">Delete Content</string>
+    <string name="dialog_content_edite">Edit Content</string>
+    <string name="profile_unfollow">Unfollow</string>
+    <string name="feed_detail_post_of">Post of %s</string>
+    <string name="feed_content_me_recasted">You Recasted</string>
+    <string name="feed_content_you_recasted">%s Recasted</string>
+    <string name="user_template_status_follow">Follow</string>
+    <string name="setting_trems_of_service">เงื่อนไขการใช้บริการ</string>
 </resources>

@@ -7,7 +7,7 @@
     android:background="@color/black_light">
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanit.Regular"
+        style="@style/AppTextKanit.Small"
         android:id="@+id/tvAppLanguageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
+        style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvAppLanguage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         tools:text="English" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Small"
+        style="@style/AppTextKanitLight.xSmall"
         android:id="@+id/tvAppLanguagesSubTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvAppLanguageTitle" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanit.Regular"
+        style="@style/AppTextKanit.Small"
         android:id="@+id/tvPreferredTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvAppLanguagesSubTitle" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Small"
+        style="@style/AppTextKanitLight.xSmall"
         android:id="@+id/tvPreferredSubTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -81,12 +81,12 @@
         tools:listitem="@layout/item_language" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Medium"
+        style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvActionTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_2sdp"
-        android:background="@drawable/bg_border"
+        android:background="@color/black_night"
         android:drawableStart="@drawable/ic_add"
         android:drawablePadding="@dimen/_8sdp"
         android:paddingStart="@dimen/_12sdp"

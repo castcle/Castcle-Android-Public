@@ -31,9 +31,9 @@ data class PayloadObjectContent(
     @SerializedName("id") var id: String,
     @SerializedName("type") var type: String,
     @SerializedName("message") var message: String,
-    @SerializedName("photo") var photo: PhotoContents,
+    @SerializedName("photo") var photo: PhotoContents? = null,
     @SerializedName("authorId") var authorId: String,
-    @SerializedName("links") val links: List<LinkResponse>? = null,
+    @SerializedName("link") val links: List<LinkResponse>? = null,
     @SerializedName("referencedCasts") val referencedCasts: ReferencedCasts? = null,
     @SerializedName("metrics") val metrics: Metrics? = null,
     @SerializedName("participate") val participate: Participate? = null,
@@ -55,14 +55,14 @@ data class ReferencedCasts(
     // quoted, recasted
     @SerializedName("type") var type: String,
     //Content id
-    @SerializedName("url") var id: String,
+    @SerializedName("id") var id: String,
 )
 
 data class Metrics(
-    @SerializedName("likeCount") var likeCount: Int,
-    @SerializedName("commentCount") var commentCount: Int,
-    @SerializedName("quoteCount") var quoteCount: Int,
-    @SerializedName("likeCount") var recastCount: Int,
+    @SerializedName("likeCount") var likeCount: Int? = 0,
+    @SerializedName("commentCount") var commentCount: Int? = 0,
+    @SerializedName("quoteCount") var quoteCount: Int? = 0,
+    @SerializedName("recastCount") var recastCount: Int? = 0,
 )
 
 data class Participate(

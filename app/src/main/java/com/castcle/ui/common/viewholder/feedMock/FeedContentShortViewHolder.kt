@@ -3,7 +3,7 @@ package com.castcle.ui.common.viewholder.feedMock
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonMockAdapter
@@ -40,7 +40,7 @@ import com.workfort.linkpreview.util.LinkParser
 class FeedContentShortMockViewHolder(
     val binding: LayoutFeedTemplateShortBinding,
     private val click: (Click) -> Unit
-) : CommonMockAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -85,12 +85,19 @@ class FeedContentShortMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
@@ -104,12 +111,12 @@ class FeedContentShortMockViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = contentMessage
+                tvFeedContent.text = message
                 ftFooter.bindUiModel(uiModel)
                 when {
-                    link.isNullOrEmpty() && photo.imageContent.isNotEmpty() -> {
+                    link == null && photo?.isNullOrEmpty() == false -> {
                         with(clPreviewContentImage) {
                             clInPreviewContentImage.visible()
                             icImageContent.bindImageContent(uiModel, true)
@@ -117,8 +124,8 @@ class FeedContentShortMockViewHolder(
                         }
                         stopLoadingPreViewShimmer()
                     }
-                    link.isNotEmpty() -> {
-                        link.firstOrNull()?.let {
+                    link != null -> {
+                        link?.let {
                             LinkParser(it.url, object : ParserCallback {
                                 override fun onData(linkData: LinkData) {
                                     clPreviewContent.clInPreviewContent.gone()
@@ -167,7 +174,6 @@ class FeedContentShortMockViewHolder(
             clInPreviewContent.visible()
             with(linkUiModel) {
                 ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
-                tvPreviewUrl.text = url
                 tvPreviewHeader.text = title
                 tvPreviewContent.text = description
             }

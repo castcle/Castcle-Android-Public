@@ -10,6 +10,7 @@ import com.castcle.android.databinding.FragmentLanguageBinding
 import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.LanguageUiModel
+import com.castcle.extensions.invisible
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -91,6 +92,7 @@ class LanguageAppFragment : BaseFragment<LanguageFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
+            ivToolbarProfileButton.invisible()
             ivToolbarProfileButton.subscribeOnClick {
                 navigateToAppLanguageFragment()
             }.addToDisposables()

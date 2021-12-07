@@ -101,7 +101,7 @@
 
     <fragment
         android:id="@+id/settingProfileFragment"
-        android:name="com.castcle.ui.setting.profile.SettingProfileFragment"
+        android:name="com.castcle.ui.setting.account.SettingProfileFragment"
         tools:layout="@layout/fragment_profile_setting">
 
         <action
@@ -197,6 +197,21 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
+    </fragment>
+    <fragment
+        android:id="@+id/createQuoteFragment"
+        android:name="com.castcle.ui.createbloc.CreateQuoteFragment"
+        tools:layout="@layout/fragment_create_quote">
+
+        <deepLink app:uri="castcle-dev://create-quote" />
+
+        <argument
+            android:name="contentUiModel"
+            app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />
 
         <argument
             android:name="profileBundle"

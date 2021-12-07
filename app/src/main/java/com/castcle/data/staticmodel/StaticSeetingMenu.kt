@@ -41,22 +41,12 @@ object StaticSeetingMenu {
                     menuName = R.string.setting_menu_privacy,
                     icon = R.drawable.ic_policry,
                     menuType = SettingMenuType.PRIVACY
-                )
-            )
-        ),
-        SettingMenuUiModel(
-            header = R.string.setting_menu_header_language,
-            menuItem = listOf(
+                ),
                 MenuItem(
                     menuName = R.string.setting_menu_language,
                     icon = R.drawable.ic_language,
                     menuType = SettingMenuType.LANGUAGE
-                )
-            )
-        ),
-        SettingMenuUiModel(
-            header = 0,
-            menuItem = listOf(
+                ),
                 MenuItem(
                     menuName = R.string.setting_menu_about_us,
                     icon = R.drawable.ic_info,
@@ -73,6 +63,7 @@ object StaticSeetingMenu {
                 MenuItem(
                     menuName = R.string.setting_account_email,
                     icon = 0,
+                    disableActionIcon = true,
                     menuType = SettingMenuType.SETTING_EMAIL
                 ),
                 MenuItem(
@@ -88,6 +79,7 @@ object StaticSeetingMenu {
                 MenuItem(
                     menuName = R.string.setting_account_delete_account,
                     icon = 0,
+                    disableActionIcon = true,
                     menuType = SettingMenuType.ABOUT_US
                 )
             )

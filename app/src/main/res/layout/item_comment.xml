@@ -79,7 +79,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_10sdp"
-        app:civ_border_width="@dimen/_2sdp"
+        app:civ_border_width="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/vLine"
@@ -90,6 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_4sdp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
         app:layout_constraintStart_toEndOf="@id/ivAvatar"
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
@@ -105,29 +106,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvWathYouMind" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/bvSentReply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_8sdp"
-        android:background="@color/transparent"
-        android:text="@string/comment_item_reply"
-        android:textAllCaps="false"
-        android:textColor="@color/blue"
-        app:layout_constraintBottom_toBottomOf="@id/tvWathYouMind"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvWathYouMind" />
-
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupOnReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="bvSentComment,tvWathYouMind" />
+        app:constraint_referenced_ids="tvWathYouMind" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tvTitle,etInputMessage,bvSentReply" />
+        app:constraint_referenced_ids="tvTitle,etInputMessage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

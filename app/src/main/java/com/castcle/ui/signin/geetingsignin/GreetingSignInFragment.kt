@@ -9,6 +9,7 @@ import com.castcle.android.databinding.FragmentGreetingSignInBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.extensions.gone
+import com.castcle.extensions.invisible
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
@@ -72,7 +73,7 @@ class GreetingSignInFragment : BaseFragment<GreetingSignInFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.text = context?.getString(R.string.greeting_tool_bar_title)
             ivToolbarLogoButton
                 .subscribeOnClick {

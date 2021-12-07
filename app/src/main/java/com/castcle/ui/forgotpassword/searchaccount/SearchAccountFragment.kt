@@ -79,7 +79,7 @@ class SearchAccountFragment : BaseFragment<SearchAccountFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.text = localizedResources.getString(R.string.search_account_title)
             ivToolbarLogoButton
                 .subscribeOnClick {

@@ -8,22 +8,24 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.TabContentStatic
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
+import com.castcle.ui.common.dialog.recast.KEY_REQUEST_UNRECAST
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.search.trend.TrendFragmentViewModel
 import com.stfalcon.imageviewer.StfalconImageViewer
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -59,6 +61,10 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+
+    private lateinit var baseContentUiModel: ContentFeedUiModel
+
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentContentAllBinding
         get() = { inflater, container, attachToRoot ->
             FragmentContentAllBinding.inflate(inflater, container, attachToRoot)
@@ -88,11 +94,11 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
         )
         viewModel.getTesnds(feedRequestHeader)
         with(binding.rvContent) {
-            itemAnimator = null
             adapter = CommonAdapter().also {
                 adapterPagingCommon = it
             }
         }
+        binding.rvContent.itemAnimator = null
 
         lifecycleScope.launchWhenCreated {
             adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
@@ -150,44 +156,65 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
             is FeedItemClick.FeedImageClick -> {
                 handleImageItemClick(click.position, click.contentUiModel)
             }
+            is FeedItemClick.FeedFollowingClick -> {
+                handleFeedFollowingClick(click.contentUiModel)
+            }
         }
     }
 
-    private fun handleCommentClick(contentUiModel: ContentUiModel) {
-        navigateToFeedDetailFragment(contentUiModel)
+    private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {
+        activityViewModel.putToFollowUser(contentUiModel.userContent.castcleId).subscribeBy(
+            onComplete = {
+                displayMessage(
+                    localizedResources.getString(R.string.feed_content_following_status)
+                        .format(contentUiModel.userContent.castcleId)
+                )
+                adapterPagingCommon.updateStateItemFollowing(contentUiModel)
+            }, onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
     }
 
-    private fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel) {
+    private fun handleCommentClick(contentUiModel: ContentFeedUiModel) {
+        guestEnable(enable = {
+            navigateToFeedDetailFragment(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun navigateToFeedDetailFragment(contentUiModel: ContentFeedUiModel) {
         onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
     }
 
-    private lateinit var baseContentUiModel: ContentUiModel
-
-    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
-        val deeplinkType = if (contentUiModel.payLoadUiModel.author.castcleId ==
+    private fun handleNavigateAvatarClick(contentUiModel: ContentFeedUiModel) {
+        var isMe = false
+        val deeplinkType = if (contentUiModel.userContent.castcleId ==
             activityViewModel.userRefeshProfile.blockingFirst()?.castcleId ?: ""
         ) {
+            isMe = true
             ProfileType.PROFILE_TYPE_ME.type
         } else {
-            contentUiModel.payLoadUiModel.author.type
+            contentUiModel.userContent.type
         }
-        navigateToProfile(contentUiModel.payLoadUiModel.author.castcleId, deeplinkType)
+        navigateToProfile(contentUiModel.userContent.castcleId, deeplinkType, isMe)
     }
 
-    private fun navigateToProfile(castcleId: String, profileType: String) {
-        onBoardNavigator.navigateToProfileFragment(castcleId, profileType)
+    private fun navigateToProfile(castcleId: String, profileType: String, isMe: Boolean) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, profileType, isMe)
     }
 
-    private fun handleLikeClick(contentUiModel: ContentUiModel) {
+    private fun handleLikeClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
             baseContentUiModel = contentUiModel
             val likeContentRequest = LikeContentRequest(
-                contentId = contentUiModel.payLoadUiModel.contentId,
-                feedItemId = contentUiModel.payLoadUiModel.contentId,
+                contentId = contentUiModel.contentId,
+                feedItemId = contentUiModel.id,
                 authorId = viewModel.userProfile.value?.castcleId ?: "",
-                likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+                likeStatus = contentUiModel.liked
             )
-            if (!contentUiModel.payLoadUiModel.likedUiModel.liked) {
+            if (!contentUiModel.liked) {
                 adapterPagingCommon.updateStateItemLike(contentUiModel)
             } else {
                 adapterPagingCommon.updateStateItemUnLike(contentUiModel)
@@ -210,7 +237,7 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
         }
     }
 
-    private fun handleRecastClick(contentUiModel: ContentUiModel) {
+    private fun handleRecastClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
             navigateToRecastDialogFragment(contentUiModel)
         }, disable = {
@@ -218,11 +245,11 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
         })
     }
 
-    private fun handleImageItemClick(position: Int, contentUiModel: ContentUiModel) {
-        val image = contentUiModel.payLoadUiModel.photo.imageContent.map {
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentFeedUiModel) {
+        val image = contentUiModel.photo?.map {
             it.imageOrigin
         }
-        val imagePosition = when (contentUiModel.payLoadUiModel.photo.imageContent.size) {
+        val imagePosition = when (contentUiModel.photo?.size) {
             1 -> 0
             else -> position
         }
@@ -238,16 +265,46 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
         imageView.loadImageWithoutTransformation(imageUrl)
     }
 
-    private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+    private fun navigateToRecastDialogFragment(contentUiModel: ContentFeedUiModel) {
         onBoardNavigator.navigateToRecastDialogFragment(contentUiModel)
 
-        getNavigationResult<ContentUiModel>(
-            onBoardNavigator,
-            R.id.dialogRecastFragment,
-            KEY_REQUEST,
-            onResult = {
-                adapterPagingCommon.updateStateItemRecast(it)
-            })
+        if (contentUiModel.recasted) {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.trendFragment,
+                KEY_REQUEST_UNRECAST,
+                onResult = {
+                    onRecastContent(it)
+                })
+        } else {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.trendFragment,
+                KEY_REQUEST,
+                onResult = {
+                    onRecastContent(it, true)
+                })
+        }
+    }
+
+    private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
+        handlerUpdateRecasted(currentContent, onRecast)
+        viewModel.recastContent(currentContent).subscribeBy(
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handlerUpdateRecasted(
+        currentContent: ContentFeedUiModel,
+        onRecast: Boolean
+    ) {
+        if (onRecast) {
+            adapterPagingCommon.updateStateItemRecast(currentContent)
+        } else {
+            adapterPagingCommon.updateStateItemUnRecast(currentContent)
+        }
     }
 
     private fun handleEmptyState(show: Boolean) {

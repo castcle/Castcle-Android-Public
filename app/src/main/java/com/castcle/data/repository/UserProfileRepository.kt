@@ -55,13 +55,13 @@ interface UserProfileRepository {
 
     fun getUserProfileContent(
         contentRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<ContentUiModel>>
+    ): Flow<PagingData<ContentFeedUiModel>>
 
     fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader):
-        Flow<PagingData<ContentUiModel>>
+        Flow<PagingData<ContentFeedUiModel>>
 
     fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader):
-        Flow<PagingData<ContentUiModel>>
+        Flow<PagingData<ContentFeedUiModel>>
 
     fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
 
@@ -145,7 +145,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override fun getUserProfileContent(
         contentRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<ContentUiModel>> = Pager(config =
+    ): Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
         prefetchDistance = DEFAULT_PREFETCH
@@ -154,7 +154,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }).flow
 
     override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
-        : Flow<PagingData<ContentUiModel>> = Pager(config =
+        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
         prefetchDistance = DEFAULT_PREFETCH
@@ -163,7 +163,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }).flow
 
     override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
-        : Flow<PagingData<ContentUiModel>> = Pager(config =
+        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE,
         prefetchDistance = DEFAULT_PREFETCH

@@ -1,6 +1,6 @@
 package com.castcle.networking.api.feed.datasource
 
-import android.net.Uri
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.castcle.common_model.model.feed.*
@@ -33,13 +33,18 @@ import com.castcle.networking.api.feed.FeedApi
 class TrendPagingDataSource(
     private val feedApi: FeedApi,
     private val feedRequestHeader: FeedRequestHeader
-) : PagingSource<Int, ContentUiModel>() {
+) : PagingSource<Int, ContentFeedUiModel>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentUiModel> {
+    private var nextPage: Int = 0
+
+    private var oldestId: String = ""
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentFeedUiModel> {
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
             val response = feedApi.getFeedByMode(
+                unitId = feedRequestHeader.oldestId,
                 featureSlug = feedRequestHeader.featureSlug,
                 circleSlug = feedRequestHeader.circleSlug,
                 mode = feedRequestHeader.hashtag,
@@ -47,18 +52,24 @@ class TrendPagingDataSource(
                 pageSize = pageSize
             )
 
-            val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toContentFeedUiModel()
+            nextPage = pageNumber
+            oldestId = feedRequestHeader.oldestId
 
+            val pagedResponse = response.body()
+            val data = pagedResponse?.let { mapToContentFeedUiMode(feedRequestHeader.isMeId, it) }
             var nextPageNumber: Int? = null
-            if (pagedResponse?.pagination?.next != null) {
-                val uri = Uri.parse(pagedResponse.pagination.next.toString())
-                val nextPageQuery = uri.getQueryParameter("page")
-                nextPageNumber = nextPageQuery?.toInt()
+
+            if (pagedResponse?.meta?.oldestId != null &&
+                pagedResponse.meta.oldestId.isNotBlank() &&
+                pagedResponse.meta.oldestId != oldestId
+            ) {
+                feedRequestHeader.oldestId = pagedResponse.meta.oldestId
+                nextPageNumber = nextPage.plus(1)
             }
+            Log.d("NEXT-PAGE", "$nextPageNumber")
 
             LoadResult.Page(
-                data = data?.feedContentUiModel.orEmpty(),
+                data = data.orEmpty(),
                 prevKey = null,
                 nextKey = nextPageNumber
             )
@@ -67,5 +78,10 @@ class TrendPagingDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ContentUiModel>): Int = 1
+    override fun getRefreshKey(state: PagingState<Int, ContentFeedUiModel>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
+    }
 }

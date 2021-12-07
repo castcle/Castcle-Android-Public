@@ -40,6 +40,14 @@ fun String.toTime(): Date? {
     return formatter.parse(this)
 }
 
+@SuppressLint("SimpleDateFormat")
+fun getLocalDateTimeNow(): String {
+    val dateTime = Calendar.getInstance().time
+    val formatter = SimpleDateFormat(COMMON_DATE_FORMAT)
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+    return formatter.format(dateTime)
+}
+
 fun String.toFormatDate(language: String = LANGUAGE_CODE_EN): String {
     return if (isNotBlank()) {
         SimpleDateFormat(COMMON_DATE_FORMAT, Locale.getDefault())

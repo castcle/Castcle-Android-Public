@@ -1,6 +1,7 @@
 package com.castcle.ui.common.dialog.recast
 
 import androidx.lifecycle.MutableLiveData
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.setting.PageHeaderUiModel
 import com.castcle.common_model.model.setting.PageUiModel
@@ -47,6 +48,6 @@ abstract class RecastDialogViewModel : BaseViewModel() {
     abstract fun onPageSelected(pageUiModel: PageUiModel)
 
     interface Input {
-        fun recastContent(contentUiModel: ContentUiModel)
+        fun recastContent(contentUiModel: ContentFeedUiModel)
     }
 }

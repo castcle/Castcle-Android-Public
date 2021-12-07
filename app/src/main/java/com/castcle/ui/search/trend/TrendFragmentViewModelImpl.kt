@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
 import com.castcle.common.lib.common.Optional
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
+import com.castcle.usecase.feed.RecastContentCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import io.reactivex.Completable
@@ -49,10 +49,11 @@ class TrendFragmentViewModelImpl @Inject constructor(
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
+    private val recastContentSingleUseCase: RecastContentCompletableUseCase,
 ) : TrendFragmentViewModel() {
 
-    private lateinit var _feedTrendResponse: Flow<PagingData<ContentUiModel>>
-    override val feedTrendResponse: Flow<PagingData<ContentUiModel>>
+    private lateinit var _feedTrendResponse: Flow<PagingData<ContentFeedUiModel>>
+    override val feedTrendResponse: Flow<PagingData<ContentFeedUiModel>>
         get() = _feedTrendResponse
 
     override val isGuestMode: Boolean
@@ -113,5 +114,16 @@ class TrendFragmentViewModelImpl @Inject constructor(
             .execute(contentUiModel).doOnError {
                 _error.onNext(it)
             }
+    }
+
+    override fun recastContent(contentUiModel: ContentFeedUiModel): Completable {
+        val castcleId = _cacheUserProfile.value?.castcleId ?: ""
+
+        val recastRequest = RecastRequest(
+            reCasted = contentUiModel.recasted,
+            contentId = contentUiModel.contentId,
+            authorId = castcleId
+        )
+        return recastContentSingleUseCase.execute(recastRequest)
     }
 }

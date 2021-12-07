@@ -1,11 +1,10 @@
-package com.castcle.ui.setting.profile
+package com.castcle.ui.setting.account
 
 import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.setting.SettingMenuUiModel
 import com.castcle.data.staticmodel.StaticSeetingMenu
 import com.castcle.data.storage.AppPreferences
 import io.reactivex.Observable
-import io.reactivex.Single
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

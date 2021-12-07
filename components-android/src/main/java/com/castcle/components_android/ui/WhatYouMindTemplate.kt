@@ -11,8 +11,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.base.addToDisposables
-import com.castcle.extensions.loadCircleImage
-import com.castcle.extensions.visibleOrGone
+import com.castcle.extensions.*
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -66,7 +65,6 @@ class WhatYouMindTemplate(
             styles.getBoolean(R.styleable.WhatYouMindOption_whatYouMind_show_avatar, true)
         with(binding) {
             ivAvatar.visibleOrGone(showAvatar)
-            tvWathYouMind.text = inputMessage
             tvWathYouMind.visibleOrGone(showAvatar)
             tvSearchWold.text = inputMessage
             tvSearchWold.visibleOrGone(!showAvatar)
@@ -77,6 +75,7 @@ class WhatYouMindTemplate(
         with(binding) {
             with(itemUiModel.payLoadUiModel) {
                 ivAvatar.run {
+                    borderColor = binding.root.context.getColorResource(R.color.black_drak)
                     loadCircleImage(author.avatar)
                     subscribeOnClick {
                         _clickMenu.onNext(

@@ -3,8 +3,8 @@ package com.castcle.di.modules.setting
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.setting.profile.SettingProfileViewModel
-import com.castcle.ui.setting.profile.SettingProfileViewModelImpl
+import com.castcle.ui.setting.account.SettingProfileViewModel
+import com.castcle.ui.setting.account.SettingProfileViewModelImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

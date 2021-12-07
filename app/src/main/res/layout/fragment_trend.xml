@@ -27,15 +27,16 @@
 
 
         <com.google.android.material.tabs.TabLayout
-            style="@style/ContentTabStyle"
+            style="@style/ContentTrendingTabStyle"
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_gravity="bottom"
             app:layout_collapseMode="pin"
-            app:tabGravity="fill"
             app:tabIndicatorFullWidth="false"
-            app:tabMode="scrollable"
+            app:tabIndicatorHeight="@dimen/_2sdp"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
             app:tabRippleColor="@color/transparent"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 

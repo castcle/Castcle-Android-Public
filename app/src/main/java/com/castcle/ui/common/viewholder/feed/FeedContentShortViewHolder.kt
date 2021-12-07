@@ -2,6 +2,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
@@ -39,7 +40,7 @@ import com.workfort.linkpreview.util.LinkParser
 class FeedContentShortViewHolder(
     val binding: LayoutFeedTemplateShortBinding,
     private val click: (Click) -> Unit
-) : CommonAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -103,12 +104,19 @@ class FeedContentShortViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
@@ -118,9 +126,9 @@ class FeedContentShortViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.appendLinkText(contentMessage)
+                tvFeedContent.appendLinkText(message)
                 ftFooter.bindUiModel(uiModel)
             }
         }

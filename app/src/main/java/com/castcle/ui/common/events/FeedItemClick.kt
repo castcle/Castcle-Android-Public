@@ -1,6 +1,6 @@
 package com.castcle.ui.common.events
 
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -32,27 +32,27 @@ sealed class FeedItemClick(
 
     class FeedAvatarClick(
         position: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(position)
 
     class FeedLikeClick(
         position: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(position)
 
     class FeedCommentClick(
         position: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(position)
 
     class FeedRecasteClick(
         position: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(position)
 
     class EditContentClick(
         position: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(position)
 
     class FeedReadMoreClick(
@@ -65,6 +65,10 @@ sealed class FeedItemClick(
 
     class FeedImageClick(
         position: Int,
-        val contentUiModel: ContentUiModel
+        val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(position)
+
+    class FeedFollowingClick(
+        val contentUiModel: ContentFeedUiModel
+    ) : FeedItemClick(0)
 }

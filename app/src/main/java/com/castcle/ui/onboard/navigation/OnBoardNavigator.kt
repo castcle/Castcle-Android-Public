@@ -2,7 +2,7 @@ package com.castcle.ui.onboard.navigation
 
 import android.content.Intent
 import android.net.Uri
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.setting.VerificationUiModel
 import com.castcle.common_model.model.userprofile.LinksRequestUiModel
@@ -77,10 +77,10 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToResentVerifyEmail(email: String)
 
-    fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel)
+    fun navigateToRecastDialogFragment(contentUiModel: ContentFeedUiModel)
 
     fun navigateToCreateQuoteFragment(
-        contentUiModel: ContentUiModel,
+        contentUiModel: ContentFeedUiModel,
         profileEditBundle: ProfileBundle
     )
 
@@ -100,13 +100,13 @@ interface OnBoardNavigator : BaseNavigator {
         onForGotPass: Boolean = false
     )
 
-    fun navigateToFeedDetailFragment(contentUiModel: ContentUiModel, isContent: Boolean = false)
+    fun navigateToFeedDetailFragment(contentUiModel: ContentFeedUiModel, isContent: Boolean = false)
 
     fun navigateToSearchTrendFragmrnt()
 
     fun navigateToTrendFragment(trendSlug: String)
 
-    fun navigateToProfileFragment(castcle: String, profileType: String)
+    fun navigateToProfileFragment(castcle: String, profileType: String, isMe: Boolean = false)
 
     fun navigateToGreetingPageFragment()
 

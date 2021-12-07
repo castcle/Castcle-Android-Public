@@ -1,5 +1,6 @@
 package com.castcle.ui.common
 
+import FeedContentQuoteViewHolder
 import FeedContentShortImageViewHolder
 import FeedContentShortViewHolder
 import FeedContentShortWebViewHolder
@@ -11,7 +12,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.data.staticmodel.ContentType.*
 import com.castcle.ui.common.CommonAdapter.ViewHolder
 import com.castcle.ui.common.events.*
@@ -47,7 +48,7 @@ import kotlin.math.abs
 //
 //  Created by sklim on 24/8/2021 AD at 15:04.
 
-class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiModel>>(
+class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFeedUiModel>>(
     ContentUiModelPagedListDiffCallBack
 ), ItemClickable<Click> by ItemClickableImpl() {
 
@@ -55,66 +56,78 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
         notifyItemClick(it)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<ContentFeedUiModel>, position: Int) {
         getItem(position)?.let { holder.bindUiModel(it) }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateContentPost(contentUiModel: ContentUiModel) {
+    fun updateContentPost(contentUiModel: ContentFeedUiModel) {
         val content = snapshot()
         content.items.toMutableList().addAll(0, listOf(contentUiModel))
         notifyItemInserted(0)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateDeleteContent(contentUiModel: ContentUiModel) {
+    fun updateDeleteContent(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
         notifyItemRemoved(index)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateCommented(commentedCount: Int, contentUiModel: ContentUiModel) {
+    fun updateCommented(commentedCount: Int, contentUiModel: ContentFeedUiModel) {
         val contentIndex = snapshot().indexOf(contentUiModel)
         snapshot().items[contentIndex].apply {
-            payLoadUiModel.commentedUiModel.count =
-                payLoadUiModel.commentedUiModel.count.plus(commentedCount)
+            commentCount = commentCount.plus(commentedCount)
         }
         notifyItemInserted(contentIndex)
     }
 
-    fun updateStateItemRecast(contentUiModel: ContentUiModel) {
+    fun updateStateItemRecast(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val recastUiModel = snapshot()[index]?.payLoadUiModel?.reCastedUiModel
-        recastUiModel?.recasted = !recastUiModel?.recasted!!
-        recastUiModel.count = recastUiModel.count.plus(1) ?: 0
+        val recastUiModel = snapshot()[index]
+        recastUiModel?.recasted = true
+        recastUiModel?.recastCount = recastUiModel?.recastCount?.plus(1)!!
         notifyItemChanged(index)
     }
 
-    fun updateStateItemUnRecast(contentUiModel: ContentUiModel) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateStateItemFollowing(contentUiModel: ContentFeedUiModel) {
+        snapshot().map {
+            if (it?.userContent?.castcleId == contentUiModel.userContent.castcleId) {
+                it.userContent.followed = true
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    fun updateStateItemUnRecast(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val recastUiModel = snapshot()[index]?.payLoadUiModel?.reCastedUiModel
-        recastUiModel?.recasted = !recastUiModel?.recasted!!
-        recastUiModel.count = abs(recastUiModel.count - 1)
+        val recastUiModel = snapshot()[index]
+        recastUiModel?.recasted = false
+        recastUiModel?.recastCount = recastUiModel?.recastCount?.minus(1)?.let { abs(it) }!!
         notifyItemChanged(index)
     }
 
-    fun updateStateItemLike(contentUiModel: ContentUiModel) {
+    fun updateStateItemLike(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val likeUiModel = snapshot()[index]?.payLoadUiModel?.likedUiModel
+        val likeUiModel = snapshot()[index]
         likeUiModel?.liked = !likeUiModel?.liked!!
-        likeUiModel.count = likeUiModel.count.plus(1)
+        likeUiModel.likeCount = likeUiModel.likeCount.plus(1)
         notifyItemChanged(index)
     }
 
-    fun updateStateItemUnLike(contentUiModel: ContentUiModel) {
+    fun updateStateItemUnLike(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val likeUiModel = snapshot()[index]?.payLoadUiModel?.likedUiModel
+        val likeUiModel = snapshot()[index]
         likeUiModel?.liked = !likeUiModel?.liked!!
-        likeUiModel.count = abs(likeUiModel.count.plus(-1))
+        likeUiModel.likeCount = abs(likeUiModel.likeCount.plus(-1))
         notifyItemChanged(index)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentUiModel> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewHolder<ContentFeedUiModel> {
         return when (viewType) {
             R.layout.layout_feed_template_image ->
                 FeedContentImageViewHolder.newInstance(parent, click)
@@ -126,6 +139,8 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
                 FeedContentShortWebViewHolder.newInstance(parent, click)
             R.layout.layout_feed_template_short_image ->
                 FeedContentShortImageViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_quote ->
+                FeedContentQuoteViewHolder.newInstance(parent, click)
             else -> throw UnsupportedOperationException()
         }
     }
@@ -135,26 +150,27 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
             BLOG.type -> R.layout.layout_feed_template_blog
             SHORT.type -> optionalTypeShort(position)
             IMAGE.type -> R.layout.layout_feed_template_image
+            QUOTE.type -> R.layout.layout_feed_template_quote
             else -> R.layout.layout_feed_template_short
         }
     }
 
     private fun optionalTypeShort(position: Int): Int {
         return when {
-            getItem(position)?.payLoadUiModel?.link.isNullOrEmpty() &&
-                getItem(position)?.payLoadUiModel?.photo?.imageContent?.isNotEmpty() == true ->
+            getItem(position)?.link == null &&
+                getItem(position)?.photo?.isNullOrEmpty() == false ->
                 R.layout.layout_feed_template_short_image
-            getItem(position)?.payLoadUiModel?.link?.isNotEmpty() == true ->
+            getItem(position)?.link != null ->
                 R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }
     }
 
     private fun getContentType(position: Int): String {
-        return getItem(position)?.contentType ?: ""
+        return getItem(position)?.type ?: ""
     }
 
-    abstract class ViewHolder<UiModel : ContentUiModel>(itemView: View) :
+    abstract class ViewHolder<UiModel : ContentFeedUiModel>(itemView: View) :
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
         lateinit var uiModel: UiModel
@@ -171,13 +187,19 @@ class CommonAdapter : PagingDataAdapter<ContentUiModel, ViewHolder<ContentUiMode
     }
 }
 
-object ContentUiModelPagedListDiffCallBack : DiffUtil.ItemCallback<ContentUiModel>() {
+object ContentUiModelPagedListDiffCallBack : DiffUtil.ItemCallback<ContentFeedUiModel>() {
 
-    override fun areItemsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
-        return (oldItem.created == newItem.created)
+    override fun areItemsTheSame(
+        oldItem: ContentFeedUiModel,
+        newItem: ContentFeedUiModel
+    ): Boolean {
+        return (oldItem.createdAt == newItem.createdAt)
     }
 
-    override fun areContentsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
+    override fun areContentsTheSame(
+        oldItem: ContentFeedUiModel,
+        newItem: ContentFeedUiModel
+    ): Boolean {
         return oldItem == newItem
     }
 }

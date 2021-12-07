@@ -4,7 +4,7 @@ import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.signin.domain.RegisterWithSocialRequest
 import com.castcle.data.error.RegisterErrorError
 import com.castcle.networking.api.auth.AuthenticationsRepository
-import com.castcle.networking.api.response.TokenResponse
+import com.castcle.networking.api.response.SocialTokenResponse
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
 import javax.inject.Inject
@@ -36,12 +36,12 @@ import javax.inject.Inject
 class RegisterWithSocialCompletableUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val authenticationsRepository: AuthenticationsRepository
-) : SingleUseCase<RegisterWithSocialRequest, TokenResponse>(
+) : SingleUseCase<RegisterWithSocialRequest, SocialTokenResponse>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::RegisterErrorError
 ) {
-    override fun create(input: RegisterWithSocialRequest): Single<TokenResponse> {
+    override fun create(input: RegisterWithSocialRequest): Single<SocialTokenResponse> {
         return authenticationsRepository.authRegisterWithSocial(input)
     }
 }

@@ -116,7 +116,7 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             setToolbarTitle(localizedResources.getString(R.string.delete_page_fragment_title))
             ivToolbarLogoButton
                 .subscribeOnClick {

@@ -8,8 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentBlogBinding
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.ContentType
@@ -185,11 +184,11 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
     }
 
-    private fun handleNavigateAvatarClick(contentUiModel: ContentUiModel) {
+    private fun handleNavigateAvatarClick(contentUiModel: ContentFeedUiModel) {
         val deepLink = makeDeepLinkUrl(
             requireContext(), Input(
                 type = DeepLinkTarget.USER_PROFILE_YOU,
-                contentData = contentUiModel.payLoadUiModel.author.displayName
+                contentData = contentUiModel.userContent.displayName
             )
         ).toString()
         navigateByDeepLink(deepLink)
@@ -199,12 +198,12 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
         onBoardNavigator.navigateByDeepLink(url.toUri())
     }
 
-    private fun handleLikeClick(contentUiModel: ContentUiModel) {
+    private fun handleLikeClick(contentUiModel: ContentFeedUiModel) {
         val likeContentRequest = LikeContentRequest(
-            contentId = contentUiModel.payLoadUiModel.contentId,
-            feedItemId = contentUiModel.payLoadUiModel.contentId,
+            contentId = contentUiModel.contentId,
+            feedItemId = contentUiModel.id,
             authorId = viewModel.castcleId ?: "",
-            likeStatus = contentUiModel.payLoadUiModel.likedUiModel.liked
+            likeStatus = contentUiModel.liked
         )
         adapterPagingCommon.updateStateItemLike(contentUiModel)
 
@@ -216,28 +215,51 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
         }).addToDisposables()
     }
 
-    private fun handleRecastClick(contentUiModel: ContentUiModel) {
+    private fun handleRecastClick(contentUiModel: ContentFeedUiModel) {
         navigateToRecastDialogFragment(contentUiModel)
     }
 
-    private fun navigateToRecastDialogFragment(contentUiModel: ContentUiModel) {
+    private fun navigateToRecastDialogFragment(contentUiModel: ContentFeedUiModel) {
         onBoardNavigator.navigateToRecastDialogFragment(contentUiModel)
 
-        getNavigationResult<ContentUiModel>(
-            onBoardNavigator,
-            R.id.feedFragment,
-            KEY_REQUEST,
-            onResult = {
-                adapterPagingCommon.updateStateItemRecast(it)
-            })
+        if (contentUiModel.recasted) {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.profileFragment,
+                KEY_REQUEST_UNRECAST,
+                onResult = {
+                    onRecastContent(it)
+                })
+        } else {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.profileFragment,
+                KEY_REQUEST,
+                onResult = {
+                    onRecastContent(it, true)
+                })
+        }
+    }
 
-        getNavigationResult<ContentUiModel>(
-            onBoardNavigator,
-            R.id.feedFragment,
-            KEY_REQUEST_UNRECAST,
-            onResult = {
-                adapterPagingCommon.updateStateItemUnRecast(it)
-            })
+    private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
+        handlerUpdateRecasted(currentContent, onRecast)
+        val castcleId = activityViewModel.userCacheProfile.value?.castcleId ?: ""
+        viewModel.recastContent(castcleId, currentContent).subscribeBy(
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handlerUpdateRecasted(
+        currentContent: ContentFeedUiModel,
+        onRecast: Boolean
+    ) {
+        if (onRecast) {
+            adapterPagingCommon.updateStateItemRecast(currentContent)
+        } else {
+            adapterPagingCommon.updateStateItemUnRecast(currentContent)
+        }
     }
 
     private fun handleEmptyState(show: Boolean) {

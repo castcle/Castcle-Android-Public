@@ -25,6 +25,7 @@ package com.castcle.common_model.model.feed
 //  Created by sklim on 25/8/2021 AD at 08:49.
 
 data class FeedRequestHeader(
+    var oldestId: String = "",
     val castcleId: String = "",
     val featureSlug: String = "",
     val circleSlug: String = "",
@@ -32,5 +33,6 @@ data class FeedRequestHeader(
     val type: String = "",
     val viewType: String = "",
     val exclude: String = "",
-    val hashtag: String = ""
+    val hashtag: String = "",
+    val isMeId: String = ""
 )

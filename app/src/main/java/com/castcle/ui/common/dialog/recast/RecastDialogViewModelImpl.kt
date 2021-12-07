@@ -3,13 +3,12 @@ package com.castcle.ui.common.dialog.recast
 import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import com.castcle.common.lib.common.Optional
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.RecastRequest
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.ui.util.SingleLiveEvent
-import com.castcle.usecase.feed.RecastContentSingleUseCase
+import com.castcle.usecase.feed.RecastContentCompletableUseCase
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
 import com.castcle.usecase.userprofile.GetUserPageDataSingleUseCase
 import io.reactivex.Completable
@@ -43,7 +42,7 @@ import javax.inject.Inject
 //  Created by sklim on 23/8/2021 AD at 12:50.
 
 class RecastDialogViewModelImpl @Inject constructor(
-    private val recastContentSingleUseCase: RecastContentSingleUseCase,
+    private val recastContentSingleUseCase: RecastContentCompletableUseCase,
     private val getUserPageDataSingleUseCase: GetUserPageDataSingleUseCase,
     private val getUserCachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase
 ) : RecastDialogViewModel(), RecastDialogViewModel.Input {
@@ -64,21 +63,20 @@ class RecastDialogViewModelImpl @Inject constructor(
     override val userPageUiModel: SingleLiveEvent<PageHeaderUiModel?>
         get() = _userPageUiModel
 
-    private val _contentUiModel = MutableLiveData<ContentUiModel>()
-
-    override fun recastContent(contentUiModel: ContentUiModel) {
+    override fun recastContent(contentUiModel: ContentFeedUiModel) {
         val castcleId = _userPageUiModel.value?.pageUiItem?.find {
             it.selected
         }?.castcleId ?: ""
 
         RecastRequest(
-            reCasted = contentUiModel.payLoadUiModel.reCastedUiModel.recasted,
-            contentId = contentUiModel.payLoadUiModel.contentId,
+            reCasted = contentUiModel.recasted,
+            contentId = contentUiModel.contentId,
             authorId = castcleId
         ).run {
             postReCastContent(this)
-                .subscribe()
-                .addToDisposables()
+                .subscribeBy(onError = {
+                    _error.onNext(it)
+                }).addToDisposables()
         }
     }
 
@@ -122,13 +120,9 @@ class RecastDialogViewModelImpl @Inject constructor(
     private fun postReCastContent(recastRequest: RecastRequest): Completable {
         return recastContentSingleUseCase.execute(
             recastRequest
-        ).doOnSuccess {
+        ).doOnComplete {
             _onSuccess.onNext(true)
-            _contentUiModel.value = it
-        }.onErrorReturn {
-            _error.onNext(it)
-            ContentUiModel()
-        }.ignoreElement()
+        }
     }
 
     override fun onPageSelected(pageUiModel: PageUiModel) {

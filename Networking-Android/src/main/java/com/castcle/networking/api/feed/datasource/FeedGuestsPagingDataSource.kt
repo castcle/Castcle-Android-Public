@@ -37,29 +37,35 @@ class FeedGuestsPagingDataSource(
 
     private var nextPage: Int = 0
 
+    private var oldestId: String = ""
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentFeedUiModel> {
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
+            if (pageNumber == 1) {
+                feedRequestHeader.oldestId = ""
+            }
+
             val response = feedApi.getFeedGuests(
-                circleSlug = feedRequestHeader.circleSlug,
-                hasTag = feedRequestHeader.hashtag,
+                unitId = feedRequestHeader.oldestId,
                 pageNumber = pageNumber,
                 pageSize = pageSize,
-                mode = feedRequestHeader.mode
             )
             nextPage = pageNumber
+            oldestId = feedRequestHeader.oldestId
 
             val pagedResponse = response.body()
-            val data = pagedResponse?.let { mapToContentFeedUiMode(it) }
+            val data = pagedResponse?.let { mapToContentFeedUiMode(payLoadList = it) }
             var nextPageNumber: Int? = null
 
 
-            if (pagedResponse?.meta?.newestId != null &&
-                pagedResponse.meta.newestId.toInt() != 0 &&
-                pagedResponse.meta.newestId.toInt() != nextPage
+            if (pagedResponse?.meta?.oldestId != null &&
+                pagedResponse.meta.oldestId.isNotBlank() &&
+                pagedResponse.meta.oldestId != oldestId
             ) {
-                nextPageNumber = pagedResponse.meta.newestId.toInt()
+                feedRequestHeader.oldestId = pagedResponse.meta.oldestId
+                nextPageNumber = nextPage.plus(1)
             }
             Log.d("NEXT-PAGE", "$nextPageNumber")
 
@@ -73,5 +79,10 @@ class FeedGuestsPagingDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ContentFeedUiModel>): Int = 1
+    override fun getRefreshKey(state: PagingState<Int, ContentFeedUiModel>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
+    }
 }

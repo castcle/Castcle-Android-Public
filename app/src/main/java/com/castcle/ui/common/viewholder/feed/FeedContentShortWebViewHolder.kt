@@ -3,7 +3,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortWebBinding
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.*
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
@@ -40,7 +40,7 @@ import com.workfort.linkpreview.util.LinkParser
 class FeedContentShortWebViewHolder(
     val binding: LayoutFeedTemplateShortWebBinding,
     private val click: (Click) -> Unit
-) : CommonAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -101,13 +101,20 @@ class FeedContentShortWebViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
@@ -116,30 +123,30 @@ class FeedContentShortWebViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.appendLinkText(contentMessage)
+                tvFeedContent.appendLinkText(message)
                 ftFooter.bindUiModel(uiModel)
 
-                if (!clPreviewIconContent.clInPreviewIconContent.isVisible
-                    && !clPreviewContent.clInPreviewContent.isVisible
-                ) {
-                    link.firstOrNull()?.let {
-                        LinkParser(it.url, object : ParserCallback {
-                            override fun onData(linkData: LinkData) {
-                                if (linkData.imageUrl.isNullOrBlank()) {
-                                    onBindContentIconWeb(linkData)
-                                } else {
-                                    onBindContentImageWeb(linkData)
-                                }
+                if (link == null) {
+                    clPreviewIconContent.clInPreviewIconContent.gone()
+                    clPreviewContent.clInPreviewContent.gone()
+                }
+                link?.let {
+                    LinkParser(it.url, object : ParserCallback {
+                        override fun onData(linkData: LinkData) {
+                            if (linkData.imageUrl.isNullOrBlank()) {
+                                onBindContentIconWeb(linkData)
+                            } else {
+                                onBindContentImageWeb(linkData, uiModel.link)
                             }
+                        }
 
-                            override fun onError(exception: Exception) {
-                                clPreviewIconContent.clInPreviewIconContent.gone()
-                                clPreviewContent.clInPreviewContent.gone()
-                            }
-                        }).parse()
-                    }
+                        override fun onError(exception: Exception) {
+                            clPreviewIconContent.clInPreviewIconContent.gone()
+                            clPreviewContent.clInPreviewContent.gone()
+                        }
+                    }).parse()
                 }
             }
         }
@@ -158,13 +165,16 @@ class FeedContentShortWebViewHolder(
         }
     }
 
-    private fun onBindContentImageWeb(linkUiModel: LinkData) {
+    private fun onBindContentImageWeb(linkUiModel: LinkData, link: LinkUiModel?) {
         stopLoadingPreViewShimmer()
         with(binding.clPreviewContent) {
             clInPreviewContent.visible()
             with(linkUiModel) {
-                ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
-                tvPreviewUrl.text = url
+                ivPerviewUrl.loadGranularRoundedCornersImage(
+                    link?.imagePreview ?: "",
+                    topLeft = 20f,
+                    topRight = 20f
+                )
                 tvPreviewHeader.text = title
                 tvPreviewContent.text = description
             }

@@ -3,20 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/colorPrimaryVariant">
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivRecast"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_13sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_recast" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.xxSmall"
+        android:id="@+id/tvReCasted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/feed_content_me_recasted"
+        android:textAlignment="viewStart"
+        android:textColor="@color/gray_medium"
+        app:layout_constraintBottom_toBottomOf="@id/ivRecast"
+        app:layout_constraintStart_toEndOf="@id/ivRecast"
+        app:layout_constraintTop_toTopOf="@id/ivRecast" />
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
         android:layout_width="@dimen/_38sdp"
         android:layout_height="@dimen/_38sdp"
         android:layout_marginStart="@dimen/_12sdp"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_12sdp"
-        app:civ_border_width="@dimen/_2sdp"
+        app:civ_border_width="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivRecast"
         app:srcCompat="@drawable/ic_avatar_placeholder" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -30,16 +51,16 @@
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
         tools:text="DappRadar" />
 
-    <!--    <androidx.appcompat.widget.AppCompatImageView-->
-    <!--        android:id="@+id/ivStatusFollow"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="@dimen/_8sdp"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@id/tvUserName"-->
-    <!--        app:layout_constraintStart_toEndOf="@id/tvUserName"-->
-    <!--        app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
-    <!--        app:srcCompat="@drawable/ic_bagde_follow" />-->
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
+<!--        android:id="@+id/ivStatusFollow"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/_8sdp"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/tvUserName"-->
+<!--        app:layout_constraintStart_toEndOf="@id/tvUserName"-->
+<!--        app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
+<!--        app:srcCompat="@drawable/ic_bagde_follow" />-->
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanit.Small"
@@ -61,6 +82,7 @@
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:padding="@dimen/_10sdp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_optional" />
@@ -91,6 +113,14 @@
         android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ivAvatar,tvUserName,ivOptional,ivStatusGlobe,tvDataTime" />
+        app:constraint_referenced_ids="ivAvatar,tvUserName,ivStatusFollow,ivStatusGlobe,tvDataTime"
+        tools:ignore="NotSibling" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupReCasted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="ivRecast,tvReCasted" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.castcle.ui.setting.profile
+package com.castcle.ui.setting.account
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -129,7 +129,7 @@ class SettingProfileFragment : BaseFragment<SettingProfileViewModel>(),
         }
     }
 
-    private fun navigateToChangePasswordFragment(){
+    private fun navigateToChangePasswordFragment() {
         onBoardNavigator.navigateToChangePasswordFragment()
     }
 }

@@ -85,7 +85,7 @@ class SocialTextView @JvmOverloads constructor(
         phoneColor =
             typedArray.getColor(R.styleable.SocialTextView_phoneColor, Color.parseColor("#03A9F4"))
         normalTextColor =
-            typedArray.getColor(R.styleable.SocialTextView_normalTextColor, Color.BLACK)
+            typedArray.getColor(R.styleable.SocialTextView_normalTextColor, Color.WHITE)
         selectedColor = typedArray.getColor(R.styleable.SocialTextView_selectedColor, Color.GRAY)
         isUnderline = typedArray.getBoolean(R.styleable.SocialTextView_underLine, false)
 

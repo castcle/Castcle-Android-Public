@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.data.staticmodel.ContentType.*
 import com.castcle.ui.common.events.*
@@ -43,7 +43,7 @@ import kotlin.properties.Delegates
 //  Created by sklim on 24/8/2021 AD at 15:04.
 
 class CommonQuoteCastAdapter :
-    RecyclerView.Adapter<CommonQuoteCastAdapter.ViewHolder<ContentUiModel>>(),
+    RecyclerView.Adapter<CommonQuoteCastAdapter.ViewHolder<ContentFeedUiModel>>(),
     DiffUpdateAdapter,
     ItemClickable<Click> by ItemClickableImpl() {
 
@@ -51,7 +51,7 @@ class CommonQuoteCastAdapter :
         notifyItemClick(it)
     }
 
-    var uiModels: List<ContentUiModel> by Delegates.observable(emptyList()) { _, old, new ->
+    var uiModels: List<ContentFeedUiModel> by Delegates.observable(emptyList()) { _, old, new ->
         autoNotify(
             old,
             new,
@@ -59,12 +59,12 @@ class CommonQuoteCastAdapter :
         )
     }
 
-    fun onUpdateItem(contentUiModel: ContentUiModel) {
+    fun onUpdateItem(contentUiModel: ContentFeedUiModel) {
         val indexItem = uiModels.indexOf(contentUiModel)
         notifyItemChanged(indexItem)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<ContentFeedUiModel>, position: Int) {
         holder.bindUiModel(uiModels[position])
     }
 
@@ -72,7 +72,10 @@ class CommonQuoteCastAdapter :
         return uiModels.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentUiModel> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewHolder<ContentFeedUiModel> {
         return when (viewType) {
             R.layout.layout_quote_template_image ->
                 FeedContentImageViewHolder.newInstance(parent, click)
@@ -99,20 +102,20 @@ class CommonQuoteCastAdapter :
 
     private fun optionalTypeShort(position: Int): Int {
         return when {
-            uiModels[position].payLoadUiModel.link.isNullOrEmpty()
-                && uiModels[position].payLoadUiModel.photo.imageContent.isNotEmpty() ->
+            uiModels[position].link == null
+                && uiModels[position].photo?.isNullOrEmpty() == false ->
                 R.layout.layout_feed_template_short_image
-            uiModels[position].payLoadUiModel.link.isNotEmpty() ->
+            uiModels[position].link != null ->
                 R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }
     }
 
     private fun getContentType(position: Int): String {
-        return uiModels[position].contentType
+        return uiModels[position].type
     }
 
-    abstract class ViewHolder<UiModel : ContentUiModel>(itemView: View) :
+    abstract class ViewHolder<UiModel : ContentFeedUiModel>(itemView: View) :
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
         lateinit var uiModel: UiModel

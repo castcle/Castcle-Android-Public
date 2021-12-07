@@ -2,6 +2,7 @@ package com.castcle.ui.common.dialog
 
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
 import com.castcle.common_model.model.signin.domain.RegisterWithSocialRequest
+import com.castcle.networking.api.response.SocialTokenResponse
 import com.castcle.networking.api.response.TokenResponse
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.*
@@ -39,5 +40,5 @@ abstract class NotiflyLoginDialogViewModel : BaseViewModel() {
 
     abstract fun authRegisterWithSocial(
         registerRequest: RegisterWithSocialRequest
-    ): Single<TokenResponse>
+    ): Single<SocialTokenResponse>
 }

@@ -72,17 +72,10 @@ class CommentRemoteMediator(
                     pageKeyDao.clearAll()
                     commentDao.deleteComment()
                 }
-                pageKeyDao.insertOrReplace(
-                    PageKey(
-                        data.firstOrNull()?.id.toString(),
-                        pagedResponse?.pagination?.next,
-                        pagedResponse?.pagination?.limit
-                    )
-                )
                 commentDao.insertAllComment(data)
             }
 
-            MediatorResult.Success(endOfPaginationReached = response.body()?.pagination?.next == null)
+            MediatorResult.Success(endOfPaginationReached = response.body()?.meta?.oldestId == null)
         } catch (e: Exception) {
             MediatorResult.Error(e)
         } catch (e: HttpException) {

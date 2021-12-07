@@ -37,5 +37,6 @@ data class MenuItem(
     @DrawableRes val icon: Int,
     @StringRes val menuName: Int,
     var menuDetail: String = "",
+    var disableActionIcon: Boolean = false,
     val menuType: SettingMenuType
 )

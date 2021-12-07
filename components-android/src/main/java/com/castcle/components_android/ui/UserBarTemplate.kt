@@ -4,14 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.LayoutQuoteBarTemplateBinding
 import com.castcle.android.components_android.databinding.LayoutUserBarTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.perfomer.blitz.setTimeAgo
+import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -43,19 +45,19 @@ class UserBarTemplate(
     attrs: AttributeSet
 ) : ConstraintLayout(context, attrs) {
 
-    val binding: LayoutUserBarTemplateBinding by lazy {
+    private val binding: LayoutUserBarTemplateBinding by lazy {
         LayoutUserBarTemplateBinding.inflate(
             LayoutInflater.from(context), this, true
         )
     }
 
-    val bindingQute: LayoutQuoteBarTemplateBinding by lazy {
+    private val bindingQute: LayoutQuoteBarTemplateBinding by lazy {
         LayoutQuoteBarTemplateBinding.inflate(
             LayoutInflater.from(context), this, true
         )
     }
 
-    private lateinit var itemUiModel: ContentUiModel
+    private lateinit var itemUiModel: ContentFeedUiModel
 
     private val _itemClick = BehaviorSubject.create<TemplateEventClick>()
     val itemClick: BehaviorSubject<TemplateEventClick>
@@ -63,14 +65,23 @@ class UserBarTemplate(
 
     init {
         binding.ivAvatar.subscribeOnClick {
-            _itemClick.onNext(
+            onBindItemClick(
                 TemplateEventClick.AvatarClick(
                     contentUiModel = itemUiModel
                 )
             )
-        }
+        }.addToDisposables()
+
+        binding.tvUserName.subscribeOnClick {
+            onBindItemClick(
+                TemplateEventClick.AvatarClick(
+                    contentUiModel = itemUiModel
+                )
+            )
+        }.addToDisposables()
+
         binding.ivOptional.subscribeOnClick {
-            _itemClick.onNext(
+            onBindItemClick(
                 TemplateEventClick.OptionalClick(
                     contentUiModel = itemUiModel
                 )
@@ -78,7 +89,7 @@ class UserBarTemplate(
         }.addToDisposables()
 
         binding.tvStatusFollow.subscribeOnClick {
-            _itemClick.onNext(
+            onBindItemClick(
                 TemplateEventClick.FollowingClick(
                     contentUiModel = itemUiModel
                 )
@@ -86,18 +97,33 @@ class UserBarTemplate(
         }.addToDisposables()
     }
 
-    fun bindUiModel(itemUiModel: ContentUiModel, onBindQuote: Boolean = false) {
+    private fun onBindItemClick(optionalClick: TemplateEventClick) {
+        _itemClick.onNext(optionalClick)
+    }
+
+    fun bindUiModel(itemUiModel: ContentFeedUiModel, onBindQuote: Boolean = false) {
         this.itemUiModel = itemUiModel
         if (!onBindQuote) {
             bindingQute.group.gone()
             with(binding) {
-                with(itemUiModel.payLoadUiModel) {
-                    ivAvatar.loadCircleImage(author.avatar)
-                    tvUserName.text = author.displayName
-                    with(tvStatusFollow) {
-                        visibleOrGone(!itemUiModel.payLoadUiModel.author.followed)
+                with(itemUiModel) {
+                    userContent.avatar.let {
+                        ivAvatar.loadCircleImage(it)
                     }
-                    created.toTime()?.let {
+                    tvUserName.text = userContent.displayName
+                    with(tvStatusFollow) {
+                        visibleOrGone(!itemUiModel.userContent.followed)
+                    }
+                    groupReCasted.visibleOrGone(
+                        referencedCastsId.isNotBlank() && referencedCastsType.isNotBlank()
+                    )
+
+                    if (referencedCastsId.isNotBlank()) {
+                        val youRecasted = mapRecasted(itemUiModel)
+                        tvReCasted.text = youRecasted
+                    }
+
+                    createdAt.toTime()?.let {
                         tvDataTime.setTimeAgo(it)
                     }
                 }
@@ -105,15 +131,50 @@ class UserBarTemplate(
         } else {
             binding.group.gone()
             with(bindingQute) {
-                with(itemUiModel.payLoadUiModel) {
-                    ivAvatar.loadCircleImage(author.avatar)
-                    tvUserName.text = author.displayName
+                with(itemUiModel) {
+                    userContent.avatar.let {
+                        ivAvatar.loadCircleImage(it)
+                    }
+                    tvUserName.text = userContent.displayName
                     ivStatusFollow.gone()
-                    created.toTime()?.let {
-                        tvDataTime.setTimeAgo(it)
+                    if (createdAt.isNotBlank()) {
+                        createdAt.toTime()?.let {
+                            tvDataTime.setTimeAgo(it)
+                        }
                     }
                 }
             }
         }
     }
+
+    private fun mapRecasted(itemUiModel: ContentFeedUiModel): String {
+        val recasted = if (itemUiModel.authorReference.size > LIMITE_RECASTED) {
+            val reCasted = if (itemUiModel.authorReference.contains(itemUiModel.isMindId)) {
+                binding.root.context.getString(R.string.feed_content_me_recasted)
+            } else {
+                itemUiModel.authorReference.first()
+            }
+            val youRecast = binding.root.context.getString(R.string.feed_content_template_recast)
+                .format(reCasted, itemUiModel.authorReference[2])
+            binding.root.context.getString(R.string.feed_content_you_recasted).format(
+                youRecast
+            )
+        } else {
+            if (itemUiModel.isMindId == itemUiModel.referencedCastsId) {
+                binding.root.context.getString(R.string.feed_content_me_recasted)
+            } else {
+                binding.root.context.getString(R.string.feed_content_you_recasted).format(
+                    itemUiModel.authorReference.first()
+                )
+            }
+        }
+
+        return recasted
+    }
+
+    private fun checkHasMeRecast() {
+
+    }
 }
+
+private const val LIMITE_RECASTED = 2

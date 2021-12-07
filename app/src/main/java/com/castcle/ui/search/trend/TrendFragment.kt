@@ -82,6 +82,7 @@ class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
             adapter = ContentTrendAdapter(this@TrendFragment).also {
                 contentTrendAdapter = it
             }
+            offscreenPageLimit = 2
         }
 
         TabLayoutMediator(

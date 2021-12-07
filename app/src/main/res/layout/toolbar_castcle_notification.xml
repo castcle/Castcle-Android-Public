@@ -53,7 +53,7 @@
         tools:text="3" />
 
     <TextView
-        style="@style/AppTextKanitLight.Small"
+        style="@style/AppTextKanitBold.Small"
         android:id="@+id/tvToolbarTitleAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

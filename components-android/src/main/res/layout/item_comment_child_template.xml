@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginBottom="@dimen/_8sdp"
-        app:civ_border_width="@dimen/_2sdp"
+        app:civ_border_width="@dimen/_1sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_avatar_placeholder" />

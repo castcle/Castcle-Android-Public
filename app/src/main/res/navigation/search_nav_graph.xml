@@ -84,6 +84,10 @@
             android:id="@+id/actionTrendFragmentToEditContentDialogFragment"
             app:destination="@id/editContentDialogFragment" />
 
+        <action
+            android:id="@+id/actionTrendFragmentToNotiflyLoginDialoginDialogFragment"
+            app:destination="@id/dialog_login_nav_graph" />
+
         <argument
             android:name="trendSlug"
             android:defaultValue=""
@@ -299,11 +303,13 @@
     <fragment
         android:id="@+id/createQuoteFragment"
         android:name="com.castcle.ui.createbloc.CreateQuoteFragment"
-        tools:layout="@layout/fragment_create_bloc">
+        tools:layout="@layout/fragment_create_quote">
+
+        <deepLink app:uri="castcle-dev://create-quote" />
 
         <argument
             android:name="contentUiModel"
-            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+            app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />
 
         <argument
             android:name="profileBundle"
@@ -435,6 +441,18 @@
             android:id="@+id/actionProfileFragmentToRecastDialogFragment"
             app:destination="@id/dialog_recast_nav_graph" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToCreatePostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToEditContentDialogFragment"
+            app:destination="@id/editContentDialogFragment" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
@@ -451,7 +469,7 @@
 
         <argument
             android:name="contentUiModel"
-            app:argType="com.castcle.common_model.model.feed.ContentUiModel" />
+            app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />
 
         <argument
             android:name="isContent"

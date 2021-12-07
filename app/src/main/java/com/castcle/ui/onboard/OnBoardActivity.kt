@@ -148,6 +148,9 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 },
                 onNavigateNotiflyLogin = {
                     onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+                },
+                onRefreshPosition = {
+                    viewModel.onRefreshPosition()
                 }
             )
             currentNavController = controller
@@ -196,6 +199,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.trendFragment,
                 R.id.createAccountFragment,
                 R.id.createAccountCompleteFragment,
+                R.id.settingProfileFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

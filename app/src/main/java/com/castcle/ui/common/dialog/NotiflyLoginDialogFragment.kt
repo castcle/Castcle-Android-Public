@@ -16,10 +16,9 @@ import com.castcle.android.databinding.DialogFragmentNotiflyLoginBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
-import com.castcle.common_model.model.signin.domain.RegisterWithSocialPayLoad
-import com.castcle.common_model.model.signin.domain.RegisterWithSocialRequest
+import com.castcle.common_model.model.signin.domain.*
 import com.castcle.extensions.openUri
-import com.castcle.networking.api.response.TokenResponse
+import com.castcle.networking.api.response.SocialTokenResponse
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.android.gms.auth.api.signin.*
@@ -130,7 +129,7 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
         ).addToDisposables()
     }
 
-    private fun handlerLoginResponse(it: TokenResponse) {
+    private fun handlerLoginResponse(it: SocialTokenResponse) {
         checkHasEmail(email)
         //When has email or user in system that be login and should Navigate to Feed and
     }
@@ -144,13 +143,21 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
                     this@NotiflyLoginDialogFragment.email = email ?: ""
                     authToken = idToken ?: ""
                     avatarImage = photoUrl?.toString() ?: ""
-                }
-                requestSocial = RegisterWithSocialRequest(
-                    provider = providerSocial,
-                    payload = RegisterWithSocialPayLoad(
-                        authToken = googleSignInAccount.idToken ?: ""
+
+                    requestSocial = RegisterWithSocialRequest(
+                        provider = providerSocial,
+                        payload = RegisterWithSocialPayLoad(
+                            authToken = idToken ?: "",
+                            socialUser = SocialUser(
+                                id = this.id ?: "",
+                                first_name = account?.name ?: "",
+                                username = displayName ?: "",
+                                email = email ?: "",
+                                photo_url = photoUrl?.toString() ?: ""
+                            )
+                        )
                     )
-                )
+                }
             },
             onFaceBook = {
                 requestSocial = RegisterWithSocialRequest(
@@ -294,7 +301,7 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
     }
 }
 
-private const val STATIC_LINK_USER_AGREEMENT =
+const val STATIC_LINK_USER_AGREEMENT =
     "https://documents.castcle.com/terms-of-service.html"
 const val STATIC_LINK_PRIVACY_POLICY =
     "https://documents.castcle.com/privacy-policy.html"
@@ -302,7 +309,7 @@ const val STATIC_LINK_JOIN_US =
     "https://jobs.blognone.com/company/castcle"
 private const val STATIC_LINK_DOCS =
     "https://docs.castcle.com/"
-private const val STATIC_LINK_ABOUT_US =
+const val STATIC_LINK_ABOUT_US =
     "https://documents.castcle.com/about-us.html"
 const val STATIC_LINK_MENIFESTO =
     "https://docs.castcle.com/"

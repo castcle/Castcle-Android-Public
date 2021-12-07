@@ -61,9 +61,8 @@
         <item name="android:background">@drawable/bg_onboard_greeting</item>
     </style>
 
-    <style name="CastcleToolBar">
+    <style name="CastcleToolBar" parent="AppTextKanit.Regular">
         <item name="android:textColor">@color/blue</item>
-        <item name="android:textSize">@dimen/_16ssp</item>
     </style>
 
     <style name="ContentTabStyle" parent="Widget.Design.TabLayout">
@@ -72,6 +71,17 @@
         <item name="tabSelectedTextColor">@color/blue</item>
         <item name="tabIndicatorColor">@color/blue</item>
         <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabMode">fixed</item>
+        <item name="android:background">@color/black_nero</item>
+    </style>
+
+    <style name="ContentTrendingTabStyle" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/AppTheme.TextStyle</item>
+        <item name="tabTextColor">@color/gray</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabMode">fixed</item>
         <item name="android:background">@color/black_nero</item>
     </style>
 
@@ -80,7 +90,7 @@
         <item name="tabTextColor">@color/white</item>
         <item name="tabSelectedTextColor">@color/blue</item>
         <item name="tabIndicatorColor">@color/transparent</item>
-        <item name="android:background">@color/black_nero</item>
+        <item name="android:background">@color/black_light</item>
     </style>
 
     <style name="ContentToolBarStyle" parent="Widget.MaterialComponents.Toolbar.Surface">
@@ -93,7 +103,7 @@
     </style>
 
     <style name="AppTheme.TextStyle" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="textAllCaps">true</item>
     </style>
 
@@ -106,6 +116,7 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/castcle_logo_splash</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/white</item>
         <item name="postSplashScreenTheme">@style/Theme.Castcle</item>
     </style>
 </resources>

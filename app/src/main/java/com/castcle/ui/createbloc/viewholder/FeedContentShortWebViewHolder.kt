@@ -1,8 +1,8 @@
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import com.castcle.android.components_android.databinding.*
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.android.components_android.databinding.LayoutFeedTemplateQuoteShortWebBinding
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
@@ -39,7 +39,7 @@ import com.workfort.linkpreview.util.LinkParser
 class FeedContentQuteShortWebViewHolder(
     val binding: LayoutFeedTemplateQuoteShortWebBinding,
     private val click: (Click) -> Unit
-) : CommonQuoteCastAdapter.ViewHolder<ContentUiModel>(binding.root) {
+) : CommonQuoteCastAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -89,12 +89,19 @@ class FeedContentQuteShortWebViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.FollowingClick -> {
+                click.invoke(
+                    FeedItemClick.FeedFollowingClick(
+                        it.contentUiModel
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
-    override fun bindUiModel(uiModel: ContentUiModel) {
+    override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
 
         with(binding) {
@@ -103,14 +110,14 @@ class FeedContentQuteShortWebViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel.payLoadUiModel) {
+            with(uiModel) {
                 ubUser.bindUiModel(uiModel, true)
-                tvFeedContent.text = contentMessage
+                tvFeedContent.appendLinkText(message)
 
                 if (!clPreviewIconContent.clInPreviewIconContent.isVisible
                     && !clPreviewContent.clInPreviewContent.isVisible
                 ) {
-                    link.firstOrNull()?.let {
+                    link?.let {
                         LinkParser(it.url, object : ParserCallback {
                             override fun onData(linkData: LinkData) {
                                 if (linkData.imageUrl.isNullOrBlank()) {
@@ -150,7 +157,6 @@ class FeedContentQuteShortWebViewHolder(
             clInPreviewContent.visible()
             with(linkUiModel) {
                 ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
-                tvPreviewUrl.text = url
                 tvPreviewHeader.text = title
                 tvPreviewContent.text = description
             }

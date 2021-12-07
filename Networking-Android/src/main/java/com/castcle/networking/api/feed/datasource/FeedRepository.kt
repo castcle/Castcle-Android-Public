@@ -36,15 +36,11 @@ interface FeedRepository {
 
     suspend fun getFeed(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
-    ): Flow<PagingData<ContentUiModel>>
+    ): Flow<PagingData<ContentFeedUiModel>>
 
     suspend fun getFeedGuests(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentFeedUiModel>>
-
-    suspend fun getCommented(
-        commentRequest: CommentRequest
-    ): Flow<PagingData<ContentUiModel>>
 
     fun getCommentedPaging(
         commentRequest: CommentRequest
@@ -52,7 +48,7 @@ interface FeedRepository {
 
     suspend fun getTrend(
         feedRequestHeader: FeedRequestHeader
-    ): Flow<PagingData<ContentUiModel>>
+    ): Flow<PagingData<ContentFeedUiModel>>
 
     fun createComment(
         commentRequest: ReplyCommentRequest
@@ -68,11 +64,11 @@ interface FeedRepository {
 
     fun recastContentPost(
         recastRequest: RecastRequest
-    ): Single<ContentUiModel>
+    ): Completable
 
     fun quoteCastContentPost(
         recastRequest: RecastRequest
-    ): Single<ContentUiModel>
+    ): Completable
 
     fun likeComment(
         likeCommentRequest: LikeCommentRequest,

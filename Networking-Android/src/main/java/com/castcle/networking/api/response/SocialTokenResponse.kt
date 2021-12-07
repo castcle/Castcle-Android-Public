@@ -1,5 +1,6 @@
-package com.castcle.common_model.model.feed.api.response
+package com.castcle.networking.api.response
 
+import com.castcle.common_model.model.signin.domain.RegisterWithSocialPayLoad
 import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -24,28 +25,11 @@ import com.google.gson.annotations.SerializedName
 //  or have any questions.
 //
 //
-//  Created by sklim on 4/10/2021 AD at 11:50.
+//  Created by sklim on 29/11/2021 AD at 09:36.
 
-data class ContentCommentedResponse(
+data class SocialTokenResponse(
+    @SerializedName("provider")
+    val provider: String = "",
     @SerializedName("payload")
-    val payload: CommentedDataResponse
-)
-
-data class CommentedDataResponse(
-    @SerializedName("author")
-    val author: Author,
-    @SerializedName("createdAt")
-    val createdAt: String,
-    @SerializedName("hasHistory")
-    val hasHistory: Boolean? = null,
-    @SerializedName("id")
-    val id: String,
-    @SerializedName("like")
-    val like: LikedResponse,
-    @SerializedName("message")
-    val message: String,
-    @SerializedName("reply")
-    val reply: List<ReplyResponse>,
-    @SerializedName("updatedAt")
-    val updateAt: String
+    val payload: RegisterWithSocialPayLoad = RegisterWithSocialPayLoad()
 )

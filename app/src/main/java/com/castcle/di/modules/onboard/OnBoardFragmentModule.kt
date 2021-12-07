@@ -22,7 +22,6 @@ import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.createbloc.CreateQuoteFragment
 import com.castcle.ui.createpost.CreatePostFragment
 import com.castcle.ui.feed.FeedFragment
-import com.castcle.ui.feed.FeedMockFragment
 import com.castcle.ui.feed.feeddetail.FeedDetailFragment
 import com.castcle.ui.forgotpassword.searchaccount.SearchAccountFragment
 import com.castcle.ui.forgotpassword.verifyotp.VerifyOtpFragment
@@ -50,7 +49,7 @@ import com.castcle.ui.setting.notification.page.ProfileNotificationFragment
 import com.castcle.ui.setting.notification.profile.PageNotificationFragment
 import com.castcle.ui.setting.notification.system.SystemNotificationFragment
 import com.castcle.ui.setting.page.GreetingPageFragment
-import com.castcle.ui.setting.profile.SettingProfileFragment
+import com.castcle.ui.setting.account.SettingProfileFragment
 import com.castcle.ui.signin.aboutyou.AboutYouFragment
 import com.castcle.ui.signin.aboutyou.addlink.AddLinksFragment
 import com.castcle.ui.signin.createaccount.CreateAccountFragment
@@ -96,10 +95,6 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [FeedFragmentViewModelModule::class])
     fun feedFragment(): FeedFragment
-
-    @FragmentScope
-    @ContributesAndroidInjector(modules = [FeedFragmentViewModelModule::class])
-    fun feedMockFragment(): FeedMockFragment
 
     @FragmentScope
     @ContributesAndroidInjector(modules = [NotiflyLoginDialogFragmentModule::class])

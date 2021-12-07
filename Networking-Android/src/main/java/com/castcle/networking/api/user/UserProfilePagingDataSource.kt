@@ -1,11 +1,9 @@
 package com.castcle.networking.api.user
 
-import android.net.Uri
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.FeedRequestHeader
-import com.castcle.common_model.model.feed.api.response.toProfileContentUiModel
+import com.castcle.common_model.model.feed.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -34,29 +32,42 @@ import com.castcle.common_model.model.feed.api.response.toProfileContentUiModel
 class UserProfilePagingDataSource(
     private val userApi: UserApi,
     private val contentRequestHeader: FeedRequestHeader
-) : PagingSource<Int, ContentUiModel>() {
+) : PagingSource<Int, ContentFeedUiModel>() {
 
+    private var nextPage: Int = 0
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentUiModel> {
+    private var oldestId: String = ""
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContentFeedUiModel> {
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
             val response = userApi.getUserProfileContent(
                 pageNumber = pageNumber,
                 pageSize = pageSize,
+                unitId = contentRequestHeader.oldestId,
                 filterType = contentRequestHeader.type
             )
+
+            nextPage = pageNumber
+            oldestId = contentRequestHeader.oldestId
+
             val pagedResponse = response.body()
-            val data = pagedResponse?.payload?.toProfileContentUiModel()
+            val data =
+                pagedResponse?.let { mapToContentFeedUiMode(contentRequestHeader.isMeId, it) }
             var nextPageNumber: Int? = null
-            if (pagedResponse?.pagination?.next != null) {
-                val uri = Uri.parse(pagedResponse.pagination.next.toString())
-                val nextPageQuery = uri.getQueryParameter("page")
-                nextPageNumber = nextPageQuery?.toInt()
+
+            if (pagedResponse?.meta?.oldestId != null &&
+                pagedResponse.meta.oldestId.isNotBlank() &&
+                pagedResponse.meta.oldestId != oldestId
+            ) {
+                contentRequestHeader.oldestId = pagedResponse.meta.oldestId
+                nextPageNumber = nextPage.plus(1)
             }
+            Log.d("NEXT-PAGE", "$nextPageNumber")
 
             LoadResult.Page(
-                data = data?.feedContentUiModel.orEmpty(),
+                data = data.orEmpty(),
                 prevKey = null,
                 nextKey = nextPageNumber
             )
@@ -65,7 +76,12 @@ class UserProfilePagingDataSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, ContentUiModel>): Int = 1
+    override fun getRefreshKey(state: PagingState<Int, ContentFeedUiModel>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
+    }
 }
 
 const val PROFILE_TYPE_ME = "me"

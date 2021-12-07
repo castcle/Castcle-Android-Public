@@ -43,19 +43,21 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clProfileContent"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/_160sdp"
             android:layout_marginTop="@dimen/_24sdp"
             android:background="@drawable/bg_round_corner_profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
 
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivEditProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:background="@color/transparent"
@@ -73,7 +75,7 @@
             android:layout_marginStart="@dimen/_12sdp"
             android:src="@drawable/ic_avatar_placeholder"
             app:civ_border="@color/white"
-            app:civ_border_width="2dp"
+            app:civ_border_width="@dimen/_1sdp"
             app:layout_constraintBaseline_toTopOf="@id/clProfileContent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -81,8 +83,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivAddAvatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
             app:layout_constraintCircle="@id/ivAvatarProfile"
             app:layout_constraintCircleAngle="140"
             app:layout_constraintCircleRadius="@dimen/_35sdp"
@@ -90,7 +92,7 @@
             tools:ignore="MissingConstraints" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanit.Medium"
+            style="@style/AppTextKanit.Small"
             android:id="@+id/tvProfileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,27 +104,26 @@
             tools:text="Kasidej Daengdej" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Small"
+            style="@style/AppTextKanitLight.xSmall"
             android:id="@+id/tvProfileCastcleId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/light"
+            android:textColor="@color/gray_light"
             app:layout_constraintStart_toStartOf="@id/tvProfileName"
             app:layout_constraintTop_toBottomOf="@id/tvProfileName"
             tools:text="\@Kasidej Daengdej" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            style="@style/AppTextKanitLight.Small"
+            style="@style/AppTextKanitLight.xSmall"
             android:id="@+id/tvProfileOverView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_12sdp"
             android:layout_marginEnd="@dimen/_12sdp"
-            android:lineSpacingExtra="@dimen/_2sdp"
             android:maxLines="3"
             android:textAlignment="center"
             android:textColor="@color/light"
+            app:layout_constraintBottom_toTopOf="@id/lcFollowBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvProfileCastcleId"
@@ -135,6 +136,7 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:gravity="center"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/btViewProfile"
             app:layout_constraintStart_toStartOf="@id/tvProfileOverView"
             app:layout_constraintTop_toBottomOf="@id/tvProfileOverView">
 
@@ -157,7 +159,7 @@
                 android:lineSpacingExtra="@dimen/_2sdp"
                 android:text="@string/profile_following"
                 android:textAlignment="center"
-                android:textColor="@color/light" />
+                android:textColor="@color/gray_light" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/AppTextKanitLight.Default"
@@ -179,13 +181,14 @@
                 android:lineSpacingExtra="@dimen/_2sdp"
                 android:text="@string/profile_followers"
                 android:textAlignment="center"
-                android:textColor="@color/light" />
+                android:textColor="@color/gray_light" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatButton
+            style="@style/AppTextKanit.Small"
             android:id="@+id/btViewProfile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_26sdp"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_12sdp"
             android:background="@drawable/bg_border_blue"
@@ -194,8 +197,7 @@
             android:textColor="@color/blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvProfileOverView"
-            app:layout_constraintStart_toStartOf="@id/tvProfileOverView"
-            app:layout_constraintTop_toBottomOf="@id/lcFollowBar" />
+            app:layout_constraintStart_toStartOf="@id/tvProfileOverView" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,30 +28,49 @@ import com.castcle.common_model.model.feed.api.response.*
 
 data class CommentedModel(
     val contentUiModel: List<ContentUiModel>,
-    val paginationModel: PaginationModel
+    val metaData: MetaData
 )
 
 fun ContentCommentResponse.toCommentModel(): CommentedModel {
     return CommentedModel(
         contentUiModel = payload.toCommentedModel(),
-        paginationModel = pagination.toPaginationModel()
+        metaData = meta.toMetaData()
     )
 }
 
-fun List<CommentedDataResponse>.toCommentedModel(): List<ContentUiModel> {
+fun Meta.toMetaData(): MetaData {
+    return MetaData(
+        newestId = newestId,
+        oldestId = oldestId,
+        resultCount = resultCount
+    )
+}
+
+fun List<CommentedPayload>.toCommentedModel(): List<ContentUiModel> {
     return map { it.toContentUiModel() }
 }
 
-fun CommentedDataResponse.toContentUiModel(): ContentUiModel {
+fun CommentedPayload.toContentUiModel(): ContentUiModel {
     return ContentUiModel(
         id = id,
         payLoadUiModel = PayLoadUiModel(
-            created = createdAt,
+            created = created,
             contentMessage = message,
             hasHistory = hasHistory ?: false,
             author = author.toAuthorUiModel(),
-            replyUiModel = reply.toReplyUiModelList()
+            replyUiModel = reply?.map {
+                it.toReplyComment()
+            } ?: emptyList()
         )
+    )
+}
+
+fun CommentedPayload.toReplyComment(): ReplyUiModel {
+    return ReplyUiModel(
+        id = id,
+        created = created,
+        message = message,
+        author = author.toAuthorUiModel()
     )
 }
 

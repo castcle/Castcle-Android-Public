@@ -2,17 +2,18 @@ package com.castcle.ui.feed.feeddetail
 
 import android.annotation.SuppressLint
 import android.view.*
+import android.widget.EditText
+import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
-import com.castcle.android.databinding.FragmentFeedDetailBinding
-import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
+import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.ReplyCommentRequest
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.setting.PageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
@@ -55,7 +56,7 @@ import javax.inject.Inject
 class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentFeedDetailBinding>,
-    ToolbarBindingInflater<ToolbarCastcleGreetingBinding> {
+    ToolbarBindingInflater<ToolbarCastcleLanguageBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
@@ -73,7 +74,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private var onReplyComment: Boolean = false
 
-    private val contentUiModel: ContentUiModel
+    private val contentUiModel: ContentFeedUiModel
         get() = feedFetaailArgs.contentUiModel
 
     private val isContent: Boolean
@@ -86,12 +87,12 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     private var commentLikeStatus: Boolean = false
 
     override val toolbarBindingInflater:
-            (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleGreetingBinding
+            (LayoutInflater, ViewGroup?, Boolean) -> ToolbarCastcleLanguageBinding
         get() = { inflater, container, attachToRoot ->
-            ToolbarCastcleGreetingBinding.inflate(inflater, container, attachToRoot)
+            ToolbarCastcleLanguageBinding.inflate(inflater, container, attachToRoot)
         }
-    override val toolbarBinding: ToolbarCastcleGreetingBinding
-        get() = toolbarViewBinding as ToolbarCastcleGreetingBinding
+    override val toolbarBinding: ToolbarCastcleLanguageBinding
+        get() = toolbarViewBinding as ToolbarCastcleLanguageBinding
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> FragmentFeedDetailBinding
@@ -106,7 +107,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             .get(FeedDetailFragmentViewModel::class.java)
 
     override fun initViewModel() {
-        viewModel.fetachCommentedPage(contentUiModel.payLoadUiModel.contentId)
+        viewModel.fetachCommentedPage(contentUiModel.contentId)
 
         viewModel.fetchUserProfile()
     }
@@ -127,6 +128,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun setupView() {
         setupToolBar()
         onBindCommentStatus()
@@ -151,14 +153,12 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
                 }
             })
         }
-
-        onBindStartComment()
     }
 
-    private fun onBindStartComment() {
+    private fun onBindStartComment(showCommentState: Boolean = false) {
         with(binding.itemComment) {
-            groupOnReply.gone()
-            groupReply.visible()
+            groupOnReply.visibleOrGone(!showCommentState)
+            groupReply.visibleOrGone(showCommentState)
             etInputMessage.requestFocus()
             requireContext().showSoftKeyboard(etInputMessage)
         }
@@ -169,17 +169,17 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             tvLiked.text = localizedResources.getString(
                 R.string.comment_footer_retweets
             ).format(
-                contentUiModel.payLoadUiModel.commentedUiModel.count
+                contentUiModel.recastCount
             )
             tvCommented.text = localizedResources.getString(
                 R.string.comment_footer_quote
             ).format(
-                contentUiModel.payLoadUiModel.reCastedUiModel.count
+                contentUiModel.commentCount + contentUiModel.quoteCount
             )
             tvReCasted.text = localizedResources.getString(
                 R.string.comment_footer_liked
             ).format(
-                contentUiModel.payLoadUiModel.likedUiModel.count
+                contentUiModel.likeCount
             )
         }
     }
@@ -194,8 +194,10 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
-            tvToolbarTitle.text = contentUiModel.payLoadUiModel.author.displayName
+            ivToolbarProfileButton.invisible()
+            tvToolbarTitle.text = localizedResources.getString(R.string.feed_detail_post_of).format(
+                contentUiModel.userContent.displayName
+            )
             tvToolbarTitle.setTextColor(
                 requireContext().getColorResource(
                     R.color.white
@@ -217,18 +219,14 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     override fun bindViewEvents() {
         with(binding.itemComment) {
             tvTitle.text = localizedResources.getString(R.string.comment_title).format(
-                contentUiModel.payLoadUiModel.author.displayName
+                contentUiModel.userContent.displayName
             )
             clItemComment.subscribeOnClick {
                 replyState = !replyState
-                groupOnReply.visibleOrGone(!replyState)
-                groupReply.visibleOrGone(replyState)
-                if (replyState) {
-                    etInputMessage.requestFocus()
-                }
+                onBindStartComment(replyState)
             }.addToDisposables()
 
-            bvSentReply.subscribeOnClick {
+            bvSentComment.subscribeOnClick {
                 onSentReplyComment()
             }.addToDisposables()
         }
@@ -262,7 +260,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
                 commentLikeStatus = item.contentUiModel.payLoadUiModel.likedUiModel.liked
 
                 onLikedComment(
-                    contentId = contentUiModel.payLoadUiModel.contentId,
+                    contentId = contentUiModel.contentId,
                     commentId = item.contentUiModel.id,
                     item.contentUiModel.payLoadUiModel.likedUiModel.liked
                 )
@@ -297,7 +295,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     }
 
     private fun handlerReplyClickItem(it: CommentItemClick.CommentReplyClick) {
-        onBindStartComment()
+        onBindStartComment(true)
         with(binding.itemComment) {
             val castcleId = it.contentUiModel.payLoadUiModel.author.castcleId
             commentId = it.contentUiModel.id
@@ -314,7 +312,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     private fun getReplyCommentRequest(): ReplyCommentRequest {
         return ReplyCommentRequest(
             message = binding.itemComment.etInputMessage.text.toString(),
-            contentId = contentUiModel.payLoadUiModel.contentId,
+            contentId = contentUiModel.contentId,
             commentId = commentId,
             authorId = userProfile.castcleId
         )

@@ -17,6 +17,7 @@ import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.*
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
@@ -77,12 +78,19 @@ fun ImageView.loadIconImage(
 
 fun ImageView.loadRoundedCornersImageUri(
     url: String,
+    thumbnailUrl: String,
     @Px roundRadius: Int = context.resources.getDimensionPixelSize(R.dimen.default_round_radius)
 ) {
     Glide.with(context)
         .load(url.toUri())
-        .error(R.drawable.ic_img_placeholder)
+        .thumbnail(
+            Glide.with(context)
+                .load(thumbnailUrl)
+                .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
+        ).thumbnail(1f)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .error(R.drawable.ic_img_placeholder)
         .into(this)
 }
 
@@ -96,7 +104,9 @@ fun ImageView.loadGranularRoundedCornersImage(
 ) {
     Glide.with(context)
         .load(url)
+        .diskCacheStrategy(DiskCacheStrategy.DATA)
         .error(R.drawable.ic_img_placeholder)
+        .transition(DrawableTransitionOptions.withCrossFade())
         .apply(
             RequestOptions().transform(
                 CenterCrop(), GranularRoundedCorners(
@@ -121,11 +131,14 @@ fun ImageView.loadGranularRoundedCornersContentImage(
 ) {
     Glide.with(context)
         .load(url)
+        .diskCacheStrategy(DiskCacheStrategy.DATA)
         .thumbnail(
             Glide.with(context)
                 .load(thumbnailUrl)
-        ).circleCrop()
+        ).thumbnail(0.05f)
+        .circleCrop()
         .error(R.drawable.ic_img_placeholder)
+        .transition(DrawableTransitionOptions.withCrossFade())
         .apply(
             RequestOptions().transform(
                 CenterCrop(), GranularRoundedCorners(

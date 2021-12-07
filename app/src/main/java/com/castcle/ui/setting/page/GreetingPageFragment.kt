@@ -9,6 +9,7 @@ import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.domain.RegisterBundle
 import com.castcle.extensions.gone
+import com.castcle.extensions.invisible
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
@@ -72,7 +73,7 @@ class GreetingPageFragment : BaseFragment<GreetingPageFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             ivToolbarLogoButton
                 .subscribeOnClick {
                     findNavController().navigateUp()

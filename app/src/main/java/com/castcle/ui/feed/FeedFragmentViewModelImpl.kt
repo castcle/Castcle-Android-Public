@@ -5,10 +5,8 @@ import android.content.Context
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.castcle.android.R
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.api.response.FeedResponse
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.setting.PageHeaderUiModel
@@ -17,12 +15,10 @@ import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.ModeType
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.ui.util.SingleLiveEvent
-import com.castcle.usecase.feed.DeleteContentCompletableUseCase
-import com.castcle.usecase.feed.LikeContentCompletableUseCase
+import com.castcle.usecase.feed.*
 import com.castcle.usecase.search.GetTopTrendsSingleUseCase
 import com.castcle.usecase.setting.GetCachePageDataCompletableUseCase
 import com.castcle.usecase.userprofile.*
-import com.google.gson.Gson
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
@@ -31,8 +27,6 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.json.JSONObject
-import java.io.InputStream
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -68,7 +62,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase,
     private val checkCastUpLoadingFlowableCase: CheckCastUpLoadingFlowableCase,
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
-    private val deleteContentCompletableUseCase: DeleteContentCompletableUseCase
+    private val deleteContentCompletableUseCase: DeleteContentCompletableUseCase,
+    private val recastContentSingleUseCase: RecastContentCompletableUseCase,
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -86,8 +81,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override val userProfile: LiveData<User>
         get() = _userProfile
 
-    private lateinit var _feedUiMode: Flow<PagingData<ContentUiModel>>
-    override val feedContentPage: Flow<PagingData<ContentUiModel>>
+    private lateinit var _feedUiMode: Flow<PagingData<ContentFeedUiModel>>
+    override val feedContentPage: Flow<PagingData<ContentFeedUiModel>>
         get() = _feedUiMode
 
     override val isGuestMode: Boolean
@@ -111,15 +106,14 @@ class FeedFragmentViewModelImpl @Inject constructor(
 
     init {
         if (isGuestMode) {
-//            getAllFeedGustsContent(_queryFeedRequest)
-            getAllFeedContent(_queryFeedRequest)
+            getAllFeedGustsContent(_queryFeedRequest)
         } else {
             getAllFeedContent(_queryFeedRequest)
         }
     }
 
-    private val _feedContentMock = MutableLiveData<List<ContentUiModel>>()
-    override val feedContentMock: LiveData<List<ContentUiModel>>
+    private val _feedContentMock = MutableLiveData<List<ContentFeedUiModel>>()
+    override val feedContentMock: LiveData<List<ContentFeedUiModel>>
         get() = _feedContentMock
 
     override fun setDefaultFeedRequestHeader() {
@@ -188,6 +182,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
             feedNonAuthRepository.getFeedGuests(feedRequest).cachedIn(viewModelScope)
         }, {
             _showLoading.onNext(false)
+            _feedUiMode = it
         })
 
     private var _onUpdateContentLike = BehaviorSubject.create<Unit>()
@@ -270,30 +265,14 @@ class FeedFragmentViewModelImpl @Inject constructor(
         )
     }
 
-    override fun getFeedResponseMock() {
-        val mockData = Gson().fromJson(
-            JSONObject(readJSONFromAsset() ?: "").toString(),
-            FeedResponse::class.java
-        ).payload.toContentFeedUiModel()
+    override fun recastContent(contentUiModel: ContentFeedUiModel): Completable {
+        val castcleId = _userProfile.value?.castcleId ?: ""
 
-        setFeedContent(mockData.feedContentUiModel)
-    }
-
-    private fun setFeedContent(feedContent: List<ContentUiModel>) {
-        _feedContentMock.value = feedContent
-    }
-
-    private fun readJSONFromAsset(): String? {
-        val json: String?
-        try {
-            val inputStream: InputStream? = appContext.resources?.openRawResource(
-                R.raw.feed_mock
-            )
-            json = inputStream?.bufferedReader().use { it?.readText() }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
+        val recastRequest = RecastRequest(
+            reCasted = contentUiModel.recasted,
+            contentId = contentUiModel.contentId,
+            authorId = castcleId
+        )
+        return recastContentSingleUseCase.execute(recastRequest)
     }
 }

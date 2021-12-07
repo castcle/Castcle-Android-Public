@@ -130,7 +130,7 @@ fun dynamicPhotoType(photo: JsonElement?): PhotoUiModel {
 
 @Parcelize
 data class ContentUiModel(
-    val id: String = "",
+    var id: String = "",
     val featureSlug: String = "",
     val circleSlug: String = "",
     val contentType: String = "",
@@ -166,7 +166,7 @@ fun FeedViewContentResponse.toViewContentUiModel(): ContentUiModel {
 
 @Parcelize
 data class PayLoadUiModel(
-    val contentId: String = "",
+    var contentId: String = "",
     val contentType: String = "",
     val headerFeed: String? = "",
     val contentFeed: String = "",
@@ -181,7 +181,7 @@ data class PayLoadUiModel(
     val reCastedUiModel: RecastedUiModel = RecastedUiModel(),
     val author: AuthorUiModel = AuthorUiModel(),
     val featureContent: FeatureUiModel? = null,
-    var replyUiModel: List<ReplyUiModel>? = null,
+    var replyUiModel: List<ReplyUiModel>? = emptyList(),
     val replyedUiModel: ReplyUiModel? = null
 ) : Parcelable
 

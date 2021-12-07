@@ -1,8 +1,6 @@
 package com.castcle.common_model.model.feed.api.response
 
-import com.castcle.common_model.model.feed.*
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -30,8 +28,25 @@ import java.util.*
 
 data class ContentCommentResponse(
     @SerializedName("payload")
-    val payload: List<CommentedDataResponse>,
+    val payload: List<CommentedPayload>,
 
-    @SerializedName("pagination")
-    val pagination: Pagination
+    @SerializedName("meta")
+    val meta: Meta
+)
+
+data class ContentCommentedResponse(
+    @SerializedName("payload")
+    val payload: CommentedPayload
+)
+
+data class CommentedPayload(
+    @SerializedName("id") var id: String,
+    @SerializedName("message") var message: String,
+    @SerializedName("author") var author: Author,
+    @SerializedName("hasHistory") var hasHistory: Boolean? = false,
+    @SerializedName("metrics") var metrics: Metrics? = Metrics(),
+    @SerializedName("participate") var participate: Participate,
+    @SerializedName("reply") val reply: List<CommentedPayload>? = emptyList(),
+    @SerializedName("createdAt") var created: String,
+    @SerializedName("updatedAt") var updated: String,
 )

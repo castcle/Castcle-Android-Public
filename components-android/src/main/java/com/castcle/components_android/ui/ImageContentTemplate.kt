@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.databinding.LayoutImageContentTemplateBinding
 import com.castcle.common_model.model.feed.ContentFeedUiModel
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.adapter.ImageTemplateFloxBoxAdapter
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
@@ -70,7 +69,7 @@ class ImageContentTemplate(
         fbLayoutManager.alignItems = AlignItems.FLEX_START
     }
 
-    fun bindImageContent(itemUiModel: ContentUiModel, onMargin: Boolean = false) {
+    fun bindImageContent(itemUiModel: ContentFeedUiModel, onMargin: Boolean = false) {
         with(binding) {
             if (onMargin) {
                 rcImageContentOnMargin.visible()
@@ -86,11 +85,13 @@ class ImageContentTemplate(
                 }
             }
         }
-        var listImage = itemUiModel.payLoadUiModel.photo.imageContent
-        if (listImage.size > LIMNIT_MAX_IMAGE) {
-            listImage = listImage.take(LIMNIT_MAX_IMAGE)
+        var listImage = itemUiModel.photo
+        if (listImage?.isNotEmpty() == true) {
+            if (listImage.size > LIMNIT_MAX_IMAGE) {
+                listImage = listImage.take(LIMNIT_MAX_IMAGE)
+            }
         }
-        adapterImageTemplate.items = listImage
+        adapterImageTemplate.items = listImage ?: emptyList()
         adapterImageTemplate.baseContentUiModel = itemUiModel
         adapterImageTemplate.imageItemClick.subscribe {
             _imageItemClick.onNext(it)

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
 import com.castcle.data.staticmodel.ContentType.*
 import com.castcle.ui.common.events.*
@@ -40,7 +40,7 @@ import kotlin.properties.Delegates
 //
 //  Created by sklim on 24/8/2021 AD at 15:04.
 
-class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<ContentUiModel>>(),
+class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<ContentFeedUiModel>>(),
     DiffUpdateAdapter,
     ItemClickable<Click> by ItemClickableImpl() {
 
@@ -48,7 +48,7 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
         notifyItemClick(it)
     }
 
-    var uiModels: List<ContentUiModel> by Delegates.observable(emptyList()) { _, old, new ->
+    var uiModels: List<ContentFeedUiModel> by Delegates.observable(emptyList()) { _, old, new ->
         autoNotify(
             old,
             new,
@@ -57,21 +57,20 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
     }
 
     fun onUpdateItemCommentedCount() {
-        uiModels[0].apply {
-            payLoadUiModel.commentedUiModel.commented = true
-            payLoadUiModel.commentedUiModel.count = payLoadUiModel.commentedUiModel.count.plus(1)
-        }
-        notifyItemChanged(0)
-    }
-
-    fun onUpdateRecastItem(contentUiModel: ContentUiModel) {
-        val indexItem = uiModels.indexOf(contentUiModel)
-        uiModels[indexItem].payLoadUiModel.reCastedUiModel.recasted =
-            !uiModels[indexItem].payLoadUiModel.reCastedUiModel.recasted
+        val indexItem = 0
+        uiModels[indexItem].commented = true
+        uiModels[indexItem].commentCount = uiModels[indexItem].commentCount.plus(1)
         notifyItemChanged(indexItem)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<ContentUiModel>, position: Int) {
+    fun onUpdateRecastItem(contentUiModel: ContentFeedUiModel) {
+        val indexItem = uiModels.indexOf(contentUiModel)
+        uiModels[indexItem].recasted = !uiModels[indexItem].recasted
+        uiModels[indexItem].recastCount = uiModels[indexItem].recastCount.plus(1)
+        notifyItemChanged(indexItem)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder<ContentFeedUiModel>, position: Int) {
         holder.bindUiModel(uiModels[position])
     }
 
@@ -79,7 +78,10 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
         return uiModels.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<ContentUiModel> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewHolder<ContentFeedUiModel> {
         return when (viewType) {
             R.layout.layout_feed_template_image ->
                 FeedContentImageMockViewHolder.newInstance(parent, click)
@@ -101,10 +103,10 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
     }
 
     private fun getContentType(position: Int): String {
-        return uiModels[position].contentType
+        return uiModels[position].type
     }
 
-    abstract class ViewHolder<UiModel : ContentUiModel>(itemView: View) :
+    abstract class ViewHolder<UiModel : ContentFeedUiModel>(itemView: View) :
         RecyclerView.ViewHolder(itemView), LayoutContainer {
 
         lateinit var uiModel: UiModel

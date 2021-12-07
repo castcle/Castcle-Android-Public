@@ -200,6 +200,13 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         binding.tvWhitepaper.subscribeOnClick {
             openWebView(STATIC_LINK_WHITEPAPER)
         }.addToDisposables()
+
+        binding.tvTermsService.subscribeOnClick {
+            openWebView(STATIC_LINK_USER_AGREEMENT)
+        }.addToDisposables()
+        binding.tvPrivacyPolicy.subscribeOnClick {
+            openWebView(STATIC_LINK_PRIVACY_POLICY)
+        }.addToDisposables()
     }
 
     private fun openWebView(url: String) {

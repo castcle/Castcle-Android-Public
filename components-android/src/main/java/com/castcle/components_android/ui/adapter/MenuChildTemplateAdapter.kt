@@ -73,6 +73,10 @@ class MenuChildTemplateAdapter(
                 } else {
                     ivMenu.gone()
                 }
+                if(item.disableActionIcon){
+                    ivAction.gone()
+                }
+
                 tvHeader.setText(item.menuName)
                 if (item.menuDetail.isNotBlank()) {
                     tvDetail.visible()

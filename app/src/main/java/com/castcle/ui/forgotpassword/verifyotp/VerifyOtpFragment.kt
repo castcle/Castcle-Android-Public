@@ -12,8 +12,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.engagement.domain.*
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.VerificationUiModel
-import com.castcle.extensions.gone
-import com.castcle.extensions.visibleOrGone
+import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -89,7 +88,7 @@ class VerifyOtpFragment : BaseFragment<VerifyOtpFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            tvToolbarTitleAction.gone()
+            tvToolbarTitleAction.invisible()
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {

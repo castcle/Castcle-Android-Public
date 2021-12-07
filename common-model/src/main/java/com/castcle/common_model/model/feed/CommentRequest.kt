@@ -33,5 +33,11 @@ data class CommentRequest(
     val feedItemId: String = "",
     @SerializedName("castcleId")
     val authorId: String = "",
-    val paginationModel: PaginationModel = PaginationModel()
+    var metaData: MetaData = MetaData()
+)
+
+data class MetaData(
+    val newestId: String? = null,// ใส่ param untilId เพื่อขอ content ถัดไป (load more)
+    val oldestId: String? = null,// ใส่ param sinceId เพื่อขอ content ล่าสุด
+    val resultCount: Int = 0 //5..100 default 25
 )
