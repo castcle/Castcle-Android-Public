@@ -2,7 +2,7 @@ package com.castcle.data.model.dao.user
 
 import androidx.room.*
 import com.castcle.common_model.model.userprofile.User
-import com.castcle.data.model.dao.BaseDao
+import com.castcle.common_model.model.BaseDao
 import io.reactivex.Single
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

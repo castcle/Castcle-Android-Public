@@ -128,14 +128,10 @@ class FeedContentShortWebViewHolder(
                 tvFeedContent.appendLinkText(message)
                 ftFooter.bindUiModel(uiModel)
 
-                if (link == null) {
-                    clPreviewIconContent.clInPreviewIconContent.gone()
-                    clPreviewContent.clInPreviewContent.gone()
-                }
                 link?.let {
                     LinkParser(it.url, object : ParserCallback {
                         override fun onData(linkData: LinkData) {
-                            if (linkData.imageUrl.isNullOrBlank()) {
+                            if (it.imagePreview.isBlank() && linkData.imageUrl?.isBlank() == true) {
                                 onBindContentIconWeb(linkData)
                             } else {
                                 onBindContentImageWeb(linkData, uiModel.link)

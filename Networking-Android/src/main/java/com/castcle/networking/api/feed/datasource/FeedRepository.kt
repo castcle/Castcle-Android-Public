@@ -38,6 +38,10 @@ interface FeedRepository {
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentFeedUiModel>>
 
+    suspend fun getFeedRemoteMediator(
+        feedRequestHeader: MutableStateFlow<FeedRequestHeader>
+    ): Flow<PagingData<ContentFeedUiModel>>
+
     suspend fun getFeedGuests(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentFeedUiModel>>

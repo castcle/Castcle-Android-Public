@@ -1,7 +1,8 @@
 package com.castcle.di.component
 
+import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
 import com.castcle.data.model.dao.feed.CommentDao
-import com.castcle.data.model.dao.feed.PageKeyDao
+import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.CastcleDataBase
@@ -57,5 +58,11 @@ class DaoModule {
     @Singleton
     internal fun pageKeyDao(db: CastcleDataBase): PageKeyDao {
         return db.pageKeyDao()
+    }
+
+    @Provides
+    @Singleton
+    internal fun feedCacheDao(db: CastcleDataBase): FeedCacheDao {
+        return db.feedCacheDao()
     }
 }

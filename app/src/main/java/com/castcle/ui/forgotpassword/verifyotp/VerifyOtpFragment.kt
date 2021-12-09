@@ -111,12 +111,12 @@ class VerifyOtpFragment : BaseFragment<VerifyOtpFragmentViewModel>(),
             }
 
             tvWarningAccount.subscribeOnClick {
-                navigateToVerifyOtpFragment()
+                resentRequestOtp()
             }.addToDisposables()
         }
     }
 
-    private fun navigateToVerifyOtpFragment() {
+    private fun resentRequestOtp() {
         startCountDown()
         val otpBundle = profileBundle as ProfileBundle.ProfileOtp
         viewModel.input.requestOtpWithEmail(otpBundle.email)
@@ -184,7 +184,6 @@ class VerifyOtpFragment : BaseFragment<VerifyOtpFragmentViewModel>(),
                 R.string.verify_otp_warning_re_sent
             ).format(timeCount.toInt())
             if (timeCount.toInt() == 0) {
-                viewModel.countDownTimerLiveData.stop()
                 enableResentNewOtp(true)
             }
         }

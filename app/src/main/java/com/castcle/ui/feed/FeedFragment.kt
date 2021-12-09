@@ -6,6 +6,8 @@ import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentFeedBinding
 import com.castcle.common.lib.extension.subscribeOnClick
@@ -31,7 +33,7 @@ import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -84,10 +86,15 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
             rcFeedFillter.visibleOrGone(!viewModel.isGuestMode)
             ivFilter.visibleOrGone(!viewModel.isGuestMode)
+            val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
+                override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                    return true
+                }
+            }
             rvFeedContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
             }
-            rvFeedContent.itemAnimator = null
+            rvFeedContent.itemAnimator = itemAnimator
 
             with(rcFeedFillter) {
                 adapter = adapterFilterAdapter
@@ -139,27 +146,31 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(viewModel) {
             viewLifecycleOwner.lifecycleScope.launch {
                 feedContentPage.collectLatest {
-                    adapterPagingCommon.submitData(it)
+                    adapterPagingCommon.submitData(lifecycle,it)
                 }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
-                val refresher = loadStates.refresh
-                val isError = loadStates.refresh is LoadState.Error
-                val isLoading = loadStates.refresh is LoadState.Loading
-                val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                if (isError) {
-                    handleEmptyState(isError)
-                    stopLoadingShimmer()
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapterPagingCommon.loadStateFlow
+                .distinctUntilChangedBy {
+                    it.refresh
+                }.filter { it.refresh is LoadState.NotLoading }
+                .collectLatest { loadStates ->
+                    val refresher = loadStates.refresh
+                    val isError = loadStates.refresh is LoadState.Error
+                    val isLoading = loadStates.refresh is LoadState.Loading
+                    val displayEmpty = (refresher is LoadState.NotLoading &&
+                        !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                    if (isError) {
+                        handleEmptyState(isError)
+                        stopLoadingShimmer()
+                    }
+                    if (!isLoading) {
+                        binding.swiperefresh.isRefreshing = false
+                        stopLoadingShimmer()
+                    }
                 }
-                if (!isLoading) {
-                    binding.swiperefresh.isRefreshing = false
-                    stopLoadingShimmer()
-                }
-            }
         }
 
         with(binding.empState) {

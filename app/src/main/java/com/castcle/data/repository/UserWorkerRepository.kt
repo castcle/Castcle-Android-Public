@@ -45,8 +45,6 @@ import javax.inject.Inject
 interface UserWorkerRepository {
     val currentUser: Flowable<User>
 
-    fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User>
-
     val currentCachedUser: Flowable<Optional<User>>
 
     fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
@@ -75,20 +73,6 @@ class UserWorkerRepositoryImpl @Inject constructor(
 
     override val currentCachedUser: Flowable<Optional<User>>
         get() = getCachedUserProfile()
-
-    override fun getViewProfileYou(viewProfileRequest: ViewProfileRequest): Flowable<User> {
-        val idRequest = if (viewProfileRequest.castcleId.isNotBlank()) {
-            viewProfileRequest.castcleId
-        } else {
-            viewProfileRequest.uuid
-        }
-        return userApi.getUserViewProfileId(idRequest)
-            .map(userProfileMapper)
-            .map { it.toUserProfile() }
-            .doOnSubscribe { _isLoadingUser = true }
-            .doFinally { _isLoadingUser = false }
-            .toFlowable()
-    }
 
     override fun uppdateUserProfile(userUpdateRequest: UserUpdateRequest): Completable {
         return userApi.updateUserProfile(userUpdateRequest)

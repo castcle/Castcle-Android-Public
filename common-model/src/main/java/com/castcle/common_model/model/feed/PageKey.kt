@@ -35,5 +35,7 @@ data class PageKey(
     @ColumnInfo(name = "nextPage")
     val nextPage: Int?,
     @ColumnInfo(name = "pageSize")
-    val pageSize: Int?
+    val pageSize: Int?,
+    @ColumnInfo(name = "unitId")
+    val unitId: String?
 )

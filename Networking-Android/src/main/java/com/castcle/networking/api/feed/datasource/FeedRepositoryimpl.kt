@@ -3,11 +3,12 @@ package com.castcle.networking.api.feed.datasource
 import androidx.paging.*
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.*
+import com.castcle.common_model.model.feed.domain.dao.*
 import com.castcle.networking.api.feed.FeedApi
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -35,8 +36,11 @@ import javax.inject.Inject
 //
 //  Created by sklim on 24/8/2021 AD at 16:46.
 
+@ExperimentalCoroutinesApi
 class FeedRepositoryImpl @Inject constructor(
     private val feedApi: FeedApi,
+    private val feedCacheDao: FeedCacheDao,
+    private val pageKeyDao: PageKeyDao
 ) : FeedRepository {
 
     @ExperimentalCoroutinesApi
@@ -53,6 +57,33 @@ class FeedRepositoryImpl @Inject constructor(
                     FeedPagingDataSource(feedApi, it)
                 }
             ).flow
+        }
+    }
+
+    @ExperimentalPagingApi
+    override suspend fun getFeedRemoteMediator(
+        feedRequestHeader: MutableStateFlow<FeedRequestHeader>
+    ): Flow<PagingData<ContentFeedUiModel>> {
+        return feedRequestHeader.flatMapLatest { it ->
+            Pager(
+                config = PagingConfig(
+                    pageSize = DEFAULT_PAGE_SIZE,
+                    prefetchDistance = DEFAULT_PREFETCH,
+                    enablePlaceholders = true
+                ),
+                remoteMediator = FeedRemoteMediator(
+                    feedApi,
+                    pageKeyDao,
+                    feedCacheDao,
+                    it
+                )
+            ) {
+                feedCacheDao.pagingSource()
+            }.flow.map { pagingData ->
+                pagingData.map {
+                    it.toContentFeedUiModel()
+                }
+            }
         }
     }
 
@@ -194,6 +225,6 @@ class FeedRepositoryImpl @Inject constructor(
 }
 
 const val DEFAULT_PAGE_SIZE = 25
-const val DEFAULT_PREFETCH = 3
+const val DEFAULT_PREFETCH = 1
 private const val LIKE_STATUS_LIKE = "liked"
 private const val LIKE_STATUS_UNLIKE = "unliked"

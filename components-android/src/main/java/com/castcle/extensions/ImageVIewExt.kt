@@ -90,7 +90,7 @@ fun ImageView.loadRoundedCornersImageUri(
         ).thumbnail(1f)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
         .transition(DrawableTransitionOptions.withCrossFade())
-        .error(R.drawable.ic_img_placeholder)
+        .placeholder(R.drawable.ic_img_placeholder)
         .into(this)
 }
 
@@ -104,7 +104,7 @@ fun ImageView.loadGranularRoundedCornersImage(
 ) {
     Glide.with(context)
         .load(url)
-        .diskCacheStrategy(DiskCacheStrategy.DATA)
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
         .error(R.drawable.ic_img_placeholder)
         .transition(DrawableTransitionOptions.withCrossFade())
         .apply(

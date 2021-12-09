@@ -158,9 +158,12 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
     private fun optionalTypeShort(position: Int): Int {
         return when {
             getItem(position)?.link == null &&
-                getItem(position)?.photo?.isNullOrEmpty() == false ->
+                getItem(position)?.photo?.isNotEmpty() == true ->
                 R.layout.layout_feed_template_short_image
-            getItem(position)?.link != null ->
+            getItem(position)?.link?.url.isNullOrBlank() &&
+                getItem(position)?.photo?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            getItem(position)?.link?.url?.isNotBlank() == true ->
                 R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }
@@ -193,7 +196,7 @@ object ContentUiModelPagedListDiffCallBack : DiffUtil.ItemCallback<ContentFeedUi
         oldItem: ContentFeedUiModel,
         newItem: ContentFeedUiModel
     ): Boolean {
-        return (oldItem.createdAt == newItem.createdAt)
+        return (oldItem.id == newItem.id)
     }
 
     override fun areContentsTheSame(

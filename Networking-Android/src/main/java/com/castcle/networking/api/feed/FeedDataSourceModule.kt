@@ -1,9 +1,12 @@
 package com.castcle.networking.api.feed
 
+import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
+import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.networking.api.feed.datasource.FeedRepositoryImpl
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.Retrofit
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -39,8 +42,15 @@ class FeedNonAuthenticationDataSourceModule {
         return retrofit.create(FeedApi::class.java)
     }
 
+    @ExperimentalCoroutinesApi
     @Provides
     fun feedRepositoryNonAuth(
-        feedApi: FeedApi
-    ): FeedRepository = FeedRepositoryImpl(feedApi)
+        feedApi: FeedApi,
+        feedCacheDao: FeedCacheDao,
+        pageKeyDao: PageKeyDao,
+    ): FeedRepository = FeedRepositoryImpl(
+        feedApi,
+        feedCacheDao,
+        pageKeyDao
+    )
 }

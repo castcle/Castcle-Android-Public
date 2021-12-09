@@ -3,7 +3,7 @@ package com.castcle.data.model.dao.feed
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.castcle.common_model.model.feed.ContentDbModel
-import com.castcle.data.model.dao.BaseDao
+import com.castcle.common_model.model.BaseDao
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

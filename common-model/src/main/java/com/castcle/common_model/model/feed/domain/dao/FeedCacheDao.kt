@@ -1,8 +1,8 @@
-package com.castcle.data.model.dao.feed
+package com.castcle.common_model.model.feed.domain.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
-import com.castcle.common_model.model.feed.PageKey
-import com.castcle.data.model.dao.BaseDao
+import com.castcle.common_model.model.BaseDao
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -26,17 +26,29 @@ import com.castcle.data.model.dao.BaseDao
 //  or have any questions.
 //
 //
-//  Created by sklim on 6/10/2021 AD at 10:45.
-
+//  Created by sklim on 5/10/2021 AD at 18:14.
 @Dao
-interface PageKeyDao : BaseDao<PageKey> {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrReplace(pageKey: PageKey)
+interface FeedCacheDao : BaseDao<FeedCacheModel> {
+
+    @Query("SELECT * FROM feedcache")
+    fun pagingSource(): PagingSource<Int, FeedCacheModel>
 
     @Transaction
-    @Query("SELECT * FROM pageKey WHERE id LIKE :id")
-    fun getNextPageKey(id: Int): PageKey?
+    fun insertAllComment(comment: List<FeedCacheModel>) {
+        insertAll(comment)
+    }
 
-    @Query("DELETE FROM pageKey")
-    suspend fun clearAll()
+    @Query("DELETE FROM feedcache")
+    fun deleteComment()
+
+    @Transaction
+    suspend fun insertComment(feedcache: FeedCacheModel) {
+        insert(feedcache)
+    }
+
+    @Transaction
+    fun refresh(feedcache: FeedCacheModel) {
+        deleteComment()
+        insert(feedcache)
+    }
 }

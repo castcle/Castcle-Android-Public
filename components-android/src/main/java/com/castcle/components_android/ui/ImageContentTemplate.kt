@@ -62,26 +62,36 @@ class ImageContentTemplate(
         )
 
     init {
-        fbLayoutManager.flexWrap = FlexWrap.WRAP
-        fbLayoutManager.flexDirection = FlexDirection.ROW
-        fbLayoutManager.justifyContent = JustifyContent.SPACE_AROUND
-        fbLayoutManager.justifyContent = JustifyContent.SPACE_BETWEEN
-        fbLayoutManager.alignItems = AlignItems.FLEX_START
+        with(fbLayoutManager) {
+            flexWrap = FlexWrap.WRAP
+            flexDirection = FlexDirection.ROW
+            justifyContent = JustifyContent.SPACE_AROUND
+            justifyContent = JustifyContent.SPACE_BETWEEN
+            alignItems = AlignItems.FLEX_START
+        }
     }
 
     fun bindImageContent(itemUiModel: ContentFeedUiModel, onMargin: Boolean = false) {
         with(binding) {
             if (onMargin) {
-                rcImageContentOnMargin.visible()
                 rcImageContent.gone()
-                rcImageContentOnMargin.layoutManager = fbLayoutManager
-                rcImageContentOnMargin.adapter = ImageTemplateFloxBoxAdapter().also {
-                    adapterImageTemplate = it
+                with(rcImageContentOnMargin) {
+                    visible()
+                    itemAnimator = null
+                    layoutManager = fbLayoutManager
+                    adapter = ImageTemplateFloxBoxAdapter().also {
+                        adapterImageTemplate = it
+                    }
                 }
             } else {
-                rcImageContent.layoutManager = fbLayoutManager
-                rcImageContent.adapter = ImageTemplateFloxBoxAdapter().also {
-                    adapterImageTemplate = it
+                rcImageContentOnMargin.gone()
+                with(rcImageContent) {
+                    visible()
+                    itemAnimator = null
+                    layoutManager = fbLayoutManager
+                    adapter = ImageTemplateFloxBoxAdapter().also {
+                        adapterImageTemplate = it
+                    }
                 }
             }
         }

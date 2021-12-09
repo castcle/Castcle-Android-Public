@@ -8,7 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
-import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.feed.FeedRequestHeader
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.FeedContentType
@@ -26,6 +27,7 @@ import com.castcle.ui.search.trend.TrendFragmentViewModel
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -99,25 +101,6 @@ class PeopleFragment : BaseFragment<TrendFragmentViewModel>(),
             }
         }
         binding.rvContent.itemAnimator = null
-
-        lifecycleScope.launchWhenCreated {
-            adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
-                val refresher = loadStates.refresh
-                val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                val isError = loadStates.refresh is LoadState.Error
-                val isLoading = loadStates.refresh is LoadState.Loading
-                if (isError) {
-                    handleEmptyState(isError)
-                }
-                if (!isLoading) {
-                    stopLoadingShimmer()
-                    activityViewModel.onProfileLoading(false)
-                } else {
-                    startLoadingShimmer()
-                }
-            }
-        }
     }
 
     private fun startLoadingShimmer() {
@@ -191,18 +174,18 @@ class PeopleFragment : BaseFragment<TrendFragmentViewModel>(),
     private fun handleNavigateAvatarClick(contentUiModel: ContentFeedUiModel) {
         var isMe = false
         val deeplinkType = if (contentUiModel.userContent.castcleId ==
-            activityViewModel.userRefeshProfile.blockingFirst()?.castcleId ?: ""
+            activityViewModel.castcleId
         ) {
             isMe = true
             ProfileType.PROFILE_TYPE_ME.type
         } else {
             contentUiModel.userContent.type
         }
-        navigateToProfile(contentUiModel.userContent.castcleId, deeplinkType,isMe)
+        navigateToProfile(contentUiModel.userContent.castcleId, deeplinkType, isMe)
     }
 
     private fun navigateToProfile(castcleId: String, profileType: String, isMe: Boolean) {
-        onBoardNavigator.navigateToProfileFragment(castcleId, profileType,isMe)
+        onBoardNavigator.navigateToProfileFragment(castcleId, profileType, isMe)
     }
 
     private fun handleLikeClick(contentUiModel: ContentFeedUiModel) {
@@ -323,9 +306,7 @@ class PeopleFragment : BaseFragment<TrendFragmentViewModel>(),
                 handleContentClick(it)
             }.addToDisposables()
         }
-    }
 
-    override fun bindViewModel() {
         with(viewModel) {
             launchOnLifecycleScope {
                 feedTrendResponse.collectLatest {
@@ -333,5 +314,27 @@ class PeopleFragment : BaseFragment<TrendFragmentViewModel>(),
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
+                val refresher = loadStates.refresh
+                val displayEmpty = (refresher is LoadState.NotLoading &&
+                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                val isError = loadStates.refresh is LoadState.Error
+                val isLoading = loadStates.refresh is LoadState.Loading
+                if (isError) {
+                    handleEmptyState(isError)
+                }
+                if (!isLoading) {
+                    stopLoadingShimmer()
+                    activityViewModel.onProfileLoading(false)
+                } else {
+                    startLoadingShimmer()
+                }
+            }
+        }
+    }
+
+    override fun bindViewModel() {
     }
 }

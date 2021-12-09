@@ -62,10 +62,10 @@ class UserViewProfilePagingDataSource(
             var nextPageNumber: Int? = null
 
             if (pagedResponse?.meta?.oldestId != null &&
-                pagedResponse.meta.oldestId.isNotBlank() &&
+                pagedResponse.meta.oldestId?.isNotBlank() == true &&
                 pagedResponse.meta.oldestId != oldestId
             ) {
-                feedRequestHeader.oldestId = pagedResponse.meta.oldestId
+                feedRequestHeader.oldestId = pagedResponse.meta.oldestId ?: ""
                 nextPageNumber = nextPage.plus(1)
             }
             Log.d("NEXT-PAGE", "$nextPageNumber")

@@ -17,14 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_img_placeholder" />
 
-    <com.castcle.components_android.ui.ImageContentTemplate
-        android:id="@+id/icImageContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanitLight.Small"
         android:id="@+id/tvPreviewHeader"

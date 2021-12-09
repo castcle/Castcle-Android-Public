@@ -3,7 +3,7 @@ package com.castcle.data.repository
 import androidx.paging.*
 import com.castcle.common_model.model.feed.*
 import com.castcle.data.model.dao.feed.CommentDao
-import com.castcle.data.model.dao.feed.PageKeyDao
+import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.networking.api.feed.CommentApi
 import retrofit2.HttpException
 
@@ -52,7 +52,7 @@ class CommentRemoteMediator(
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()
                     val remoteKey: PageKey? = if (lastItem?.id != null) {
-                        pageKeyDao.getNextPageKey(lastItem.id.toInt())
+                        pageKeyDao.getNextPageKey(lastItem.id)
                     } else {
                         null
                     }

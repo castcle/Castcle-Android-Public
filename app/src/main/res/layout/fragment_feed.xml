@@ -38,8 +38,8 @@
             android:id="@+id/clFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@color/black_nero">
+            android:background="@color/black_nero"
+            android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcFeedFillter"
@@ -110,10 +110,10 @@
                     android:id="@+id/rvFeedContent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:animateLayoutChanges="false"
                     android:clipToPadding="false"
                     android:orientation="vertical"
                     android:paddingBottom="60dp"
-                    android:animateLayoutChanges="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_constraintBottom_toBottomOf="parent"

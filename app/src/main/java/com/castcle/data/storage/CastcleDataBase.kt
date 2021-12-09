@@ -4,10 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.castcle.common_model.model.feed.ContentDbModel
 import com.castcle.common_model.model.feed.PageKey
+import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
+import com.castcle.common_model.model.feed.domain.dao.FeedCacheModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.data.model.dao.feed.CommentDao
-import com.castcle.data.model.dao.feed.PageKeyDao
+import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 
@@ -39,14 +41,16 @@ import com.castcle.data.model.dao.user.UserPageDao
         User::class,
         ContentDbModel::class,
         PageKey::class,
-        UserPage::class
-    ], version = 4
+        UserPage::class,
+        FeedCacheModel::class
+    ], version = 5
 )
 abstract class CastcleDataBase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun userPageDao(): UserPageDao
     abstract fun commentDao(): CommentDao
     abstract fun pageKeyDao(): PageKeyDao
+    abstract fun feedCacheDao(): FeedCacheDao
 }
 
 const val DATABASE_NAME = "Castcle Database"

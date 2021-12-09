@@ -41,7 +41,7 @@ fun ContentCommentResponse.toCommentModel(): CommentedModel {
 fun Meta.toMetaData(): MetaData {
     return MetaData(
         newestId = newestId,
-        oldestId = oldestId,
+        oldestId = oldestId ?: "",
         resultCount = resultCount
     )
 }

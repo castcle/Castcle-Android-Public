@@ -1,7 +1,7 @@
 package com.castcle.networking.api.user
 
-import com.castcle.common_model.model.feed.api.response.*
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.DeletePagePayload
+import com.castcle.common_model.model.userprofile.DeleteUserPayload
 import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
@@ -49,7 +49,7 @@ interface UserApi {
         @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<PayLoadList>
+    ): Response<UserContentResponse>
 
     @GET("users/{castcleId}/contents")
     suspend fun getUserViewProfileContent(
@@ -58,7 +58,7 @@ interface UserApi {
         @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<PayLoadList>
+    ): Response<UserContentResponse>
 
     @PUT("users/me")
     fun updateUserProfile(
@@ -106,7 +106,7 @@ interface UserApi {
         @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
-    ): Response<PayLoadList>
+    ): Response<UserContentResponse>
 
     @GET("/users/me/pages")
     fun getUserPage(

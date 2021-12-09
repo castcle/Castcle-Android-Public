@@ -25,8 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -170,10 +169,10 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
         launchPagingAsync({
             _showLoading.onNext(true)
-            feedNonAuthRepository.getFeed(feedRequest).cachedIn(viewModelScope)
+            feedNonAuthRepository.getFeedRemoteMediator(feedRequest).cachedIn(viewModelScope)
         }, {
             _showLoading.onNext(false)
-            _feedUiMode = it
+            _feedUiMode = it.distinctUntilChanged().cachedIn(viewModelScope)
         })
 
     override fun getAllFeedGustsContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =

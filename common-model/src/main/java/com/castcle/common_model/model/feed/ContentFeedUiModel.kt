@@ -2,6 +2,8 @@ package com.castcle.common_model.model.feed
 
 import android.os.Parcelable
 import com.castcle.common_model.model.feed.api.response.*
+import com.castcle.common_model.model.userprofile.domain.UserContentItemResponse
+import com.castcle.common_model.model.userprofile.domain.UserContentResponse
 import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -201,6 +203,82 @@ fun IncludesResponse.toAuthorContent(authorId: String): UserContent? {
             verifiedMobile = it.verified.mobile ?: false,
             verifiedEmail = it.verified.email ?: false
         )
+    }
+}
+
+fun mapToContentFeedUiMode(
+    isMindId: String? = "",
+    payLoadList: UserContentResponse
+): List<ContentFeedUiModel> {
+    val contentList = mutableListOf<ContentFeedUiModel>()
+    val contentMain = payLoadList.payload.map {
+        mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
+    }
+    val contentMainRef = contentMain.map {
+        Pair(it.id, it.userContent.castcleId)
+    }
+
+    val contentReference = payLoadList.includes?.casts?.map {
+        mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
+    }?.onEach { contentRef ->
+        contentMainRef.filter {
+            it.first == contentRef.id
+        }.let { it ->
+            contentRef.authorReference = it.map {
+                it.second
+            }
+        }
+    } ?: emptyList()
+
+    contentList.apply {
+        addAll(contentMain)
+        addAll(contentReference)
+    }
+
+    return contentList
+}
+
+fun UserContentItemResponse.toContentFeedUiModel(): ContentFeedUiModel {
+    return ContentFeedUiModel(
+        id = id ?: "",
+        contentId = id ?: "",
+        authorId = authorId,
+        message = message,
+        type = type,
+        createdAt = created,
+        updatedAt = updated,
+        photo = photo?.contents?.map {
+            it.toImageContentUiModel()
+        },
+        referencedCastsId = referencedCasts?.id ?: "",
+        referencedCastsType = referencedCasts?.type ?: "",
+        link = links?.firstOrNull()?.toLinkUiModel(),
+        liked = participate?.liked ?: false,
+        likeCount = metrics?.likeCount ?: 0,
+        commented = participate?.liked ?: false,
+        commentCount = metrics?.commentCount ?: 0,
+        recasted = participate?.liked ?: false,
+        recastCount = metrics?.recastCount ?: 0,
+        quoted = participate?.liked ?: false,
+        quoteCount = metrics?.quoteCount ?: 0,
+    )
+}
+
+fun mapContentFeedUiModelReference(
+    isMindId: String?,
+    payload: UserContentItemResponse,
+    includes: IncludesResponse?
+): ContentFeedUiModel {
+    return payload.toContentFeedUiModel().apply {
+        this.isMindId = isMindId ?: ""
+        userContent =
+            includes?.toAuthorContent(this.authorId) ?: UserContent()
+        if (referencedCastsType.isNotBlank()) {
+            type = referencedCastsType
+            if (referencedCastsType == QUOTECAST_TYPE) {
+                contentQuoteCast = mapContentRefQuote(id, includes)
+            }
+        }
     }
 }
 

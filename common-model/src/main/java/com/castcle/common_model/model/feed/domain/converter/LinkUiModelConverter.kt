@@ -1,6 +1,10 @@
-package com.castcle.data.model.dao
+package com.castcle.common_model.model.feed.domain.converter
 
-import androidx.room.*
+import androidx.room.TypeConverter
+import com.castcle.common_model.model.feed.LinkUiModel
+import com.castcle.common_model.model.feed.UserContent
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -24,22 +28,19 @@ import androidx.room.*
 //  or have any questions.
 //
 //
-//  Created by sklim on 31/8/2021 AD at 17:02.
+//  Created by sklim on 6/10/2021 AD at 09:40.
 
-interface BaseDao<T> {
+class LinkUiModelConverter {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(item: T)
+    private val jsonType = object : TypeToken<LinkUiModel>() {}.type
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(items: List<T>)
+    @TypeConverter
+    fun toLinkUiModel(children: String): LinkUiModel {
+        return Gson().fromJson(children, jsonType)
+    }
 
-    @Update
-    fun update(item: T)
-
-    @Update
-    fun updateAll(items: List<T>)
-
-    @Delete
-    fun delete(item: T)
+    @TypeConverter
+    fun fromLinkUiModel(children: LinkUiModel): String {
+        return Gson().toJson(children, jsonType)
+    }
 }

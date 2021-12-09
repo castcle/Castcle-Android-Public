@@ -49,7 +49,7 @@ data class Meta(
     @SerializedName("newestId")
     val newestId: String,// ใส่ param untilId เพื่อขอ content ถัดไป (load more)
     @SerializedName("oldestId")
-    val oldestId: String,// ใส่ param sinceId เพื่อขอ content ล่าสุด
+    val oldestId: String? = null,// ใส่ param sinceId เพื่อขอ content ล่าสุด
     @SerializedName("resultCount")
     val resultCount: Int //5..100 default 25
 )
