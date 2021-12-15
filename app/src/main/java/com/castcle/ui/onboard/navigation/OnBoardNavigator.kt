@@ -116,7 +116,7 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToCropAvatarImage(mediaFile: MediaFile)
 
-    fun navigateToProfileChooseDialogFragment()
+    fun navigateToProfileChooseDialogFragment(isAccount: Boolean = false)
 
     fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle)
 
@@ -130,7 +130,10 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToCreateAccountFragment(registerBundle: RegisterBundle)
 
-    fun navigateToCreatePostFragment(createPostBundle: CreatePostBundle, isFromProfile: Boolean = false)
+    fun navigateToCreatePostFragment(
+        createPostBundle: CreatePostBundle,
+        isFromProfile: Boolean = false
+    )
 
     fun navigateToEditContentDialogFragment()
 }

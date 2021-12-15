@@ -67,6 +67,40 @@ class CommentedAdapter : RecyclerView.Adapter<CommentedAdapter.ViewHolder<Conten
         }
     }
 
+    fun onUpdateReplyLiked(commentedId: String, replyId: String) {
+        val updateLiked = uiModels
+        var index = 0
+        updateLiked.find {
+            it?.id == commentedId
+        }?.apply {
+            payLoadUiModel.replyUiModel?.find {
+                id == replyId
+            }?.let {
+                it.likedUiModel.liked = true
+                it.likedUiModel.count = it.likedUiModel.count.plus(1)
+            }
+        }
+        uiModels = updateLiked
+        notifyItemChanged(index)
+    }
+
+    fun onUpdateReplyUnLiked(commentedId: String, replyId: String) {
+        val updateLiked = uiModels
+        var index = 0
+        updateLiked.find {
+            it?.id == commentedId
+        }?.apply {
+            payLoadUiModel.replyUiModel?.find {
+                id == replyId
+            }?.let {
+                it.likedUiModel.liked = false
+                it.likedUiModel.count = abs(it.likedUiModel.count.minus(1))
+            }
+        }
+        uiModels = updateLiked
+        notifyItemChanged(index)
+    }
+
     fun onUpdateLiked(commentedId: String) {
         val updateLiked = uiModels
         var index = 0

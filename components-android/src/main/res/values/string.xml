@@ -250,4 +250,5 @@ account</string>
     <string name="feed_content_template_recast">%s and %d …</string>
     <string name="feed_content_following_status">you follow %s Success</string>
     <string name="profile_edit_page">Edit Page</string>
+    <string name="dialog_fragement_profile_delete_account">Delete account</string>
 </resources>

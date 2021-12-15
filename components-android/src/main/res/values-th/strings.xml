@@ -183,7 +183,7 @@
     <string name="dialog_fragement_profile_edit_delete">Delete page</string>
     <string name="dialog_fragement_profile_edit_share">Share</string>
     <string name="delete_page_fragment_title">Delete page</string>
-    <string name="delete_page_fragment_description">การลบเพจไม่สามารถยกเลิกได้</string>
+    <string name="delete_page_fragment_description">การลบบัญชีไม่สามารถยกเลิกได้</string>
     <string name="delete_page_fragment_description_on_delete_page">Confirm that this is your Page</string>
     <string name="delete_page_fragment_sub_description">เมื่อคุณลบเพจ คุณจะไม่สามารถเรียกกลับคืนมาได้</string>
     <string name="delete_page_fragment_warning">แน่ใจหรือไม่ว่าคุณต้องการลบ</string>
@@ -193,7 +193,7 @@
     <string name="complete_message_delete_account">ระบบได้ลบบัญชีของคุณทิ้งโดยถาวรแล้ว</string>
     <string name="delete_page_fragment_title_confirm">Confirm Delete Account</string>
     <string name="delete_page_fragment_title_confirm_page">Confirm Delete Page</string>
-    <string name="delete_page_fragment_description_page">Deleting the page can\'t cancel</string>
+    <string name="delete_page_fragment_description_page">Deleting the Account can\'t cancel</string>
     <string name="delete_page_fragment_title_on_delete">Confirm that this is your Account</string>
     <string name="delete_page_fragment_title_on_delete_page">Confirm that this is your Page</string>
     <string name="delete_page_fragment_description_on_delete">Before you permanently delete your Account,

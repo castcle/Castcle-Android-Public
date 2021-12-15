@@ -73,6 +73,8 @@ data class Images(
 data class ImageResponse(
     @SerializedName("original")
     val original: String? = null,
+    @SerializedName("medium")
+    val medium: String? = null,
     @SerializedName("large")
     val large: String? = null,
     @SerializedName("fullHd")

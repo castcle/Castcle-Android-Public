@@ -1,10 +1,17 @@
 package com.castcle.ui.setting.account
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.setting.SettingMenuUiModel
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.staticmodel.StaticSeetingMenu
 import com.castcle.data.storage.AppPreferences
+import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -32,8 +39,30 @@ import javax.inject.Inject
 //  Created by sklim on 30/9/2021 AD at 12:30.
 
 class SettingProfileViewModelImpl @Inject constructor(
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
 ) : SettingProfileViewModel() {
+
+    private val _error = PublishSubject.create<Throwable>()
+
+    private val _userCachePage = MutableLiveData<User>()
+    override val userCachePage: LiveData<User>
+        get() = _userCachePage
+
+    override fun fetchUserProfile(): Completable =
+        cachedUserProfileSingleUseCase
+            .execute(Unit)
+            .firstOrError()
+            .doOnSuccess { user ->
+                onBindCacheUserprofile(user)
+            }.doOnError(_error::onNext)
+            .ignoreElement()
+
+    private fun onBindCacheUserprofile(user: Optional<User>) {
+        if (user.isPresent) {
+            _userCachePage.value = user.get()
+        }
+    }
 
     override fun getProfileSettingMenu(): Observable<List<SettingMenuUiModel>> {
         return Observable.fromCallable {

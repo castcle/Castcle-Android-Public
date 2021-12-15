@@ -87,10 +87,10 @@ fun ImageView.loadRoundedCornersImageUri(
             Glide.with(context)
                 .load(thumbnailUrl)
                 .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
-        ).thumbnail(1f)
+        ).thumbnail(0.5f)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
         .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.drawable.ic_img_placeholder)
+        .error(R.drawable.ic_img_placeholder)
         .into(this)
 }
 

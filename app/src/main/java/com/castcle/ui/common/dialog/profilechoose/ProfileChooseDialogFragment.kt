@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
 import com.castcle.android.databinding.DialogFragmentProfileChooseEditBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.extensions.getColorResource
 import com.castcle.extensions.setNavigationResult
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -43,6 +45,13 @@ class ProfileChooseDialogFragment : BaseBottomSheetDialogFragment<ProfileChooseD
     BaseFragmentCallbacks, ViewBindingInflater<DialogFragmentProfileChooseEditBinding> {
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
+
+    @Inject lateinit var localizedResources: LocalizedResources
+
+    private val profileChooseArgs: ProfileChooseDialogFragmentArgs by navArgs()
+
+    private val isAccount: Boolean
+        get() = profileChooseArgs.isAccount
 
     override val bindingInflater:
             (LayoutInflater, ViewGroup?, Boolean) -> DialogFragmentProfileChooseEditBinding
@@ -85,6 +94,10 @@ class ProfileChooseDialogFragment : BaseBottomSheetDialogFragment<ProfileChooseD
                 handleNavigateResultBack(ProfileEditState.SYNC_SOCIAL_MEDIA)
             }.addToDisposables()
 
+            if (isAccount) {
+                tvTitleDelete.text =
+                    localizedResources.getString(R.string.dialog_fragement_profile_delete_account)
+            }
             clDeletePage.subscribeOnClick {
                 handleNavigateResultBack(ProfileEditState.DELETE_PAGE)
             }.addToDisposables()

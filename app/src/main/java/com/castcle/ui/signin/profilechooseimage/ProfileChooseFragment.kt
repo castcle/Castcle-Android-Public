@@ -270,15 +270,20 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
                 images = ImagesRequest(avatar = image)
             )
         ).subscribeBy(onComplete = {
-            navigateToVerifyEmailFragment(image, profileBundle.email)
+            navigateToVerifyEmailFragment(image, profileBundle)
         }).addToDisposables()
     }
 
-    private fun navigateToVerifyEmailFragment(image: String, email: String) {
+    private fun navigateToVerifyEmailFragment(
+        image: String,
+        bundle: ProfileBundle.ProfileWithEmail
+    ) {
         onBoardNavigator.naivgetToProfileVerifyEmailFragment(
             ProfileBundle.ProfileWithEmail(
-                email = email,
-                imageAvatar = image
+                email = bundle.email,
+                imageAvatar = image,
+                castcleId = bundle.castcleId,
+                displayName = bundle.displayName
             )
         )
     }

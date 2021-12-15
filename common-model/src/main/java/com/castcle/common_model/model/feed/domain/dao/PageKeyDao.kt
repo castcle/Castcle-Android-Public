@@ -39,6 +39,7 @@ interface PageKeyDao : BaseDao<PageKey> {
     @Query("SELECT * FROM pageKey")
     suspend fun getAllNextPageKey(): List<PageKey>?
 
+    @Transaction
     @Query("DELETE FROM pageKey")
     fun clearAll()
 }

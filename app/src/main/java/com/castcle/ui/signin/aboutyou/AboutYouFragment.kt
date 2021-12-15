@@ -349,6 +349,7 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
         when (profileType) {
             ProfileType.PROFILE_TYPE_PAGE,
             ProfileType.PROFILE_REGISTER -> {
+                activityViewModel.onRegisterSuccess()
                 onNavigateToProfile()
             }
             ProfileType.PROFILE_TYPE_ME -> {
@@ -587,9 +588,6 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
 
     private fun onNavigateToProfile() {
         handleNavigateToProfileClick()
-//        onBoardNavigator.navigateToProfileFragment(
-//            castcleId, PROFILE_TYPE_PAGE
-//        )
     }
 
     private fun onNavigateToFeedFragment() {

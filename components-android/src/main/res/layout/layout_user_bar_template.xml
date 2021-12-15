@@ -44,7 +44,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanitBold.Small"
         android:id="@+id/tvUserName"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
         android:textColor="@color/white"
@@ -52,17 +52,6 @@
         app:layout_constraintStart_toEndOf="@id/ivAvatar"
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
         tools:text="DappRadar" />
-
-<!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:id="@+id/ivStatusFollow"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="@dimen/_8sdp"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/tvUserName"-->
-<!--        app:layout_constraintStart_toEndOf="@id/tvUserName"-->
-<!--        app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
-<!--        app:srcCompat="@drawable/ic_bagde_follow" />-->
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanit.Small"

@@ -276,7 +276,11 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             likeStatue = likeStatus
         )
         viewModel.likedComment(commentedRequest)
-        onUpdateLikedComment(commentLikeStatus, commentId)
+        if (likeStatus) {
+            adapterComment.onUpdateReplyLiked(contentId, commentId)
+        } else {
+            adapterComment.onUpdateReplyUnLiked(contentId, commentId)
+        }
         onClearStatus()
     }
 
@@ -320,6 +324,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         with(binding.itemComment) {
             val commentRequest = getReplyCommentRequest()
             if (etInputMessages.text.isNotBlank()) {
+                commentedCount = commentedCount.plus(1)
                 sentReplyComment(commentRequest)
             }
         }
@@ -401,7 +406,6 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             if (adapterComment.uiModels.isNotEmpty()) {
                 adapterComment.notifyDataSetChanged()
             }
-            commentedCount = list.size
         } else {
             handleEmptyState(true)
         }

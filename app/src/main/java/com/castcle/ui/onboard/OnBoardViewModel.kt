@@ -103,6 +103,10 @@ abstract class OnBoardViewModel : BaseViewModel() {
 
     abstract val onRefreshPositionRes: SingleLiveEvent<Unit>
 
+    abstract fun onRegisterSuccess()
+
+    abstract val onRegisterSuccess: SingleLiveEvent<Unit>
+
     abstract fun checkContentIsMe(
         castcleId: String,
         onProfileMe: () -> Unit,

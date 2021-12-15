@@ -196,10 +196,10 @@ class DeletePageFragment : BaseFragment<DeletePageFragmentViewModel>(),
         val profileBundle = profile as ProfileBundle.ProfileDelete
         when (profileBundle.profileType) {
             ProfileType.PROFILE_TYPE_PAGE.type -> {
-                onDeleteUser.invoke()
+                onDeletePage.invoke()
             }
             ProfileType.PROFILE_TYPE_ME.type -> {
-                onDeletePage.invoke()
+                onDeleteUser.invoke()
             }
         }
     }

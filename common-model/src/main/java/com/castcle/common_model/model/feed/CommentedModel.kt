@@ -60,7 +60,11 @@ fun CommentedPayload.toContentUiModel(): ContentUiModel {
             author = author.toAuthorUiModel(),
             replyUiModel = reply?.map {
                 it.toReplyComment()
-            } ?: emptyList()
+            } ?: emptyList(),
+            likedUiModel = LikedUiModel(
+                liked = participate.liked,
+                count = metrics?.likeCount ?: 0
+            )
         )
     )
 }
@@ -70,7 +74,11 @@ fun CommentedPayload.toReplyComment(): ReplyUiModel {
         id = id,
         created = created,
         message = message,
-        author = author.toAuthorUiModel()
+        author = author.toAuthorUiModel(),
+        likedUiModel = LikedUiModel(
+            liked = participate.liked,
+            count = metrics?.likeCount ?: 0
+        )
     )
 }
 

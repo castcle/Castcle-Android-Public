@@ -16,6 +16,7 @@ import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.extensions.containsSomeOf
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.BaseNavigatorImpl
+import com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragmentArgs
 import com.castcle.ui.common.dialog.recast.RecastDialogFragmentArgs
 import com.castcle.ui.createbloc.CreateQuoteFragmentArgs
 import com.castcle.ui.createpost.CreatePostFragmentArgs
@@ -1127,7 +1128,7 @@ class OnBoardNavigatorImpl @Inject constructor(
         }
     }
 
-    override fun navigateToProfileChooseDialogFragment() {
+    override fun navigateToProfileChooseDialogFragment(isAccount: Boolean) {
         val navController = findNavController()
         when (navController.graph.id) {
             R.id.onboard_nav_graph,
@@ -1136,6 +1137,7 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToProfileChooseDialogFragment,
+                            ProfileChooseDialogFragmentArgs(isAccount).toBundle()
                         )
                     }
                     else -> {
@@ -1158,6 +1160,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToDeletePageFragment,
+                            DeletePageFragmentArgs(profileEditBundle).toBundle()
+                        )
+                    }
+                    R.id.settingProfileFragment -> {
+                        navController.navigate(
+                            R.id.actionSettingProfileFragmentToDeletePageFragment,
                             DeletePageFragmentArgs(profileEditBundle).toBundle()
                         )
                     }

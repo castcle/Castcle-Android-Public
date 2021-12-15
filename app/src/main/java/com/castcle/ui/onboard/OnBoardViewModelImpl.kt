@@ -336,4 +336,12 @@ class OnBoardViewModelImpl @Inject constructor(
     override fun updateFireBaseToken(token: String): Completable {
         return updateFireBaseTokenCompleteUseCase.execute(token)
     }
+
+    private var _onRegisterSuccess = SingleLiveEvent<Unit>()
+    override val onRegisterSuccess: SingleLiveEvent<Unit>
+        get() = _onRegisterSuccess
+
+    override fun onRegisterSuccess() {
+        _onRegisterSuccess.value = Unit
+    }
 }

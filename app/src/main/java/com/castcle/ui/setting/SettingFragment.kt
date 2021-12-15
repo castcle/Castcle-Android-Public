@@ -200,7 +200,7 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
         }.addToDisposables()
 
         binding.tvWhitepaper.subscribeOnClick {
-            openWebView(STATIC_LINK_WHITEPAPER)
+            openWebView(STATIC_OPEN_PDF + STATIC_LINK_WHITEPAPER)
         }.addToDisposables()
 
         binding.tvTermsService.subscribeOnClick {

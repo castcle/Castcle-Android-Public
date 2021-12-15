@@ -510,7 +510,13 @@
     <dialog
         android:id="@+id/profileChooseDialogFragment"
         android:name="com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment"
-        tools:layout="@layout/dialog_fragment_profile_choose_edit" />
+        tools:layout="@layout/dialog_fragment_profile_choose_edit">
+
+        <argument
+            android:name="isAccount"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </dialog>
 
     <fragment
         android:id="@+id/createPostFragment"

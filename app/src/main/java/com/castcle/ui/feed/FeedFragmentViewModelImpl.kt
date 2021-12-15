@@ -174,7 +174,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
         launchPagingAsync({
             _showLoading.onNext(true)
-            feedNonAuthRepository.getFeedRemoteMediator(feedRequest).cachedIn(viewModelScope)
+            feedNonAuthRepository.getFeed(feedRequest).cachedIn(viewModelScope)
         }, {
             _showLoading.onNext(false)
             _feedUiMode = it

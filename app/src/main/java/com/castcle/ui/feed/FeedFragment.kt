@@ -56,6 +56,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private lateinit var baseContentUiModel: ContentFeedUiModel
 
+    private var cacheContentUiModel: ContentFeedUiModel? = null
+
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentFeedBinding
         get() = { inflater, container, attachToRoot ->
             FragmentFeedBinding.inflate(inflater, container, attachToRoot)
@@ -158,18 +160,20 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
         val remoteLoading = adapterPagingCommon.loadStateFlow
             .asRemotePresentationState()
-            .map { it == RemotePresentationState.SOURCE_LOADING }
+            .map { it == RemotePresentationState.REMOTE_LOADING }
 
-        lifecycleScope.launch {
-            remoteLoading.collect {
-                if (it) {
-                    startLoadingShimmer()
-                }
-                with(binding) {
-                    rvFeedContent.visibleOrGone(!it)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            remoteLoading.collect {
+//                if (it) {
+//                    startLoadingShimmer()
+//                } else {
+//                    stopLoadingShimmer()
+//                }
+//                with(binding) {
+//                    rvFeedContent.visibleOrGone(!it)
+//                }
+//            }
+//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             adapterPagingCommon.loadStateFlow
@@ -189,6 +193,9 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                     if (!isLoading) {
                         binding.swiperefresh.isRefreshing = false
                         stopLoadingShimmer()
+                    } else {
+                        binding.rvFeedContent.gone()
+                        startLoadingShimmer()
                     }
                 }
         }
@@ -210,6 +217,16 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         activityViewModel.onRefreshPositionRes.observe(viewLifecycleOwner, {
             refreshPosition()
         })
+
+        getNavigationResult<Int>(
+            onBoardNavigator,
+            R.id.feedFragment,
+            KEY_REQUEST_COMMENTED_COUNT,
+            onResult = {
+                cacheContentUiModel?.let { it1 ->
+                    onBindCommentedCount(it, it1)
+                }
+            })
     }
 
     override fun bindViewModel() {
@@ -266,12 +283,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(binding) {
             skeletonLoading.shimmerLayoutLoading.run {
                 setShimmer(
-                    shimmerBuilder
-                        .setBaseAlpha(0f)
-                        .setDuration(2000L)
-                        .setDropoff(0.1f)
-                        .setIntensity(0.35f)
-                        .setShape(Shimmer.Shape.RADIAL).build()
+                    shimmerBuilder.setDirection(Shimmer.Direction.TOP_TO_BOTTOM).setTilt(0f).build()
                 )
                 startShimmer()
                 visible()
@@ -339,17 +351,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun navigateToFeedDetailFragment(contentUiModel: ContentFeedUiModel) {
-        getNavigationResult<Int>(
-            onBoardNavigator,
-            R.id.feedFragment,
-            KEY_REQUEST_COMMENTED_COUNT,
-            onResult = {
-                onBindCommentedCount(it, contentUiModel)
-            })
         onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
     }
 
     private fun onBindCommentedCount(count: Int, contentUiModel: ContentFeedUiModel) {
+        cacheContentUiModel = null
         adapterPagingCommon.updateCommented(count, contentUiModel)
     }
 
@@ -485,6 +491,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleCommentClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
+            cacheContentUiModel = contentUiModel
             navigateToFeedDetailFragment(contentUiModel)
         }, disable = {
             navigateToNotifyLoginDialog()

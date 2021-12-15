@@ -77,7 +77,7 @@ class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
 
     override fun setupView() {
         with(binding.vpPageContent) {
-            adapter = ContentTrendAdapter(this@TrendFragment).also {
+            adapter = ContentTrendAdapter(requireParentFragment()).also {
                 contentTrendAdapter = it
             }
             offscreenPageLimit = 2

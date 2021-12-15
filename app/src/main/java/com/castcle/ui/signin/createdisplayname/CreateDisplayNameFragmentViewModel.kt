@@ -128,6 +128,7 @@ class CreateDisplayNameFragmentViewModelImpl @Inject constructor(
         ).doOnSubscribe {
             _showLoading.onNext(true)
         }.doOnError {
+            _error.onNext(it)
             _showLoading.onNext(false)
         }.doOnComplete {
             getUserProfile()

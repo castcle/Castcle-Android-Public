@@ -66,13 +66,13 @@ class CommentedChildItemViewHolder(
                 }
                 tvCommentMessage.text = message
                 with(tvLiked) {
-//                    if (likedUiModel.liked) {
-//                        setTextColor(binding.root.context.getColorResource(R.color.blue))
-//                        isActivated = likedUiModel.liked
-//                    }
+                    if (likedUiModel.liked) {
+                        setTextColor(binding.root.context.getColorResource(R.color.blue))
+                        isActivated = likedUiModel.liked
+                    }
                     text = binding.root.context.getString(
                         R.string.comment_item_like
-                    ).format(0)
+                    ).format(likedUiModel.count)
                 }
             }
         }

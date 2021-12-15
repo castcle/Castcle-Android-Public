@@ -1,7 +1,10 @@
 package com.castcle.ui.setting.account
 
+import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.setting.SettingMenuUiModel
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
+import io.reactivex.Completable
 import io.reactivex.Observable
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -29,5 +32,10 @@ import io.reactivex.Observable
 //  Created by sklim on 30/9/2021 AD at 12:30.
 
 abstract class SettingProfileViewModel : BaseViewModel() {
+
     abstract fun getProfileSettingMenu(): Observable<List<SettingMenuUiModel>>
+
+    abstract fun fetchUserProfile(): Completable
+
+    abstract val userCachePage: LiveData<User>
 }

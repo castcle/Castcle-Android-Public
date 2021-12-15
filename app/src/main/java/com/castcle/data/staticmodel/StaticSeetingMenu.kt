@@ -80,7 +80,7 @@ object StaticSeetingMenu {
                     menuName = R.string.setting_account_delete_account,
                     icon = 0,
                     disableActionIcon = true,
-                    menuType = SettingMenuType.ABOUT_US
+                    menuType = SettingMenuType.SETTING_DELECT_ACCOUNT
                 )
             )
         )

@@ -68,6 +68,10 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
         if (viewModel.currentAppLanguage.value.isNullOrEmpty()) {
             viewModel.setCurrentAppLanguage(LanguageStatic.appLanguage)
         }
+
+        viewModel.onRegisterSuccess.observe(this, {
+            setupBottomNavigationBar()
+        })
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -106,10 +110,6 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     }
 
     private fun initBottomNavigation() {
-        viewModel.userRefeshProfile.subscribe {
-            setupBottomNavigationBar()
-        }.addToDisposables()
-
         with(binding.bottomNavView) {
             itemIconTintList = null
             BottomNavigateStatic.bottomMenu.forEachIndexed { index, item ->

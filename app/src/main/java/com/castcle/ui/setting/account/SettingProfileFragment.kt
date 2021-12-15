@@ -8,8 +8,9 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentProfileSettingBinding
 import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.common_model.model.setting.SettingMenuType.SETTING_EMAIL
-import com.castcle.common_model.model.setting.SettingMenuType.SETTING_PASSWORD
+import com.castcle.common_model.model.login.domain.ProfileBundle
+import com.castcle.common_model.model.setting.ProfileType
+import com.castcle.common_model.model.setting.SettingMenuType.*
 import com.castcle.common_model.model.setting.SettingMenuUiModel
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.storage.AppPreferences
@@ -75,7 +76,7 @@ class SettingProfileFragment : BaseFragment<SettingProfileViewModel>(),
             .get(SettingProfileViewModel::class.java)
 
     override fun initViewModel() {
-
+        viewModel.fetchUserProfile().subscribe().addToDisposables()
     }
 
     override fun setupView() {
@@ -122,11 +123,25 @@ class SettingProfileFragment : BaseFragment<SettingProfileViewModel>(),
                 SETTING_EMAIL -> {
 
                 }
+                SETTING_DELECT_ACCOUNT -> {
+                    navigateToDeleteAccount()
+                }
                 else -> {
 
                 }
             }
         }
+    }
+
+    private fun navigateToDeleteAccount() {
+        val userProfile = viewModel.userCachePage.value
+        val profileBundle = ProfileBundle.ProfileDelete(
+            castcleId = userProfile?.castcleId ?: "",
+            avatar = userProfile?.avatar ?: "",
+            profileType = ProfileType.PROFILE_TYPE_ME.type,
+            displayName = userProfile?.displayName
+        )
+        onBoardNavigator.navigateToProfileDeletePageFragment(profileBundle)
     }
 
     private fun navigateToChangePasswordFragment() {

@@ -53,7 +53,7 @@ object OkHttpClientProvider {
             .connectTimeout(DEFAULT_TIMEOUT_IN_SEC, TimeUnit.SECONDS)
             .readTimeout(DEFAULT_TIMEOUT_IN_SEC, TimeUnit.SECONDS)
             .writeTimeout(DEFAULT_TIMEOUT_IN_SEC, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
+            .retryOnConnectionFailure(false)
             .addInterceptor(logging)
             .also {
                 interceptors.forEach { interceptor ->

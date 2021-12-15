@@ -36,6 +36,7 @@ interface UserDao : BaseDao<User> {
     @Query("SELECT * FROM user LIMIT 1")
     fun getUser(): Single<User>
 
+    @Transaction
     @Query("DELETE FROM user")
     fun deleteUser()
 

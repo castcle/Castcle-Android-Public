@@ -154,7 +154,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     override fun setupView() {
         setupToolBar()
         with(binding.vpPageContent) {
-            adapter = ContentPageAdapter(this@ProfileFragment).also {
+            adapter = ContentPageAdapter(requireParentFragment()).also {
                 contentPageAdapter = it
             }
         }
@@ -376,7 +376,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
             ivEditProfile.subscribeOnClick {
                 onGuestMode(enable = {
-                    onNavigateToChooseProfileEdit()
+                    onNavigateToChooseProfileEdit(true)
                 }, disable = {})
             }.addToDisposables()
         }
@@ -400,8 +400,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         )
     }
 
-    private fun onNavigateToChooseProfileEdit() {
-        onBoardNavigator.navigateToProfileChooseDialogFragment()
+    private fun onNavigateToChooseProfileEdit(isAccount: Boolean = false) {
+        onBoardNavigator.navigateToProfileChooseDialogFragment(isAccount)
     }
 
     private fun onBindViewProfile(user: User) {

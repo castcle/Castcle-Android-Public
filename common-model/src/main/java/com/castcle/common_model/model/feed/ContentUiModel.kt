@@ -278,7 +278,8 @@ data class ReplyUiModel(
     var id: String,
     var created: String,
     var message: String,
-    var author: AuthorUiModel
+    var author: AuthorUiModel,
+    val likedUiModel: LikedUiModel = LikedUiModel()
 ) : Parcelable
 
 fun ContentUiModel.toReplyComment(): ReplyUiModel {
@@ -318,6 +319,7 @@ data class PhotoUiModel(
 @Parcelize
 data class ImageContentUiModel(
     val imageOrigin: String = "",
+    val imageMedium: String = "",
     val imageLarge: String = "",
     val imageThumbnail: String = "",
     val imageFullHd: String = "",
@@ -334,6 +336,7 @@ fun PhotoResponse.toPhotoUiMode() =
 fun ImageResponse.toImageContentUiModel(): ImageContentUiModel {
     return ImageContentUiModel(
         imageFullHd = fullHd ?: "",
+        imageMedium = medium ?: "",
         imageOrigin = original ?: "",
         imageThumbnail = thumbnail ?: ""
     )

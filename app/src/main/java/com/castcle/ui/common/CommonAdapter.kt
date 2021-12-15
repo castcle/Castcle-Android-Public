@@ -76,18 +76,23 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
     @SuppressLint("NotifyDataSetChanged")
     fun updateCommented(commentedCount: Int, contentUiModel: ContentFeedUiModel) {
         val contentIndex = snapshot().indexOf(contentUiModel)
-        snapshot().items[contentIndex].apply {
-            commentCount = commentCount.plus(commentedCount)
+        if (contentIndex > -1) {
+            snapshot().items[contentIndex].apply {
+                commentCount = commentCount.plus(commentedCount)
+            }
+            notifyItemChanged(contentIndex)
         }
-        notifyItemInserted(contentIndex)
+
     }
 
     fun updateStateItemRecast(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val recastUiModel = snapshot()[index]
-        recastUiModel?.recasted = true
-        recastUiModel?.recastCount = recastUiModel?.recastCount?.plus(1)!!
-        notifyItemChanged(index)
+        if (index > -1) {
+            val recastUiModel = snapshot()[index]
+            recastUiModel?.recasted = true
+            recastUiModel?.recastCount = recastUiModel?.recastCount?.plus(1)!!
+            notifyItemChanged(index)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -102,26 +107,32 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
 
     fun updateStateItemUnRecast(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val recastUiModel = snapshot()[index]
-        recastUiModel?.recasted = false
-        recastUiModel?.recastCount = recastUiModel?.recastCount?.minus(1)?.let { abs(it) }!!
-        notifyItemChanged(index)
+        if (index > -1) {
+            val recastUiModel = snapshot()[index]
+            recastUiModel?.recasted = false
+            recastUiModel?.recastCount = recastUiModel?.recastCount?.minus(1)?.let { abs(it) }!!
+            notifyItemChanged(index)
+        }
     }
 
     fun updateStateItemLike(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val likeUiModel = snapshot()[index]
-        likeUiModel?.liked = !likeUiModel?.liked!!
-        likeUiModel.likeCount = likeUiModel.likeCount.plus(1)
-        notifyItemChanged(index)
+        if (index > -1) {
+            val likeUiModel = snapshot()[index]
+            likeUiModel?.liked = !likeUiModel?.liked!!
+            likeUiModel.likeCount = likeUiModel.likeCount.plus(1)
+            notifyItemChanged(index)
+        }
     }
 
     fun updateStateItemUnLike(contentUiModel: ContentFeedUiModel) {
         val index = snapshot().indexOf(contentUiModel)
-        val likeUiModel = snapshot()[index]
-        likeUiModel?.liked = !likeUiModel?.liked!!
-        likeUiModel.likeCount = abs(likeUiModel.likeCount.plus(-1))
-        notifyItemChanged(index)
+        if (index > -1) {
+            val likeUiModel = snapshot()[index]
+            likeUiModel?.liked = !likeUiModel?.liked!!
+            likeUiModel.likeCount = abs(likeUiModel.likeCount.plus(-1))
+            notifyItemChanged(index)
+        }
     }
 
     override fun onCreateViewHolder(

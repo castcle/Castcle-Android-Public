@@ -250,7 +250,7 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
                 openWebView(STATIC_LINK_MENIFESTO)
             }.addToDisposables()
             tvWhitepaper.subscribeOnClick {
-                openWebView(STATIC_LINK_WHITEPAPER)
+                openWebView(STATIC_OPEN_PDF + STATIC_LINK_WHITEPAPER)
             }.addToDisposables()
             with(layoutLogin) {
                 clLoginWithEmail.subscribeOnClick {
@@ -315,3 +315,5 @@ const val STATIC_LINK_MENIFESTO =
     "https://docs.castcle.com/"
 const val STATIC_LINK_WHITEPAPER =
     "https://castcle.com/whitepaper.pdf"
+const val STATIC_OPEN_PDF =
+    "https://drive.google.com/viewerng/viewer?embedded=true&url="

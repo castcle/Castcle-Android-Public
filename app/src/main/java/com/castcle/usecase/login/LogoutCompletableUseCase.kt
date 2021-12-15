@@ -15,6 +15,7 @@ import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.splashscreen.SplashScreenActivity
 import com.castcle.usecase.base.CompletableUseCase
 import io.reactivex.Completable
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -55,14 +56,18 @@ class LogoutCompletableUseCase @Inject constructor(
     rxSchedulerProvider.main(),
     ::LoginError
 ) {
+    val scope = CoroutineScope(Job() + Dispatchers.IO)
+
     override fun create(input: Activity): Completable {
         appPreferences.clearAll()
             .subscribe()
             .addToDisposables()
         sessionManagerRepository.clearSession()
-        userDao.deleteUser()
-        pageKeyDao.clearAll()
-        feedCacheDao.deleteFeedCache()
+
+        scope.launch {
+            onClearDataBase()
+        }
+
         with(secureStorage) {
             userTokenType = null
             userAccessToken = null
@@ -74,5 +79,13 @@ class LogoutCompletableUseCase @Inject constructor(
         }
         onBoardNavigator.navigateBack()
         return Completable.complete()
+    }
+
+    private suspend fun onClearDataBase() {
+        withContext(Dispatchers.IO) {
+            userDao.deleteUser()
+            pageKeyDao.clearAll()
+            feedCacheDao.deleteFeedCache()
+        }
     }
 }
