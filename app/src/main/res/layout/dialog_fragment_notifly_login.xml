@@ -96,8 +96,8 @@
             android:text="@string/dialog_login_footer_title"
             android:textAlignment="textStart"
             android:textColor="@color/red_gray"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layoutLogin" />
 
         <androidx.appcompat.widget.LinearLayoutCompat

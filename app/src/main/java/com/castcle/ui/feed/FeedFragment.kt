@@ -283,7 +283,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(binding) {
             skeletonLoading.shimmerLayoutLoading.run {
                 setShimmer(
-                    shimmerBuilder.setDirection(Shimmer.Direction.TOP_TO_BOTTOM).setTilt(0f).build()
+                    shimmerBuilder.setDirection(Shimmer.Direction.LEFT_TO_RIGHT).setTilt(0f).build()
                 )
                 startShimmer()
                 visible()
