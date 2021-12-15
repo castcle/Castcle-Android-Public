@@ -94,7 +94,7 @@ data class FeedCacheModel(
     @ColumnInfo(name = "recasted")
     var recasted: Boolean = false,
     @ColumnInfo(name = "isMindId")
-    var isMindId: String = ""
+    var isMindId: Boolean = false
 )
 
 fun List<ContentFeedUiModel>.toMapFeedCache(): List<FeedCacheModel> {

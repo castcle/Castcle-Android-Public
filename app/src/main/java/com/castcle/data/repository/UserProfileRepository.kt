@@ -63,8 +63,6 @@ interface UserProfileRepository {
     fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentFeedUiModel>>
 
-    fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel>
-
     fun putToFollowUser(followRequest: FollowRequest): Completable
 
     fun getViewPage(castcleId: String): Flowable<User>
@@ -127,16 +125,6 @@ class UserProfileRepositoryImpl @Inject constructor(
             }.firstOrError()
     }
 
-    override fun createContent(contentRequest: CreateContentRequest): Single<CreateContentUiModel> {
-        return userApi
-            .createContent(
-                featureSlug = contentRequest.createType,
-                createContentRequest = contentRequest
-            ).lift(ApiOperators.mobileApiError())
-            .map { it.toCreateContentUiModel() }
-            .firstOrError()
-    }
-
     override fun putToFollowUser(followRequest: FollowRequest): Completable {
         return userApi.createFollowUser(followRequest.castcleIdFollower, followRequest)
             .lift(ApiOperators.mobileApiError())
@@ -147,7 +135,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         contentRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
-        pageSize = DEFAULT_PAGE_SIZE,
+        pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         UserProfilePagingDataSource(userApi, contentRequestHeader)
@@ -156,7 +144,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
-        pageSize = DEFAULT_PAGE_SIZE,
+        pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         UserViewProfilePagingDataSource(userApi, feedRequestHeader)
@@ -165,7 +153,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
-        pageSize = DEFAULT_PAGE_SIZE,
+        pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         ViewPagePagingDataSource(userApi, feedRequestHeader)
@@ -300,4 +288,5 @@ class UserProfileRepositoryImpl @Inject constructor(
 }
 
 internal const val DEFAULT_PAGE_SIZE = 25
-internal const val DEFAULT_PREFETCH = 2
+internal const val DEFAULT_PAGE_SIZE_V1 = 10
+internal const val DEFAULT_PREFETCH = 1

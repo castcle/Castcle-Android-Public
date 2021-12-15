@@ -60,6 +60,7 @@ fun List<UserPage>.toPageHeaderUiModel() =
     PageHeaderUiModel(
         pageUiItem = map {
             PageUiModel(
+                castcleId = it.pageId,
                 displayName = it.displayName,
                 avatarUrl = it.displayAvatar,
                 verifyEmail = false,

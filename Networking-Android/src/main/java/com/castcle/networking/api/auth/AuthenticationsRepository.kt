@@ -1,5 +1,8 @@
 package com.castcle.networking.api.auth
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.provider.Settings
 import android.util.Log
 import com.auth0.jwt.JWT
 import com.auth0.jwt.exceptions.JWTDecodeException
@@ -84,9 +87,12 @@ interface AuthenticationsRepository {
     fun requestOtp(otpRequest: OtpRequest): Single<VerificationUiModel>
 
     fun requestVerifyOtp(verifyOtpRequest: VerifyOtpRequest): Single<VerificationUiModel>
+
+    fun registerFireBaseToken(registerFireBaseTokenRequest: RegisterFireBaseTokenRequest): Completable
 }
 
 class AuthenticationsRepositoryImpl @Inject constructor(
+    private val context: Context,
     private val authenticationApi: AuthenticationApi,
     private val secureStorage: SecureStorage,
     private val sessionManagerRepository: SessionManagerRepository
@@ -276,5 +282,24 @@ class AuthenticationsRepositoryImpl @Inject constructor(
             .map {
                 it.toVerificationUiModel()
             }.firstOrError()
+    }
+
+    override fun registerFireBaseToken(
+        registerFireBaseTokenRequest: RegisterFireBaseTokenRequest
+    ): Completable {
+        registerFireBaseTokenRequest.deviceUUID = getDeviceId()
+        return authenticationApi
+            .registerFireBaseToken(registerFireBaseTokenRequest)
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
+    @SuppressLint("HardwareIds")
+    private fun getDeviceId(): String {
+        return Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
     }
 }

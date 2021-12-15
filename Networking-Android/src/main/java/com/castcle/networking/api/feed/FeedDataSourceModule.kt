@@ -47,7 +47,7 @@ class FeedNonAuthenticationDataSourceModule {
     fun feedRepositoryNonAuth(
         feedApi: FeedApi,
         feedCacheDao: FeedCacheDao,
-        pageKeyDao: PageKeyDao,
+        pageKeyDao: PageKeyDao
     ): FeedRepository = FeedRepositoryImpl(
         feedApi,
         feedCacheDao,

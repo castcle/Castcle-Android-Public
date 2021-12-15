@@ -1,5 +1,6 @@
 package com.castcle.networking.api.auth
 
+import android.content.Context
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.networking.api.auth.network.AuthenticationApi
 import com.castcle.session_memory.SessionManagerRepository
@@ -17,10 +18,12 @@ class AuthenticationDataSourceModule {
 
     @Provides
     fun provideAuthenticationsRepository(
+        context: Context,
         secureStorage: SecureStorage,
         authenticationApi: AuthenticationApi,
         sessionManagerRepository: SessionManagerRepository
     ): AuthenticationsRepository = AuthenticationsRepositoryImpl(
+        context,
         authenticationApi,
         secureStorage,
         sessionManagerRepository

@@ -1,7 +1,9 @@
 package com.castcle.ui.profile.childview.post
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +25,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
+import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -83,7 +86,8 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
                         viewType = ProfileType.PROFILE_TYPE_PAGE.type,
-                        type = ContentType.IMAGE.type
+                        type = ContentType.IMAGE.type,
+                        isMeId = viewModel.castcleId
                     )
                 )
             },
@@ -91,7 +95,8 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         viewType = ProfileType.PROFILE_TYPE_ME.type,
-                        type = ContentType.IMAGE.type
+                        type = ContentType.IMAGE.type,
+                        isMeId = viewModel.castcleId
                     )
                 )
             },
@@ -100,7 +105,8 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
                         viewType = ProfileType.PROFILE_TYPE_PEOPLE.type,
-                        type = ContentType.IMAGE.type
+                        type = ContentType.IMAGE.type,
+                        isMeId = viewModel.castcleId
                     )
                 )
             })
@@ -182,7 +188,47 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
             is FeedItemClick.FeedRecasteClick -> {
                 handleRecastClick(click.contentUiModel)
             }
+            is FeedItemClick.WebContentClick -> {
+                handleWebContentClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedImageClick -> {
+                handleImageItemClick(click.position, click.contentUiModel)
+            }
         }
+    }
+
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentFeedUiModel) {
+        val image = contentUiModel.photo?.map {
+            it.imageOrigin
+        }
+        val imagePosition = when (contentUiModel.photo?.size) {
+            1 -> 0
+            else -> position
+        }
+        StfalconImageViewer.Builder(context, image, ::loadPosterImage)
+            .withStartPosition(imagePosition)
+            .withHiddenStatusBar(true)
+            .allowSwipeToDismiss(true)
+            .allowZooming(true)
+            .show()
+    }
+
+    private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
+        imageView.loadImageWithoutTransformation(imageUrl)
+    }
+
+    private fun handleWebContentMessageClick(click: FeedItemClick.WebContentMessageClick) {
+        openWebView(click.url)
+    }
+
+    private fun handleWebContentClick(contentUiModel: ContentFeedUiModel) {
+        contentUiModel.link?.url?.let {
+            openWebView(it)
+        }
+    }
+
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
     }
 
     private fun handleNavigateAvatarClick(contentUiModel: ContentFeedUiModel) {
@@ -242,13 +288,14 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
-        handlerUpdateRecasted(currentContent, onRecast)
-        val castcleId = activityViewModel.userCacheProfile.value?.castcleId ?: ""
+        val castcleId = activityViewModel.castcleId
         viewModel.recastContent(castcleId, currentContent).subscribeBy(
             onError = {
+                adapterPagingCommon.updateStateItemUnRecast(currentContent)
                 displayError(it)
             }
         ).addToDisposables()
+        handlerUpdateRecasted(currentContent, onRecast)
     }
 
     private fun handlerUpdateRecasted(

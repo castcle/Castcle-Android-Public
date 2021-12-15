@@ -5,13 +5,11 @@ import android.view.ViewGroup
 import com.castcle.android.R
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateBlogBinding
 import com.castcle.common_model.model.feed.ContentFeedUiModel
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
-import com.castcle.ui.common.viewholder.feedMock.FeedContentBlogMockViewHolder
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.

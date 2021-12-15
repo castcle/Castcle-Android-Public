@@ -32,6 +32,7 @@ import io.reactivex.Single
 @Dao
 interface UserDao : BaseDao<User> {
 
+    @Transaction
     @Query("SELECT * FROM user LIMIT 1")
     fun getUser(): Single<User>
 

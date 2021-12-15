@@ -50,7 +50,6 @@ import kotlin.math.abs
 class CreateBlogFragmentViewModelImpl @Inject constructor(
     private val getImagePathMapUseCase: GetImagePathMapUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
-    private val createContentSingleUseCase: CreateContentSingleUseCase,
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val quoteCastContentSingleUseCase: QuoteCastContentSingleUseCase,
     private val getUserMentionSingleUseCase: GetUserMentionSingleUseCase,
@@ -183,8 +182,10 @@ class CreateBlogFragmentViewModelImpl @Inject constructor(
         return cachedUserProfileSingleUseCase
             .execute(Unit)
             .doOnNext {
-                _castUserProfile.value = it.get()
-                _userProfileUiModel.value = it.get().toContentUiModel()
+                if (it.isPresent) {
+                    _castUserProfile.value = it.get()
+                    _userProfileUiModel.value = it.get().toContentUiModel()
+                }
             }.doOnError(_error::onNext).firstOrError()
             .ignoreElement()
     }

@@ -1,8 +1,7 @@
 package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.PayLoadUiModel
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.userprofile.domain.CreateContentRequest
 import com.castcle.data.error.CreateContentError
 import com.castcle.data.repository.UserWorkerRepository
@@ -37,12 +36,12 @@ import javax.inject.Inject
 class CreateContentWorkerSingleUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
     private val userWorkerRepository: UserWorkerRepository
-) : SingleUseCase<CreateContentRequest, ContentUiModel>(
+) : SingleUseCase<CreateContentRequest, ContentFeedUiModel>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::CreateContentError
 ) {
-    override fun create(input: CreateContentRequest): Single<ContentUiModel> {
+    override fun create(input: CreateContentRequest): Single<ContentFeedUiModel> {
         return userWorkerRepository.createContent(input)
     }
 }

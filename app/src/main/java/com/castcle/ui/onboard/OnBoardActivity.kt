@@ -253,7 +253,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             try {
                 val token = task.result.toString()
-                Log.i("token", "Push notification token: $token")
+                onUpdateFireBaseToken(token)
+                Log.i("TOKEN-PUSH", "Push notification token: $token")
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance()
                     .setCustomKey(
@@ -263,6 +264,10 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun onUpdateFireBaseToken(token: String) {
+        viewModel.updateFireBaseToken(token).subscribe().addToDisposables()
     }
 
     companion object {

@@ -1,5 +1,7 @@
 package com.castcle.ui.feed
 
+import android.animation.ValueAnimator
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -31,6 +33,9 @@ import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.castcle.ui.util.RemotePresentationState
+import com.castcle.ui.util.asRemotePresentationState
+import com.facebook.shimmer.Shimmer
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.*
@@ -146,7 +151,22 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         with(viewModel) {
             viewLifecycleOwner.lifecycleScope.launch {
                 feedContentPage.collectLatest {
-                    adapterPagingCommon.submitData(lifecycle,it)
+                    adapterPagingCommon.submitData(lifecycle, it)
+                }
+            }
+        }
+
+        val remoteLoading = adapterPagingCommon.loadStateFlow
+            .asRemotePresentationState()
+            .map { it == RemotePresentationState.SOURCE_LOADING }
+
+        lifecycleScope.launch {
+            remoteLoading.collect {
+                if (it) {
+                    startLoadingShimmer()
+                }
+                with(binding) {
+                    rvFeedContent.visibleOrGone(!it)
                 }
             }
         }
@@ -241,8 +261,18 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun startLoadingShimmer() {
+        val shimmerBuilder = Shimmer.AlphaHighlightBuilder()
+
         with(binding) {
             skeletonLoading.shimmerLayoutLoading.run {
+                setShimmer(
+                    shimmerBuilder
+                        .setBaseAlpha(0f)
+                        .setDuration(2000L)
+                        .setDropoff(0.1f)
+                        .setIntensity(0.35f)
+                        .setShape(Shimmer.Shape.RADIAL).build()
+                )
                 startShimmer()
                 visible()
             }
@@ -289,12 +319,12 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
-        handlerUpdateRecasted(currentContent, onRecast)
         viewModel.input.recastContent(currentContent).subscribeBy(
             onError = {
                 displayError(it)
             }
         ).addToDisposables()
+        handlerUpdateRecasted(currentContent, onRecast)
     }
 
     private fun handlerUpdateRecasted(
@@ -309,7 +339,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun navigateToFeedDetailFragment(contentUiModel: ContentFeedUiModel) {
-        onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
         getNavigationResult<Int>(
             onBoardNavigator,
             R.id.feedFragment,
@@ -317,6 +346,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             onResult = {
                 onBindCommentedCount(it, contentUiModel)
             })
+        onBoardNavigator.navigateToFeedDetailFragment(contentUiModel)
     }
 
     private fun onBindCommentedCount(count: Int, contentUiModel: ContentFeedUiModel) {
@@ -373,7 +403,27 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             is FeedItemClick.FeedFollowingClick -> {
                 handleFeedFollowingClick(click.contentUiModel)
             }
+            is FeedItemClick.WebContentClick -> {
+                handleWebContentClick(click.contentUiModel)
+            }
+            is FeedItemClick.WebContentMessageClick -> {
+                handleWebContentMessageClick(click)
+            }
         }
+    }
+
+    private fun handleWebContentMessageClick(click: FeedItemClick.WebContentMessageClick) {
+        openWebView(click.url)
+    }
+
+    private fun handleWebContentClick(contentUiModel: ContentFeedUiModel) {
+        contentUiModel.link?.url?.let {
+            openWebView(it)
+        }
+    }
+
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
     }
 
     private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {

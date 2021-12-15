@@ -5,6 +5,8 @@ import com.castcle.android.components_android.databinding.LayoutFeedTemplateShor
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
+import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
@@ -111,6 +113,13 @@ class FeedContentShortViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.WebContentMessageClick -> {
+                click.invoke(
+                    FeedItemClick.WebContentMessageClick(
+                        it.url
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -129,6 +138,15 @@ class FeedContentShortViewHolder(
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.appendLinkText(message)
+                tvFeedContent.setLinkClickListener(object : SocialTextView.LinkClickListener{
+                    override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
+                        handleItemClick(
+                            TemplateEventClick.WebContentMessageClick(
+                                matchedText
+                            )
+                        )
+                    }
+                })
                 ftFooter.bindUiModel(uiModel)
             }
         }

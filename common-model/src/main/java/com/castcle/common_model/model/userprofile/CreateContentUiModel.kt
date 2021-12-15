@@ -42,20 +42,6 @@ data class CreateContentUiModel(
     val featureUiModel: FeatureUiModel? = null
 )
 
-fun CreateCastResponse.toCreateContentUiModel() =
-    CreateContentUiModel(
-        id = payload.id,
-        type = payload.type,
-        message = payload.payload.message,
-        commentedUiModel = payload.commentedResponse?.toCommentedUiModel(),
-        photo = dynamicPhotoType(payload.payload.photo),
-        link = payload.likedResponse?.toLikedUiModel(),
-        author = payload.author.toAuthorUiModel(),
-        featureUiModel = payload.feature?.let {
-            it.toFeatureUiModel()
-        }
-    )
-
 fun CreateContentUiModel.toStringModel(): String {
     return Gson().toJson(this)
 }

@@ -836,8 +836,7 @@ class OnBoardNavigatorImpl @Inject constructor(
     ) {
         val navController = findNavController()
         when (navController.graph.id) {
-            R.id.onboard_nav_graph,
-            R.id.search_nav_graph -> {
+            R.id.onboard_nav_graph -> {
                 when (navController.currentDestination?.id) {
                     R.id.feedFragment -> {
                         navController.navigate(
@@ -845,6 +844,25 @@ class OnBoardNavigatorImpl @Inject constructor(
                             FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
                         )
                     }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToFeedDetailFragment,
+                            FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
+                        )
+                    }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToFeedDetailFragment,
+                            FeedDetailFragmentArgs(contentUiModel, isContent).toBundle()
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToFeedDetailFragment,

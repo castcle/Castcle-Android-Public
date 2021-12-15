@@ -342,8 +342,11 @@ fun ImageResponse.toImageContentUiModel(): ImageContentUiModel {
 @Parcelize
 data class LinkUiModel(
     val type: String = "",
-    val url: String = "",
-    val imagePreview: String = ""
+    var url: String = "",
+    var imagePreview: String = "",
+    var linkDescription: String = "",
+    var linkTitle: String = "",
+    var linkIcon: String = ""
 ) : Parcelable
 
 fun LinkResponse.toLinkUiModel(): LinkUiModel {

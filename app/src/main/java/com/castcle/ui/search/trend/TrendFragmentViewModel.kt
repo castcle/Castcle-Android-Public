@@ -53,4 +53,6 @@ abstract class TrendFragmentViewModel : BaseViewCoroutinesModel() {
     abstract fun fetchUserProfile()
 
     abstract fun recastContent(contentUiModel: ContentFeedUiModel): Completable
+
+    abstract val castcleId: String
 }

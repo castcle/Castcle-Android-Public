@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.castcle.android.R
 import com.castcle.android.databinding.*
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.data.staticmodel.TabContentStatic
-import com.castcle.extensions.getDrawableRes
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -101,10 +99,8 @@ class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
-
     }
 
     override fun bindViewModel() {
-
     }
 }

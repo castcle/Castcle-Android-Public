@@ -17,12 +17,16 @@ interface AppPreferences {
     var castcleId: String?
     var email: String?
     var resentSearch: String?
+    var fireBaseToken: String?
+    var notificationCount: String?
 
     fun clearAll() = Completable.fromAction {
         castcleId = null
         preferredLanguage = null
         email = null
         resentSearch = null
+        fireBaseToken = null
+        notificationCount = null
     }
 }
 
@@ -73,6 +77,14 @@ class AppPreferencesImpl @Inject constructor(
     override var resentSearch: String?
         get() = getString(KEY_RESENT_SEARCH)
         set(value) = setOrRemove(KEY_RESENT_SEARCH, value)
+
+    override var fireBaseToken: String?
+        get() = getString(KEY_FIRE_BASE_TOKEN)
+        set(value) = setOrRemove(KEY_FIRE_BASE_TOKEN, value)
+
+    override var notificationCount: String?
+        get() = getString(KEY_NOTI_COUNT)
+        set(value) = setOrRemove(KEY_NOTI_COUNT, value)
 
     private fun getString(key: String): String? {
         return preferences.getString(key, null)
@@ -125,6 +137,8 @@ private const val KEY_LOCATION_PERMISSION = "location_permission"
 private const val KEY_MEMBER_ID = "member_id"
 private const val KEY_EMAIL = "email_id"
 private const val KEY_RESENT_SEARCH = "resent_search"
+private const val KEY_FIRE_BASE_TOKEN = "firebase-token"
+private const val KEY_NOTI_COUNT = "notification-count"
 const val KEY_APP_VERSION = "app_version"
 const val KEY_BOTTOM_NAVIGATION = "bottom_navigation"
 const val KEY_CALL_ALLOWED_MAIN_ACTIVITY = "call_allowed"

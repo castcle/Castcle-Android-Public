@@ -1,5 +1,6 @@
 package com.castcle.common_model.model.notification
 
+import com.castcle.common_model.model.feed.api.response.Meta
 import com.castcle.common_model.model.feed.api.response.Pagination
 import com.google.gson.annotations.SerializedName
 
@@ -40,8 +41,8 @@ data class BadgesResponse(
 data class NotificationResponse(
     @SerializedName("payload")
     val notificationPayload: List<NotificationPayload>,
-    @SerializedName("pagination")
-    val pagination: Pagination
+    @SerializedName("meta")
+    val metadata: Meta
 )
 
 data class NotificationPayload(

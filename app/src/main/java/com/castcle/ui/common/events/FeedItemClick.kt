@@ -71,4 +71,12 @@ sealed class FeedItemClick(
     class FeedFollowingClick(
         val contentUiModel: ContentFeedUiModel
     ) : FeedItemClick(0)
+
+    class WebContentClick(
+        val contentUiModel: ContentFeedUiModel
+    ) : FeedItemClick(0)
+
+    class WebContentMessageClick(
+        val url: String
+    ) : FeedItemClick(0)
 }

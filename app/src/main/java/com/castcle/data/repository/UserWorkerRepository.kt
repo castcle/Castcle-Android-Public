@@ -51,7 +51,7 @@ interface UserWorkerRepository {
 
     fun uppdateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User>
 
-    fun createContent(contentRequest: CreateContentRequest): Single<ContentUiModel>
+    fun createContent(contentRequest: CreateContentRequest): Single<ContentFeedUiModel>
 
     fun putToFollowUser(followRequest: FollowRequest): Completable
 
@@ -92,13 +92,13 @@ class UserWorkerRepositoryImpl @Inject constructor(
             }.firstOrError()
     }
 
-    override fun createContent(contentRequest: CreateContentRequest): Single<ContentUiModel> {
+    override fun createContent(contentRequest: CreateContentRequest): Single<ContentFeedUiModel> {
         return userApi
             .createContent(
                 featureSlug = contentRequest.createType,
                 createContentRequest = contentRequest
             ).lift(ApiOperators.mobileApiError())
-            .map { it.payload.toViewContentUiModel() }
+            .map { it.payload.toContentFeedUiModel() }
             .firstOrError()
     }
 

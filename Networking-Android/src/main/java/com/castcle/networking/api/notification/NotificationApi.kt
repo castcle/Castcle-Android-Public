@@ -36,6 +36,7 @@ interface NotificationApi {
     @GET("/notifications")
     suspend fun getNotification(
         @Query(SOURCE) source: String,
+        @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int
     ): Response<NotificationResponse>

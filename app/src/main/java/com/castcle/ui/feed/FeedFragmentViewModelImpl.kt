@@ -63,6 +63,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val deleteContentCompletableUseCase: DeleteContentCompletableUseCase,
     private val recastContentSingleUseCase: RecastContentCompletableUseCase,
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -87,6 +88,9 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override val isGuestMode: Boolean
         get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
+    override val castcleId: String
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
+
     private fun setUserProfileData(user: Optional<User>) {
         if (user.isPresent) {
             _userProfile.value = user.get()
@@ -96,7 +100,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val defaultFeedRequestHeader = FeedRequestHeader(
         featureSlug = FeedContentType.FEED_SLUG.type,
         circleSlug = FeedContentType.CIRCLE_SLUG_FORYOU.type,
-        mode = ModeType.MODE_CURRENT.type
+        mode = ModeType.MODE_CURRENT.type,
+        isMeId = castcleId
     )
 
     private var _queryFeedRequest = MutableStateFlow(defaultFeedRequestHeader)
@@ -172,7 +177,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
             feedNonAuthRepository.getFeedRemoteMediator(feedRequest).cachedIn(viewModelScope)
         }, {
             _showLoading.onNext(false)
-            _feedUiMode = it.distinctUntilChanged().cachedIn(viewModelScope)
+            _feedUiMode = it
         })
 
     override fun getAllFeedGustsContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
@@ -231,8 +236,8 @@ class FeedFragmentViewModelImpl @Inject constructor(
         _trendsResponse.value = list
     }
 
-    private var _castPostResponse = SingleLiveEvent<ContentUiModel>()
-    override val castPostResponse: SingleLiveEvent<ContentUiModel>
+    private var _castPostResponse = SingleLiveEvent<ContentFeedUiModel>()
+    override val castPostResponse: SingleLiveEvent<ContentFeedUiModel>
         get() = _castPostResponse
 
     override fun checkCastPostWithImageStatus(): Observable<Boolean> {
@@ -251,7 +256,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
 
     private fun checkCastPostResponse(userResponse: String) {
         if (userResponse.isNotBlank()) {
-            val castPostRes = userResponse.totContentUiModel()
+            val castPostRes = userResponse.toContentFeedUiModel()
             _castPostResponse.value = castPostRes
         }
     }

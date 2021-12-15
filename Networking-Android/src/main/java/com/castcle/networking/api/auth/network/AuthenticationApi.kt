@@ -107,4 +107,9 @@ interface AuthenticationApi {
     fun requestVerifyOtp(
         @Body verifyOtpRequest: VerifyOtpRequest
     ): Flowable<Response<VerificationResponse>>
+
+    @POST("notifications/registerToken")
+    fun registerFireBaseToken(
+        @Body registerFireBaseTokenRequest: RegisterFireBaseTokenRequest
+    ): Flowable<Response<Unit>>
 }

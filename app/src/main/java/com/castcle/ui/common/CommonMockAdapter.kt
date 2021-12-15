@@ -81,14 +81,20 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ViewHolder<ContentFeedUiModel> {
+    ): CommonMockAdapter.ViewHolder<ContentFeedUiModel> {
         return when (viewType) {
             R.layout.layout_feed_template_image ->
-                FeedContentImageMockViewHolder.newInstance(parent, click)
+                FeedContentImageViewHolder.newInstance(parent, click)
             R.layout.layout_feed_template_blog ->
-                FeedContentBlogMockViewHolder.newInstance(parent, click)
+                FeedContentBlogViewHolder.newInstance(parent, click)
             R.layout.layout_feed_template_short ->
-                FeedContentShortMockViewHolder.newInstance(parent, click)
+                FeedContentShortViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_short_web ->
+                FeedContentShortWebViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_short_image ->
+                FeedContentShortImageViewHolder.newInstance(parent, click)
+            R.layout.layout_feed_template_quote ->
+                FeedContentQuoteViewHolder.newInstance(parent, click)
             else -> throw UnsupportedOperationException()
         }
     }
@@ -96,8 +102,23 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
     override fun getItemViewType(position: Int): Int {
         return when (getContentType(position)) {
             BLOG.type -> R.layout.layout_feed_template_blog
-            SHORT.type -> R.layout.layout_feed_template_short
+            SHORT.type -> optionalTypeShort(position)
             IMAGE.type -> R.layout.layout_feed_template_image
+            QUOTE.type -> R.layout.layout_feed_template_quote
+            else -> R.layout.layout_feed_template_short
+        }
+    }
+
+    private fun optionalTypeShort(position: Int): Int {
+        return when {
+            uiModels[position].link == null &&
+                uiModels[position].photo?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            uiModels[position].link?.url.isNullOrBlank() &&
+                uiModels[position].photo?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            uiModels[position].link?.url?.isNotBlank() == true ->
+                R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }
     }

@@ -30,12 +30,14 @@ import com.castcle.common_model.model.feed.PageKey
 
 @Dao
 interface PageKeyDao : BaseDao<PageKey> {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOrReplace(pageKey: PageKey)
 
-    @Transaction
-    @Query("SELECT * FROM pageKey WHERE id LIKE :id")
-    fun getNextPageKey(id: String): PageKey?
+    @Query("SELECT * FROM pageKey WHERE contentId LIKE :id")
+    suspend fun getNextPageKey(id: String): PageKey?
+
+    @Query("SELECT * FROM pageKey")
+    suspend fun getAllNextPageKey(): List<PageKey>?
 
     @Query("DELETE FROM pageKey")
     fun clearAll()

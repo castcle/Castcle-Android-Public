@@ -30,7 +30,7 @@ data class UserContentResponse(
     @SerializedName("payload")
     var payload: List<UserContentItemResponse>,
     @SerializedName("includes")
-    val includes: IncludesResponse? = null,
+    val includes: IncludesUserContentResponse? = null,
     @SerializedName("meta")
     var meta: Meta
 )
@@ -39,7 +39,7 @@ data class UserContentItemResponse(
     @SerializedName("id") var id: String? = null,
     @SerializedName("authorId") var authorId: String,
     @SerializedName("type") var type: String,
-    @SerializedName("message") var message: String,
+    @SerializedName("message") var message: String? = null,
     @SerializedName("photo") var photo: PhotoContents? = null,
     @SerializedName("link") val links: List<LinkResponse>? = null,
     @SerializedName("referencedCasts") val referencedCasts: ReferencedCasts? = null,
@@ -48,4 +48,11 @@ data class UserContentItemResponse(
     @SerializedName("aggregator") val aggregator: AggregatorContent? = null,
     @SerializedName("createdAt") var created: String,
     @SerializedName("updatedAt") var updated: String,
+)
+
+data class IncludesUserContentResponse(
+    @SerializedName("users")
+    val users: List<IncludesUserdata>,
+    @SerializedName("casts")
+    val casts: List<UserContentItemResponse>
 )

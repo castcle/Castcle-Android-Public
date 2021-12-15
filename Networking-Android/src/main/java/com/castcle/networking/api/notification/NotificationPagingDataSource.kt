@@ -36,6 +36,8 @@ class NotificationPagingDataSource(
 
     private var nextPage: Int = 0
 
+    private var oldestId: String = ""
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, NotificationPayloadModel> {
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
@@ -43,19 +45,22 @@ class NotificationPagingDataSource(
             val response = notificationApi.getNotification(
                 source = source,
                 pageNumber = pageNumber,
-                pageSize = pageSize
+                pageSize = pageSize,
+                unitId = oldestId
             )
             nextPage = pageNumber
 
             val pagedResponse = response.body()
             val data = pagedResponse?.toNotificationUiModel()
             var nextPageNumber: Int? = null
+            oldestId = pagedResponse?.metadata?.oldestId ?: ""
 
-            if (pagedResponse?.pagination?.next != null &&
-                pagedResponse.pagination.next != 0 &&
-                pagedResponse.pagination.next != nextPage
+            if (pagedResponse?.metadata?.oldestId != null &&
+                pagedResponse.metadata.oldestId?.isNotBlank() == true &&
+                pagedResponse.metadata.oldestId != oldestId
             ) {
-                nextPageNumber = pagedResponse.pagination.next
+                oldestId = pagedResponse.metadata.oldestId ?: ""
+                nextPageNumber = nextPage.plus(1)
             }
 
             LoadResult.Page(

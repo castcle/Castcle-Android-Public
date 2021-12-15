@@ -1,17 +1,21 @@
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortWebBinding
-import com.castcle.common_model.model.feed.*
+import com.castcle.common.lib.extension.subscribeOnClick
+import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.feed.LinkUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
+import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
+import com.chayangkoon.champ.linkpreview.LinkPreview
+import com.chayangkoon.champ.linkpreview.common.LinkContent
 import com.workfort.linkpreview.LinkData
-import com.workfort.linkpreview.callback.ParserCallback
-import com.workfort.linkpreview.util.LinkParser
+import kotlinx.coroutines.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -42,12 +46,21 @@ class FeedContentShortWebViewHolder(
     private val click: (Click) -> Unit
 ) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
+    private lateinit var contentFeedUiModel: ContentFeedUiModel
+
     init {
         binding.ubUser.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
+        }.addToDisposables()
+        binding.clPreviewContent.clInPreviewContent.subscribeOnClick {
+            handleItemClick(
+                TemplateEventClick.WebContentClick(
+                    contentFeedUiModel
+                )
+            )
         }.addToDisposables()
     }
 
@@ -108,15 +121,31 @@ class FeedContentShortWebViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.WebContentClick -> {
+                click.invoke(
+                    FeedItemClick.WebContentClick(
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.WebContentMessageClick -> {
+                click.invoke(
+                    FeedItemClick.WebContentMessageClick(
+                        it.url
+                    )
+                )
+            }
             else -> {
             }
         }
     }
 
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     @SuppressLint("SetTextI18n")
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
-
+        contentFeedUiModel = uiModel
         with(binding) {
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
@@ -125,26 +154,38 @@ class FeedContentShortWebViewHolder(
             }
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.appendLinkText(message)
+                with(tvFeedContent) {
+                    appendLinkText(message)
+                    setLinkClickListener(object : SocialTextView.LinkClickListener {
+                        override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
+                            handleItemClick(
+                                TemplateEventClick.WebContentMessageClick(
+                                    matchedText
+                                )
+                            )
+                        }
+                    })
+                }
                 ftFooter.bindUiModel(uiModel)
 
                 link?.let {
-                    LinkParser(it.url, object : ParserCallback {
-                        override fun onData(linkData: LinkData) {
-                            if (it.imagePreview.isBlank() && linkData.imageUrl?.isBlank() == true) {
-                                onBindContentIconWeb(linkData)
-                            } else {
-                                onBindContentImageWeb(linkData, uiModel.link)
-                            }
-                        }
-
-                        override fun onError(exception: Exception) {
-                            clPreviewIconContent.clInPreviewIconContent.gone()
-                            clPreviewContent.clInPreviewContent.gone()
-                        }
-                    }).parse()
+                    scope.launch {
+                        val urlPreview = getContentWebPreview(it.url)
+                        onBindContentImageWeb(it, urlPreview)
+                    }
                 }
             }
+        }
+    }
+
+    private val linkPreview = LinkPreview.Builder().build()
+
+    private suspend fun getContentWebPreview(urlPreview: String): LinkContent {
+        if (urlPreview.isBlank()) {
+            return LinkContent()
+        }
+        return withContext(Dispatchers.IO) {
+            linkPreview.loadPreview(urlPreview)
         }
     }
 
@@ -161,18 +202,18 @@ class FeedContentShortWebViewHolder(
         }
     }
 
-    private fun onBindContentImageWeb(linkUiModel: LinkData, link: LinkUiModel?) {
+    private fun onBindContentImageWeb(linkUiModel: LinkUiModel, urlPreview: LinkContent) {
         stopLoadingPreViewShimmer()
         with(binding.clPreviewContent) {
             clInPreviewContent.visible()
             with(linkUiModel) {
                 ivPerviewUrl.loadGranularRoundedCornersImage(
-                    link?.imagePreview ?: "",
+                    imagePreview ?: "",
                     topLeft = 20f,
                     topRight = 20f
                 )
-                tvPreviewHeader.text = title
-                tvPreviewContent.text = description
+                tvPreviewHeader.text = urlPreview.title
+                tvPreviewContent.text = urlPreview.description
             }
         }
     }

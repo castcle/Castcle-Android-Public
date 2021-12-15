@@ -113,4 +113,6 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract fun putToFollowUser(castcleId: String): Completable
 
     abstract val castcleId: String
+
+    abstract fun updateFireBaseToken(token: String): Completable
 }

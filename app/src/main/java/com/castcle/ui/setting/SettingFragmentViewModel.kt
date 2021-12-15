@@ -10,7 +10,8 @@ import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
-import com.castcle.ui.util.SingleLiveEvent
+import com.castcle.usecase.feed.GetNotificationCountCompleteUseCase
+import com.castcle.usecase.feed.UpdateNotificationCountCompleteUseCase
 import com.castcle.usecase.notification.GetBadgesNotificationSingleUseCase
 import com.castcle.usecase.setting.*
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
@@ -60,6 +61,8 @@ abstract class SettingFragmentViewModel : BaseViewModel() {
     abstract fun fetchUserPage()
 
     abstract fun fetchNextUserPage()
+
+    abstract fun getCacheNotificationCount()
 }
 
 class SettingFragmentViewModelImpl @Inject constructor(
@@ -67,7 +70,9 @@ class SettingFragmentViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val getUerPageSingleUseCase: GetUerPageSingleUseCase,
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
-    private val getBadgesNotificationSingleUseCase: GetBadgesNotificationSingleUseCase
+    private val getBadgesNotificationSingleUseCase: GetBadgesNotificationSingleUseCase,
+    private val updateNotificationCountCompleteUseCase: UpdateNotificationCountCompleteUseCase,
+    private val getNotificationCountCompleteUseCase: GetNotificationCountCompleteUseCase
 ) : SettingFragmentViewModel() {
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
@@ -144,7 +149,13 @@ class SettingFragmentViewModelImpl @Inject constructor(
     }
 
     private fun onBindNotification(notificationBadge: NotificationUiModel) {
+        val notificationCount = (notificationBadge as NotificationUiModel.NotificationBadgeModel)
+        onUpdateNotificationCount(notificationCount.badges)
         _notificationBadgesCounts.value = notificationBadge
+    }
+
+    private fun onUpdateNotificationCount(badges: String) {
+        updateNotificationCountCompleteUseCase.execute(badges).subscribe().addToDisposables()
     }
 
     override fun fetchNextUserPage() {
@@ -172,6 +183,20 @@ class SettingFragmentViewModelImpl @Inject constructor(
 
     private fun setUserPage(pageitem: List<PageUiModel>) {
         _userPage.value = pageitem
+    }
+
+    override fun getCacheNotificationCount() {
+        getNotificationCountCompleteUseCase.execute(Unit).subscribeBy(
+            onSuccess = {
+                onBindNotification(
+                    NotificationUiModel.NotificationBadgeModel(
+                        badges = it
+                    )
+                )
+            }, onError = {
+                _error.onNext(it)
+            }
+        ).addToDisposables()
     }
 }
 

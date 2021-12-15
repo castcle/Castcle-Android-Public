@@ -1,17 +1,16 @@
-package com.castcle.ui.common.viewholder.feed
+package com.castcle.ui.common.viewholder.feedMock
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.castcle.android.components_android.databinding.LayoutFeedTemplateImageBinding
+import com.castcle.android.components_android.databinding.LayoutFeedTemplateQuoteBinding
 import com.castcle.common_model.model.feed.ContentFeedUiModel
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
-import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
-import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
 import com.castcle.extensions.gone
 import com.castcle.ui.common.CommonAdapter
+import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
+import com.castcle.ui.createbloc.adapter.CommonQuoteCastAdapter
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -37,29 +36,28 @@ import com.castcle.ui.common.events.FeedItemClick
 //
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
-class FeedContentImageViewHolder(
-    val binding: LayoutFeedTemplateImageBinding,
+class FeedContentQuoteViewHolder(
+    val binding: LayoutFeedTemplateQuoteBinding,
     private val click: (Click) -> Unit
-) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
+) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
+
+    private var commonMockAdapter: CommonQuoteCastAdapter
 
     init {
+        with(binding.rvQuoteItem) {
+            adapter = CommonQuoteCastAdapter().also {
+                commonMockAdapter = it
+            }
+        }
         binding.ubUser.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
-        binding.icImageContent.imageItemClick.subscribe {
-            handleItemClick(it)
-        }.addToDisposables()
     }
 
     private fun handleItemClick(it: TemplateEventClick?) {
-        binding.skeletonLoading.shimmerLayoutLoading.run {
-            stopShimmer()
-            setShimmer(null)
-            gone()
-        }
         when (it) {
             is TemplateEventClick.AvatarClick -> {
                 click.invoke(
@@ -96,7 +94,7 @@ class FeedContentImageViewHolder(
             is TemplateEventClick.ImageClick -> {
                 click.invoke(
                     FeedItemClick.FeedImageClick(
-                        bindingAdapterPosition,
+                        it.imageIndex,
                         it.contentUiModel
                     )
                 )
@@ -113,13 +111,6 @@ class FeedContentImageViewHolder(
                 click.invoke(
                     FeedItemClick.FeedFollowingClick(
                         it.contentUiModel
-                    )
-                )
-            }
-            is TemplateEventClick.WebContentMessageClick -> {
-                click.invoke(
-                    FeedItemClick.WebContentMessageClick(
-                        it.url
                     )
                 )
             }
@@ -140,17 +131,11 @@ class FeedContentImageViewHolder(
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.appendLinkText(message)
-                tvFeedContent.setLinkClickListener(object : SocialTextView.LinkClickListener{
-                    override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
-                        handleItemClick(
-                            TemplateEventClick.WebContentMessageClick(
-                                matchedText
-                            )
-                        )
-                    }
-                })
-                icImageContent.bindImageContent(uiModel)
                 ftFooter.bindUiModel(uiModel)
+            }
+            if (uiModel.contentQuoteCast != null) {
+                val quoteContent = listOf(uiModel.contentQuoteCast!!)
+                commonMockAdapter.uiModels = quoteContent
             }
         }
     }
@@ -159,10 +144,10 @@ class FeedContentImageViewHolder(
         fun newInstance(
             parent: ViewGroup,
             clickItem: (Click) -> Unit
-        ): FeedContentImageViewHolder {
+        ): FeedContentQuoteViewHolder {
             val inflate = LayoutInflater.from(parent.context)
-            val binding = LayoutFeedTemplateImageBinding.inflate(inflate, parent, false)
-            return FeedContentImageViewHolder(binding, clickItem)
+            val binding = LayoutFeedTemplateQuoteBinding.inflate(inflate, parent, false)
+            return FeedContentQuoteViewHolder(binding, clickItem)
         }
     }
 }

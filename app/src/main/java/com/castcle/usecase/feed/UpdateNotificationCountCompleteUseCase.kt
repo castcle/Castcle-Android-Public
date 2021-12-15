@@ -1,12 +1,10 @@
-package com.castcle.usecase.userprofile
+package com.castcle.usecase.feed
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.userprofile.domain.CreateContentRequest
-import com.castcle.common_model.model.userprofile.CreateContentUiModel
-import com.castcle.data.error.CreateContentError
-import com.castcle.data.repository.UserProfileRepository
-import com.castcle.usecase.base.SingleUseCase
-import io.reactivex.Single
+import com.castcle.data.error.Ignored
+import com.castcle.data.storage.AppPreferences
+import com.castcle.usecase.base.CompletableUseCase
+import io.reactivex.Completable
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -31,17 +29,19 @@ import javax.inject.Inject
 //  or have any questions.
 //
 //
-//  Created by sklim on 13/9/2021 AD at 12:03.
+//  Created by sklim on 1/9/2021 AD at 10:44.
 
-class CreateContentSingleUseCase @Inject constructor(
+class UpdateNotificationCountCompleteUseCase @Inject constructor(
     rxSchedulerProvider: RxSchedulerProvider,
-    private val userProfileRepository: UserProfileRepository
-) : SingleUseCase<CreateContentRequest, CreateContentUiModel>(
+    private val appPreferences: AppPreferences
+) : CompletableUseCase<String>(
     rxSchedulerProvider.io(),
-    rxSchedulerProvider.main(),
-    ::CreateContentError
+    rxSchedulerProvider.io(),
+    ::Ignored
 ) {
-    override fun create(input: CreateContentRequest): Single<CreateContentUiModel> {
-        return userProfileRepository.createContent(input)
+    override fun create(input: String): Completable {
+        return Completable.fromAction {
+            appPreferences.notificationCount = input
+        }
     }
 }

@@ -45,7 +45,7 @@ class UserProfilePagingDataSource(
             val response = userApi.getUserProfileContent(
                 pageNumber = pageNumber,
                 pageSize = pageSize,
-                unitId = contentRequestHeader.oldestId,
+                unitId = oldestId,
                 filterType = contentRequestHeader.type
             )
 

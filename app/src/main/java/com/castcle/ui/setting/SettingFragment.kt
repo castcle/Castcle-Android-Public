@@ -94,6 +94,8 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                     displayError(it)
                 }
             ).addToDisposables()
+
+        viewModel.getCacheNotificationCount()
     }
 
     override fun setupView() {

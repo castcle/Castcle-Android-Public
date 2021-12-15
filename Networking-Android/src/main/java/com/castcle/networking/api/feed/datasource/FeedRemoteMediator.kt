@@ -1,5 +1,6 @@
 package com.castcle.networking.api.feed.datasource
 
+import android.util.Log
 import androidx.paging.*
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.domain.dao.*
@@ -7,7 +8,6 @@ import com.castcle.networking.api.feed.FeedApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import java.util.concurrent.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -45,25 +45,29 @@ class FeedRemoteMediator(
 
     private var oldestId: String = ""
 
+    override suspend fun initialize(): InitializeAction {
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, FeedCacheModel>
     ): MediatorResult {
 
         return try {
-            var remoteKey = PageKey("", 0, 0, "")
+            var remoteKey = PageKey(0, "", 0, 0, "")
+            Log.d("REMOTE-KEY", "${loadType.name}")
             val (loadKey, pageSize) = when (loadType) {
                 LoadType.REFRESH -> Pair(1, DEFAULT_PAGE_SIZE)
-                LoadType.PREPEND ->
-                    return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.PREPEND -> return MediatorResult.Success(
+                    endOfPaginationReached = true
+                )
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()
-
                     remoteKey = withContext(Dispatchers.IO) {
-                        pageKeyDao.getNextPageKey(lastItem?.id ?: "")!!
+                        pageKeyDao.getAllNextPageKey()?.lastOrNull()!!
                     }
-
-                    if (remoteKey.id.isBlank()) {
+                    if (lastItem == null) {
                         return MediatorResult.Success(
                             endOfPaginationReached = true
                         )
@@ -71,18 +75,18 @@ class FeedRemoteMediator(
                     Pair(remoteKey.nextPage, remoteKey.pageSize)
                 }
             }
-
             val response = feedApi.getFeed(
                 featureSlug = feedRequestHeader.featureSlug,
                 circleSlug = feedRequestHeader.circleSlug,
                 hasTag = feedRequestHeader.hashtag,
                 unitId = remoteKey.unitId ?: "",
                 pageNumber = loadKey ?: 0,
-                pageSize = pageSize ?: 25,
+                pageSize = DEFAULT_PAGE_SIZE,
                 mode = feedRequestHeader.mode
             )
             nextPage = loadKey?.plus(1) ?: 0
             oldestId = feedRequestHeader.oldestId
+            Log.d("REMOTE-KEY-NEXT", "${remoteKey.nextPage},${remoteKey.pageSize}")
 
             val pagedResponse = response.body()
             val data = pagedResponse?.let { mapToContentFeedUiMode(feedRequestHeader.isMeId, it) }
@@ -91,11 +95,11 @@ class FeedRemoteMediator(
                 withContext(Dispatchers.IO) {
                     if (loadType == LoadType.REFRESH) {
                         pageKeyDao.clearAll()
-                        feedCacheDao.deleteComment()
+                        feedCacheDao.deleteFeedCache()
                     }
                     pageKeyDao.insertOrReplace(
                         PageKey(
-                            id = pagedResponse.payLoadLists.lastOrNull()?.id ?: "",
+                            contentId = data.lastOrNull()?.contentId,
                             nextPage = nextPage,
                             pageSize = DEFAULT_PAGE_SIZE,
                             unitId = pagedResponse.meta.oldestId ?: ""
@@ -106,9 +110,18 @@ class FeedRemoteMediator(
             }
             MediatorResult.Success(endOfPaginationReached = response.body()?.meta?.oldestId == null)
         } catch (e: Exception) {
+            Log.d("REMOTE-ERROR", "$e")
             MediatorResult.Error(e)
         } catch (e: HttpException) {
+            Log.d("REMOTE-ERROR", "${e.message}")
             MediatorResult.Error(e)
         }
+    }
+
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, FeedCacheModel>): PageKey? {
+        return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
+            ?.let { repo ->
+                pageKeyDao.getNextPageKey(repo.contentId)
+            }
     }
 }

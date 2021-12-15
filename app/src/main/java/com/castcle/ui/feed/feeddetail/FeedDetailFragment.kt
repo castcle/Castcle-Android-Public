@@ -157,10 +157,8 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private fun onBindStartComment(showCommentState: Boolean = false) {
         with(binding.itemComment) {
-            groupOnReply.visibleOrGone(!showCommentState)
-            groupReply.visibleOrGone(showCommentState)
-            etInputMessage.requestFocus()
-            requireContext().showSoftKeyboard(etInputMessage)
+            etInputMessages.requestFocus()
+            requireContext().showSoftKeyboard(etInputMessages)
         }
     }
 
@@ -301,9 +299,9 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             commentId = it.contentUiModel.id
             commentLikeStatus = it.contentUiModel.payLoadUiModel.likedUiModel.liked
 
-            with(etInputMessage) {
+            with(etInputMessages) {
                 setText(MENTION_CASTCLE_ID.format(castcleId))
-                setSelection(etInputMessage.text.length)
+                setSelection(etInputMessages.text.length)
                 onReplyComment = true
             }
         }
@@ -311,7 +309,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
 
     private fun getReplyCommentRequest(): ReplyCommentRequest {
         return ReplyCommentRequest(
-            message = binding.itemComment.etInputMessage.text.toString(),
+            message = binding.itemComment.etInputMessages.text.toString(),
             contentId = contentUiModel.contentId,
             commentId = commentId,
             authorId = userProfile.castcleId
@@ -321,7 +319,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     private fun onSentReplyComment() {
         with(binding.itemComment) {
             val commentRequest = getReplyCommentRequest()
-            if (etInputMessage.text.isNotBlank()) {
+            if (etInputMessages.text.isNotBlank()) {
                 sentReplyComment(commentRequest)
             }
         }
@@ -412,7 +410,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     private fun onEmptyReply() {
         onReplyComment = false
         with(binding.itemComment) {
-            etInputMessage.setText("")
+            etInputMessages.setText("")
         }
     }
 

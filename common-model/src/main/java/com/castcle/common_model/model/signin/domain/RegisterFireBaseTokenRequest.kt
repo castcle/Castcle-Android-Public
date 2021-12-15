@@ -1,8 +1,6 @@
-package com.castcle.common_model.model.feed.domain.dao
+package com.castcle.common_model.model.signin.domain
 
-import androidx.paging.PagingSource
-import androidx.room.*
-import com.castcle.common_model.model.BaseDao
+import com.google.gson.annotations.SerializedName
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -26,37 +24,11 @@ import com.castcle.common_model.model.BaseDao
 //  or have any questions.
 //
 //
-//  Created by sklim on 5/10/2021 AD at 18:14.
-@Dao
-interface FeedCacheDao : BaseDao<FeedCacheModel> {
+//  Created by sklim on 23/8/2021 AD at 09:50.
 
-    @Transaction
-    @Query("SELECT * FROM feedcache")
-    fun pagingSource(): PagingSource<Int, FeedCacheModel>
-
-    @Transaction
-    fun insertAllComment(comment: List<FeedCacheModel>) {
-        insertAll(comment)
-    }
-
-    @Query("SELECT * FROM feedcache WHERE contentId = :contentId")
-    fun getFeedCache(contentId: String): FeedCacheModel?
-
-    @Transaction
-    @Update
-    fun updateLiked(feedCache: FeedCacheModel)
-
-    @Query("DELETE FROM feedcache")
-    fun deleteFeedCache()
-
-    @Transaction
-    suspend fun insertComment(feedcache: FeedCacheModel) {
-        insert(feedcache)
-    }
-
-    @Transaction
-    fun refresh(feedcache: FeedCacheModel) {
-        deleteFeedCache()
-        insert(feedcache)
-    }
-}
+data class RegisterFireBaseTokenRequest(
+    @SerializedName("deviceUUID")
+    var deviceUUID: String? = "",
+    @SerializedName("firebaseToken")
+    var firebaseToken: String? = ""
+)

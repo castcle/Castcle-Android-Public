@@ -13,7 +13,6 @@ import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.perfomer.blitz.setTimeAgo
-import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -114,6 +113,9 @@ class UserBarTemplate(
                     with(tvStatusFollow) {
                         visibleOrGone(!itemUiModel.userContent.followed)
                     }
+                    if (itemUiModel.isMindId) {
+                        tvStatusFollow.gone()
+                    }
                     groupReCasted.visibleOrGone(
                         referencedCastsId.isNotBlank() && referencedCastsType.isNotBlank()
                     )
@@ -160,7 +162,7 @@ class UserBarTemplate(
                 youRecast
             )
         } else {
-            if (itemUiModel.isMindId == itemUiModel.referencedCastsId) {
+            if (itemUiModel.isMindId) {
                 binding.root.context.getString(R.string.feed_content_me_recasted)
             } else {
                 binding.root.context.getString(R.string.feed_content_you_recasted).format(
@@ -170,10 +172,6 @@ class UserBarTemplate(
         }
 
         return recasted
-    }
-
-    private fun checkHasMeRecast() {
-
     }
 }
 

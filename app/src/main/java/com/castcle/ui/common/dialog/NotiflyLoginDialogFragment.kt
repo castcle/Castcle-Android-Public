@@ -314,4 +314,4 @@ const val STATIC_LINK_ABOUT_US =
 const val STATIC_LINK_MENIFESTO =
     "https://docs.castcle.com/"
 const val STATIC_LINK_WHITEPAPER =
-    "https://documents.castcle.com/castcle-whitepaper-v1_3.pdf"
+    "https://castcle.com/whitepaper.pdf"

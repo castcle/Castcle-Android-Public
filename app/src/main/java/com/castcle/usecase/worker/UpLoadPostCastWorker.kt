@@ -2,8 +2,8 @@ package com.castcle.usecase.worker
 
 import android.content.Context
 import androidx.work.*
-import com.castcle.common_model.model.feed.ContentUiModel
-import com.castcle.common_model.model.feed.toContentUiModelString
+import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.feed.toModelString
 import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.data.error.AppError
 import com.castcle.usecase.createblog.ScaleImagesSingleUseCase
@@ -59,7 +59,7 @@ class UpLoadPostCastWorker(
                 Result.failure(outputData)
             }
             .map { userResponse ->
-                val outputData = buildSuccessOutput(userResponse.toContentUiModelString())
+                val outputData = buildSuccessOutput(userResponse.toModelString())
                 Result.success(outputData)
             }.blockingGet()
     }
@@ -67,7 +67,7 @@ class UpLoadPostCastWorker(
     private fun upLoadPostWithImage(
         list: List<Content>,
         createPost: CreateContentRequest
-    ): Single<ContentUiModel> {
+    ): Single<ContentFeedUiModel> {
         val contentRequest = createPost.apply {
             payload.photo?.contents = list
         }

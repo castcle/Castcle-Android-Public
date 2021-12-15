@@ -9,6 +9,7 @@ import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.domain.FollowRequest
 import com.castcle.ui.util.SingleLiveEvent
+import com.castcle.usecase.auth.UpdateFireBaseTokenCompleteUseCase
 import com.castcle.usecase.login.LogoutCompletableUseCase
 import com.castcle.usecase.setting.*
 import com.castcle.usecase.userprofile.*
@@ -56,7 +57,8 @@ class OnBoardViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val putToFollowUserCompletableUseCase: PutToFollowUserCompletableUseCase,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val updateFireBaseTokenCompleteUseCase: UpdateFireBaseTokenCompleteUseCase
 ) : OnBoardViewModel() {
 
     private val _userProfile = BehaviorSubject.create<User>()
@@ -329,5 +331,9 @@ class OnBoardViewModelImpl @Inject constructor(
                 targetCastcleId = castcleId
             )
         )
+    }
+
+    override fun updateFireBaseToken(token: String): Completable {
+        return updateFireBaseTokenCompleteUseCase.execute(token)
     }
 }

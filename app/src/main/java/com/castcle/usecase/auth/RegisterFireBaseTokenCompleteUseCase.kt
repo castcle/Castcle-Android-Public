@@ -1,8 +1,13 @@
-package com.castcle.common_model.model.feed.domain.dao
+package com.castcle.usecase.auth
 
-import androidx.paging.PagingSource
-import androidx.room.*
-import com.castcle.common_model.model.BaseDao
+import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.signin.domain.RegisterFireBaseTokenRequest
+import com.castcle.data.error.VerificationError
+import com.castcle.data.storage.AppPreferences
+import com.castcle.networking.api.auth.AuthenticationsRepository
+import com.castcle.usecase.base.CompletableUseCase
+import io.reactivex.Completable
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -26,37 +31,22 @@ import com.castcle.common_model.model.BaseDao
 //  or have any questions.
 //
 //
-//  Created by sklim on 5/10/2021 AD at 18:14.
-@Dao
-interface FeedCacheDao : BaseDao<FeedCacheModel> {
+//  Created by sklim on 28/9/2021 AD at 15:11.
 
-    @Transaction
-    @Query("SELECT * FROM feedcache")
-    fun pagingSource(): PagingSource<Int, FeedCacheModel>
-
-    @Transaction
-    fun insertAllComment(comment: List<FeedCacheModel>) {
-        insertAll(comment)
-    }
-
-    @Query("SELECT * FROM feedcache WHERE contentId = :contentId")
-    fun getFeedCache(contentId: String): FeedCacheModel?
-
-    @Transaction
-    @Update
-    fun updateLiked(feedCache: FeedCacheModel)
-
-    @Query("DELETE FROM feedcache")
-    fun deleteFeedCache()
-
-    @Transaction
-    suspend fun insertComment(feedcache: FeedCacheModel) {
-        insert(feedcache)
-    }
-
-    @Transaction
-    fun refresh(feedcache: FeedCacheModel) {
-        deleteFeedCache()
-        insert(feedcache)
+class RegisterFireBaseTokenCompleteUseCase @Inject constructor(
+    rxSchedulerProvider: RxSchedulerProvider,
+    private val appPreferences: AppPreferences,
+    private val authenticationsRepository: AuthenticationsRepository
+) : CompletableUseCase<Unit>(
+    rxSchedulerProvider.io(),
+    rxSchedulerProvider.main(),
+    ::VerificationError
+) {
+    override fun create(input: Unit): Completable {
+        return authenticationsRepository.registerFireBaseToken(
+            RegisterFireBaseTokenRequest(
+                firebaseToken = appPreferences.fireBaseToken
+            )
+        )
     }
 }

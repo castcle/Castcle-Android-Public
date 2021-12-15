@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import com.castcle.android.R
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateBlogBinding
 import com.castcle.common_model.model.feed.ContentFeedUiModel
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonMockAdapter
@@ -36,7 +35,7 @@ import com.castcle.ui.common.events.FeedItemClick
 //
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
-class FeedContentBlogMockViewHolder(
+class FeedContentBlogViewHolder(
     val binding: LayoutFeedTemplateBlogBinding,
     private val click: (Click) -> Unit
 ) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
@@ -84,6 +83,14 @@ class FeedContentBlogMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             is TemplateEventClick.FollowingClick -> {
                 click.invoke(
                     FeedItemClick.FeedFollowingClick(
@@ -103,7 +110,7 @@ class FeedContentBlogMockViewHolder(
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
                 tvHeader.text = messageHeader
-                tvContent.text = message
+                tvContent.text = messageContent
                 when {
                     photo != null -> {
                         photo?.firstOrNull()?.let {
@@ -130,10 +137,10 @@ class FeedContentBlogMockViewHolder(
         fun newInstance(
             parent: ViewGroup,
             clickItem: (Click) -> Unit
-        ): FeedContentBlogMockViewHolder {
+        ): FeedContentBlogViewHolder {
             val inflate = LayoutInflater.from(parent.context)
             val binding = LayoutFeedTemplateBlogBinding.inflate(inflate, parent, false)
-            return FeedContentBlogMockViewHolder(binding, clickItem)
+            return FeedContentBlogViewHolder(binding, clickItem)
         }
     }
 }

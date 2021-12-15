@@ -1,15 +1,15 @@
-package com.castcle.ui.common.viewholder.feed
+package com.castcle.ui.common.viewholder.feedMock
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.castcle.android.components_android.databinding.LayoutFeedTemplateImageBinding
+import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortImageBinding
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
-import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
-import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
 import com.castcle.extensions.gone
+import com.castcle.extensions.visible
 import com.castcle.ui.common.CommonAdapter
+import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 
@@ -37,10 +37,10 @@ import com.castcle.ui.common.events.FeedItemClick
 //
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
-class FeedContentImageViewHolder(
-    val binding: LayoutFeedTemplateImageBinding,
+class FeedContentShortImageViewHolder(
+    val binding: LayoutFeedTemplateShortImageBinding,
     private val click: (Click) -> Unit
-) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
+) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -49,17 +49,12 @@ class FeedContentImageViewHolder(
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
-        binding.icImageContent.imageItemClick.subscribe {
+        binding.clPreviewContentImage.icImageContent.imageItemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
     }
 
     private fun handleItemClick(it: TemplateEventClick?) {
-        binding.skeletonLoading.shimmerLayoutLoading.run {
-            stopShimmer()
-            setShimmer(null)
-            gone()
-        }
         when (it) {
             is TemplateEventClick.AvatarClick -> {
                 click.invoke(
@@ -96,7 +91,7 @@ class FeedContentImageViewHolder(
             is TemplateEventClick.ImageClick -> {
                 click.invoke(
                     FeedItemClick.FeedImageClick(
-                        bindingAdapterPosition,
+                        it.imageIndex,
                         it.contentUiModel
                     )
                 )
@@ -116,13 +111,6 @@ class FeedContentImageViewHolder(
                     )
                 )
             }
-            is TemplateEventClick.WebContentMessageClick -> {
-                click.invoke(
-                    FeedItemClick.WebContentMessageClick(
-                        it.url
-                    )
-                )
-            }
             else -> {
             }
         }
@@ -130,8 +118,8 @@ class FeedContentImageViewHolder(
 
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
-
         with(binding) {
+            startLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
@@ -139,18 +127,36 @@ class FeedContentImageViewHolder(
             }
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.appendLinkText(message)
-                tvFeedContent.setLinkClickListener(object : SocialTextView.LinkClickListener{
-                    override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
-                        handleItemClick(
-                            TemplateEventClick.WebContentMessageClick(
-                                matchedText
-                            )
-                        )
-                    }
-                })
-                icImageContent.bindImageContent(uiModel)
+                if (message.isNotBlank()) {
+                    tvFeedContent.appendLinkText(message)
+                } else {
+                    tvFeedContent.gone()
+                }
                 ftFooter.bindUiModel(uiModel)
+                with(clPreviewContentImage) {
+                    clInPreviewContentImage.visible()
+                    icImageContent.bindImageContent(uiModel, true)
+                }
+                stopLoadingPreViewShimmer()
+            }
+        }
+    }
+
+    private fun stopLoadingPreViewShimmer() {
+        with(binding) {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
+                stopShimmer()
+                setShimmer(null)
+                gone()
+            }
+        }
+    }
+
+    private fun startLoadingPreViewShimmer() {
+        with(binding) {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
+                startShimmer()
+                visible()
             }
         }
     }
@@ -159,10 +165,10 @@ class FeedContentImageViewHolder(
         fun newInstance(
             parent: ViewGroup,
             clickItem: (Click) -> Unit
-        ): FeedContentImageViewHolder {
+        ): FeedContentShortImageViewHolder {
             val inflate = LayoutInflater.from(parent.context)
-            val binding = LayoutFeedTemplateImageBinding.inflate(inflate, parent, false)
-            return FeedContentImageViewHolder(binding, clickItem)
+            val binding = LayoutFeedTemplateShortImageBinding.inflate(inflate, parent, false)
+            return FeedContentShortImageViewHolder(binding, clickItem)
         }
     }
 }

@@ -29,9 +29,10 @@ import androidx.room.*
 
 @Entity(tableName = "pageKey")
 data class PageKey(
-    @PrimaryKey
-    @ColumnInfo(name = "id")
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    @ColumnInfo(name = "contentId")
+    val contentId: String?,
     @ColumnInfo(name = "nextPage")
     val nextPage: Int?,
     @ColumnInfo(name = "pageSize")

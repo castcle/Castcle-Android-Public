@@ -3,8 +3,11 @@ package com.castcle.usecase.login
 import android.app.Activity
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
+import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
+import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.data.error.LoginError
+import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.ui.onboard.OnBoardActivity
@@ -43,7 +46,10 @@ class LogoutCompletableUseCase @Inject constructor(
     private val appPreferences: AppPreferences,
     private val secureStorage: SecureStorage,
     private val sessionManagerRepository: SessionManagerRepository,
-    private val onBoardNavigator: OnBoardNavigator
+    private val onBoardNavigator: OnBoardNavigator,
+    private val userDao: UserDao,
+    private val pageKeyDao: PageKeyDao,
+    private val feedCacheDao: FeedCacheDao
 ) : CompletableUseCase<Activity>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
@@ -54,6 +60,9 @@ class LogoutCompletableUseCase @Inject constructor(
             .subscribe()
             .addToDisposables()
         sessionManagerRepository.clearSession()
+        userDao.deleteUser()
+        pageKeyDao.clearAll()
+        feedCacheDao.deleteFeedCache()
         with(secureStorage) {
             userTokenType = null
             userAccessToken = null

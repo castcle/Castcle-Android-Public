@@ -413,7 +413,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             tvProfileName.text = user.displayName
             tvProfileCastcleId.text = user.castcleId
             with(user.overview) {
-                tvProfileOverView.visibleOrInvisible(!isEmpty())
+                tvProfileOverView.visibleOrInvisible(!isBlank())
                 tvProfileOverView.text = this
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
@@ -520,7 +520,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         with(binding.profileYou) {
             btViewProfile.gone()
             ivAddAvatar.visible()
-            btFollow.text = localizedResources.getString(R.string.profile_edit_profile)
+            btFollow.text = localizedResources.getString(R.string.profile_edit_page)
 
             btFollow.subscribeOnClick {
                 onGuestMode(enable = {

@@ -1,5 +1,6 @@
 package com.castcle.ui.search.trend.childview
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -83,10 +84,6 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     override fun initViewModel() {
-
-    }
-
-    override fun setupView() {
         val trendSlug = activityViewModel.trendSlug.value ?: ""
         val feedRequestHeader = FeedRequestHeader(
             featureSlug = FeedContentType.FEED_SLUG.type,
@@ -94,6 +91,9 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
             hashtag = trendSlug
         )
         viewModel.getTesnds(feedRequestHeader)
+    }
+
+    override fun setupView() {
         with(binding.rvContent) {
             adapter = CommonAdapter().also {
                 adapterPagingCommon = it
@@ -141,7 +141,27 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
             is FeedItemClick.FeedFollowingClick -> {
                 handleFeedFollowingClick(click.contentUiModel)
             }
+            is FeedItemClick.WebContentClick -> {
+                handleWebContentClick(click.contentUiModel)
+            }
+            is FeedItemClick.WebContentMessageClick -> {
+                handleWebContentMessageClick(click)
+            }
         }
+    }
+
+    private fun handleWebContentMessageClick(click: FeedItemClick.WebContentMessageClick) {
+        openWebView(click.url)
+    }
+
+    private fun handleWebContentClick(contentUiModel: ContentFeedUiModel) {
+        contentUiModel.link?.url?.let {
+            openWebView(it)
+        }
+    }
+
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
     }
 
     private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {
@@ -193,7 +213,7 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
             val likeContentRequest = LikeContentRequest(
                 contentId = contentUiModel.contentId,
                 feedItemId = contentUiModel.id,
-                authorId = viewModel.userProfile.value?.castcleId ?: "",
+                authorId = viewModel.castcleId,
                 likeStatus = contentUiModel.liked
             )
             if (!contentUiModel.liked) {
@@ -270,12 +290,12 @@ class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
-        handlerUpdateRecasted(currentContent, onRecast)
         viewModel.recastContent(currentContent).subscribeBy(
             onError = {
                 displayError(it)
             }
         ).addToDisposables()
+        handlerUpdateRecasted(currentContent, onRecast)
     }
 
     private fun handlerUpdateRecasted(

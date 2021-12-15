@@ -28,5 +28,5 @@ import com.google.gson.annotations.SerializedName
 //  Created by sklim on 13/9/2021 AD at 11:26.
 
 data class CreateCastResponse(
-    @SerializedName("payload") var payload: PayloadResponse,
+    @SerializedName("payload") var payload: UserContentItemResponse,
 )

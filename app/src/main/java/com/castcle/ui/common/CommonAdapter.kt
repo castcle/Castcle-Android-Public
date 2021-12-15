@@ -196,7 +196,7 @@ object ContentUiModelPagedListDiffCallBack : DiffUtil.ItemCallback<ContentFeedUi
         oldItem: ContentFeedUiModel,
         newItem: ContentFeedUiModel
     ): Boolean {
-        return (oldItem.id == newItem.id)
+        return (oldItem.createdAt == newItem.createdAt)
     }
 
     override fun areContentsTheSame(

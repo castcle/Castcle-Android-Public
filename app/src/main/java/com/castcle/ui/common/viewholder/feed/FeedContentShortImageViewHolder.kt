@@ -4,6 +4,8 @@ import com.castcle.android.components_android.databinding.LayoutFeedTemplateShor
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
+import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
 import com.castcle.extensions.gone
 import com.castcle.extensions.visible
 import com.castcle.ui.common.CommonAdapter
@@ -38,6 +40,8 @@ class FeedContentShortImageViewHolder(
     val binding: LayoutFeedTemplateShortImageBinding,
     private val click: (Click) -> Unit
 ) : CommonAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
+
+    private lateinit var contentFeedUiModel: ContentFeedUiModel
 
     init {
         binding.ubUser.itemClick.subscribe {
@@ -108,6 +112,20 @@ class FeedContentShortImageViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.WebContentClick -> {
+                click.invoke(
+                    FeedItemClick.WebContentClick(
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.WebContentMessageClick -> {
+                click.invoke(
+                    FeedItemClick.WebContentMessageClick(
+                        it.url
+                    )
+                )
+            }
             else -> {
             }
         }
@@ -115,6 +133,7 @@ class FeedContentShortImageViewHolder(
 
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
+        contentFeedUiModel = uiModel
         with(binding) {
             startLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
@@ -126,6 +145,15 @@ class FeedContentShortImageViewHolder(
                 ubUser.bindUiModel(uiModel)
                 if (message.isNotBlank()) {
                     tvFeedContent.appendLinkText(message)
+                    tvFeedContent.setLinkClickListener(object :SocialTextView.LinkClickListener{
+                        override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
+                            handleItemClick(
+                                TemplateEventClick.WebContentMessageClick(
+                                    matchedText
+                                )
+                            )
+                        }
+                    })
                 } else {
                     tvFeedContent.gone()
                 }

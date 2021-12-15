@@ -84,7 +84,8 @@ dependencies {
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:$corotines_version",
             "androidx.paging:paging-runtime-ktx:$androidx_paging_version",
             "androidx.paging:paging-rxjava2-ktx:$androidx_paging_version",
-            "com.auth0:java-jwt:3.18.2"
+            "com.auth0:java-jwt:3.18.2",
+            "com.chayangkoon.champ:linkpreview:1.0.0"
     )
 
     api(

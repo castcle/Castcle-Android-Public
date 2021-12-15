@@ -58,4 +58,12 @@ sealed class TemplateEventClick {
     ) : TemplateEventClick()
 
     class ReTryClick() : TemplateEventClick()
+
+    class WebContentClick(
+        val contentUiModel: ContentFeedUiModel
+    ) : TemplateEventClick()
+
+    class WebContentMessageClick(
+        val url: String
+    ) : TemplateEventClick()
 }

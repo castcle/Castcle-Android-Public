@@ -3,6 +3,7 @@ package com.castcle.ui.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import androidx.annotation.CallSuper
@@ -119,6 +120,7 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("ANDROID-LIFE", "ON Destroy View")
         disposables.clear()
         viewBinding = null
         toolbarViewBinding = null
@@ -126,6 +128,7 @@ abstract class BaseFragment<VM : ViewModel> : DaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("ANDROID-LIFE", "ON Destroy")
         disposables.dispose()
         _baseToolbarBinding = null
     }

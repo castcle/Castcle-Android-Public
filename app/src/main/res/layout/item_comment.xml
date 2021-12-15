@@ -15,43 +15,62 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
         android:text="@string/comment_title"
         android:textColor="@color/gray_light"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/vLine"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.castcle.components_android.ui.custom.mention.MentionEditText
-        style="@style/TextInput.Text"
-        android:id="@+id/etInputMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:layout_marginEnd="@dimen/_12sdp"
-        android:gravity="top"
-        android:hint="@string/comment_title_hint"
-        android:inputType="textMultiLine"
-        android:lines="3"
-        android:maxLines="280"
-        android:scrollbars="vertical"
-        android:imeOptions="actionDone"
-        android:textColorHint="@color/light"
-        app:layout_constraintBottom_toTopOf="@id/vLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:linkType="mention|hashtag"
-        app:mentionTextView_hashtagColor="@color/blue"
-        app:mentionTextView_mentionColor="@color/blue" />
 
     <View
         android:id="@+id/vLine"
         android:layout_width="0dp"
+        android:visibility="invisible"
         android:layout_height="@dimen/_1sdp"
-        android:background="@color/black_drak"
+        android:background="@color/gray"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintBottom_toTopOf="@id/flComment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etInputMessage" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/flComment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@drawable/bg_round_corner"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bvSentComment"
+        app:layout_constraintStart_toEndOf="@id/ivAvatar">
+
+        <com.castcle.components_android.ui.custom.mention.MentionEditText
+            style="@style/TextInput.Text"
+            android:id="@+id/etInputMessages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:gravity="start|center"
+            android:hint="@string/comment_title_hint"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:scrollbars="vertical"
+            android:textColorHint="@color/light"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
+            app:layout_constraintEnd_toStartOf="@+id/bvSentComment"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"
+            app:layout_constraintTop_toTopOf="@id/ivAvatar"
+            app:linkType="mention|hashtag"
+            app:mentionTextView_hashtagColor="@color/blue"
+            app:mentionTextView_mentionColor="@color/blue"
+            tools:lines="1" />
+    </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvWathYouMind"
@@ -63,26 +82,25 @@
         android:paddingStart="@dimen/_16sdp"
         android:paddingTop="@dimen/_6sdp"
         android:paddingBottom="@dimen/_6sdp"
+        android:text="@string/feed_what_you_mind_bar"
         android:textAlignment="viewStart"
         android:textColor="@color/gray_light"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/ivAvatar"
         app:layout_constraintEnd_toStartOf="@+id/bvSentComment"
         app:layout_constraintStart_toEndOf="@id/ivAvatar"
-        app:layout_constraintTop_toTopOf="@id/ivAvatar"
-        android:text="@string/feed_what_you_mind_bar" />
+        app:layout_constraintTop_toTopOf="@id/ivAvatar" />
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         app:civ_border_width="@dimen/_1sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/vLine"
+        app:layout_constraintTop_toTopOf="@id/flComment"
         app:srcCompat="@drawable/ic_avatar_placeholder" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -98,24 +116,11 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bvSentComment"
-        android:layout_width="@dimen/_25sdp"
-        android:layout_height="@dimen/_25sdp"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:background="@drawable/ic_sent_comment"
-        app:layout_constraintBottom_toBottomOf="@id/tvWathYouMind"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvWathYouMind" />
+        app:layout_constraintTop_toTopOf="@id/ivAvatar" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupOnReply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="tvWathYouMind" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupReply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="tvTitle,etInputMessage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

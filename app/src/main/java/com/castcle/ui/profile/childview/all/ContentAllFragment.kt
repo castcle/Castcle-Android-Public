@@ -1,10 +1,13 @@
 package com.castcle.ui.profile.childview.all
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
 import com.castcle.common_model.model.empty.EmptyState
@@ -22,6 +25,7 @@ import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.ProfileFragmentViewModel
+import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -82,7 +86,8 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
-                        viewType = ProfileType.PROFILE_TYPE_PAGE.type
+                        viewType = ProfileType.PROFILE_TYPE_PAGE.type,
+                        isMeId = viewModel.castcleId
                     )
                 )
             },
@@ -90,7 +95,8 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         viewType = ProfileType.PROFILE_TYPE_ME.type,
-                        type = ContentType.BLOG.type
+                        type = ContentType.BLOG.type,
+                        isMeId = viewModel.castcleId
                     )
                 )
             },
@@ -98,7 +104,8 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
-                        viewType = ProfileType.PROFILE_TYPE_PEOPLE.type
+                        viewType = ProfileType.PROFILE_TYPE_PEOPLE.type,
+                        isMeId = viewModel.castcleId
                     )
                 )
             })
@@ -127,6 +134,10 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
             rvContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
             }
+
+            swiperefresh.setOnRefreshListener {
+                adapterPagingCommon.refresh()
+            }
         }
 
         lifecycleScope.launchWhenCreated {
@@ -141,6 +152,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                 }
                 if (!isLoading) {
                     stopLoadingShimmer()
+                    binding.swiperefresh.isRefreshing = false
                     activityViewModel.onProfileLoading(false)
                 } else {
                     startLoadingShimmer()
@@ -182,7 +194,50 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
             is FeedItemClick.FeedCommentClick -> {
                 handleCommentClick(click.contentUiModel)
             }
+            is FeedItemClick.WebContentClick -> {
+                handleWebContentClick(click.contentUiModel)
+            }
+            is FeedItemClick.WebContentMessageClick -> {
+                handleWebContentMessageClick(click)
+            }
+            is FeedItemClick.FeedImageClick -> {
+                handleImageItemClick(click.position, click.contentUiModel)
+            }
         }
+    }
+
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentFeedUiModel) {
+        val image = contentUiModel.photo?.map {
+            it.imageOrigin
+        }
+        val imagePosition = when (contentUiModel.photo?.size) {
+            1 -> 0
+            else -> position
+        }
+        StfalconImageViewer.Builder(context, image, ::loadPosterImage)
+            .withStartPosition(imagePosition)
+            .withHiddenStatusBar(true)
+            .allowSwipeToDismiss(true)
+            .allowZooming(true)
+            .show()
+    }
+
+    private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
+        imageView.loadImageWithoutTransformation(imageUrl)
+    }
+
+    private fun handleWebContentMessageClick(click: FeedItemClick.WebContentMessageClick) {
+        openWebView(click.url)
+    }
+
+    private fun handleWebContentClick(contentUiModel: ContentFeedUiModel) {
+        contentUiModel.link?.url?.let {
+            openWebView(it)
+        }
+    }
+
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
     }
 
     private fun handleCommentClick(contentUiModel: ContentFeedUiModel) {
@@ -253,13 +308,14 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
-        handlerUpdateRecasted(currentContent, onRecast)
-        val castcleId = activityViewModel.userCacheProfile.value?.castcleId ?: ""
+        val castcleId = activityViewModel.castcleId
         viewModel.recastContent(castcleId, currentContent).subscribeBy(
             onError = {
+                adapterPagingCommon.updateStateItemUnRecast(currentContent)
                 displayError(it)
             }
         ).addToDisposables()
+        handlerUpdateRecasted(currentContent, onRecast)
     }
 
     private fun handlerUpdateRecasted(

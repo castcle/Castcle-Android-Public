@@ -2,8 +2,9 @@ package com.castcle.common_model.model.feed
 
 import android.os.Parcelable
 import com.castcle.common_model.model.feed.api.response.*
-import com.castcle.common_model.model.userprofile.domain.UserContentItemResponse
-import com.castcle.common_model.model.userprofile.domain.UserContentResponse
+import com.castcle.common_model.model.feed.api.response.Payload
+import com.castcle.common_model.model.userprofile.domain.*
+import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -57,7 +58,7 @@ data class ContentFeedUiModel(
     var quoted: Boolean = false,
     var recastCount: Int = 0,
     var recasted: Boolean = false,
-    var isMindId: String = ""
+    var isMindId: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -133,19 +134,28 @@ fun mapContentFeedUiModelReference(
     includes: IncludesResponse?
 ): ContentFeedUiModel {
     return payload.toContentFeedUiModel().apply {
-        this.isMindId = isMindId ?: ""
-        userContent =
-            includes?.toAuthorContent(this.authorId) ?: UserContent()
+        val userProfile = includes?.toAuthorContent(this.authorId) ?: UserContent()
         if (referencedCastsType.isNotBlank()) {
             type = referencedCastsType
             if (referencedCastsType == QUOTECAST_TYPE) {
                 contentQuoteCast = mapContentRefQuote(id, includes)
             }
         }
+        userContent = userProfile
+        this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
     }
 }
 
 fun mapContentRefQuote(contentRefId: String, includes: IncludesResponse?): ContentFeedUiModel? {
+    return includes?.casts?.find {
+        it.id == contentRefId
+    }?.toContentFeedUiModel()
+}
+
+fun mapContentRefQuote(
+    contentRefId: String,
+    includes: IncludesUserContentResponse?
+): ContentFeedUiModel? {
     return includes?.casts?.find {
         it.id == contentRefId
     }?.toContentFeedUiModel()
@@ -179,6 +189,14 @@ fun Payload.toContentFeedUiModel(): ContentFeedUiModel {
     )
 }
 
+fun LinkResponse.toLinkContentUiModel(): LinkUiModel {
+    return LinkUiModel(
+        type = type,
+        url = url,
+        imagePreview = imagePreview ?: ""
+    )
+}
+
 fun Circle.toCircleUiModel(): CircleUiModel {
     return CircleUiModel(
         id = id ?: "",
@@ -189,6 +207,24 @@ fun Circle.toCircleUiModel(): CircleUiModel {
 }
 
 fun IncludesResponse.toAuthorContent(authorId: String): UserContent? {
+    return this.users.find {
+        it.id == authorId
+    }?.let {
+        UserContent(
+            id = it.id,
+            type = it.type,
+            castcleId = it.castcleId,
+            avatar = it.avatar.thumbnail ?: "",
+            displayName = it.displayName,
+            followed = it.followed,
+            verifiedOfficial = it.verified.official ?: false,
+            verifiedMobile = it.verified.mobile ?: false,
+            verifiedEmail = it.verified.email ?: false
+        )
+    }
+}
+
+fun IncludesUserContentResponse.toAuthorContent(authorId: String): UserContent? {
     return this.users.find {
         it.id == authorId
     }?.let {
@@ -243,7 +279,7 @@ fun UserContentItemResponse.toContentFeedUiModel(): ContentFeedUiModel {
         id = id ?: "",
         contentId = id ?: "",
         authorId = authorId,
-        message = message,
+        message = message ?: "",
         type = type,
         createdAt = created,
         updatedAt = updated,
@@ -267,19 +303,27 @@ fun UserContentItemResponse.toContentFeedUiModel(): ContentFeedUiModel {
 fun mapContentFeedUiModelReference(
     isMindId: String?,
     payload: UserContentItemResponse,
-    includes: IncludesResponse?
+    includes: IncludesUserContentResponse?
 ): ContentFeedUiModel {
     return payload.toContentFeedUiModel().apply {
-        this.isMindId = isMindId ?: ""
-        userContent =
-            includes?.toAuthorContent(this.authorId) ?: UserContent()
+        val userProfile = includes?.toAuthorContent(this.authorId) ?: UserContent()
         if (referencedCastsType.isNotBlank()) {
             type = referencedCastsType
             if (referencedCastsType == QUOTECAST_TYPE) {
                 contentQuoteCast = mapContentRefQuote(id, includes)
             }
         }
+        userContent = userProfile
+        this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
     }
+}
+
+fun ContentFeedUiModel.toModelString(): String {
+    return Gson().toJson(this)
+}
+
+fun String.toContentFeedUiModel(): ContentFeedUiModel {
+    return Gson().fromJson(this, ContentFeedUiModel::class.java)
 }
 
 const val RECASTED_TYPE = "recasted"

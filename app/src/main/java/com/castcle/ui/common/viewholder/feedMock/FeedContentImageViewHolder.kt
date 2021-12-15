@@ -7,6 +7,7 @@ import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.gone
+import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
@@ -35,7 +36,7 @@ import com.castcle.ui.common.events.FeedItemClick
 //
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
-class FeedContentImageMockViewHolder(
+class FeedContentImageViewHolder(
     val binding: LayoutFeedTemplateImageBinding,
     private val click: (Click) -> Unit
 ) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
@@ -47,9 +48,17 @@ class FeedContentImageMockViewHolder(
         binding.ftFooter.itemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
+        binding.icImageContent.imageItemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
     }
 
     private fun handleItemClick(it: TemplateEventClick?) {
+        binding.skeletonLoading.shimmerLayoutLoading.run {
+            stopShimmer()
+            setShimmer(null)
+            gone()
+        }
         when (it) {
             is TemplateEventClick.AvatarClick -> {
                 click.invoke(
@@ -83,6 +92,22 @@ class FeedContentImageMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.ImageClick -> {
+                click.invoke(
+                    FeedItemClick.FeedImageClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             is TemplateEventClick.FollowingClick -> {
                 click.invoke(
                     FeedItemClick.FeedFollowingClick(
@@ -106,7 +131,7 @@ class FeedContentImageMockViewHolder(
             }
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = message
+                tvFeedContent.appendLinkText(message)
                 icImageContent.bindImageContent(uiModel)
                 ftFooter.bindUiModel(uiModel)
             }
@@ -117,10 +142,10 @@ class FeedContentImageMockViewHolder(
         fun newInstance(
             parent: ViewGroup,
             clickItem: (Click) -> Unit
-        ): FeedContentImageMockViewHolder {
+        ): FeedContentImageViewHolder {
             val inflate = LayoutInflater.from(parent.context)
             val binding = LayoutFeedTemplateImageBinding.inflate(inflate, parent, false)
-            return FeedContentImageMockViewHolder(binding, clickItem)
+            return FeedContentImageViewHolder(binding, clickItem)
         }
     }
 }

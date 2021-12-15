@@ -10,8 +10,7 @@ import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.feed.LikeContentCompletableUseCase
 import com.castcle.usecase.feed.RecastContentCompletableUseCase
-import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
+import com.castcle.usecase.userprofile.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
@@ -50,7 +49,11 @@ class TrendFragmentViewModelImpl @Inject constructor(
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val recastContentSingleUseCase: RecastContentCompletableUseCase,
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
 ) : TrendFragmentViewModel() {
+
+    override val castcleId: String
+        get() = getCastcleIdSingleUseCase.execute(Unit).blockingGet()
 
     private lateinit var _feedTrendResponse: Flow<PagingData<ContentFeedUiModel>>
     override val feedTrendResponse: Flow<PagingData<ContentFeedUiModel>>
@@ -117,8 +120,6 @@ class TrendFragmentViewModelImpl @Inject constructor(
     }
 
     override fun recastContent(contentUiModel: ContentFeedUiModel): Completable {
-        val castcleId = _cacheUserProfile.value?.castcleId ?: ""
-
         val recastRequest = RecastRequest(
             reCasted = contentUiModel.recasted,
             contentId = contentUiModel.contentId,

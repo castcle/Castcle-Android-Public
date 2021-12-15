@@ -69,7 +69,7 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract fun checkCastPostWithImageStatus(): Observable<Boolean>
 
-    abstract val castPostResponse: SingleLiveEvent<ContentUiModel>
+    abstract val castPostResponse: SingleLiveEvent<ContentFeedUiModel>
 
     abstract fun checkContentIsMe(
         castcleId: String,
@@ -77,6 +77,8 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
         onPageMe: () -> Unit,
         non: () -> Unit
     )
+
+    abstract val castcleId: String
 
     interface Input {
         fun recastContent(contentUiModel: ContentFeedUiModel): Completable

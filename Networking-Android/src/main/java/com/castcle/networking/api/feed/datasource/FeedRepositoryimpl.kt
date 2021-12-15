@@ -6,11 +6,14 @@ import com.castcle.common_model.model.feed.converter.*
 import com.castcle.common_model.model.feed.domain.dao.*
 import com.castcle.networking.api.feed.FeedApi
 import com.castcle.networking.service.operators.ApiOperators
+import com.chayangkoon.champ.linkpreview.LinkPreview
+import com.chayangkoon.champ.linkpreview.common.LinkContent
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -87,6 +90,46 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
+    val scope = CoroutineScope(Job() + Dispatchers.IO)
+
+    private fun ContentFeedUiModel.mapLinkContentPreview(): ContentFeedUiModel {
+        var urlContent = LinkContent()
+        val linkUiModel = LinkUiModel()
+        scope.launch(Dispatchers.IO) {
+            urlContent =
+                withContext(Dispatchers.Default) {
+                    getContentWebPreview(link?.url ?: "")
+                }
+            linkUiModel.linkDescription = urlContent.description
+            linkUiModel.linkTitle = urlContent.title
+            if (link?.imagePreview.isNullOrBlank()) {
+                linkUiModel.imagePreview = urlContent.imageUrl
+            } else {
+                linkUiModel.imagePreview = link?.imagePreview ?: ""
+            }
+            linkUiModel.url = link?.url ?: ""
+        }
+        this@mapLinkContentPreview.link = linkUiModel
+        return this@mapLinkContentPreview
+    }
+
+    private val linkPreview = LinkPreview.Builder().build()
+
+    private suspend fun getContentWebPreview(urlPreview: String): LinkContent {
+        if (urlPreview.isBlank()) {
+            return LinkContent()
+        }
+        return withContext(Dispatchers.IO) {
+            linkPreview.loadPreview(urlPreview)
+        }
+    }
+
+    private suspend fun getFeedCacheContent(): PagingSource<Int, FeedCacheModel> {
+        return withContext(Dispatchers.IO) {
+            feedCacheDao.pagingSource()
+        }
+    }
+
     @ExperimentalCoroutinesApi
     override suspend fun getFeedGuests(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
@@ -94,7 +137,7 @@ class FeedRepositoryImpl @Inject constructor(
         return feedRequestHeader.flatMapLatest {
             Pager(
                 config = PagingConfig(
-                    pageSize = DEFAULT_PAGE_SIZE,
+                    pageSize = DEFAULT_PAGE_SIZE_V1,
                     prefetchDistance = DEFAULT_PREFETCH
                 ),
                 pagingSourceFactory = {
@@ -107,11 +150,14 @@ class FeedRepositoryImpl @Inject constructor(
     override suspend fun getTrend(
         feedRequestHeader: FeedRequestHeader
     ): Flow<PagingData<ContentFeedUiModel>> = Pager(
-        config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, prefetchDistance = DEFAULT_PREFETCH),
+        config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE_V1, prefetchDistance = DEFAULT_PREFETCH),
         pagingSourceFactory = { TrendPagingDataSource(feedApi, feedRequestHeader) }
     ).flow
 
     override fun createComment(commentRequest: ReplyCommentRequest): Single<ContentUiModel> {
+        scope.launch {
+            updateCommentedContent(commentRequest.contentId)
+        }
         return feedApi.sentComments(
             contentId = commentRequest.contentId,
             commentRequest = commentRequest
@@ -143,11 +189,26 @@ class FeedRepositoryImpl @Inject constructor(
             }.firstOrError()
     }
 
+    private suspend fun updateCommentedContent(contentId: String) {
+        withContext(Dispatchers.IO) {
+            feedCacheDao.getFeedCache(contentId)
+        }?.let {
+            it.commentCount = it.commentCount.plus(1)
+            it.commented = true
+            feedCacheDao.updateLiked(it)
+        }
+    }
+
     override fun likeContent(likeContentRequest: LikeContentRequest): Completable {
         val status = if (!likeContentRequest.likeStatus) {
             LIKE_STATUS_LIKE
         } else {
             LIKE_STATUS_UNLIKE
+        }
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                updateLikedContent(likeContentRequest.contentId, likeContentRequest.likeStatus)
+            }
         }
         return feedApi.likeFeedContent(
             likeContentRequest.contentId,
@@ -155,13 +216,38 @@ class FeedRepositoryImpl @Inject constructor(
             likeContentRequest
         ).lift(ApiOperators.mobileApiError())
             .firstOrError()
-            .ignoreElement()
+            .doOnError {
+                scope.launch {
+                    withContext(Dispatchers.IO) {
+                        updateLikedContent(likeContentRequest.contentId, true)
+                    }
+                }
+            }.ignoreElement()
+    }
+
+    private suspend fun updateLikedContent(contentId: String, likeStatus: Boolean) {
+        withContext(Dispatchers.IO) {
+            feedCacheDao.getFeedCache(contentId)
+        }?.let {
+            if (!likeStatus) {
+                it.likeCount = it.likeCount.plus(1)
+                it.liked = true
+
+            } else {
+                it.likeCount = abs(it.likeCount - 1)
+                it.liked = false
+            }
+            feedCacheDao.updateLiked(it)
+        }
     }
 
     override fun recastContentPost(
         recastRequest: RecastRequest
     ): Completable {
-        return if (recastRequest.reCasted) {
+        scope.launch {
+            updateReCastedContent(recastRequest.contentId, recastRequest.reCasted)
+        }
+        return if (!recastRequest.reCasted) {
             feedApi.recastContent(id = recastRequest.contentId, recastRequest)
                 .lift(ApiOperators.mobileApiError())
                 .firstOrError()
@@ -171,6 +257,22 @@ class FeedRepositoryImpl @Inject constructor(
                 .lift(ApiOperators.mobileApiError())
                 .firstOrError()
                 .ignoreElement()
+        }
+    }
+
+    private suspend fun updateReCastedContent(contentId: String, recastStatus: Boolean) {
+        withContext(Dispatchers.IO) {
+            feedCacheDao.getFeedCache(contentId)
+        }?.let {
+            if (!recastStatus) {
+                it.recastCount = it.recastCount.plus(1)
+                it.recasted = true
+
+            } else {
+                it.recastCount = abs(it.recastCount - 1)
+                it.recasted = false
+            }
+            feedCacheDao.updateLiked(it)
         }
     }
 
@@ -202,6 +304,12 @@ class FeedRepositoryImpl @Inject constructor(
             .ignoreElement()
     }
 
+    suspend fun updateLiked(contentId: String) {
+        withContext(Dispatchers.IO) {
+            feedCacheDao.deleteFeedCache()
+        }
+    }
+
     override fun deleteComment(
         deleteCommentRequest: DeleteCommentRequest,
     ): Completable {
@@ -225,6 +333,7 @@ class FeedRepositoryImpl @Inject constructor(
 }
 
 const val DEFAULT_PAGE_SIZE = 25
+const val DEFAULT_PAGE_SIZE_V1 = 10
 const val DEFAULT_PREFETCH = 1
 private const val LIKE_STATUS_LIKE = "liked"
 private const val LIKE_STATUS_UNLIKE = "unliked"

@@ -2,10 +2,13 @@ package com.castcle.ui.common.viewholder.feedMock
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
 import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
+import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
@@ -37,7 +40,7 @@ import com.workfort.linkpreview.util.LinkParser
 //
 //  Created by sklim on 26/8/2021 AD at 09:53.
 
-class FeedContentShortMockViewHolder(
+class FeedContentShortViewHolder(
     val binding: LayoutFeedTemplateShortBinding,
     private val click: (Click) -> Unit
 ) : CommonMockAdapter.ViewHolder<ContentFeedUiModel>(binding.root) {
@@ -47,6 +50,9 @@ class FeedContentShortMockViewHolder(
             handleItemClick(it)
         }.addToDisposables()
         binding.ftFooter.itemClick.subscribe {
+            handleItemClick(it)
+        }.addToDisposables()
+        binding.clPreviewContentImage.icImageContent.imageItemClick.subscribe {
             handleItemClick(it)
         }.addToDisposables()
     }
@@ -85,6 +91,22 @@ class FeedContentShortMockViewHolder(
                     )
                 )
             }
+            is TemplateEventClick.ImageClick -> {
+                click.invoke(
+                    FeedItemClick.FeedImageClick(
+                        it.imageIndex,
+                        it.contentUiModel
+                    )
+                )
+            }
+            is TemplateEventClick.OptionalClick -> {
+                click.invoke(
+                    FeedItemClick.EditContentClick(
+                        bindingAdapterPosition,
+                        it.contentUiModel
+                    )
+                )
+            }
             is TemplateEventClick.FollowingClick -> {
                 click.invoke(
                     FeedItemClick.FeedFollowingClick(
@@ -101,11 +123,7 @@ class FeedContentShortMockViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
-            clPreviewContentImage.clInPreviewContentImage.gone()
-            clPreviewContent.clInPreviewContent.gone()
-            clPreviewIconContent.clInPreviewIconContent.gone()
-            startLoadingPreViewShimmer()
-
+            stopLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
@@ -113,69 +131,8 @@ class FeedContentShortMockViewHolder(
             }
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.text = message
+                tvFeedContent.appendLinkText(message)
                 ftFooter.bindUiModel(uiModel)
-                when {
-                    link == null && photo?.isNullOrEmpty() == false -> {
-                        with(clPreviewContentImage) {
-                            clInPreviewContentImage.visible()
-                            icImageContent.bindImageContent(uiModel, true)
-
-                        }
-                        stopLoadingPreViewShimmer()
-                    }
-                    link != null -> {
-                        link?.let {
-                            LinkParser(it.url, object : ParserCallback {
-                                override fun onData(linkData: LinkData) {
-                                    clPreviewContent.clInPreviewContent.gone()
-                                    clPreviewIconContent.clInPreviewIconContent.gone()
-
-                                    if (linkData.imageUrl.isNullOrBlank()) {
-                                        onBindContentIconWeb(linkData)
-                                    } else {
-                                        onBindContentImageWeb(linkData)
-                                    }
-                                }
-
-                                override fun onError(exception: Exception) {
-                                    clPreviewIconContent.clInPreviewIconContent.gone()
-                                    clPreviewContent.clInPreviewContent.gone()
-                                }
-                            }).parse()
-
-                        }
-                    }
-                    else -> {
-                        stopLoadingPreViewShimmer()
-                    }
-                }
-
-            }
-        }
-    }
-
-    private fun onBindContentIconWeb(linkUiModel: LinkData) {
-        stopLoadingPreViewShimmer()
-        with(binding.clPreviewIconContent) {
-            clInPreviewIconContent.visible()
-            with(linkUiModel) {
-                ivPerviewIconUrl.loadIconImage(favicon ?: "")
-                tvIconPreview.text = url
-                tvPreviewIconHeader.text = title
-                tvPreviewIconContent.text = description
-            }
-        }
-    }
-
-    private fun onBindContentImageWeb(linkUiModel: LinkData) {
-        stopLoadingPreViewShimmer()
-        with(binding.clPreviewContent) {
-            clInPreviewContent.visible()
-            with(linkUiModel) {
-                ivPerviewUrl.loadGranularRoundedCornersImage(imageUrl ?: "")
-                tvPreviewHeader.text = title
-                tvPreviewContent.text = description
             }
         }
     }
@@ -190,23 +147,14 @@ class FeedContentShortMockViewHolder(
         }
     }
 
-    private fun startLoadingPreViewShimmer() {
-        with(binding) {
-            inShimmerContentLoading.shimmerLayoutLoading.run {
-                startShimmer()
-                visible()
-            }
-        }
-    }
-
     companion object {
         fun newInstance(
             parent: ViewGroup,
             clickItem: (Click) -> Unit
-        ): FeedContentShortMockViewHolder {
+        ): FeedContentShortViewHolder {
             val inflate = LayoutInflater.from(parent.context)
             val binding = LayoutFeedTemplateShortBinding.inflate(inflate, parent, false)
-            return FeedContentShortMockViewHolder(binding, clickItem)
+            return FeedContentShortViewHolder(binding, clickItem)
         }
     }
 }

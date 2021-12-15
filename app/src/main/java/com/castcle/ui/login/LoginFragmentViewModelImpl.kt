@@ -8,6 +8,7 @@ import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.PageResponse
 import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
 import com.castcle.data.model.dao.user.UserDao
+import com.castcle.usecase.auth.RegisterFireBaseTokenCompleteUseCase
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
 import com.castcle.usecase.login.AuthenticationRefreshTokenCompletableUseCase
 import com.castcle.usecase.userprofile.*
@@ -48,7 +49,8 @@ class LoginFragmentViewModelImpl @Inject constructor(
     private val authenticationRefreshTokenCompletableUseCase:
     AuthenticationRefreshTokenCompletableUseCase,
     private val updateProfileDataCompletableUseCase: UpdateProfileDataCompletableUseCase,
-    private val updateUserPageDataCompletableUseCase: UpdateUserPageDataCompletableUseCase
+    private val updateUserPageDataCompletableUseCase: UpdateUserPageDataCompletableUseCase,
+    private val registerFireBaseTokenCompletaUseCase: RegisterFireBaseTokenCompleteUseCase
 ) : LoginFragmentViewModel(), LoginFragmentViewModel.Input {
 
     override val userResponse: LiveData<User>
@@ -82,10 +84,15 @@ class LoginFragmentViewModelImpl @Inject constructor(
                 updateUserProfile(it.userProfileResponse)
                 updateUserPage(it.pageResponse)
             }
-            .ignoreElement()
-            .doOnError {
+            .flatMapCompletable {
+                onUpdateFireBaseToken()
+            }.doOnError {
                 _showLoading.onNext(false)
             }.doFinally { _showLoading.onNext(false) }
+    }
+
+    private fun onUpdateFireBaseToken(): Completable {
+        return registerFireBaseTokenCompletaUseCase.execute(Unit)
     }
 
     override fun refreshToken(): Completable {
