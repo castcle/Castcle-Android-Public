@@ -80,4 +80,10 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
     ): Completable
 
     abstract fun recastContent(castcleId: String, contentUiModel: ContentFeedUiModel): Completable
+
+    abstract fun reportUser(userId: String): Completable
+
+    abstract fun blockUser(userId: String): Completable
+
+    abstract fun unblockUser(userId: String): Completable
 }

@@ -1,7 +1,9 @@
 package com.castcle.networking.api.user
 
+import com.castcle.common_model.model.feed.ReportContentRequest
 import com.castcle.common_model.model.userprofile.DeletePagePayload
 import com.castcle.common_model.model.userprofile.DeleteUserPayload
+import com.castcle.common_model.model.userprofile.ReportUserRequest
 import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.networking.service.common.*
 import io.reactivex.Flowable
@@ -92,6 +94,22 @@ interface UserApi {
     fun createUnFollowUser(
         @Path("castcleId") castcleId: String,
         @Body followRequest: FollowRequest,
+    ): Flowable<Response<Unit>>
+
+    @POST("users/{castcleId}/blocking")
+    fun blockUser(
+        @Path("castcleId") castcleId: String
+    ): Flowable<Response<Unit>>
+
+    @POST("users/{castcleId}/unblocking")
+    fun unblockUser(
+        @Path("castcleId") castcleId: String
+    ): Flowable<Response<Unit>>
+
+    @POST("users/{castcleId}/reporting")
+    fun reportUser(
+        @Path("castcleId") castcleId: String,
+        @Body message: ReportUserRequest
     ): Flowable<Response<Unit>>
 
     @GET("pages/{castcleId}")

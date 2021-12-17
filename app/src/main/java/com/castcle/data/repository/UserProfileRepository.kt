@@ -58,10 +58,10 @@ interface UserProfileRepository {
     ): Flow<PagingData<ContentFeedUiModel>>
 
     fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader):
-        Flow<PagingData<ContentFeedUiModel>>
+            Flow<PagingData<ContentFeedUiModel>>
 
     fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader):
-        Flow<PagingData<ContentFeedUiModel>>
+            Flow<PagingData<ContentFeedUiModel>>
 
     fun putToFollowUser(followRequest: FollowRequest): Completable
 
@@ -76,6 +76,12 @@ interface UserProfileRepository {
     fun insertUserProfile(user: User): Completable
 
     fun getUserMention(mentionRequest: MentionRequest): Single<UserMentionUiModel>
+
+    fun blockUser(castcleId: String): Completable
+
+    fun unBlockUser(castcleId: String): Completable
+
+    fun reportUser(castcleId: String): Completable
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -142,7 +148,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }).flow
 
     override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
-        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
+            : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
@@ -151,7 +157,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }).flow
 
     override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
-        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
+            : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
@@ -243,9 +249,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     private fun GregorianCalendar.isSameDate(date: GregorianCalendar): Boolean {
         return get(Calendar.YEAR) == date.get(Calendar.YEAR)
-            && get(Calendar.MONTH) == date.get(Calendar.MONTH)
-            && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
-            && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
+                && get(Calendar.MONTH) == date.get(Calendar.MONTH)
+                && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
+                && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
     }
 
     override fun onDeleteAccount(deleteUserPayload: DeleteUserPayload): Completable {
@@ -284,6 +290,36 @@ class UserProfileRepositoryImpl @Inject constructor(
         ).lift(ApiOperators.mobileApiError())
             .map { it.toUserMentionUiModel() }
             .firstOrError()
+    }
+
+    override fun blockUser(castcleId: String): Completable {
+        return userApi
+            .blockUser(
+                castcleId
+            )
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
+    override fun unBlockUser(castcleId: String): Completable {
+        return userApi
+            .unblockUser(
+                castcleId
+            )
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
+
+    override fun reportUser(castcleId: String): Completable {
+        return userApi
+            .reportUser(
+                castcleId, ReportUserRequest("report")
+            )
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
     }
 }
 

@@ -63,7 +63,10 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val deleteContentCompletableUseCase: DeleteContentCompletableUseCase,
     private val recastContentSingleUseCase: RecastContentCompletableUseCase,
-    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase
+    private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val reportContentUseCase: ReportContentUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
+    private val unBlockUserUseCase: UnBlockUserUseCase,
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -169,6 +172,27 @@ class FeedFragmentViewModelImpl @Inject constructor(
             return
         }
         non.invoke()
+    }
+
+    override fun reportContent(contentId: String): Completable {
+        return reportContentUseCase.execute(contentId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
+    }
+
+    override fun blockUser(userId: String): Completable {
+        return blockUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
+    }
+
+    override fun unblockUser(userId: String): Completable {
+        return unBlockUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
     }
 
     override fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =

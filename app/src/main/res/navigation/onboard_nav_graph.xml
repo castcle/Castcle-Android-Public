@@ -16,6 +16,10 @@
         tools:layout="@layout/fragment_feed">
 
         <action
+            android:id="@+id/actionFeedFragmentToUserChooseDialogFragment"
+            app:destination="@id/userChooseDialogFragment" />
+
+        <action
             android:id="@+id/actionFeedFragmentToNotiflyLoginDialoginDialogFragment"
             app:destination="@id/dialog_login_nav_graph" />
 
@@ -54,6 +58,10 @@
         <action
             android:id="@+id/actionFeedFragmentToCreateQuoteFragment"
             app:destination="@id/createQuoteFragment" />
+
+        <action
+            android:id="@+id/actionFeedFragmentToReportFragment"
+            app:destination="@id/reportFragment" />
 
         <deepLink app:uri="@string/nav_deep_link_feed" />
     </fragment>
@@ -395,6 +403,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
+
     <fragment
         android:id="@+id/twitterLoginFragment"
         android:name="com.castcle.ui.login.twitterlogin.TwitterLoginFragment"
@@ -527,6 +536,14 @@
             app:destination="@id/profileChooseDialogFragment" />
 
         <action
+            android:id="@+id/actionProfileFragmentToUserChooseDialogFragment"
+            app:destination="@id/userChooseDialogFragment" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToReportFragment"
+            app:destination="@id/reportFragment" />
+
+        <action
             android:id="@+id/actionProfileFragmentToRecastDialogFragment"
             app:destination="@id/dialog_recast_nav_graph" />
 
@@ -590,6 +607,17 @@
             app:argType="boolean" />
     </dialog>
 
+    <dialog
+        android:id="@+id/userChooseDialogFragment"
+        android:name="com.castcle.ui.common.dialog.user.UserChooseDialogFragment"
+        tools:layout="@layout/dialog_fragment_user_choose">
+
+        <argument
+            android:name="userDisplay"
+            app:argType="string" />
+    </dialog>
+
+
     <fragment
         android:id="@+id/createPostFragment"
         android:name="com.castcle.ui.createpost.CreatePostFragment"
@@ -605,5 +633,36 @@
             app:argType="boolean" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.castcle.ui.report.ReportFragment"
+        tools:layout="@layout/fragment_report" >
+
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="profileType"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="displayName"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="goToProfileFragment"
+            android:defaultValue="true"
+            app:argType="boolean" />
+
+        <action
+            android:id="@+id/actionReportFragmentToProfileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
 
 </navigation>

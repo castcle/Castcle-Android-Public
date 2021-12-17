@@ -8,8 +8,9 @@ import androidx.paging.PagingData
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.domain.*
+import com.castcle.common_model.model.userprofile.toUserModel
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.usecase.feed.*
 import com.castcle.usecase.userprofile.*
@@ -59,7 +60,10 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
-    private val recastContentSingleUseCase: RecastContentCompletableUseCase
+    private val recastContentSingleUseCase: RecastContentCompletableUseCase,
+    private val reportUserUseCase: ReportUserUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
+    private val unBlockUserUseCase: UnBlockUserUseCase,
 ) : ProfileFragmentViewModel() {
 
     override val isGuestMode: Boolean
@@ -233,5 +237,26 @@ class ProfileFragmentViewModelImpl @Inject constructor(
             authorId = castcleId
         )
         return recastContentSingleUseCase.execute(recastRequest)
+    }
+
+    override fun reportUser(userId: String): Completable {
+        return reportUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
+    }
+
+    override fun blockUser(userId: String): Completable {
+        return blockUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
+    }
+
+    override fun unblockUser(userId: String): Completable {
+        return unBlockUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
     }
 }

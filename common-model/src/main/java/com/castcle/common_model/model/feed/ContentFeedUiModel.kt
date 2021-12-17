@@ -58,7 +58,8 @@ data class ContentFeedUiModel(
     var quoted: Boolean = false,
     var recastCount: Int = 0,
     var recasted: Boolean = false,
-    var isMindId: Boolean = false
+    var isMindId: Boolean = false,
+    var reported: Boolean = false,
 ) : Parcelable
 
 @Parcelize

@@ -9,6 +9,7 @@ import com.castcle.di.modules.forgotpass.VerifyOtpFragmentViewModelModule
 import com.castcle.di.modules.login.*
 import com.castcle.di.modules.notification.NotificationFragmentViewModelModule
 import com.castcle.di.modules.profile.*
+import com.castcle.di.modules.report.ReportFragmentViewModelModule
 import com.castcle.di.modules.search.*
 import com.castcle.di.modules.setting.*
 import com.castcle.di.modules.webview.WebViewFragmentViewModelModule
@@ -18,6 +19,7 @@ import com.castcle.ui.common.dialog.chooseimage.ChooseDialogFragment
 import com.castcle.ui.common.dialog.dialogeditcontent.EditContentDialogFragment
 import com.castcle.ui.common.dialog.profilechoose.ProfileChooseDialogFragment
 import com.castcle.ui.common.dialog.recast.RecastDialogFragment
+import com.castcle.ui.common.dialog.user.UserChooseDialogFragment
 import com.castcle.ui.createbloc.CreateBlogFragment
 import com.castcle.ui.createbloc.CreateQuoteFragment
 import com.castcle.ui.createpost.CreatePostFragment
@@ -33,6 +35,8 @@ import com.castcle.ui.profile.childview.all.ContentAllFragment
 import com.castcle.ui.profile.childview.blog.ContentPostFragment
 import com.castcle.ui.profile.childview.photo.ContentBlogFragment
 import com.castcle.ui.profile.childview.post.ContentPhotoFragment
+import com.castcle.ui.report.ReportFragment
+import com.castcle.ui.report.ReportFragmentViewModel
 import com.castcle.ui.search.TrendSearchFragment
 import com.castcle.ui.search.onsearch.SearchFragment
 import com.castcle.ui.search.trend.TrendFragment
@@ -260,6 +264,11 @@ interface OnBoardFragmentModule {
     @ContributesAndroidInjector(modules = [ProfileChooseDialogViewModelModule::class])
     fun profileChooseDialogFragment(): ProfileChooseDialogFragment
 
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ProfileChooseDialogViewModelModule::class])
+    fun userChooseDialogFragment(): UserChooseDialogFragment
+
     @FragmentScope
     @ContributesAndroidInjector(modules = [NotificationFragmentViewModelModule::class])
     fun notificationFragment(): NotificationFragment
@@ -303,4 +312,8 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [EditContentDialogFragmentModule::class])
     fun editContentDialogFragment(): EditContentDialogFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ReportFragmentViewModelModule::class])
+    fun reportFragment(): ReportFragment
 }

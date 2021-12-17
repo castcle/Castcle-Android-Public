@@ -2,6 +2,7 @@ package com.castcle.networking.api.feed
 
 import com.castcle.common_model.model.feed.RecastRequest
 import com.castcle.common_model.model.feed.ReplyCommentRequest
+import com.castcle.common_model.model.feed.ReportContentRequest
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
@@ -132,5 +133,11 @@ interface FeedApi {
         @Path("commentId") commentId: String,
         @Path("likeStatus") likeStatus: String,
         @Body likedRequest: LikeCommentRequest,
+    ): Flowable<Response<Unit>>
+
+    @POST("contents/{contentId}/reporting")
+    fun reportContent(
+        @Path("contentId") contentId: String,
+        @Body message: ReportContentRequest,
     ): Flowable<Response<Unit>>
 }

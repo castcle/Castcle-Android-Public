@@ -80,6 +80,12 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val castcleId: String
 
+    abstract fun reportContent(contentId: String): Completable
+
+    abstract fun blockUser(userId: String): Completable
+
+    abstract fun unblockUser(userId: String): Completable
+
     interface Input {
         fun recastContent(contentUiModel: ContentFeedUiModel): Completable
 

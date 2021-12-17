@@ -118,7 +118,16 @@ interface OnBoardNavigator : BaseNavigator {
 
     fun navigateToProfileChooseDialogFragment(isAccount: Boolean = false)
 
+    fun navigateToUserChooseDialogFragment(userDisplay: String)
+
     fun navigateToProfileDeletePageFragment(profileEditBundle: ProfileBundle)
+
+    fun navigateToReportFragment(
+        castcle: String,
+        profileType: String,
+        displayName: String,
+        goToProfileFragment: Boolean
+    )
 
     fun navigateToNotificationFragment()
 

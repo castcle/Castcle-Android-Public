@@ -31,6 +31,8 @@ import com.castcle.ui.common.dialog.chooseimage.KEY_CHOOSE_REQUEST
 import com.castcle.ui.common.dialog.chooseimage.PhotoSelectedState
 import com.castcle.ui.common.dialog.profilechoose.KEY_PROFILE_CHOOSE_REQUEST
 import com.castcle.ui.common.dialog.profilechoose.ProfileEditState
+import com.castcle.ui.common.dialog.user.KEY_USER_CHOOSE_REQUEST
+import com.castcle.ui.common.dialog.user.UserState
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.adapter.ContentPageAdapter
@@ -209,6 +211,15 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 onHandlerProfileChoose(it)
             })
 
+        getNavigationResult<UserState>(
+            onBoardNavigator,
+            R.id.profileFragment,
+            KEY_USER_CHOOSE_REQUEST,
+            onResult = {
+                onHandlerUserChoose(it)
+            })
+
+
         binding.wtWhatYouMind.clickStatus.subscribe {
             handlerWhatYouMindClick(it)
         }.addToDisposables()
@@ -226,6 +237,50 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
             }
         }
+    }
+
+    private fun onHandlerUserChoose(state: UserState) {
+        when (state) {
+            UserState.SHARE -> {
+                requireActivity().let {
+                    val intent = Intent()
+                    intent.action = Intent.ACTION_SEND
+                    intent.type = "text/plain"
+                    intent.putExtra(Intent.EXTRA_TEXT, "share something")
+                    it.startActivity(Intent.createChooser(intent, "share"))
+                }
+            }
+
+            UserState.BLOCK -> {
+                viewModel.blockUser(userProfile.castcleId).subscribeBy(
+                    onComplete = {
+                        setupBlockedLayout(userProfile)
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+
+            UserState.REPORT -> {
+                viewModel.reportUser(userProfile.castcleId).subscribeBy(
+                    onComplete = {
+                        onNavigateToReportProfile()
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+        }
+    }
+
+    private fun onNavigateToReportProfile() {
+        onBoardNavigator.navigateToReportFragment(
+            userProfile.castcleId,
+            profileTypeState.type,
+            userProfile.displayName, false
+        )
     }
 
     private fun onNavigateToDeleteProfile() {
@@ -404,9 +459,65 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         onBoardNavigator.navigateToProfileChooseDialogFragment(isAccount)
     }
 
+    private fun onNavigateToChooseUserEdit() {
+        onBoardNavigator.navigateToUserChooseDialogFragment(userProfile.displayName)
+    }
+
     private fun onBindViewProfile(user: User) {
         userProfile = user
 
+        when {
+            user.blocking -> {
+                setupBlockingLayout(user)
+            }
+            user.blocked -> {
+                setupBlockedLayout(user)
+            }
+            else -> {
+                setupUnBlockLayout(user)
+            }
+        }
+
+        with(binding) {
+            ivAddCover.subscribeOnClick {
+                onGuestMode(enable = {
+                    onNavigateToDialogChooseFragment(
+                        PhotoSelectedState.COVER_PAGE_SELECT
+                    )
+                }, disable = {})
+            }.addToDisposables()
+            ivProfileCover.loadImageWithCache(user.cover)
+            tbProfile.tvToolbarTitle.text = user.castcleId
+        }
+    }
+
+    private fun setupBlockingLayout(user: User) {
+        with(binding) {
+           profileYouBlocked.clMainContent.gone()
+           profileYouBlocking.clMainContent.visible()
+           profileYou.clMainContent.gone()
+           wtWhatYouMind.gone()
+           tabs.gone()
+           layoutContent.gone()
+           line.gone()
+        }
+        with(binding.profileYouBlocking) {
+            tvProfileName.text = user.displayName
+            tvProfileCastcleId.text = user.castcleId
+            ivAvatarProfile.loadCircleImage(user.avatar)
+            tvBlockingDes2.text = getString(R.string.profile_blocking_des2, user.displayName)
+        }
+    }
+
+    private fun setupUnBlockLayout(user: User) {
+        with(binding) {
+           profileYou.clMainContent.visible()
+           profileYouBlocked.clMainContent.gone()
+           wtWhatYouMind.visible()
+           tabs.visible()
+           layoutContent.visible()
+           line.visible()
+        }
         with(binding.profileYou) {
             tvFollowingCount.text = getContentCount(user.followingCount)
             tvFollowersCount.text = getContentCount(user.followersCount)
@@ -435,6 +546,12 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 onBindWhatYouMind(user)
             } else {
                 profileTypeState = ProfileType.PROFILE_TYPE_PEOPLE
+                ivEditProfile.subscribeOnClick {
+                    onGuestMode(enable = {
+                        onNavigateToChooseUserEdit()
+                    }, disable = {})
+                }.addToDisposables()
+
                 binding.ivAddCover.gone()
                 binding.wtWhatYouMind.gone()
                 followState = user.followed
@@ -444,16 +561,32 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 onBindStateFollowButton(user.followed)
             }
         }
+    }
+
+    private fun setupBlockedLayout(user: User) {
         with(binding) {
-            ivAddCover.subscribeOnClick {
-                onGuestMode(enable = {
-                    onNavigateToDialogChooseFragment(
-                        PhotoSelectedState.COVER_PAGE_SELECT
-                    )
-                }, disable = {})
+            profileYouBlocked.clMainContent.visible()
+            profileYou.clMainContent.gone()
+            wtWhatYouMind.gone()
+            tabs.gone()
+            layoutContent.gone()
+            line.gone()
+        }
+        with(binding.profileYouBlocked) {
+            tvProfileName.text = user.displayName
+            tvProfileCastcleId.text = user.castcleId
+            ivAvatarProfile.loadCircleImage(user.avatar)
+
+            btUnblock.subscribeOnClick {
+                viewModel.unblockUser(user.castcleId).subscribeBy(
+                    onComplete = {
+                        setupUnBlockLayout(user)
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
             }.addToDisposables()
-            ivProfileCover.loadImageWithCache(user.cover)
-            tbProfile.tvToolbarTitle.text = user.castcleId
         }
     }
 

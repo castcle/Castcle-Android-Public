@@ -330,6 +330,16 @@ class FeedRepositoryImpl @Inject constructor(
             .firstOrError()
             .ignoreElement()
     }
+
+    override fun reportContent(contentId: String): Completable {
+        return feedApi
+            .reportContent(
+                contentId, ReportContentRequest("report content")
+            )
+            .lift(ApiOperators.mobileApiError())
+            .firstOrError()
+            .ignoreElement()
+    }
 }
 
 const val DEFAULT_PAGE_SIZE = 25

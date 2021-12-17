@@ -440,8 +440,17 @@
             app:destination="@id/profileChooseDialogFragment" />
 
         <action
+            android:id="@+id/actionProfileFragmentToUserChooseDialogFragment"
+            app:destination="@id/userChooseDialogFragment" />
+
+        <action
+            android:id="@+id/actionProfileFragmentToReportFragment"
+            app:destination="@id/reportFragment" />
+
+        <action
             android:id="@+id/actionProfileFragmentToRecastDialogFragment"
             app:destination="@id/dialog_recast_nav_graph" />
+
 
         <action
             android:id="@+id/actionProfileFragmentToCreatePostFragment"
@@ -518,6 +527,18 @@
             app:argType="boolean" />
     </dialog>
 
+    <dialog
+        android:id="@+id/userChooseDialogFragment"
+        android:name="com.castcle.ui.common.dialog.user.UserChooseDialogFragment"
+
+        tools:layout="@layout/dialog_fragment_user_choose">
+
+    <argument
+        android:name="userDisplay"
+        app:argType="string" />
+
+    </dialog>
+
     <fragment
         android:id="@+id/createPostFragment"
         android:name="com.castcle.ui.createpost.CreatePostFragment"
@@ -544,4 +565,33 @@
             app:argType="com.castcle.common_model.model.feed.domain.OptionalEditBundle" />
     </dialog>
 
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.castcle.ui.report.ReportFragment"
+        tools:layout="@layout/fragment_report" >
+
+        <argument
+            android:name="id"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="profileType"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="displayName"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
+            android:name="goToProfileFragment"
+            android:defaultValue="true"
+            app:argType="boolean" />
+
+        <action
+            android:id="@+id/actionReportFragmentToProfileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

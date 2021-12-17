@@ -30,6 +30,7 @@
         <entry key="app/src/main/res/drawable/ic_logo_castcle.xml" value="0.15069444444444444" />
         <entry key="app/src/main/res/drawable/ic_logo_castcle_noti.xml" value="0.14444444444444443" />
         <entry key="app/src/main/res/drawable/ic_more.xml" value="0.15833333333333333" />
+        <entry key="app/src/main/res/drawable/ic_report.xml" value="0.102734375" />
         <entry key="app/src/main/res/drawable/ic_tool_bar.xml" value="0.21851851851851853" />
         <entry key="app/src/main/res/drawable/splash_screen.xml" value="0.21851851851851853" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16041666666666668" />
@@ -43,6 +44,7 @@
         <entry key="app/src/main/res/layout/dialog_fragment_notifly_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_fragment_profile_choose_edit.xml" value="0.3296296296296296" />
         <entry key="app/src/main/res/layout/dialog_fragment_recast.xml" value="0.3132716049382716" />
+        <entry key="app/src/main/res/layout/dialog_fragment_user_choose.xml" value="0.15106580166821132" />
         <entry key="app/src/main/res/layout/fragment_about_you.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_account_completed.xml" value="0.15095628415300547" />
         <entry key="app/src/main/res/layout/fragment_add_links.xml" value="0.14959016393442623" />
@@ -80,6 +82,7 @@
         <entry key="app/src/main/res/layout/fragment_passwordl.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_profile_setting.xml" value="0.1407103825136612" />
+        <entry key="app/src/main/res/layout/fragment_report.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_search_account.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_search_trend.xml" value="0.25" />
@@ -144,6 +147,7 @@
         <entry key="components-android/src/main/res/drawable/bg_cover_round_clickable.xml" value="0.1875" />
         <entry key="components-android/src/main/res/drawable/bg_cover_round_icon.xml" value="1.4262684498854878" />
         <entry key="components-android/src/main/res/drawable/bg_cover_round_icon_loading.xml" value="0.123828125" />
+        <entry key="components-android/src/main/res/drawable/bg_cover_round_red.xml" value="0.102734375" />
         <entry key="components-android/src/main/res/drawable/bg_cover_round_type.xml" value="0.2048611111111111" />
         <entry key="components-android/src/main/res/drawable/bg_cover_top.xml" value="0.15416666666666667" />
         <entry key="components-android/src/main/res/drawable/bg_cover_under.xml" value="0.17291666666666666" />

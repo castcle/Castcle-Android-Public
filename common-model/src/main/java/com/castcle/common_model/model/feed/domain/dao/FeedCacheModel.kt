@@ -93,6 +93,8 @@ data class FeedCacheModel(
     var recastCount: Int = 0,
     @ColumnInfo(name = "recasted")
     var recasted: Boolean = false,
+    @ColumnInfo(name = "reported")
+    var reported: Boolean = false,
     @ColumnInfo(name = "isMindId")
     var isMindId: Boolean = false
 )

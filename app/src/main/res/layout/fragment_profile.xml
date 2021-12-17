@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black_night"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -45,11 +46,22 @@
 
             <include
                 android:id="@+id/profileMe"
-                layout="@layout/layout_profile_me" />
+                layout="@layout/layout_profile_me"
+                android:visibility="visible"/>
 
             <include
                 android:id="@+id/profileYou"
                 layout="@layout/layout_profile_you"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/profileYouBlocked"
+                layout="@layout/layout_profile_you_blocked"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/profileYouBlocking"
+                layout="@layout/layout_profile_you_blocking"
                 android:visibility="gone" />
 
             <include
@@ -84,12 +96,14 @@
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 
         <View
+            android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_2sdp"
             android:background="@color/black_light" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_light"

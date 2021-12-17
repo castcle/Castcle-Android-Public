@@ -95,6 +95,15 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
         }
     }
 
+    fun updateStateItemReported(contentUiModel: ContentFeedUiModel) {
+        val index = snapshot().indexOf(contentUiModel)
+        if (index > -1) {
+            val recastUiModel = snapshot()[index]
+            recastUiModel?.reported = true
+            notifyItemChanged(index)
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateStateItemFollowing(contentUiModel: ContentFeedUiModel) {
         snapshot().map {

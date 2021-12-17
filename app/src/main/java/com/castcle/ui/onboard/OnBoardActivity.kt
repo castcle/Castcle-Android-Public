@@ -200,6 +200,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.createAccountFragment,
                 R.id.createAccountCompleteFragment,
                 R.id.settingProfileFragment,
+                R.id.reportFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

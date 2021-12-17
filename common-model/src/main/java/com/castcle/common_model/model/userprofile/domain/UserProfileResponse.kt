@@ -37,6 +37,10 @@ data class UserProfileResponse(
     val email: String? = null,
     @SerializedName("followed")
     val followed: Boolean,
+    @SerializedName("blocking")
+    val blocking: Boolean,
+    @SerializedName("blocked")
+    val blocked: Boolean,
     @SerializedName("followers")
     val followers: Followers,
     @SerializedName("following")

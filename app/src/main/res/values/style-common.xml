@@ -117,4 +117,35 @@
     <style name="AppTextKanit.InActive">
         <item name="android:textColor">@color/blue</item>
     </style>
+
+
+    <style name="AppTextSarabun">
+        <item name="fontFamily">@font/sarabun_medium</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="AppTextSarabun.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="AppTextSarabunBold">
+        <item name="fontFamily">@font/sarabun_bold</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="AppTextSarabunBold.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
+
+    <style name="AppTextSarabunLight">
+        <item name="fontFamily">@font/sarabun_light</item>
+        <item name="android:textColor">?attr/castclePrimaryTextColor</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="AppTextSarabunLight.Regular">
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
 </resources>

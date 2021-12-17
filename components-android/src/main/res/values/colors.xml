@@ -31,6 +31,7 @@
     <color name="blue_night">#003E8C</color>
     <color name="blue_gray">#0E82BA</color>
     <color name="red_gray">#D6C7C7</color>
+    <color name="button_red">#DE6C6C</color>
     <color name="red_primary">#CC0000</color>
     <color name="red_primary_warning">#FF3D3D</color>
     <color name="white_primary_alpha_20">#33F5F5F5</color>

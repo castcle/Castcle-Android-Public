@@ -1,7 +1,7 @@
 package com.castcle.ui.feed
 
-import android.animation.ValueAnimator
 import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -29,6 +29,8 @@ import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.dialogeditcontent.EditContentState
 import com.castcle.ui.common.dialog.dialogeditcontent.KEY_CHOOSE_EDIT_REQUEST
 import com.castcle.ui.common.dialog.recast.*
+import com.castcle.ui.common.dialog.user.KEY_USER_CHOOSE_REQUEST
+import com.castcle.ui.common.dialog.user.UserState
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -46,9 +48,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentFeedBinding> {
 
-    @Inject lateinit var onBoardNavigator: OnBoardNavigator
+    @Inject
+    lateinit var onBoardNavigator: OnBoardNavigator
 
-    @Inject lateinit var localizedResources: LocalizedResources
+    @Inject
+    lateinit var localizedResources: LocalizedResources
 
     private lateinit var adapterPagingCommon: CommonAdapter
 
@@ -234,6 +238,10 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             if (it) {
                 displayErrorMessage(localizedResources.getString(R.string.cast_post_status_success))
             }
+        }.addToDisposables()
+
+        viewModel.showLoading.subscribe {
+            handlerShowLoading(it)
         }.addToDisposables()
 
         viewModel.userProfile.observe(this, {
@@ -516,7 +524,14 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun handleEditContentClick(contentUiModel: ContentFeedUiModel) {
         guestEnable(enable = {
-            handleOptionalContentClick(contentUiModel)
+            getNavigationResult<UserState>(
+                onBoardNavigator,
+                R.id.feedFragment,
+                KEY_USER_CHOOSE_REQUEST,
+                onResult = {
+                    onHandlerUserChoose(it, contentUiModel)
+                })
+            onNavigateToChooseUserEdit(contentUiModel)
         }, disable = {
             navigateToNotifyLoginDialog()
         })
@@ -622,6 +637,88 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
     private fun navigateToProfile(castcleId: String, profileType: String) {
         onBoardNavigator.navigateToProfileFragment(castcleId, profileType)
+    }
+
+    private fun onNavigateToChooseUserEdit(contentUiModel: ContentFeedUiModel) {
+        onBoardNavigator.navigateToUserChooseDialogFragment(contentUiModel.userContent.displayName)
+    }
+
+    private fun onNavigateToReportProfile(
+        castcleId: String,
+        profileType: String,
+        displayName: String
+    ) {
+        activity?.runOnUiThread {
+            onBoardNavigator.navigateToReportFragment(castcleId, profileType, displayName, true)
+        }
+    }
+
+    private fun handlerShowLoading(it: Boolean) {
+        binding.flCoverLoading.visibleOrGone(it)
+    }
+
+    private fun onHandlerUserChoose(state: UserState, contentFeedUiModel: ContentFeedUiModel) {
+        when (state) {
+            UserState.SHARE -> {
+                requireActivity().let {
+                    val intent = Intent()
+                    intent.action = Intent.ACTION_SEND
+                    intent.type = "text/plain"
+                    intent.putExtra(Intent.EXTRA_TEXT, "share something")
+                    it.startActivity(Intent.createChooser(intent, "share"))
+                }
+            }
+
+            UserState.BLOCK -> {
+                viewModel.blockUser(contentFeedUiModel.authorId).subscribeBy(
+                    onComplete = {
+                        var profileType = ""
+                        checkContentIsMe(contentFeedUiModel.userContent.castcleId,
+                            onPage = {
+                                profileType = ProfileType.PROFILE_TYPE_PAGE.type
+                            }, onMe = {
+                                profileType = ProfileType.PROFILE_TYPE_ME.type
+                            }, onView = {
+                                profileType = ProfileType.PROFILE_TYPE_PEOPLE.type
+                            }
+                        )
+                        navigateToProfile(contentFeedUiModel.userContent.castcleId, profileType)
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+
+            UserState.REPORT -> {
+                viewModel.reportContent(contentFeedUiModel.contentId).subscribeBy(
+                    onComplete = {
+                        var profileType = ""
+                        checkContentIsMe(contentFeedUiModel.userContent.castcleId,
+                            onPage = {
+                                profileType = ProfileType.PROFILE_TYPE_PAGE.type
+                            }, onMe = {
+                                profileType = ProfileType.PROFILE_TYPE_ME.type
+                            }, onView = {
+                                profileType = ProfileType.PROFILE_TYPE_PEOPLE.type
+                            }
+                        )
+                        onNavigateToReportProfile(
+                            contentFeedUiModel.userContent.castcleId,
+                            profileType,
+                            contentFeedUiModel.userContent.displayName
+                        )
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+        }
+    }
+
+    private fun onNavigateToUserProfile() {
+
     }
 
     private fun guestEnable(disable: () -> Unit, enable: () -> Unit) {

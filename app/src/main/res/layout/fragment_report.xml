@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_light"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <include
+            android:id="@+id/tbProfile"
+            layout="@layout/toolbar_castcle_report"
+            android:elevation="@dimen/_4sdp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="8dp"
+            android:text="@string/report_des"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_des"
+            style="@style/AppTextKanitLight.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginVertical="@dimen/_16sdp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            tools:text="@string/report_action" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btBlock"
+            style="@style/AppTextKanitLight.Regular"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_cover_round_red"
+            android:clickable="true"
+            android:focusable="true"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            tools:text="Block @DappRadar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_footer"
+            style="@style/AppTextSarabunLight.Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_16sdp"
+            android:layout_marginVertical="@dimen/_16sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp"
+            tools:text="@string/report_footer" />
+
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/flCoverLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_night_tranparent"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+    </RelativeLayout>
+</layout>

@@ -181,6 +181,9 @@
     <string name="add_link_item">+ Add social media or website</string>
     <string name="edite_profile_save">Save</string>
     <string name="edite_profile_success_message">Update Profile success</string>
+    <string name="dialog_fragement_user_choose_share">Share @%s</string>
+    <string name="dialog_fragement_user_choose_block">Block @%s</string>
+    <string name="dialog_fragement_user_choose_report">Report @%s</string>
     <string name="dialog_fragement_profile_edit_sync">Sync social media</string>
     <string name="dialog_fragement_profile_edit_delete">Delete page</string>
     <string name="dialog_fragement_profile_edit_share">Share</string>
@@ -251,4 +254,14 @@ account</string>
     <string name="feed_content_following_status">you follow %s Success</string>
     <string name="profile_edit_page">Edit Page</string>
     <string name="dialog_fragement_profile_delete_account">Delete account</string>
+    <string name="block_button">Block %s</string>
+    <string name="report_des">Thank you for letting us know the issue</string>
+    <string name="report_button">Block %s</string>
+    <string name="report_action">If we find %s violating Castcle Terms of Service, we will take action on it</string>
+    <string name="report_footer">%s will not be able to follow you or view you Casts, and you will not see Casts or notifications from %s </string>
+    <string name="unblocked">Unblocked</string>
+
+    <string name="profile_blocking_des1">We apologize but, you have been blocked by this user</string>
+    <string name="profile_blocking_des2">You are unable to view or follow @%s</string>
+
 </resources>

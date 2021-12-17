@@ -86,4 +86,8 @@ interface FeedRepository {
     fun deleteContent(
         deleteCommentRequest: DeleteContentRequest,
     ): Completable
+
+    fun reportContent(
+        contentId: String,
+    ): Completable
 }
