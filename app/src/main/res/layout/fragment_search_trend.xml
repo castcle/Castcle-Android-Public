@@ -35,6 +35,8 @@
                 android:drawablePadding="@dimen/_8sdp"
                 android:hint="@string/search_title_bar_search"
                 android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:inputType="text"
                 android:paddingEnd="@dimen/_8sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivCancel"

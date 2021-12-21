@@ -1,67 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/clInPreviewIconContent"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/_12sdp"
-    android:layout_marginEnd="@dimen/_12sdp"
-    app:layout_constraintBottom_toTopOf="@id/ftFooter"
-    app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
-    tools:layout_editor_absoluteX="16dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivPerviewIconUrl"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_80sdp"
-        android:background="@color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_img_placeholder" />
+    <data>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Small"
-        android:id="@+id/tvIconPreview"
-        android:layout_width="0dp"
+        <variable
+            name="linkUiItem"
+            type="com.castcle.common_model.model.feed.LinkUiModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clInPreviewIconContent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_12sdp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/gray_light"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/ivPerviewIconUrl"
-        app:layout_constraintTop_toTopOf="@id/ivPerviewIconUrl"
-        tools:text="Youtube.com" />
+        app:layout_constraintBottom_toTopOf="@id/ftFooter"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedContent"
+        tools:layout_editor_absoluteX="16dp">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
-        android:id="@+id/tvPreviewIconHeader"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@id/tvIconPreview"
-        app:layout_constraintStart_toStartOf="@id/tvIconPreview"
-        app:layout_constraintTop_toBottomOf="@id/tvIconPreview"
-        tools:text="How does a blockchain work - Simply Explained" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPerviewIconUrl"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_img_placeholder" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Small"
-        android:id="@+id/tvPreviewIconContent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:paddingBottom="@dimen/_12sdp"
-        android:textColor="@color/gray_light"
-        app:layout_constraintEnd_toEndOf="@id/tvIconPreview"
-        app:layout_constraintStart_toStartOf="@id/tvIconPreview"
-        app:layout_constraintTop_toBottomOf="@id/tvPreviewIconHeader"
-        tools:text="How does a blockchain work - Simply Explained" />
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Small"
+            android:id="@+id/tvIconPreview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/gray_light"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivPerviewIconUrl"
+            app:layout_constraintTop_toTopOf="@id/ivPerviewIconUrl"
+            tools:text="Youtube.com" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Regular"
+            android:id="@+id/tvPreviewIconHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/tvIconPreview"
+            app:layout_constraintStart_toStartOf="@id/tvIconPreview"
+            app:layout_constraintTop_toBottomOf="@id/tvIconPreview"
+            tools:text="How does a blockchain work - Simply Explained" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/AppTextKanitLight.Small"
+            android:id="@+id/tvPreviewIconContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/_12sdp"
+            android:textColor="@color/gray_light"
+            app:layout_constraintEnd_toEndOf="@id/tvIconPreview"
+            app:layout_constraintStart_toStartOf="@id/tvIconPreview"
+            app:layout_constraintTop_toBottomOf="@id/tvPreviewIconHeader"
+            tools:text="How does a blockchain work - Simply Explained" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

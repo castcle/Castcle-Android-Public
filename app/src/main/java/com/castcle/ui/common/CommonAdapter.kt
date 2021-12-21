@@ -168,7 +168,7 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
     override fun getItemViewType(position: Int): Int {
         return when (getContentType(position)) {
             BLOG.type -> R.layout.layout_feed_template_blog
-            SHORT.type -> optionalTypeShort(position)
+            SHORT.type,LONG.type -> optionalTypeShort(position)
             IMAGE.type -> R.layout.layout_feed_template_image
             QUOTE.type -> R.layout.layout_feed_template_quote
             else -> R.layout.layout_feed_template_short

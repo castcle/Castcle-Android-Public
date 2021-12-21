@@ -167,7 +167,7 @@ fun Payload.toContentFeedUiModel(): ContentFeedUiModel {
         id = id ?: "",
         contentId = payload.id,
         authorId = payload.authorId,
-        message = payload.message,
+        message = payload.message ?: "",
         type = payload.type,
         createdAt = payload.created,
         updatedAt = payload.updated,

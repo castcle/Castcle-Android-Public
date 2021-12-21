@@ -28,17 +28,6 @@
         app:layout_constraintStart_toEndOf="@id/ivRecast"
         app:layout_constraintTop_toTopOf="@id/ivRecast" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_reported"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_45sdp"
-        android:layout_marginTop="@dimen/_2sdp"
-        android:text="This cast has been reported by you"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/ivAvatar"
         android:layout_width="@dimen/_38sdp"
@@ -49,10 +38,11 @@
         app:civ_border_width="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_reported"
+        app:layout_constraintTop_toBottomOf="@id/ivRecast"
         app:srcCompat="@drawable/ic_avatar_placeholder" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Small"
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,11 +81,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:padding="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_10sdp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/ivAvatar"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_optional" />
 
     <androidx.appcompat.widget.AppCompatImageView

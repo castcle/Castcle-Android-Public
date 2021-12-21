@@ -4,9 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
+import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
+import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
+import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.CommonMockAdapter
@@ -131,7 +135,25 @@ class FeedContentShortViewHolder(
             }
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
-                tvFeedContent.appendLinkText(message)
+                with(tvFeedContent) {
+                    if (uiModel.type == ContentType.SHORT.type) {
+                        appendLinkText(message)
+                    } else {
+                        setTextReadMore(message)
+                        subscribeOnClick {
+                            tvFeedContent.toggle()
+                        }.addToDisposables()
+                    }
+                    setLinkClickListener(object : SocialTextView.LinkClickListener {
+                        override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
+                            handleItemClick(
+                                TemplateEventClick.WebContentMessageClick(
+                                    matchedText
+                                )
+                            )
+                        }
+                    })
+                }
                 ftFooter.bindUiModel(uiModel)
             }
         }

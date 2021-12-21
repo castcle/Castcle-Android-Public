@@ -1,8 +1,10 @@
 package com.castcle.ui.feed.feeddetail
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.view.*
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +17,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.PageHeaderUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.components_android.ui.custom.event.EndlessRecyclerViewScrollListener
@@ -22,10 +25,13 @@ import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonMockAdapter
-import com.castcle.ui.common.dialog.recast.KEY_REQUEST_COMMENTED_COUNT
-import com.castcle.ui.common.events.Click
-import com.castcle.ui.common.events.CommentItemClick
+import com.castcle.ui.common.dialog.recast.*
+import com.castcle.ui.common.events.*
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.lyrebirdstudio.croppylib.util.extensions.showKeyboard
+import com.stfalcon.imageviewer.StfalconImageViewer
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 
@@ -106,6 +112,11 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(FeedDetailFragmentViewModel::class.java)
 
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
+
     override fun initViewModel() {
         viewModel.fetachCommentedPage(contentUiModel.contentId)
 
@@ -131,13 +142,16 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
     @SuppressLint("ClickableViewAccessibility")
     override fun setupView() {
         setupToolBar()
-        onBindCommentStatus()
 
         binding.clContentFeed.run {
             adapter = CommonMockAdapter().also {
                 adapterMockCommon = it
             }
         }
+
+        adapterMockCommon.itemClick.subscribe {
+            handleContentItemClick(it)
+        }.addToDisposables()
 
         val linearLayoutManager = LinearLayoutManager(
             context, LinearLayoutManager.VERTICAL, false
@@ -155,30 +169,171 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
         }
     }
 
+    private fun handleContentItemClick(click: Click) {
+        when (click) {
+            is FeedItemClick.FeedLikeClick -> {
+                handleLikeClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedRecasteClick -> {
+                handleRecastClick(click.contentUiModel)
+            }
+            is FeedItemClick.FeedCommentClick -> {
+                handleCommentClick()
+            }
+            is FeedItemClick.FeedImageClick -> {
+                handleImageItemClick(click.position, click.contentUiModel)
+            }
+            is FeedItemClick.FeedFollowingClick -> {
+                handleFeedFollowingClick(click.contentUiModel)
+            }
+            is FeedItemClick.WebContentClick -> {
+                handleWebContentClick(click.contentUiModel)
+            }
+            is FeedItemClick.WebContentMessageClick -> {
+                handleWebContentMessageClick(click)
+            }
+        }
+    }
+
+    private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {
+        activityViewModel.putToFollowUser(contentUiModel.userContent.castcleId).subscribeBy(
+            onComplete = {
+                displayMessage(
+                    localizedResources.getString(R.string.feed_content_following_status)
+                        .format(contentUiModel.userContent.castcleId)
+                )
+                adapterMockCommon.updateStateItemFollowing()
+            }, onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+    }
+
+    private fun handleCommentClick() {
+        with(binding.itemComment) {
+            etInputMessages.requestFocus()
+            etInputMessages.showKeyboard()
+        }
+    }
+
+    private fun handleWebContentMessageClick(click: FeedItemClick.WebContentMessageClick) {
+        openWebView(click.url)
+    }
+
+    private fun handleWebContentClick(contentUiModel: ContentFeedUiModel) {
+        contentUiModel.link?.url?.let {
+            openWebView(it)
+        }
+    }
+
+    private fun openWebView(url: String) {
+        (context as Activity).openUri(url)
+    }
+
+    private fun handleImageItemClick(position: Int, contentUiModel: ContentFeedUiModel) {
+        val image = contentUiModel.photo?.map {
+            it.imageOrigin
+        }
+        val imagePosition = when (contentUiModel.photo?.size) {
+            1 -> 0
+            else -> position
+        }
+        StfalconImageViewer.Builder(context, image, ::loadPosterImage)
+            .withStartPosition(imagePosition)
+            .withHiddenStatusBar(true)
+            .allowSwipeToDismiss(true)
+            .allowZooming(true)
+            .show()
+    }
+
+    private fun loadPosterImage(imageView: ImageView, imageUrl: String) {
+        imageView.loadImageWithoutTransformation(imageUrl)
+    }
+
+    private fun handleRecastClick(contentUiModel: ContentFeedUiModel) {
+        guestEnable(enable = {
+            navigateToRecastDialogFragment(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun navigateToRecastDialogFragment(contentUiModel: ContentFeedUiModel) {
+        onBoardNavigator.navigateToRecastDialogFragment(contentUiModel)
+
+        if (contentUiModel.recasted) {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.feedDetailFragment,
+                KEY_REQUEST_UNRECAST,
+                onResult = {
+                    onRecastContent(it)
+                })
+        } else {
+            getNavigationResult<ContentFeedUiModel>(
+                onBoardNavigator,
+                R.id.feedDetailFragment,
+                KEY_REQUEST,
+                onResult = {
+                    onRecastContent(it, true)
+                })
+        }
+    }
+
+    private fun onRecastContent(currentContent: ContentFeedUiModel, onRecast: Boolean = false) {
+        viewModel.recastContent(currentContent).subscribeBy(
+            onError = {
+                displayError(it)
+            }
+        ).addToDisposables()
+        handlerUpdateRecasted(onRecast)
+    }
+
+    private fun handlerUpdateRecasted(
+        onRecast: Boolean
+    ) {
+        if (onRecast) {
+            adapterMockCommon.updateStateItemRecast()
+        } else {
+            adapterMockCommon.updateStateItemUnRecast()
+        }
+    }
+
+    private fun handleLikeClick(contentUiModel: ContentFeedUiModel) {
+        guestEnable(enable = {
+            val likeContentRequest = LikeContentRequest(
+                contentId = contentUiModel.contentId,
+                feedItemId = contentUiModel.id,
+                authorId = viewModel.userProfile.value?.castcleId ?: "",
+                likeStatus = contentUiModel.liked
+            )
+            viewModel.updateLikeContent(likeContentRequest)
+            if (!contentUiModel.liked) {
+                adapterMockCommon.onUpdateItemLikeCount()
+            } else {
+                adapterMockCommon.onUpdateItemUnLikeCount()
+            }
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun navigateToNotifyLoginDialog() {
+        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+    }
+
+    private fun guestEnable(disable: () -> Unit, enable: () -> Unit) {
+        if (viewModel.isGuestMode) {
+            disable.invoke()
+        } else {
+            enable.invoke()
+        }
+    }
+
     private fun onBindStartComment(showCommentState: Boolean = false) {
         with(binding.itemComment) {
             etInputMessages.requestFocus()
             requireContext().showSoftKeyboard(etInputMessages)
-        }
-    }
-
-    private fun onBindCommentStatus() {
-        with(binding.itemFooter) {
-            tvLiked.text = localizedResources.getString(
-                R.string.comment_footer_retweets
-            ).format(
-                contentUiModel.recastCount
-            )
-            tvCommented.text = localizedResources.getString(
-                R.string.comment_footer_quote
-            ).format(
-                contentUiModel.commentCount + contentUiModel.quoteCount
-            )
-            tvReCasted.text = localizedResources.getString(
-                R.string.comment_footer_liked
-            ).format(
-                contentUiModel.likeCount
-            )
         }
     }
 

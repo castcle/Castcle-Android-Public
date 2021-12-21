@@ -49,13 +49,15 @@ class FeedRemoteMediator(
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }
 
+    private var remoteKey: PageKey? = PageKey()
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, FeedCacheModel>
     ): MediatorResult {
 
         return try {
-            var remoteKey = PageKey(0, "", 0, 0, "")
+
             Log.d("REMOTE-KEY", "${loadType.name}")
             val (loadKey, pageSize) = when (loadType) {
                 LoadType.REFRESH -> Pair(1, DEFAULT_PAGE_SIZE)
@@ -63,30 +65,27 @@ class FeedRemoteMediator(
                     endOfPaginationReached = true
                 )
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
                     remoteKey = withContext(Dispatchers.IO) {
-                        pageKeyDao.getAllNextPageKey()?.lastOrNull()!!
-                    }
-                    if (lastItem == null) {
-                        return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
-                    }
-                    Pair(remoteKey.nextPage, remoteKey.pageSize)
+                        pageKeyDao.getAllNextPageKey()?.lastOrNull()
+                    } ?: return MediatorResult.Success(
+                        endOfPaginationReached = true
+                    )
+                    Log.d("REMOTE-KEY-NEXT", "${remoteKey?.nextPage},${remoteKey?.pageSize}")
+                    Pair(remoteKey?.nextPage, remoteKey?.pageSize)
                 }
             }
             val response = feedApi.getFeed(
                 featureSlug = feedRequestHeader.featureSlug,
                 circleSlug = feedRequestHeader.circleSlug,
                 hasTag = feedRequestHeader.hashtag,
-                unitId = remoteKey.unitId ?: "",
+                unitId = remoteKey?.unitId ?: "",
                 pageNumber = loadKey ?: 0,
                 pageSize = DEFAULT_PAGE_SIZE,
                 mode = feedRequestHeader.mode
             )
             nextPage = loadKey?.plus(1) ?: 0
             oldestId = feedRequestHeader.oldestId
-            Log.d("REMOTE-KEY-NEXT", "${remoteKey.nextPage},${remoteKey.pageSize}")
+
 
             val pagedResponse = response.body()
             val data = pagedResponse?.let { mapToContentFeedUiMode(feedRequestHeader.isMeId, it) }

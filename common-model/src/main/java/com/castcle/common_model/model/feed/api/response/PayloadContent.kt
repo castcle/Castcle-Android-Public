@@ -30,7 +30,7 @@ import com.google.gson.annotations.SerializedName
 data class PayloadObjectContent(
     @SerializedName("id") var id: String,
     @SerializedName("type") var type: String,
-    @SerializedName("message") var message: String,
+    @SerializedName("message") var message: String? = null,
     @SerializedName("photo") var photo: PhotoContents? = null,
     @SerializedName("authorId") var authorId: String,
     @SerializedName("link") val links: List<LinkResponse>? = null,

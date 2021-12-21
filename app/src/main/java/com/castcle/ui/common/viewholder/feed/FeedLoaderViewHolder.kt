@@ -1,4 +1,10 @@
-package com.castcle.data.staticmodel
+package com.castcle.ui.common.viewholder.feed
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.RecyclerView
+import com.castcle.android.databinding.LayoutItemProgressMotionFooterBinding
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,15 +28,26 @@ package com.castcle.data.staticmodel
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 15:53.
+//  Created by sklim on 20/12/2021 AD at 15:52.
 
-enum class ContentType(val type: String) {
-    CONTENT("Content"),
-    IMAGE("image"),
-    SHORT("short"),
-    LONG("long"),
-    BLOG("blog"),
-    FEED("feed"),
-    RECAST("recast"),
-    QUOTE("quote")
+class FeedLoaderViewHolder(
+    val binding: LayoutItemProgressMotionFooterBinding
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(loadState: LoadState) {
+        if (loadState is LoadState.Loading) {
+            binding.mMotionLoader.transitionToEnd()
+        } else {
+            binding.mMotionLoader.transitionToStart()
+        }
+    }
+
+    companion object {
+        //get instance of the DoggoImageViewHolder
+        fun getInstance(parent: ViewGroup): FeedLoaderViewHolder {
+            val inflaterLayout = LayoutInflater.from(parent.context)
+            val view = LayoutItemProgressMotionFooterBinding.inflate(inflaterLayout, parent, false)
+            return FeedLoaderViewHolder(view)
+        }
+    }
 }

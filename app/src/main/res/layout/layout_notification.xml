@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clNotiication"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/clNotiication"
     android:background="@drawable/bg_notification">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -13,11 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginTop="@dimen/_10sdp"
         android:text="@string/setting_noti_title"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/ivNotification"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/ivNotification" />
 
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanitLight.Small"
@@ -37,9 +37,9 @@
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_24sdp"
-        app:layout_constraintBottom_toBottomOf="@id/tvNotiCount"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvNotiTitle"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_noti" />
 
     <androidx.appcompat.widget.AppCompatTextView

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
@@ -16,9 +17,11 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
+import com.castcle.common_model.model.login.domain.CreatePostBundle
 import com.castcle.common_model.model.search.SearchUiModel
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.data.staticmodel.FeedContentType
 import com.castcle.data.staticmodel.ModeType
@@ -26,6 +29,7 @@ import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
+import com.castcle.ui.common.LoaderStateAdapter
 import com.castcle.ui.common.dialog.dialogeditcontent.EditContentState
 import com.castcle.ui.common.dialog.dialogeditcontent.KEY_CHOOSE_EDIT_REQUEST
 import com.castcle.ui.common.dialog.recast.*
@@ -40,6 +44,7 @@ import com.castcle.ui.util.asRemotePresentationState
 import com.facebook.shimmer.Shimmer
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -57,6 +62,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     private lateinit var adapterPagingCommon: CommonAdapter
 
     private var adapterFilterAdapter = FeedFilterAdapter()
+
+    private var adapterLoadState = LoaderStateAdapter()
 
     private lateinit var baseContentUiModel: ContentFeedUiModel
 
@@ -95,8 +102,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         setupToolbar(viewModel.isGuestMode)
         with(binding) {
             wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
-            rcFeedFillter.visibleOrGone(!viewModel.isGuestMode)
-            ivFilter.visibleOrGone(!viewModel.isGuestMode)
             val itemAnimator: DefaultItemAnimator = object : DefaultItemAnimator() {
                 override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
                     return true
@@ -104,6 +109,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             }
             rvFeedContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
+                adapterPagingCommon.withLoadStateFooter(adapterLoadState)
             }
             rvFeedContent.itemAnimator = itemAnimator
 
@@ -154,6 +160,23 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             }.addToDisposables()
         }
 
+        val remoteLoading = adapterPagingCommon.loadStateFlow
+            .asRemotePresentationState()
+            .map { it == RemotePresentationState.REMOTE_LOADING }
+
+        lifecycleScope.launch {
+            remoteLoading.collect {
+                if (it) {
+                    startLoadingShimmer()
+                } else {
+                    stopLoadingShimmer()
+                }
+                with(binding) {
+                    rvFeedContent.visibleOrGone(!it)
+                }
+            }
+        }
+
         with(viewModel) {
             viewLifecycleOwner.lifecycleScope.launch {
                 feedContentPage.collectLatest {
@@ -162,46 +185,29 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
             }
         }
 
-        val remoteLoading = adapterPagingCommon.loadStateFlow
-            .asRemotePresentationState()
-            .map { it == RemotePresentationState.REMOTE_LOADING }
-
-//        lifecycleScope.launch {
-//            remoteLoading.collect {
-//                if (it) {
-//                    startLoadingShimmer()
-//                } else {
-//                    stopLoadingShimmer()
-//                }
-//                with(binding) {
-//                    rvFeedContent.visibleOrGone(!it)
-//                }
-//            }
-//        }
-
         viewLifecycleOwner.lifecycleScope.launch {
-            adapterPagingCommon.loadStateFlow
-                .distinctUntilChangedBy {
-                    it.refresh
-                }.filter { it.refresh is LoadState.NotLoading }
-                .collectLatest { loadStates ->
-                    val refresher = loadStates.refresh
-                    val isError = loadStates.refresh is LoadState.Error
-                    val isLoading = loadStates.refresh is LoadState.Loading
-                    val displayEmpty = (refresher is LoadState.NotLoading &&
-                        !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
-                    if (isError) {
-                        handleEmptyState(isError)
-                        stopLoadingShimmer()
-                    }
-                    if (!isLoading) {
-                        binding.swiperefresh.isRefreshing = false
-                        stopLoadingShimmer()
-                    } else {
-                        binding.rvFeedContent.gone()
+            adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
+                val refresher = loadStates.refresh
+                val isError = loadStates.refresh is LoadState.Error
+                val isLoading = loadStates.refresh is LoadState.Loading
+                val displayEmpty = (refresher is LoadState.NotLoading &&
+                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                if (isError) {
+                    handleEmptyState(isError)
+                    stopLoadingShimmer()
+                }
+                if (!isLoading) {
+                    binding.swiperefresh.isRefreshing = false
+                    handleEmptyState(isLoading)
+                    stopLoadingShimmer()
+                } else {
+                    if(viewModel.isGuestMode){
+                        binding.empState.gone()
+                        handleEmptyState(!isLoading)
                         startLoadingShimmer()
                     }
                 }
+            }
         }
 
         with(binding.empState) {
@@ -604,8 +610,31 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         }.run(binding.wtWhatYouMind::bindUiModel)
 
         binding.wtWhatYouMind.clickStatus.subscribe {
-            navigateToProfile(user.castcleId, ProfileType.PROFILE_TYPE_ME.type)
+            handlerWhatYouMindClick(it, user)
         }.addToDisposables()
+    }
+
+    private fun handlerWhatYouMindClick(it: TemplateClicks?, user: User) {
+        when (it) {
+            is TemplateClicks.CreatePostClick -> {
+                val createPostBundle = CreatePostBundle.CreatePostProfileBundle(
+                    displayName = user.displayName,
+                    castcleId = user.castcleId,
+                    avaterUrl = user.avatar,
+                    verifyed = user.verified
+                )
+
+                navigateToCreatePost(createPostBundle)
+            }
+            is TemplateClicks.AvatarClick -> {
+                navigateToProfile(user.castcleId, ProfileType.PROFILE_TYPE_ME.type)
+            }
+            else -> {}
+        }
+    }
+
+    private fun navigateToCreatePost(createPostBundle: CreatePostBundle) {
+        onBoardNavigator.navigateToCreatePostFragment(createPostBundle, true)
     }
 
     private fun checkContentIsMe(

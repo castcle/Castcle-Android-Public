@@ -14,66 +14,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.core.widget.NestedScrollView
+    <com.castcle.components_android.ui.custom.mention.MentionEditText
+        style="@style/TextInput.Text"
+        android:id="@+id/etInputMessage"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:gravity="top"
+        android:hint="@string/create_blog_status"
+        android:inputType="textMultiLine"
+        android:maxLines="280"
+        android:scrollbars="vertical"
+        android:textAlignment="gravity"
+        android:textColorHint="@color/gray_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/utUserBar">
+        app:layout_constraintTop_toBottomOf="@id/utUserBar"
+        app:linkType="mention|hashtag"
+        app:mentionTextView_hashtagColor="@color/blue"
+        app:mentionTextView_mentionColor="@color/blue" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextKanit.Small"
+        android:id="@+id/tvCountChar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/etInputMessage"
+        app:layout_constraintTop_toBottomOf="@id/etInputMessage"
+        tools:text="0/280" />
 
-            <com.castcle.components_android.ui.custom.mention.MentionEditText
-                style="@style/TextInput.Text"
-                android:id="@+id/etInputMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:gravity="top"
-                android:hint="@string/create_blog_status"
-                android:inputType="textMultiLine"
-                android:maxLines="280"
-                android:scrollbars="vertical"
-                android:textAlignment="gravity"
-                android:textColorHint="@color/gray_light"
-                app:layout_constraintBottom_toTopOf="@id/tvCountChar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:linkType="mention|hashtag"
-                app:mentionTextView_hashtagColor="@color/blue"
-                app:mentionTextView_mentionColor="@color/blue" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/_50sdp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvCountChar" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/AppTextKanit.Small"
-                android:id="@+id/tvCountChar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="@id/etInputMessage"
-                app:layout_constraintTop_toBottomOf="@id/etInputMessage"
-                tools:text="0/280" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/_25sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCountChar"
+        tools:itemCount="1"
+        tools:listitem="@layout/layout_feed_template_short" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clToolBarCast"
@@ -100,9 +86,9 @@
             android:id="@+id/btCast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
             android:background="@drawable/bg_bottom"
             android:paddingStart="@dimen/_12sdp"
             android:paddingTop="@dimen/_4sdp"

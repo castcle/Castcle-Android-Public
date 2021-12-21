@@ -214,11 +214,12 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
     private fun onBindMessageCount(messageCount: Pair<Int, Int>) {
         val textFormatCount = "%s"
         with(binding.tvCountChar) {
-            text = if (messageCount.first > messageCount.second) {
+            if (messageCount.first > com.castcle.ui.createpost.MAX_LIGHTH) {
                 setTextColor(requireContext().getColorResource(R.color.red_primary))
-                "${messageCount.first - MAX_LIGHTH}"
+                text = "0"
+                enableButtonCast(false)
             } else {
-                textFormatCount.format(messageCount.second)
+                text = textFormatCount.format(messageCount.second)
             }
         }
     }

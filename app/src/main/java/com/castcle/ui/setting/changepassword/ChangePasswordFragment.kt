@@ -77,7 +77,7 @@ class ChangePasswordFragment : BaseFragment<ChangePasswordViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.gone()
+            ivToolbarProfileButton.invisible()
             tvToolbarTitle.text = localizedResources.getString(
                 R.string.setting_change_password_tool_bar
             )

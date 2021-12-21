@@ -89,7 +89,7 @@ class CreatePasswordFragment : BaseFragment<CreatePasswordFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.gone()
+            ivToolbarProfileButton.invisible()
             tvToolbarTitle.text = localizedResources.getString(
                 R.string.setting_create_password_tool_bar
             )

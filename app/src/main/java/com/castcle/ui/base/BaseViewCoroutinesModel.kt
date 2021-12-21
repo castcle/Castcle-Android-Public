@@ -7,6 +7,7 @@ import com.castcle.ui.util.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -44,7 +45,7 @@ abstract class BaseViewCoroutinesModel : ViewModel() {
         crossinline execute: suspend () -> Flow<T>,
         crossinline onSuccess: (Flow<T>) -> Unit
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = execute()
                 onSuccess(result)

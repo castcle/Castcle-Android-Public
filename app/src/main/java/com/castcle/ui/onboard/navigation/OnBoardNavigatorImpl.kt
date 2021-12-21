@@ -623,6 +623,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                             RecastDialogFragmentArgs(contentUiModel).toBundle()
                         )
                     }
+                    R.id.feedDetailFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedDetailFragmentToRecastDialogFragment,
+                            RecastDialogFragmentArgs(contentUiModel).toBundle()
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -1387,6 +1393,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToCreatePostFragment,
+                            CreatePostFragmentArgs(createPostBundle, isFromProfile).toBundle()
+                        )
+                    }
+                    R.id.feedFragment -> {
+                        navController.navigate(
+                            R.id.actionFeedFragmentToCreatePostFragment,
                             CreatePostFragmentArgs(createPostBundle, isFromProfile).toBundle()
                         )
                     }

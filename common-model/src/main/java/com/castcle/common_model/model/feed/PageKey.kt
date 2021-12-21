@@ -32,11 +32,11 @@ data class PageKey(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "contentId")
-    val contentId: String?,
+    val contentId: String? = null,
     @ColumnInfo(name = "nextPage")
-    val nextPage: Int?,
+    val nextPage: Int? = null,
     @ColumnInfo(name = "pageSize")
-    val pageSize: Int?,
+    val pageSize: Int? = null,
     @ColumnInfo(name = "unitId")
-    val unitId: String?
+    val unitId: String? = null
 )

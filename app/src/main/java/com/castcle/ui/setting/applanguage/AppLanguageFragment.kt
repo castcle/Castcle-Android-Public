@@ -13,6 +13,7 @@ import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.setting.LanguageUiModel
 import com.castcle.extensions.gone
+import com.castcle.extensions.invisible
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -113,7 +114,7 @@ class AppLanguageFragment : BaseFragment<LanguageFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.gone()
+            ivToolbarProfileButton.invisible()
             tvToolbarTitle.text = requireContext().getString(R.string.setting_display_language)
             ivToolbarLogoButton.subscribeOnClick {
                 findNavController().navigateUp()

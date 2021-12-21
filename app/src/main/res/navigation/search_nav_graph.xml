@@ -478,6 +478,10 @@
         android:name="com.castcle.ui.feed.feeddetail.FeedDetailFragment"
         tools:layout="@layout/fragment_feed_detail">
 
+        <action
+            android:id="@+id/actionFeedDetailFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
+
         <argument
             android:name="contentUiModel"
             app:argType="com.castcle.common_model.model.feed.ContentFeedUiModel" />

@@ -110,7 +110,7 @@ class ImageTemplateFloxBoxAdapter :
                 when (items.size) {
                     1 -> {
                         loadRoundedCornersImageUri(
-                            mediaItemCamera.imageMedium,
+                            mediaItemCamera.imageOrigin,
                             mediaItemCamera.imageThumbnail,
                         )
                     }

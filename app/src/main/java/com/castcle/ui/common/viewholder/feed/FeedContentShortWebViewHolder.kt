@@ -8,6 +8,7 @@ import com.castcle.common_model.model.feed.LinkUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
+import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
@@ -153,9 +154,18 @@ class FeedContentShortWebViewHolder(
                 gone()
             }
             with(uiModel) {
+                binding.linkUiItem = link ?: LinkUiModel()
+
                 ubUser.bindUiModel(uiModel)
                 with(tvFeedContent) {
-                    appendLinkText(message)
+                    if (uiModel.type == ContentType.SHORT.type) {
+                        appendLinkText(message)
+                    } else {
+                        setTextReadMore(message)
+                        subscribeOnClick {
+                            tvFeedContent.toggle()
+                        }.addToDisposables()
+                    }
                     setLinkClickListener(object : SocialTextView.LinkClickListener {
                         override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
                             handleItemClick(
@@ -204,16 +214,13 @@ class FeedContentShortWebViewHolder(
 
     private fun onBindContentImageWeb(linkUiModel: LinkUiModel, urlPreview: LinkContent) {
         stopLoadingPreViewShimmer()
-        with(binding.clPreviewContent) {
-            clInPreviewContent.visible()
-            with(linkUiModel) {
-                ivPerviewUrl.loadGranularRoundedCornersImage(
-                    imagePreview ?: "",
-                    topLeft = 20f,
-                    topRight = 20f
-                )
-                tvPreviewHeader.text = urlPreview.title
-                tvPreviewContent.text = urlPreview.description
+        linkUiModel.apply {
+            linkTitle = urlPreview.title
+            linkDescription = urlPreview.description
+        }.run {
+            with(binding.clPreviewContent) {
+                clInPreviewContent.visible()
+                binding.linkUiItem = linkUiModel
             }
         }
     }

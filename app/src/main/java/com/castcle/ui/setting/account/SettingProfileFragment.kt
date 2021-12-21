@@ -15,6 +15,7 @@ import com.castcle.common_model.model.setting.SettingMenuUiModel
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.storage.AppPreferences
 import com.castcle.extensions.gone
+import com.castcle.extensions.invisible
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -85,7 +86,7 @@ class SettingProfileFragment : BaseFragment<SettingProfileViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.gone()
+            ivToolbarProfileButton.invisible()
             tvToolbarTitle.text = localizedResources.getString(R.string.setting_account_title)
             ivToolbarLogoButton
                 .subscribeOnClick {

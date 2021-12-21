@@ -13,8 +13,7 @@ import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.search.SearchUiModel
-import com.castcle.extensions.gone
-import com.castcle.extensions.visibleOrGone
+import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.events.Click
@@ -88,7 +87,7 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
     override fun setupView() {
         setupToolBar()
         with(binding.etTextInputPrimary) {
-
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
             setOnEditorActionListener { _, actionId, keyEven ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     onSearchByKeyword(text.toString())
@@ -134,7 +133,7 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
 
     private fun setupToolBar() {
         with(toolbarBinding) {
-            ivToolbarProfileButton.gone()
+            ivToolbarProfileButton.invisible()
             tvToolbarTitle.text = requireContext().getString(R.string.search_title_bar)
             ivToolbarLogoButton.subscribeOnClick {
                 findNavController().navigateUp()

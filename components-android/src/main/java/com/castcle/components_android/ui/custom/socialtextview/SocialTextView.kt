@@ -2,12 +2,17 @@ package com.castcle.components_android.ui.custom.socialtextview
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.text.*
 import android.util.AttributeSet
 import android.util.Patterns
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
+import androidx.core.view.doOnAttach
+import androidx.core.view.isInvisible
 import com.castcle.android.components_android.R
 import com.castcle.components_android.ui.custom.socialtextview.extensions.*
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkItem
@@ -18,12 +23,7 @@ import java.util.*
 import java.util.regex.*
 
 
-class SocialTextView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    def: Int = 0
-) :
-    AppCompatTextView(context, attrs, def) {
+class SocialTextView : AppCompatTextView {
 
     private var hashtagColor = Color.BLUE
     private var mentionColor = Color.YELLOW
@@ -33,7 +33,7 @@ class SocialTextView @JvmOverloads constructor(
     private var normalTextColor = Color.BLACK
     private var selectedColor = Color.GRAY
     private var isUnderline = false
-    private var linkedType: Int
+    private var linkedType: Int = 0
     private var linkedMentions: List<String> = ArrayList()
     private var linkedHashtag: List<String> = ArrayList()
     private var highlightText: List<String> = ArrayList()
@@ -50,6 +50,30 @@ class SocialTextView @JvmOverloads constructor(
 
     private var onLinkClickListener: LinkClickListener? = null
 
+    var state: State = State.COLLAPSED
+        private set(value) {
+            field = value
+            text = when (value) {
+                State.EXPANDED -> originalText
+                State.COLLAPSED -> collapseText
+                State.NON_EXPANDED -> text
+            }
+            changeListener?.onStateChange(value)
+        }
+
+    var changeListener: ChangeListener? = null
+
+    val isExpanded
+        get() = state == State.EXPANDED
+
+    val isCollapsed
+        get() = state == State.COLLAPSED
+
+    private var originalText: CharSequence = ""
+    private var collapseText: CharSequence = ""
+
+    private val readMoreText = context.getString(R.string.social_text_see_more)
+
     interface LinkClickListener {
         fun onLinkClicked(linkType: LinkedType, matchedText: String)
     }
@@ -58,13 +82,28 @@ class SocialTextView @JvmOverloads constructor(
         this.onLinkClickListener = onLinkClickListener
     }
 
+    constructor(context: Context) : super(context) {
+        init(context, null, 0)
+    }
 
-    init {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init(context, attrs, 0)
+    }
+
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
+        init(context, attrs, defStyleAttr)
+    }
+
+    private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         movementMethod = LinkedMovement.getInstance()
 
         val typedArray = context.theme.obtainStyledAttributes(
             attrs,
-            R.styleable.SocialTextView, def, def
+            R.styleable.SocialTextView, defStyleAttr, defStyleAttr
         )
 
         hashtagColor = typedArray.getColor(
@@ -106,6 +145,74 @@ class SocialTextView @JvmOverloads constructor(
         typedArray.recycle()
     }
 
+    fun toggle() {
+        when (state) {
+            State.EXPANDED -> collapse()
+            State.COLLAPSED -> expand()
+        }
+    }
+
+    private fun collapse() {
+        if (isCollapsed || collapseText.isEmpty()) {
+            return
+        }
+        state = State.COLLAPSED
+    }
+
+    private fun expand() {
+        if (isExpanded || originalText.isEmpty()) {
+            return
+        }
+        state = State.EXPANDED
+    }
+
+    fun setTextReadMore(message: CharSequence?) {
+        text = ""
+        text = message
+        doOnAttach {
+            post { setupReadMore() }
+        }
+    }
+
+    private fun needSkipSetupReadMore(): Boolean =
+        isInvisible || lineCount <= DEFAULT_MAX_LINE || isExpanded || text == null || text == collapseText
+
+    private fun setupReadMore() {
+        if (needSkipSetupReadMore()) {
+            state = State.NON_EXPANDED
+            appendLinkText(text.toString())
+            return
+        }
+        originalText = addSocialMediaSpan(text)
+
+        val adjustCutCount = getAdjustCutCount(DEFAULT_MAX_LINE, readMoreText)
+        val maxTextIndex = layout.getLineVisibleEnd(DEFAULT_MAX_LINE - 1)
+        val originalSubText = text.substring(0, maxTextIndex - 1 - adjustCutCount)
+
+        collapseText = buildSpannedString {
+            append(addSocialMediaSpan(originalSubText))
+            color(urlColor) { append(readMoreText) }
+        }
+
+        text = collapseText
+    }
+
+    override fun performLongClick(): Boolean {
+        return try {
+            super.performLongClick()
+        } catch (e: NullPointerException) {
+            true
+        }
+    }
+
+    override fun performLongClick(x: Float, y: Float): Boolean {
+        return try {
+            super.performLongClick(x, y)
+        } catch (e: NullPointerException) {
+            true
+        }
+    }
+
     private fun setLinkText(text: CharSequence?) {
         setText(addSocialMediaSpan(text))
     }
@@ -114,13 +221,28 @@ class SocialTextView @JvmOverloads constructor(
         super.setHighlightColor(Color.TRANSPARENT)
     }
 
+    private fun getAdjustCutCount(maxLine: Int, readMoreText: String): Int {
+        val lastLineStartIndex = layout.getLineVisibleEnd(maxLine - 2) + 1
+        val lastLineEndIndex = layout.getLineVisibleEnd(maxLine - 1)
+        val lastLineText = text.substring(lastLineStartIndex, lastLineEndIndex)
 
-    fun setLinkedList(
-        linkedMentions: List<String>,
-        linkedHashtag: List<String>,
-        highlightText: List<String>
-    ) {
+        val bounds = Rect()
+        paint.getTextBounds(lastLineText, 0, lastLineText.length, bounds)
 
+        var adjustCutCount = -1
+        do {
+            adjustCutCount++
+            val subText = lastLineText.substring(0, lastLineText.length - adjustCutCount)
+            val replacedText = subText + readMoreText
+            paint.getTextBounds(replacedText, 0, replacedText.length, bounds)
+            val replacedTextWidth = bounds.width()
+        } while (replacedTextWidth > width)
+
+        return adjustCutCount
+    }
+
+    enum class State {
+        EXPANDED, COLLAPSED, NON_EXPANDED
     }
 
     fun setHighlightText(highlightText: List<String>) {
@@ -177,19 +299,18 @@ class SocialTextView @JvmOverloads constructor(
                     ) {
                     override fun onClick(view: View) {
                         //super.onClick(view)
-                        onLinkClickListener?.onLinkClicked(
-                            LinkedType.getType(item.mode),
-                            item.matched
-                        )
-
+                        spanTextCanClick(item.mode, enableClick = {
+                            onLinkClickListener?.onLinkClicked(
+                                LinkedType.getType(item.mode),
+                                item.matched
+                            )
+                        })
                     }
                 }, item.start, item.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
             }
         }
         return textSpan
     }
-
 
     private fun getColorByMode(type: LinkedType): Int = when (type) {
         HASHTAG -> hashtagColor
@@ -202,6 +323,36 @@ class SocialTextView @JvmOverloads constructor(
         else -> throw IllegalArgumentException("Invalid Linked Type!")
     }
 
+    private fun spanTextCanClick(itemMode: Int, enableClick: () -> Unit) {
+        if (itemMode and EMAIL.value == EMAIL.value) {
+            enableClick.invoke()
+            return
+        }
+
+        if (itemMode and URL.value == URL.value) {
+            enableClick.invoke()
+            return
+        }
+
+        if (itemMode and HASHTAG.value == HASHTAG.value) {
+            enableClick.invoke()
+            return
+        }
+        if (itemMode and MENTION.value == MENTION.value) {
+            enableClick.invoke()
+            return
+        }
+
+        if (itemMode and PHONE.value == PHONE.value) {
+            enableClick.invoke()
+            return
+        }
+
+        if (itemMode and HIGHLITH.value == HIGHLITH.value) {
+            enableClick.invoke()
+            return
+        }
+    }
 
     private fun collectLinkItemsFromText(text: String): Set<LinkItem> {
         val items = HashSet<LinkItem>()
@@ -311,26 +462,19 @@ class SocialTextView @JvmOverloads constructor(
                     items.add(
                         LinkItem(matchedText, matcherStart, matcher.end(), mode)
                     )
-
                 }
-
             } else if (mode == MENTION.value && linkedMentions.isNotEmpty()) {
                 if (linkedMentions.contains(matchedText)) {
                     items.add(
                         LinkItem(matchedText, matcherStart, matcher.end(), mode)
                     )
-
                 }
-
             } else {
                 items.add(
                     LinkItem(matchedText, matcherStart, matcher.end(), mode)
                 )
-
             }
-
             text = text.replace(matchedText, addSpace(matchedText.length - 1))
-
         }
         return text
     }
@@ -343,5 +487,9 @@ class SocialTextView @JvmOverloads constructor(
         return addSpace
     }
 
-
+    interface ChangeListener {
+        fun onStateChange(state: State)
+    }
 }
+
+private const val DEFAULT_MAX_LINE = 5

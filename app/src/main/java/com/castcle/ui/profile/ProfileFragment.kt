@@ -1,6 +1,7 @@
 package com.castcle.ui.profile
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -400,6 +401,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onBindProfile(user: User) {
         profileTypeState = ProfileType.PROFILE_TYPE_ME
         userProfile = user
@@ -410,7 +412,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             tvFollowingCount.text = getContentCount(user.followingCount)
             tvFollowersCount.text = getContentCount(user.followersCount)
             tvProfileName.text = user.displayName
-            tvProfileCastcleId.text = user.castcleId
+            tvProfileCastcleId.text = "@${user.castcleId}"
             with(user.overview) {
                 tvProfileOverView.visibleOrInvisible(!isEmpty())
                 tvProfileOverView.text = this
@@ -491,6 +493,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupBlockingLayout(user: User) {
         with(binding) {
            profileYouBlocked.clMainContent.gone()
@@ -503,12 +506,13 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
         with(binding.profileYouBlocking) {
             tvProfileName.text = user.displayName
-            tvProfileCastcleId.text = user.castcleId
+            tvProfileCastcleId.text = "@${user.castcleId}"
             ivAvatarProfile.loadCircleImage(user.avatar)
             tvBlockingDes2.text = getString(R.string.profile_blocking_des2, user.displayName)
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupUnBlockLayout(user: User) {
         with(binding) {
            profileYou.clMainContent.visible()
@@ -522,7 +526,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             tvFollowingCount.text = getContentCount(user.followingCount)
             tvFollowersCount.text = getContentCount(user.followersCount)
             tvProfileName.text = user.displayName
-            tvProfileCastcleId.text = user.castcleId
+            tvProfileCastcleId.text = "@${user.castcleId}"
             with(user.overview) {
                 tvProfileOverView.visibleOrInvisible(!isBlank())
                 tvProfileOverView.text = this
@@ -563,6 +567,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupBlockedLayout(user: User) {
         with(binding) {
             profileYouBlocked.clMainContent.visible()
@@ -574,7 +579,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         }
         with(binding.profileYouBlocked) {
             tvProfileName.text = user.displayName
-            tvProfileCastcleId.text = user.castcleId
+            tvProfileCastcleId.text = "@${user.castcleId}"
             ivAvatarProfile.loadCircleImage(user.avatar)
 
             btUnblock.subscribeOnClick {

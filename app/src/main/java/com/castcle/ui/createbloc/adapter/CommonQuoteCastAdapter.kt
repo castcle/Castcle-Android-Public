@@ -94,7 +94,7 @@ class CommonQuoteCastAdapter :
     override fun getItemViewType(position: Int): Int {
         return when (getContentType(position)) {
             BLOG.type -> R.layout.layout_quote_template_blog
-            SHORT.type -> optionalTypeShort(position)
+            SHORT.type, LONG.type -> optionalTypeShort(position)
             IMAGE.type -> R.layout.layout_quote_template_image
             else -> R.layout.layout_quote_template_short
         }
@@ -102,10 +102,13 @@ class CommonQuoteCastAdapter :
 
     private fun optionalTypeShort(position: Int): Int {
         return when {
-            uiModels[position].link == null
-                && uiModels[position].photo?.isNullOrEmpty() == false ->
+            uiModels[position].link == null &&
+                uiModels[position].photo?.isNotEmpty() == true ->
                 R.layout.layout_feed_template_short_image
-            uiModels[position].link != null ->
+            uiModels[position].link?.url.isNullOrBlank() &&
+                uiModels[position].photo?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            uiModels[position].link?.url?.isNotBlank() == true ->
                 R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }

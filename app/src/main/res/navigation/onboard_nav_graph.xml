@@ -63,6 +63,14 @@
             android:id="@+id/actionFeedFragmentToReportFragment"
             app:destination="@id/reportFragment" />
 
+        <action
+            android:id="@+id/actionFeedFragmentToCreatePostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <deepLink app:uri="@string/nav_deep_link_feed" />
     </fragment>
 
@@ -70,6 +78,10 @@
         android:id="@+id/feedDetailFragment"
         android:name="com.castcle.ui.feed.feeddetail.FeedDetailFragment"
         tools:layout="@layout/fragment_feed_detail">
+
+        <action
+            android:id="@+id/actionFeedDetailFragmentToRecastDialogFragment"
+            app:destination="@id/dialog_recast_nav_graph" />
 
         <argument
             android:name="contentUiModel"

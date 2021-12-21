@@ -63,6 +63,40 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
         notifyItemChanged(indexItem)
     }
 
+    fun onUpdateItemLikeCount() {
+        val indexItem = 0
+        uiModels.firstOrNull()?.liked = true
+        uiModels.firstOrNull()?.likeCount = uiModels.firstOrNull()?.likeCount?.plus(1) ?: 0
+        notifyItemChanged(indexItem)
+    }
+
+    fun onUpdateItemUnLikeCount() {
+        val indexItem = 0
+        uiModels.firstOrNull()?.liked = false
+        uiModels.firstOrNull()?.likeCount = uiModels.firstOrNull()?.likeCount?.minus(1) ?: 0
+        notifyItemChanged(indexItem)
+    }
+
+    fun updateStateItemRecast() {
+        val indexItem = 0
+        uiModels.firstOrNull()?.recasted = true
+        uiModels.firstOrNull()?.recastCount = uiModels.firstOrNull()?.recastCount?.plus(1) ?: 0
+        notifyItemChanged(indexItem)
+    }
+
+    fun updateStateItemUnRecast() {
+        val indexItem = 0
+        uiModels.firstOrNull()?.recasted = false
+        uiModels.firstOrNull()?.recastCount = uiModels.firstOrNull()?.recastCount?.minus(1) ?: 0
+        notifyItemChanged(indexItem)
+    }
+
+    fun updateStateItemFollowing() {
+        val indexItem = 0
+        uiModels.firstOrNull()?.userContent?.followed = true
+        notifyItemChanged(indexItem)
+    }
+
     fun onUpdateRecastItem(contentUiModel: ContentFeedUiModel) {
         val indexItem = uiModels.indexOf(contentUiModel)
         uiModels[indexItem].recasted = !uiModels[indexItem].recasted

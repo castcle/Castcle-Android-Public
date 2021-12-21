@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:background="@color/black_light">
 
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black_light"
+        android:clipToPadding="false"
+        android:paddingBottom="60dp"
         app:layout_constraintBottom_toTopOf="@id/itemComment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="parent"
@@ -33,6 +34,7 @@
                 layout="@layout/layout_comment_footer_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/clContentFeed" />
 
             <androidx.recyclerview.widget.RecyclerView

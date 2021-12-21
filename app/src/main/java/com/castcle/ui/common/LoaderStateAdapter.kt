@@ -1,4 +1,9 @@
-package com.castcle.data.staticmodel
+package com.castcle.ui.common
+
+import android.view.ViewGroup
+import androidx.paging.LoadState
+import androidx.paging.LoadStateAdapter
+import com.castcle.ui.common.viewholder.feed.FeedLoaderViewHolder
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,15 +27,15 @@ package com.castcle.data.staticmodel
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 15:53.
+//  Created by sklim on 20/12/2021 AD at 15:52.
 
-enum class ContentType(val type: String) {
-    CONTENT("Content"),
-    IMAGE("image"),
-    SHORT("short"),
-    LONG("long"),
-    BLOG("blog"),
-    FEED("feed"),
-    RECAST("recast"),
-    QUOTE("quote")
+class LoaderStateAdapter : LoadStateAdapter<FeedLoaderViewHolder>() {
+
+    override fun onBindViewHolder(holder: FeedLoaderViewHolder, loadState: LoadState) {
+        holder.bind(loadState)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): FeedLoaderViewHolder {
+        return FeedLoaderViewHolder.getInstance(parent)
+    }
 }

@@ -83,7 +83,7 @@ private fun Activity.canAppHandleDeepLink(uri: Uri): Boolean {
 
 private fun Activity.shouldNavigateToExternal(uri: Uri, isOpenExternal: Boolean): Boolean {
     return isOpenExternal
-        || isHttps(uri).not()
+        && isHttps(uri).not()
 }
 
 fun Activity.isHttps(uri: Uri): Boolean {

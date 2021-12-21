@@ -120,7 +120,7 @@ class UserBarTemplate(
                         referencedCastsId.isNotBlank() && referencedCastsType.isNotBlank()
                     )
 
-                    if (referencedCastsId.isNotBlank()) {
+                    if (referencedCastsId.isNotBlank() && authorReference.isNotEmpty()) {
                         val youRecasted = mapRecasted(itemUiModel)
                         tvReCasted.text = youRecasted
                     }

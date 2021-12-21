@@ -5,6 +5,7 @@ import androidx.paging.PagingData
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
+import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.UserPage
@@ -13,8 +14,7 @@ import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.ui.base.BaseViewCoroutinesModel
 import com.castcle.ui.util.SingleLiveEvent
 import com.castcle.usecase.feed.*
-import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
-import com.castcle.usecase.userprofile.GetUserPageDataSingleUseCase
+import com.castcle.usecase.userprofile.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
@@ -50,6 +50,8 @@ import javax.inject.Inject
 
 abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
 
+    abstract val isGuestMode: Boolean
+
     abstract val input: Input
 
     abstract val showLoading: Observable<Boolean>
@@ -82,6 +84,12 @@ abstract class FeedDetailFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val likedSuccess: Observable<Boolean>
 
+    abstract fun updateLikeContent(likeContentRequest: LikeContentRequest)
+
+    abstract val onErrorContentLike: Observable<Unit>
+
+    abstract fun recastContent(contentUiModel: ContentFeedUiModel): Completable
+
     interface Input {
         fun setComment(commentRequest: ReplyCommentRequest)
 
@@ -97,7 +105,10 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val getCommentedPagingSingleUseCase: GetCommentedPagingSingleUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val getUserPageDataSingleUseCase: GetUserPageDataSingleUseCase,
-    private val replyCommentSingleUseCase: SentReplyCommentSingleUseCase
+    private val replyCommentSingleUseCase: SentReplyCommentSingleUseCase,
+    private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
+    private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
+    private val recastContentSingleUseCase: RecastContentCompletableUseCase,
 ) : FeedDetailFragmentViewModel(), FeedDetailFragmentViewModel.Input {
 
     override val input: Input
@@ -141,6 +152,9 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
     private val _userPageUiModel = SingleLiveEvent<PageHeaderUiModel>()
     override val userPageUiModel: SingleLiveEvent<PageHeaderUiModel>
         get() = _userPageUiModel
+
+    override val isGuestMode: Boolean
+        get() = isGuestModeSingleUseCase.execute(Unit).blockingGet()
 
     private var totalPages: Int = 1
     private var nextPage: Int = 1
@@ -353,6 +367,37 @@ class FeedDetailFragmentViewModelImpl @Inject constructor(
         if (user.isPresent) {
             _userProfile.value = user.get()
         }
+    }
+
+    private var _onErrorContentLike = BehaviorSubject.create<Unit>()
+    override val onErrorContentLike: Observable<Unit>
+        get() = _onErrorContentLike
+
+    override fun updateLikeContent(likeContentRequest: LikeContentRequest) {
+        postLikeContent(likeContentRequest)
+            .subscribeBy(
+                onError = {
+                    _onErrorContentLike.onNext(Unit)
+                }
+            ).addToDisposables()
+    }
+
+    private fun postLikeContent(contentUiModel: LikeContentRequest): Completable {
+        return likeContentCompletableUseCase
+            .execute(contentUiModel).doOnError {
+                _error.onNext(it)
+            }
+    }
+
+    override fun recastContent(contentUiModel: ContentFeedUiModel): Completable {
+        val castcleId = _userProfile.value?.castcleId ?: ""
+
+        val recastRequest = RecastRequest(
+            reCasted = contentUiModel.recasted,
+            contentId = contentUiModel.contentId,
+            authorId = castcleId
+        )
+        return recastContentSingleUseCase.execute(recastRequest)
     }
 }
 

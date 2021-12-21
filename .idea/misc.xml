@@ -114,6 +114,7 @@
         <entry key="app/src/main/res/layout/item_tab_notification.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_bottom_menu_custom.xml" value="0.1260245901639344" />
         <entry key="app/src/main/res/layout/layout_item_progress_bar_footer.xml" value="0.10405508798775823" />
+        <entry key="app/src/main/res/layout/layout_item_progress_motion_footer.xml" value="0.1" />
         <entry key="app/src/main/res/layout/layout_login.xml" value="0.36923076923076925" />
         <entry key="app/src/main/res/layout/layout_notification.xml" value="0.375" />
         <entry key="app/src/main/res/layout/layout_notification_warning.xml" value="0.335" />
@@ -271,12 +272,13 @@
         <entry key="components-android/src/main/res/layout/layout_page_header.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/layout_preview_content_image.xml" value="0.15027322404371585" />
         <entry key="components-android/src/main/res/layout/layout_preview_content_web.xml" value="0.15027322404371585" />
+        <entry key="components-android/src/main/res/layout/layout_preview_content_web_binding.xml" value="0.15198087431693988" />
         <entry key="components-android/src/main/res/layout/layout_preview_content_web_icon.xml" value="0.15027322404371585" />
         <entry key="components-android/src/main/res/layout/layout_quote_bar_template.xml" value="0.25" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_blog.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_image.xml" value="0.11851092896174864" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_short.xml" value="0.335" />
-        <entry key="components-android/src/main/res/layout/layout_user_bar_content_template.xml" value="0.55" />
+        <entry key="components-android/src/main/res/layout/layout_user_bar_content_template.xml" value="0.25" />
         <entry key="components-android/src/main/res/layout/layout_user_bar_template.xml" value="0.2621359223300971" />
         <entry key="components-android/src/main/res/layout/layout_user_footer_template.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/layout_what_you_mind.xml" value="0.335" />

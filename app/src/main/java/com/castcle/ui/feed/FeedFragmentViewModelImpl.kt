@@ -84,7 +84,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override val userProfile: LiveData<User>
         get() = _userProfile
 
-    private lateinit var _feedUiMode: Flow<PagingData<ContentFeedUiModel>>
+    private var _feedUiMode = flowOf<PagingData<ContentFeedUiModel>>()
     override val feedContentPage: Flow<PagingData<ContentFeedUiModel>>
         get() = _feedUiMode
 
@@ -198,7 +198,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
     override fun getAllFeedContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
         launchPagingAsync({
             _showLoading.onNext(true)
-            feedNonAuthRepository.getFeed(feedRequest).cachedIn(viewModelScope)
+            feedNonAuthRepository.getFeedRemoteMediator(feedRequest).cachedIn(viewModelScope)
         }, {
             _showLoading.onNext(false)
             _feedUiMode = it

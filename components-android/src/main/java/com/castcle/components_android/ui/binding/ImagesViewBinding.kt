@@ -1,4 +1,9 @@
-package com.castcle.data.staticmodel
+package com.castcle.components_android.ui.binding
+
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
+import com.castcle.android.components_android.R
+import com.castcle.extensions.loadGranularRoundedCornersImage
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,15 +27,23 @@ package com.castcle.data.staticmodel
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 15:53.
+//  Created by sklim on 20/12/2021 AD at 12:33.
 
-enum class ContentType(val type: String) {
-    CONTENT("Content"),
-    IMAGE("image"),
-    SHORT("short"),
-    LONG("long"),
-    BLOG("blog"),
-    FEED("feed"),
-    RECAST("recast"),
-    QUOTE("quote")
+object ImagesViewBinding {
+
+    @JvmStatic
+    @BindingAdapter("loadImageUrl")
+    fun bindLoadImageFromUrl(
+        imageView: ImageView,
+        imageUrl: String = "",
+    ) {
+        imageUrl.takeIf { it.isNotEmpty() }?.let { url ->
+            imageView.loadGranularRoundedCornersImage(
+                url, topLeft = 20f,
+                topRight = 20f
+            )
+        } ?: run {
+            imageView.setImageResource(R.drawable.ic_img_placeholder)
+        }
+    }
 }

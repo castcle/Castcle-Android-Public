@@ -2,9 +2,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateQuoteShortImageBinding
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortImageBinding
+import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
+import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
+import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.gone
 import com.castcle.extensions.visible
 import com.castcle.ui.common.events.Click
@@ -114,7 +118,25 @@ class FeedContentQuteShortImageViewHolder(
             }
             with(uiModel) {
                 ubUser.bindUiModel(uiModel, true)
-                tvFeedContent.appendLinkText(message)
+                with(tvFeedContent) {
+                    if (uiModel.type == ContentType.SHORT.type) {
+                        appendLinkText(message)
+                    } else {
+                        setTextReadMore(message)
+                        subscribeOnClick {
+                            tvFeedContent.toggle()
+                        }.addToDisposables()
+                    }
+                    setLinkClickListener(object : SocialTextView.LinkClickListener {
+                        override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
+                            handleItemClick(
+                                TemplateEventClick.WebContentMessageClick(
+                                    matchedText
+                                )
+                            )
+                        }
+                    })
+                }
                 with(clPreviewContentImage) {
                     clInPreviewContentImage.visible()
                     icImageContent.bindImageContent(uiModel, true)

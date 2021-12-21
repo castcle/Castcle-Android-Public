@@ -53,8 +53,8 @@ class FeedRepositoryImpl @Inject constructor(
         return feedRequestHeader.flatMapLatest {
             Pager(
                 config = PagingConfig(
-                    pageSize = DEFAULT_PAGE_SIZE,
-                    prefetchDistance = DEFAULT_PREFETCH
+                    pageSize = DEFAULT_PAGE_SIZE_V1,
+                    prefetchDistance = DEFAULT_PREFETCH_V1
                 ),
                 pagingSourceFactory = {
                     FeedPagingDataSource(feedApi, it)
@@ -89,6 +89,7 @@ class FeedRepositoryImpl @Inject constructor(
             }
         }
     }
+
 
     val scope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -345,5 +346,6 @@ class FeedRepositoryImpl @Inject constructor(
 const val DEFAULT_PAGE_SIZE = 25
 const val DEFAULT_PAGE_SIZE_V1 = 10
 const val DEFAULT_PREFETCH = 1
+const val DEFAULT_PREFETCH_V1 = 2
 private const val LIKE_STATUS_LIKE = "liked"
 private const val LIKE_STATUS_UNLIKE = "unliked"
