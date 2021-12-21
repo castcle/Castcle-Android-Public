@@ -154,8 +154,6 @@ class FeedContentShortWebViewHolder(
                 gone()
             }
             with(uiModel) {
-                binding.linkUiItem = link ?: LinkUiModel()
-
                 ubUser.bindUiModel(uiModel)
                 with(tvFeedContent) {
                     if (uiModel.type == ContentType.SHORT.type) {
@@ -181,7 +179,7 @@ class FeedContentShortWebViewHolder(
                 link?.let {
                     scope.launch {
                         val urlPreview = getContentWebPreview(it.url)
-                        onBindContentImageWeb(it, urlPreview)
+                        onBindContentImageWeb(urlPreview,it)
                     }
                 }
             }
@@ -212,15 +210,18 @@ class FeedContentShortWebViewHolder(
         }
     }
 
-    private fun onBindContentImageWeb(linkUiModel: LinkUiModel, urlPreview: LinkContent) {
+    private fun onBindContentImageWeb(linkUiModel: LinkContent, link: LinkUiModel?) {
         stopLoadingPreViewShimmer()
-        linkUiModel.apply {
-            linkTitle = urlPreview.title
-            linkDescription = urlPreview.description
-        }.run {
-            with(binding.clPreviewContent) {
-                clInPreviewContent.visible()
-                binding.linkUiItem = linkUiModel
+        with(binding.clPreviewContent) {
+            clInPreviewContent.visible()
+            with(linkUiModel) {
+                ivPerviewUrl.loadGranularRoundedCornersImage(
+                    link?.imagePreview ?: "",
+                    topLeft = 20f,
+                    topRight = 20f
+                )
+                tvPreviewHeader.text = title
+                tvPreviewContent.text = description
             }
         }
     }

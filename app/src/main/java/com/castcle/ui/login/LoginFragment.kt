@@ -61,8 +61,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     }
 
     private fun navigatToHomeFeed() {
-        val feedDeepLink = requireContext().getString(R.string.nav_deep_link_feed)
-        onBoardNavigator.navigateByDeepLink(feedDeepLink.toUri())
+        onBoardNavigator.nvaigateToFeedFragment()
     }
 
     private fun setupToolBar() {
