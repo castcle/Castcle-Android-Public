@@ -1,14 +1,11 @@
 package com.castcle.usecase.feed
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.common_model.model.feed.RecastRequest
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.base.CompletableUseCase
-import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Completable
-import io.reactivex.Single
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

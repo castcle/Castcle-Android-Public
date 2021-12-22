@@ -14,7 +14,6 @@ import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.castcle.ui.profile.viewholder.CropAvatarImageFragmentViewModel
 import pl.aprilapps.easyphotopicker.MediaFile
 import java.io.*
 import javax.inject.Inject
@@ -126,7 +125,7 @@ class CropAvatarImageFragment : BaseFragment<CropAvatarImageFragmentViewModel>()
         val file = File(requireContext().filesDir, fileName)
         file.createNewFile()
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, DEFAULT_QUALITY, byteArrayOutputStream)
         val data = byteArrayOutputStream.toByteArray()
         val fileOutputStream = FileOutputStream(file)
         fileOutputStream.write(data)
@@ -145,3 +144,4 @@ class CropAvatarImageFragment : BaseFragment<CropAvatarImageFragmentViewModel>()
 }
 
 const val KEY_CROP_IMAGE_REQUEST: String = "CROP-001"
+const val DEFAULT_QUALITY: Int = 100

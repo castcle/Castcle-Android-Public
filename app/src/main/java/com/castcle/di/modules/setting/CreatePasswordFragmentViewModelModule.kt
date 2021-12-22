@@ -3,8 +3,6 @@ package com.castcle.di.modules.setting
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.setting.changepassword.ChangePasswordViewModel
-import com.castcle.ui.setting.changepassword.ChangePasswordViewModelImpl
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragmentViewModel
 import com.castcle.ui.setting.changepassword.createnewpassword.CreatePasswordFragmentViewModelImpl
 import dagger.Binds

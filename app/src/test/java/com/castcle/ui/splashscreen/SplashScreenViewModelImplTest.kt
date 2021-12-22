@@ -2,7 +2,12 @@ package com.castcle.ui.splashscreen
 
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.ui.base.BaseViewModelTest
+import com.castcle.usecase.EngagementTackingCompletableUseCase
 import com.castcle.usecase.GuestLoginCompletableUseCase
+import com.castcle.usecase.setting.GetCurrentLocalSingleUseCase
+import com.castcle.usecase.setting.SetAppLanguageUseCase
+import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.IsGuestModeSingleUseCase
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
 import org.junit.Test
@@ -42,10 +47,32 @@ class SplashScreenViewModelImplTest : BaseViewModelTest() {
     private lateinit var getLoginGuestUseCase: GuestLoginCompletableUseCase
 
     @Mock
-    private lateinit var sessionManagerRepository: SessionManagerRepository
+    private lateinit var isGuestModeSingleUseCase: IsGuestModeSingleUseCase
+
+    @Mock
+    private lateinit var guestLoginCompletableUseCase: GuestLoginCompletableUseCase
+
+    @Mock
+    private lateinit var getCurrentLocalSingleUseCase: GetCurrentLocalSingleUseCase
+
+    @Mock
+    private lateinit var setAppLanguageUseCase: SetAppLanguageUseCase
+
+    @Mock
+    private lateinit var engagementTackingCompletableUseCase: EngagementTackingCompletableUseCase
+
+    @Mock
+    private lateinit var cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase
 
     override fun setUpTest() {
-        splashScreenViewModel = SplashScreenViewModelImpl(getLoginGuestUseCase)
+        splashScreenViewModel = SplashScreenViewModelImpl(
+            isGuestModeSingleUseCase,
+            guestLoginCompletableUseCase,
+            getCurrentLocalSingleUseCase,
+            setAppLanguageUseCase,
+            engagementTackingCompletableUseCase,
+            cachedUserProfileSingleUseCase
+        )
     }
 
     @Test

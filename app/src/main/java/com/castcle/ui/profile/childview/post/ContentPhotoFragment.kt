@@ -62,7 +62,9 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
-    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentContentPhotoBinding
+    override val bindingInflater: (
+        LayoutInflater, ViewGroup?, Boolean
+    ) -> FragmentContentPhotoBinding
         get() = { inflater, container, attachToRoot ->
             FragmentContentPhotoBinding.inflate(inflater, container, attachToRoot)
         }
@@ -127,6 +129,7 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
             ProfileType.PROFILE_TYPE_PAGE -> {
                 onPage.invoke()
             }
+            else -> {}
         }
     }
 

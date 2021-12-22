@@ -42,7 +42,8 @@ class SuggestDisplayNameSingleUseCase @Inject constructor(
     ::Ignored
 ) {
 
-    override fun create(input: DisplayNameRequest): Single<AuthVerifyBaseUiModel.DisplayNameVerifyUiModel> {
+    override fun create(input: DisplayNameRequest):
+        Single<AuthVerifyBaseUiModel.DisplayNameVerifyUiModel> {
         return authenticationsRepository
             .suggestionsDisplayName(input)
     }

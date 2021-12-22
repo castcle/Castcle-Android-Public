@@ -30,7 +30,7 @@ buildscript {
         androidx_junit_version = '1.1.3'
 
         kluent_version = '1.68'
-        kotlin_version = '1.4.31'
+        kotlin_version = '1.6.10'
 
         lottie_version = "3.3.1"
 
@@ -138,7 +138,7 @@ buildscript {
         maven { url '../ijrrepo_aar' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath 'com.google.firebase:perf-plugin:1.4.0'
         classpath 'com.google.gms:google-services:4.3.10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

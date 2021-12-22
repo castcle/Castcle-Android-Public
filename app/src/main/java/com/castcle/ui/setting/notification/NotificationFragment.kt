@@ -11,10 +11,8 @@ import com.castcle.extensions.getDrawableRes
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import javax.inject.Inject
-
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -77,7 +75,6 @@ class NotificationFragment : BaseFragment<NotificationFragmentViewModel>(),
         ) { Tab, position ->
             Tab.customView = onBindTabCustom(
                 position,
-                Tab,
                 TabContentStatic.tabNotification[position].tabNameRes
             )
         }.attach()
@@ -85,7 +82,6 @@ class NotificationFragment : BaseFragment<NotificationFragmentViewModel>(),
 
     private fun onBindTabCustom(
         position: Int,
-        tab: TabLayout.Tab,
         tabNameRes: Int
     ): View {
         val inflater = LayoutInflater.from(context)

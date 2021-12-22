@@ -2,10 +2,6 @@ package com.castcle.ui.search.trend
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.castcle.ui.profile.childview.all.ContentAllFragment
-import com.castcle.ui.profile.childview.blog.ContentPostFragment
-import com.castcle.ui.profile.childview.photo.ContentBlogFragment
-import com.castcle.ui.profile.childview.post.ContentPhotoFragment
 import com.castcle.ui.search.trend.childview.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

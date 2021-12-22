@@ -356,6 +356,5 @@ class TopFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-
     }
 }

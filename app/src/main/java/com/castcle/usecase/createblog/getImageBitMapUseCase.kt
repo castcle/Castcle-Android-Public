@@ -55,11 +55,6 @@ class GetImagePathMapUseCase @Inject constructor(
     ::GenerateImageError
 ) {
     var outputFile: File? = null
-    var outputStream: OutputStream? = null
-    private val collection =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) MediaStore.Images.Media.getContentUri(
-            MediaStore.VOLUME_EXTERNAL
-        ) else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
     override fun create(input: Unit): Single<List<MediaItem>> {
         return Single.just(getPathStream())
@@ -79,7 +74,7 @@ class GetImagePathMapUseCase @Inject constructor(
         return imagePath.toList()
     }
 
-    @SuppressLint("Recycle")
+    @SuppressLint("Recycle", "Range")
     private fun queryPathImage(): MutableList<MediaItem> {
         val allImagrPath = mutableListOf<MediaItem>()
 
@@ -87,10 +82,6 @@ class GetImagePathMapUseCase @Inject constructor(
             val sourceUri = getSourceUri()
             val queryString = getQuerySelection()
 
-//            val cursor = appContext.contentResolver.query(
-//                sourceUri, null,
-//                queryString, null, MediaStore.Images.Media.DATE_ADDED
-//            )
             val cursor = appContext.contentResolver.query(
                 uriExternal,
                 projection,
@@ -152,16 +143,6 @@ class GetImagePathMapUseCase @Inject constructor(
         return allImagrPath
     }
 
-    private fun makeSafeFile(path: String?): File? {
-        return if (path == null || path.isEmpty()) {
-            null
-        } else try {
-            File(path)
-        } catch (ignored: Exception) {
-            null
-        }
-    }
-
     private val projection = arrayOf(
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DISPLAY_NAME,
@@ -190,10 +171,8 @@ class GetImagePathMapUseCase @Inject constructor(
 
 }
 
-private val uriInternal = MediaStore.Images.Media.INTERNAL_CONTENT_URI
 private val uriExternal = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 private const val RECEIPT_SCREENSHOT_PREFIX_NAME = "Receipt-"
 private const val RECEIPT_SCREENSHOT_EXTENSION = ".png"
 private const val BUILD_VERSION_CODE_Q = 29
 private const val LIMIT_QUERY = 30
-private const val DEFAULT_FOLDER_NAME = "SDCARD"

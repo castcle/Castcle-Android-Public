@@ -6,8 +6,7 @@ import com.castcle.common_model.model.feed.domain.dao.*
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
-import com.castcle.data.storage.AppPreferences
-import com.castcle.data.storage.DeviceSettings
+import com.castcle.data.storage.*
 import com.castcle.di.storage.StorageModule
 import dagger.BindsInstance
 import dagger.Component
@@ -58,4 +57,6 @@ interface StorageComponent : AuthenticateStorageComponent {
     fun deviceSettings(): DeviceSettings
 
     fun feedCacheDao(): FeedCacheDao
+
+    fun castcleDataBase(): CastcleDataBase
 }

@@ -126,6 +126,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
             ProfileType.PROFILE_TYPE_PAGE -> {
                 onPage.invoke()
             }
+            else -> {}
         }
     }
 

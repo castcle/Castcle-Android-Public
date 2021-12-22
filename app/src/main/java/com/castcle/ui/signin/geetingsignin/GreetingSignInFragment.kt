@@ -8,7 +8,6 @@ import com.castcle.android.R
 import com.castcle.android.databinding.FragmentGreetingSignInBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
-import com.castcle.extensions.gone
 import com.castcle.extensions.invisible
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator

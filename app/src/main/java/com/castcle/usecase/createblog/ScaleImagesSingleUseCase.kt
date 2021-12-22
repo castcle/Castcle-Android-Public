@@ -18,7 +18,6 @@ import me.shouheng.compress.strategy.compress.Compressor
 import me.shouheng.compress.strategy.config.ScaleMode.Companion.SCALE_SMALLER
 import javax.inject.Inject
 
-
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 //

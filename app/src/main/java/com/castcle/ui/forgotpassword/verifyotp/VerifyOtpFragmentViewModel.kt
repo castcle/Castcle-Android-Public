@@ -100,7 +100,8 @@ class VerifyOtpFragmentViewModelImpl @Inject constructor(
         }.subscribeBy(
             onSuccess = {
                 _onVerifyOtpResponse.onNext(it)
-            }, onError = {
+            },
+            onError = {
                 _error.onNext(it)
             }
         ).addToDisposables()

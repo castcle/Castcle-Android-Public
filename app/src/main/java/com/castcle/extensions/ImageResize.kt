@@ -45,13 +45,13 @@ class ImageResize {
                 val outRatio = outWidth.toFloat() / outHeight.toFloat()
                 val reqRatio = preferredWidth.toFloat() / preferredHeight.toFloat()
                 when {
-                    (resizeType == ResizeType.Fill && outRatio > reqRatio) ||
-                        (resizeType == ResizeType.Crop && outRatio <= reqRatio) -> {
+                    (resizeType == ResizeType.Fill && outRatio > reqRatio)
+                        || (resizeType == ResizeType.Crop && outRatio <= reqRatio) -> {
                         inDensity = outWidth
                         inTargetDensity = preferredWidth * inSampleSize
                     }
-                    (resizeType == ResizeType.Fill && outRatio <= reqRatio) ||
-                        (resizeType == ResizeType.Crop && outRatio > reqRatio) -> {
+                    (resizeType == ResizeType.Fill && outRatio <= reqRatio)
+                        || (resizeType == ResizeType.Crop && outRatio > reqRatio) -> {
                         inDensity = outHeight
                         inTargetDensity = preferredHeight * inSampleSize
                     }
@@ -87,5 +87,3 @@ class ImageResize {
     }
 }
 
-const val MAX_IMAGE_WIDTH = 1920
-const val MAX_IMAGE_HGIHT = 1080

@@ -234,6 +234,7 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
             is TemplateClicks.PageClick -> {
                 handlerPageItemClick(templateClicks)
             }
+            else -> {}
         }
     }
 

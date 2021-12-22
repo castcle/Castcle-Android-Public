@@ -15,7 +15,6 @@ import io.reactivex.Single
 import java.io.File
 import javax.inject.Inject
 
-
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
 //
@@ -67,14 +66,6 @@ class ScaleImageSingleUseCase @Inject constructor(
         bitMaps.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, tempFile.outputStream())
 
         return tempFile.toBase64String()
-    }
-
-    private fun File.calculateBitmapOptions(): BitmapFactory.Options {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(path, options)
-
-        return options
     }
 }
 

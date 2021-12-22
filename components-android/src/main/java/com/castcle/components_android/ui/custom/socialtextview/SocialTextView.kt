@@ -149,6 +149,7 @@ class SocialTextView : AppCompatTextView {
         when (state) {
             State.EXPANDED -> collapse()
             State.COLLAPSED -> expand()
+            else -> {}
         }
     }
 

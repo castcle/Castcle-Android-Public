@@ -76,6 +76,7 @@ class ImageGalleryAdapter : RecyclerView.Adapter<ImageGalleryAdapter.FilterViewH
             when (item) {
                 is MediaItem.OpenCamera -> item.run(::bindOpenCamera)
                 is MediaItem.ImageMediaItem -> item.run(::bindOpenImage)
+                else -> {}
             }
             bindOnClick(item)
         }

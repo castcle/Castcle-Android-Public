@@ -2,8 +2,7 @@ package com.castcle.networking.api.notification
 
 import androidx.paging.*
 import com.castcle.common_model.model.notification.*
-import com.castcle.networking.api.feed.datasource.DEFAULT_PAGE_SIZE
-import com.castcle.networking.api.feed.datasource.DEFAULT_PREFETCH
+import com.castcle.networking.api.feed.datasource.*
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -27,12 +26,11 @@ class NotificationRepositoryImpl @Inject constructor(
     private val notificationApi: NotificationApi
 ) : NotificationRepository {
 
-    @ExperimentalCoroutinesApi
     override suspend fun getNotification(source: String): Flow<PagingData<NotificationPayloadModel>> {
         return Pager(
             config = PagingConfig(
-                pageSize = DEFAULT_PAGE_SIZE,
-                prefetchDistance = DEFAULT_PREFETCH
+                pageSize = DEFAULT_PAGE_SIZE_V1,
+                prefetchDistance = DEFAULT_PREFETCH_V1
             ),
             pagingSourceFactory = {
                 NotificationPagingDataSource(notificationApi, source)

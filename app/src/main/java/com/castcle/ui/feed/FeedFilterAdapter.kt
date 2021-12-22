@@ -83,6 +83,7 @@ class FeedFilterAdapter : RecyclerView.Adapter<FeedFilterAdapter.FilterViewHolde
         fun onBindFeed(feedItem: SearchUiModel) {
             when (feedItem) {
                 is SearchUiModel.SearchHasTagUiModel -> feedItem.run(::bindFeed)
+                else -> {}
             }
             bindOnClick(feedItem)
         }

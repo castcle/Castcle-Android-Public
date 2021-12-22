@@ -38,7 +38,6 @@ import javax.inject.Inject
 //
 //
 //  Created by sklim on 1/9/2021 AD at 18:12.
-
 class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentPasswordBinding>,
@@ -64,6 +63,7 @@ class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
         get() = { inflater, container, attachToRoot ->
             FragmentPasswordBinding.inflate(inflater, container, attachToRoot)
         }
+
     override val binding: FragmentPasswordBinding
         get() = viewBinding as FragmentPasswordBinding
 
@@ -154,20 +154,16 @@ class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-
         with(viewModel) {
             passwordError.observe(this@PasswordFragment, {
                 handlerPasswordError(it)
             })
-
             enableContinue.observe(this@PasswordFragment, {
                 enableContinueButton(it)
             })
-
             verifyPassword.subscribe {
                 binding.itPassword.onSetupStatusDrawableEnd()
             }.addToDisposables()
-
             verifyReTypePassword.subscribe {
                 binding.itReTypePassword.onSetupStatusDrawableEnd()
             }.addToDisposables()

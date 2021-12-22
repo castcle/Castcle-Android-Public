@@ -1,14 +1,11 @@
 package com.castcle.usecase.setting
 
-import android.content.Context
-import android.os.Build
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.data.error.SettingsError.GetLanguageError
 import com.castcle.data.storage.AppPreferences
 import com.castcle.localization.LocalizedResources
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
-import java.util.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

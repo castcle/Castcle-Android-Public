@@ -356,6 +356,5 @@ class VideoFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-
     }
 }

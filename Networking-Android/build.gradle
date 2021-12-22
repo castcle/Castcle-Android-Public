@@ -85,8 +85,14 @@ dependencies {
             "androidx.paging:paging-runtime-ktx:$androidx_paging_version",
             "androidx.paging:paging-rxjava2-ktx:$androidx_paging_version",
             "com.auth0:java-jwt:3.18.2",
-            "com.chayangkoon.champ:linkpreview:1.0.0"
+            "com.chayangkoon.champ:linkpreview:1.0.0",
+            "com.github.bumptech.glide:compiler:$glide_version"
     )
+    
+    implementation("com.github.bumptech.glide:glide:$glide_version") {
+        exclude group: "com.android.support"
+        transitive = true
+    }
 
     api(
             "com.squareup.retrofit2:retrofit:$retrofit_version",

@@ -45,7 +45,8 @@ class UpLoadProfileAvatarWorker(
     appContext: Context,
     params: WorkerParameters,
     private val scaleImageSingleUseCase: ScaleImageSingleUseCase,
-    private val uploadProfileAvatarWorkerCompletableUseCase: UploadProfileAvatarWorkerCompletableUseCase,
+    private val uploadProfileAvatarWorkerCompletableUseCase:
+    UploadProfileAvatarWorkerCompletableUseCase,
     private val updatePageSingleUseCase: UpdatePageWorkerSingleUseCase
 ) : Worker(appContext, params) {
 

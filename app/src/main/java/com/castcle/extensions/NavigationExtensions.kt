@@ -119,10 +119,7 @@ fun BottomNavigationView.setupWithNavController(
                             fragmentManager.findFragmentByTag(newlySelectedItemTag)
                                 as NavHostFragment
 
-                        // Exclude the first fragment tag because it's always in the back stack.
                         if (firstFragmentTag != newlySelectedItemTag) {
-                            // Commit a transaction that cleans the back stack and adds the first fragment
-                            // to it, creating the fixed started destination.
                             fragmentManager.beginTransaction()
                                 .attach(selectedFragment)
                                 .setPrimaryNavigationFragment(selectedFragment)
@@ -151,7 +148,6 @@ fun BottomNavigationView.setupWithNavController(
                         selectedItemTag = newlySelectedItemTag
                         isOnFirstFragment = selectedItemTag == firstFragmentTag
                         selectedNavController.value = selectedFragment.navController
-                        // This is a workaround, allow nav_graph a minimal amount of time to attach fragment
                         true
                     }
                     else -> {

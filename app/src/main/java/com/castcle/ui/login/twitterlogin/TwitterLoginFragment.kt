@@ -48,7 +48,8 @@ class TwitterLoginFragment : BaseFragment<TwitterLoginFragmentViewModel>(),
 
     private lateinit var authClient: TwitterAuthClient
 
-    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentLoginTwitterBinding
+    override val bindingInflater:
+            (LayoutInflater, ViewGroup?, Boolean) -> FragmentLoginTwitterBinding
         get() = { inflater, container, attachToRoot ->
             FragmentLoginTwitterBinding.inflate(inflater, container, attachToRoot)
         }

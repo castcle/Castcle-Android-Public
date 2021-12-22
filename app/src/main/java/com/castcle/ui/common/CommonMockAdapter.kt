@@ -39,7 +39,6 @@ import kotlin.properties.Delegates
 //
 //
 //  Created by sklim on 24/8/2021 AD at 15:04.
-
 class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<ContentFeedUiModel>>(),
     DiffUpdateAdapter,
     ItemClickable<Click> by ItemClickableImpl() {

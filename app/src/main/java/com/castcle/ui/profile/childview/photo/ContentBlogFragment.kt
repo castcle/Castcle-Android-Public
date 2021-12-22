@@ -126,6 +126,7 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
             ProfileType.PROFILE_TYPE_PAGE -> {
                 onPage.invoke()
             }
+            else -> {}
         }
     }
 
@@ -140,8 +141,6 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
         lifecycleScope.launchWhenCreated {
             adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
                 val refresher = loadStates.refresh
-                val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
                 val isError = loadStates.refresh is LoadState.Error
                 val isLoading = loadStates.refresh is LoadState.Loading
                 if (isError) {

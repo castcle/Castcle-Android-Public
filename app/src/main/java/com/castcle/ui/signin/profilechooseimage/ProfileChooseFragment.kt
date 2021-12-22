@@ -52,7 +52,6 @@ import javax.inject.Inject
 //
 //
 //  Created by sklim on 1/9/2021 AD at 18:12.
-
 class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentCreateProfileChooseBinding>,

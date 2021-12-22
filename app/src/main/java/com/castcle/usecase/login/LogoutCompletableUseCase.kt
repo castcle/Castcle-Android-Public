@@ -1,5 +1,6 @@
 package com.castcle.usecase.login
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import com.castcle.authen_android.data.storage.SecureStorage
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
@@ -9,6 +10,7 @@ import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.data.error.LoginError
 import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.storage.AppPreferences
+import com.castcle.data.storage.CastcleDataBase
 import com.castcle.session_memory.SessionManagerRepository
 import com.castcle.ui.onboard.OnBoardActivity
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
@@ -50,42 +52,43 @@ class LogoutCompletableUseCase @Inject constructor(
     private val onBoardNavigator: OnBoardNavigator,
     private val userDao: UserDao,
     private val pageKeyDao: PageKeyDao,
-    private val feedCacheDao: FeedCacheDao
+    private val feedCacheDao: FeedCacheDao,
+    private val castcleDataBase: CastcleDataBase
 ) : CompletableUseCase<Activity>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
     ::LoginError
 ) {
-    val scope = CoroutineScope(Job() + Dispatchers.IO)
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
 
+    @SuppressLint("CheckResult")
     override fun create(input: Activity): Completable {
-        appPreferences.clearAll()
-            .subscribe()
-            .addToDisposables()
-        sessionManagerRepository.clearSession()
-
-        scope.launch {
+        return Completable.fromAction {
             onClearDataBase()
-        }
 
-        with(secureStorage) {
-            userTokenType = null
-            userAccessToken = null
-            userRefreshToken = null
+            appPreferences.clearAll()
+                .subscribe()
+                .addToDisposables()
+            sessionManagerRepository.clearSession()
+
+            with(secureStorage) {
+                userTokenType = null
+                userAccessToken = null
+                userRefreshToken = null
+            }
+            (input as OnBoardActivity).run {
+                SplashScreenActivity.start(this)
+                finish()
+            }
+            onBoardNavigator.navigateBack()
         }
-        (input as OnBoardActivity).run {
-            SplashScreenActivity.start(this)
-            finish()
-        }
-        onBoardNavigator.navigateBack()
-        return Completable.complete()
     }
 
-    private suspend fun onClearDataBase() {
-        withContext(Dispatchers.IO) {
+    private fun onClearDataBase() {
+        castcleDataBase.runInTransaction {
             userDao.deleteUser()
-            pageKeyDao.clearAll()
             feedCacheDao.deleteFeedCache()
+            pageKeyDao.clearAll()
         }
     }
 }

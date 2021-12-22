@@ -71,14 +71,6 @@ class ReduceAndScaleImageSingleUseCase @Inject constructor(
 
         return tempFile.toBase64String()
     }
-
-    private fun File.calculateBitmapOptions(): BitmapFactory.Options {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(path, options)
-
-        return options
-    }
 }
 
 const val TEMP_FILE_PREFIX = "scaled_"

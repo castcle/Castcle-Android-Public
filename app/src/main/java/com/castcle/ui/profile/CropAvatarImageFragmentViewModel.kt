@@ -1,4 +1,4 @@
-package com.castcle.ui.profile.viewholder
+package com.castcle.ui.profile
 
 import com.castcle.ui.base.BaseViewModel
 import javax.inject.Inject
@@ -27,8 +27,7 @@ import javax.inject.Inject
 //
 //  Created by sklim on 20/10/2021 AD at 13:34.
 
-abstract class CropAvatarImageFragmentViewModel : BaseViewModel() {
-}
+abstract class CropAvatarImageFragmentViewModel : BaseViewModel()
 
 class CropAvatarImageFragmentViewModelImpl @Inject constructor() :
     CropAvatarImageFragmentViewModel()

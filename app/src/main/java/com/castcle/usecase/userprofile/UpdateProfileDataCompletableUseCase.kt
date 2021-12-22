@@ -3,9 +3,7 @@ package com.castcle.usecase.userprofile
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.error.Ignored
-import com.castcle.data.model.dao.user.UserDao
 import com.castcle.data.repository.UserProfileRepository
-import com.castcle.networking.api.auth.AuthenticationsRepository
 import com.castcle.usecase.base.CompletableUseCase
 import io.reactivex.Completable
 import javax.inject.Inject

@@ -42,10 +42,8 @@ import javax.inject.Inject
 //  Created by sklim on 31/8/2021 AD at 09:08.
 
 class LoginFragmentViewModelImpl @Inject constructor(
-    private val userDao: UserDao,
     private val authenticationLoginWithEmailCompletableUseCase:
     AuthenticationLoginWithEmailCompletableUseCase,
-    private val userProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val authenticationRefreshTokenCompletableUseCase:
     AuthenticationRefreshTokenCompletableUseCase,
     private val updateProfileDataCompletableUseCase: UpdateProfileDataCompletableUseCase,

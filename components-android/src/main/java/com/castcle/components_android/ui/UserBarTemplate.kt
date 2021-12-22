@@ -151,7 +151,7 @@ class UserBarTemplate(
 
     private fun mapRecasted(itemUiModel: ContentFeedUiModel): String {
         val recasted = if (itemUiModel.authorReference.size > LIMITE_RECASTED) {
-            val reCasted = if (itemUiModel.authorReference.contains(itemUiModel.isMindId)) {
+            val reCasted = if (itemUiModel.isMindId) {
                 binding.root.context.getString(R.string.feed_content_me_recasted)
             } else {
                 itemUiModel.authorReference.first()

@@ -38,7 +38,6 @@ import com.permissionx.guolindev.PermissionMediator
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
-
 class CreatePostFragment : BaseFragment<CreatePostFragmentViewModel>(),
     BaseFragmentCallbacks,
     ToolbarBindingInflater<ToolbarCastcleGreetingBinding>,
@@ -223,9 +222,11 @@ class CreatePostFragment : BaseFragment<CreatePostFragmentViewModel>(),
             onBindGallery(it)
         })
 
-        viewModel.mediaImageSelected.observe(this, {
-            addImagePerivew(it)
-        })
+        viewModel.mediaImageSelected.observe(
+            this, {
+                addImagePerivew(it)
+            }
+        )
 
         viewModel.messageLength.subscribe {
             onBindMessageCount(it)
@@ -312,16 +313,13 @@ class CreatePostFragment : BaseFragment<CreatePostFragmentViewModel>(),
             is MediaItem.ImageMediaItem -> {
                 onUpdateImageSelected(itemImage)
                 addImageCacheSelected(itemImage)
-
             }
             is MediaItem.OpenCamera -> {
                 requestStoragePermission {
                     openGallery()
                 }
             }
-            is MediaItem.OpenGallery -> {
-
-            }
+            is MediaItem.OpenGallery -> {}
         }
     }
 
@@ -405,12 +403,13 @@ class CreatePostFragment : BaseFragment<CreatePostFragmentViewModel>(),
 
     private fun requestStoragePermission(action: () -> Unit) {
         rxPermissions.permissions(
-            listOf(CAMERA,READ_EXTERNAL_STORAGE)
+            listOf(CAMERA, READ_EXTERNAL_STORAGE)
         ).onExplainRequestReason { scope, deniedList ->
             scope.showRequestReasonDialog(
                 deniedList,
                 "Core fundamental are based on these permissions",
-                "OK", "Cancel"
+                "OK",
+                "Cancel"
             )
         }.request { allGranted, _, deniedList ->
             if (allGranted) {

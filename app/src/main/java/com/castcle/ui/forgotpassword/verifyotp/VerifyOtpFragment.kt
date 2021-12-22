@@ -72,6 +72,7 @@ class VerifyOtpFragment : BaseFragment<VerifyOtpFragmentViewModel>(),
         get() = { inflater, container, attachToRoot ->
             FragmentForGotPassBinding.inflate(inflater, container, attachToRoot)
         }
+
     override val binding: FragmentForGotPassBinding
         get() = viewBinding as FragmentForGotPassBinding
 

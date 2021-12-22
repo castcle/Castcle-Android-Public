@@ -172,6 +172,7 @@ fun ImageView.loadCircleImage(
 ) {
     Glide.with(context)
         .load(url)
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
         .error(errorDrawableRes)
         .circleCrop()
         .into(this)

@@ -74,7 +74,9 @@ class CastWithImageLoadWorkHelperImpl @Inject constructor(
                                 val errorResult = info.outputData.getInt(
                                     EXTRA_UPLOAD_ERROR_RESULT, 0
                                 )
-                                CastWithImageLoadWorkHelper.Status.Error(errorResult.takeIf { it != 0 })
+                                CastWithImageLoadWorkHelper.Status.Error(
+                                    errorResult.takeIf { it != 0 }
+                                )
                             }
                         }
                         workManager.pruneWork()

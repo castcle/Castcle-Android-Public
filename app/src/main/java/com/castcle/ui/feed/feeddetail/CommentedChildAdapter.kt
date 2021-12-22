@@ -38,7 +38,8 @@ import kotlin.properties.Delegates
 //
 //  Created by sklim on 24/8/2021 AD at 15:04.
 
-class CommentedChildAdapter : RecyclerView.Adapter<CommentedChildAdapter.ViewHolder<ReplyUiModel>>(),
+class CommentedChildAdapter :
+    RecyclerView.Adapter<CommentedChildAdapter.ViewHolder<ReplyUiModel>>(),
     DiffUpdateAdapter,
     ItemClickable<Click> by ItemClickableImpl() {
 

@@ -27,9 +27,6 @@ import javax.inject.Inject
 //
 //  Created by sklim on 19/11/2021 AD at 09:51.
 
-abstract class TwitterLoginFragmentViewModel : BaseViewCoroutinesModel() {
-}
+abstract class TwitterLoginFragmentViewModel : BaseViewCoroutinesModel()
 
-class TwitterLoginFragmentViewModelImpl @Inject constructor() : TwitterLoginFragmentViewModel() {
-
-}
+class TwitterLoginFragmentViewModelImpl @Inject constructor() : TwitterLoginFragmentViewModel()

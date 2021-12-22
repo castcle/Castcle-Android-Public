@@ -53,7 +53,6 @@ import javax.inject.Inject
 //
 //
 //  Created by sklim on 16/9/2021 AD at 19:01.
-
 class PhotoFragment : BaseFragment<TrendFragmentViewModel>(),
     BaseFragmentCallbacks,
     ViewBindingInflater<FragmentContentAllBinding> {

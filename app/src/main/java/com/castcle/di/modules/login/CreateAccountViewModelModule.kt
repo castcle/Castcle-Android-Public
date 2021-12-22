@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.signin.createaccount.*
-import com.castcle.ui.signin.profilechooseimage.ProfileChooseFragment
 import com.permissionx.guolindev.PermissionMediator
 import com.permissionx.guolindev.PermissionX
 import dagger.*

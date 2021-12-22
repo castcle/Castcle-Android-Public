@@ -3,8 +3,8 @@ package com.castcle.di.modules.profile
 import androidx.lifecycle.ViewModel
 import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
-import com.castcle.ui.profile.viewholder.CropAvatarImageFragmentViewModel
-import com.castcle.ui.profile.viewholder.CropAvatarImageFragmentViewModelImpl
+import com.castcle.ui.profile.CropAvatarImageFragmentViewModel
+import com.castcle.ui.profile.CropAvatarImageFragmentViewModelImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

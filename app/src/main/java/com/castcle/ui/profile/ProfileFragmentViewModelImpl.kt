@@ -46,9 +46,7 @@ import javax.inject.Inject
 //
 //
 //  Created by sklim on 10/9/2021 AD at 11:39.
-@SuppressLint("StaticFieldLeak")
 class ProfileFragmentViewModelImpl @Inject constructor(
-    private val appContext: Context,
     private val getUserProfileSingleUseCase: GetUserProfileSingleUseCase,
     private val getUserViewProfileSingleUseCase: GetUserViewProfileSingleUseCase,
     private val userProfileDataSouce: UserProfileRepository,
@@ -56,7 +54,6 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val getViewPageSingleUseCase: GetViewPageFlowableUseCase,
     private val uploadProfileAvatarCompletableUseCase: UploadProfileAvatarCompletableUseCase,
     private val checkAvatarUpLoadingFlowableCase: CheckAvatarUpLoadingFlowableCase,
-    private val likedCommentCompletableUseCase: LikeCommentCompletableUseCase,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
@@ -64,6 +61,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val reportUserUseCase: ReportUserUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val unBlockUserUseCase: UnBlockUserUseCase,
+    private val preloadImageUseCase: PreloadImageUseCase
 ) : ProfileFragmentViewModel() {
 
     override val isGuestMode: Boolean

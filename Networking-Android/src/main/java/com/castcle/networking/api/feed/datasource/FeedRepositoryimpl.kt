@@ -1,6 +1,9 @@
 package com.castcle.networking.api.feed.datasource
 
+import android.content.Context
 import androidx.paging.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.*
 import com.castcle.common_model.model.feed.domain.dao.*
@@ -41,12 +44,12 @@ import kotlin.math.abs
 
 @ExperimentalCoroutinesApi
 class FeedRepositoryImpl @Inject constructor(
+    private val context: Context,
     private val feedApi: FeedApi,
     private val feedCacheDao: FeedCacheDao,
-    private val pageKeyDao: PageKeyDao
+    private val pageKeyDao: PageKeyDao,
 ) : FeedRepository {
 
-    @ExperimentalCoroutinesApi
     override suspend fun getFeed(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentFeedUiModel>> {
@@ -63,33 +66,48 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
-    @ExperimentalPagingApi
+    @OptIn(ExperimentalPagingApi::class)
     override suspend fun getFeedRemoteMediator(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentFeedUiModel>> {
-        return feedRequestHeader.flatMapLatest { it ->
-            Pager(
-                config = PagingConfig(
-                    pageSize = DEFAULT_PAGE_SIZE,
-                    prefetchDistance = DEFAULT_PREFETCH,
-                    enablePlaceholders = true
-                ),
-                remoteMediator = FeedRemoteMediator(
-                    feedApi,
-                    pageKeyDao,
-                    feedCacheDao,
-                    it
-                )
-            ) {
-                feedCacheDao.pagingSource()
-            }.flow.map { pagingData ->
-                pagingData.map {
-                    it.toContentFeedUiModel()
+        return withContext(Dispatchers.IO) {
+            feedRequestHeader.flatMapLatest { it ->
+                Pager(
+                    config = PagingConfig(
+                        pageSize = DEFAULT_PAGE_SIZE,
+                        prefetchDistance = DEFAULT_PREFETCH,
+                        enablePlaceholders = true
+                    ),
+                    remoteMediator = FeedRemoteMediator(
+                        feedApi,
+                        pageKeyDao,
+                        feedCacheDao,
+                        it
+                    )
+                ) {
+                    feedCacheDao.pagingSource()
+                }.flow.map { pagingData ->
+                    pagingData.map { it ->
+                        proLoadAllImage(it.photo.map {
+                            it.imageMedium
+                        })
+                        it.toContentFeedUiModel()
+                    }
                 }
             }
         }
     }
 
+    private suspend fun proLoadAllImage(imageList: List<String>) {
+        withContext(Dispatchers.IO) {
+            imageList.forEach { url ->
+                Glide.with(context)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .preload()
+            }
+        }
+    }
 
     val scope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -131,7 +149,6 @@ class FeedRepositoryImpl @Inject constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
     override suspend fun getFeedGuests(
         feedRequestHeader: MutableStateFlow<FeedRequestHeader>
     ): Flow<PagingData<ContentFeedUiModel>> {

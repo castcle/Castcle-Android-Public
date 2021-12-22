@@ -54,7 +54,8 @@ class CreatePostFragmentViewModelImpl @Inject constructor(
     private val quoteCastContentSingleUseCase: QuoteCastContentSingleUseCase,
     private val getUserMentionSingleUseCase: GetUserMentionSingleUseCase,
     private val scaleImageSingleUseCase: ScaleImagesSingleUseCase,
-    private val uploadCastWithImageWorkerCompletableUseCase: UploadCastWithImageWorkerCompletableUseCase
+    private val uploadCastWithImageWorkerCompletableUseCase:
+    UploadCastWithImageWorkerCompletableUseCase
 ) : CreatePostFragmentViewModel(), CreatePostFragmentViewModel.Input {
 
     private var _userProfileUiModel = MutableLiveData<ContentUiModel>()

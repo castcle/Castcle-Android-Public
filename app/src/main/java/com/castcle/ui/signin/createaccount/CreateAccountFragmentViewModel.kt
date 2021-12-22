@@ -98,10 +98,6 @@ class CreateAccountFragmentViewModelImpl @Inject constructor(
 
     private var _disPlayNameState = VerifyProfileState.NONE
 
-    private var _castcleIdState = VerifyProfileState.NONE
-
-    private val _castcleIdSuggest = BehaviorSubject.create<String>()
-
     override val input: Input
         get() = this
 

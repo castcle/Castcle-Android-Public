@@ -56,6 +56,7 @@ class SearchAccountFragment : BaseFragment<SearchAccountFragmentViewModel>(),
         get() = { inflater, container, attachToRoot ->
             ToolbarCastcleProfileBinding.inflate(inflater, container, attachToRoot)
         }
+
     override val toolbarBinding: ToolbarCastcleProfileBinding
         get() = toolbarViewBinding as ToolbarCastcleProfileBinding
 
@@ -64,6 +65,7 @@ class SearchAccountFragment : BaseFragment<SearchAccountFragmentViewModel>(),
         get() = { inflater, container, attachToRoot ->
             FragmentSearchAccountBinding.inflate(inflater, container, attachToRoot)
         }
+
     override val binding: FragmentSearchAccountBinding
         get() = viewBinding as FragmentSearchAccountBinding
 

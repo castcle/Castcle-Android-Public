@@ -2,7 +2,6 @@ package com.castcle.usecase.feed
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.feed.converter.DeleteCommentRequest
-import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.data.error.Ignored
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.usecase.base.CompletableUseCase

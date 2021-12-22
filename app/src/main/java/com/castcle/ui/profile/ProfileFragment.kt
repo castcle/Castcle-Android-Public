@@ -8,19 +8,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.castcle.android.R
-import com.castcle.android.databinding.*
+import com.castcle.android.databinding.FragmentProfileBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.login.domain.CreatePostBundle
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.setting.UpLoadType
-import com.castcle.common_model.model.userprofile.*
+import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.domain.ImagesRequest
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
@@ -44,7 +43,6 @@ import com.permissionx.guolindev.PermissionMediator
 import io.reactivex.rxkotlin.subscribeBy
 import pl.aprilapps.easyphotopicker.*
 import javax.inject.Inject
-
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -496,13 +494,13 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     @SuppressLint("SetTextI18n")
     private fun setupBlockingLayout(user: User) {
         with(binding) {
-           profileYouBlocked.clMainContent.gone()
-           profileYouBlocking.clMainContent.visible()
-           profileYou.clMainContent.gone()
-           wtWhatYouMind.gone()
-           tabs.gone()
-           layoutContent.gone()
-           line.gone()
+            profileYouBlocked.clMainContent.gone()
+            profileYouBlocking.clMainContent.visible()
+            profileYou.clMainContent.gone()
+            wtWhatYouMind.gone()
+            tabs.gone()
+            layoutContent.gone()
+            line.gone()
         }
         with(binding.profileYouBlocking) {
             tvProfileName.text = user.displayName
@@ -515,12 +513,12 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     @SuppressLint("SetTextI18n")
     private fun setupUnBlockLayout(user: User) {
         with(binding) {
-           profileYou.clMainContent.visible()
-           profileYouBlocked.clMainContent.gone()
-           wtWhatYouMind.visible()
-           tabs.visible()
-           layoutContent.visible()
-           line.visible()
+            profileYou.clMainContent.visible()
+            profileYouBlocked.clMainContent.gone()
+            wtWhatYouMind.visible()
+            tabs.visible()
+            layoutContent.visible()
+            line.visible()
         }
         with(binding.profileYou) {
             tvFollowingCount.text = getContentCount(user.followingCount)
@@ -834,6 +832,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                     onBindImageViewProfile(imageAvatar = mediaFile.toString())
                 }
             }
+            else -> {}
         }
     }
 

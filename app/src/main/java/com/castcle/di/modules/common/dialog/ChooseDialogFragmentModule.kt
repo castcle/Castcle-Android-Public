@@ -5,8 +5,6 @@ import com.castcle.di.ViewModelKey
 import com.castcle.di.scope.FragmentScope
 import com.castcle.ui.common.dialog.chooseimage.ChooseDialogViewModel
 import com.castcle.ui.common.dialog.chooseimage.ChooseDialogViewModelImpl
-import com.castcle.ui.common.dialog.recast.RecastDialogViewModel
-import com.castcle.ui.common.dialog.recast.RecastDialogViewModelImpl
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

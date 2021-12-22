@@ -1,10 +1,8 @@
 package com.castcle.ui.feed
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.lifecycle.*
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
@@ -26,6 +24,7 @@ import io.reactivex.rxkotlin.zipWith
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -53,7 +52,6 @@ import javax.inject.Inject
 //  Created by sklim on 19/8/2021 AD at 11:34.
 @SuppressLint("StaticFieldLeak")
 class FeedFragmentViewModelImpl @Inject constructor(
-    private val appContext: Context,
     private val isGuestModeSingleUseCase: IsGuestModeSingleUseCase,
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val feedNonAuthRepository: FeedRepository,
@@ -67,6 +65,7 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val reportContentUseCase: ReportContentUseCase,
     private val blockUserUseCase: BlockUserUseCase,
     private val unBlockUserUseCase: UnBlockUserUseCase,
+    private val preloadImageUseCase: PreloadImageUseCase
 ) : FeedFragmentViewModel(), FeedFragmentViewModel.Input {
 
     override val input: Input
@@ -199,10 +198,23 @@ class FeedFragmentViewModelImpl @Inject constructor(
         launchPagingAsync({
             _showLoading.onNext(true)
             feedNonAuthRepository.getFeedRemoteMediator(feedRequest).cachedIn(viewModelScope)
-        }, {
+        }, { it ->
             _showLoading.onNext(false)
             _feedUiMode = it
+            viewModelScope.launch {
+                it.collect { feedContent ->
+                    feedContent.map {
+                        reloadImageContent(it.photo)
+                    }
+                }
+            }
         })
+
+    private suspend fun reloadImageContent(photo: List<ImageContentUiModel>?) {
+        photo?.map { it.imageThumbnail }?.let {
+            preloadImageUseCase.proLoadAllImage(it)
+        }
+    }
 
     override fun getAllFeedGustsContent(feedRequest: MutableStateFlow<FeedRequestHeader>) =
         launchPagingAsync({

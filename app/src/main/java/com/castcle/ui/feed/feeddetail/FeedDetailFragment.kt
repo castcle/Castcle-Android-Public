@@ -3,16 +3,14 @@ package com.castcle.ui.feed.feeddetail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.*
-import android.widget.EditText
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
-import com.castcle.android.databinding.*
+import com.castcle.android.databinding.FragmentFeedDetailBinding
+import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.*
@@ -33,7 +31,6 @@ import com.lyrebirdstudio.croppylib.util.extensions.showKeyboard
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
-
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
