@@ -62,7 +62,14 @@ class FeedRepositoryImpl @Inject constructor(
                 pagingSourceFactory = {
                     FeedPagingDataSource(feedApi, it)
                 }
-            ).flow
+            ).flow.map { pagingData ->
+                pagingData.map { it ->
+                    it.photo?.map {
+                        it.imageMedium
+                    }?.let { it1 -> proLoadAllImage(it1) }
+                    it
+                }
+            }
         }
     }
 

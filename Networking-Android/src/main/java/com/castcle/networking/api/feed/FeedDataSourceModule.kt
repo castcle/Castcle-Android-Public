@@ -1,5 +1,6 @@
 package com.castcle.networking.api.feed
 
+import android.content.Context
 import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
 import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.networking.api.feed.datasource.FeedRepository
@@ -45,10 +46,12 @@ class FeedNonAuthenticationDataSourceModule {
     @ExperimentalCoroutinesApi
     @Provides
     fun feedRepositoryNonAuth(
+        context: Context,
         feedApi: FeedApi,
         feedCacheDao: FeedCacheDao,
         pageKeyDao: PageKeyDao
     ): FeedRepository = FeedRepositoryImpl(
+        context,
         feedApi,
         feedCacheDao,
         pageKeyDao
