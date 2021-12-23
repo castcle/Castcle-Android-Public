@@ -111,7 +111,7 @@ class UserBarTemplate(
                     }
                     tvUserName.text = userContent.displayName
                     with(tvStatusFollow) {
-                        visibleOrGone(!itemUiModel.userContent.followed)
+                        visibleOrGone(!itemUiModel.followed)
                     }
                     if (itemUiModel.isMindId) {
                         tvStatusFollow.gone()

@@ -114,7 +114,7 @@ abstract class OnBoardViewModel : BaseViewModel() {
         non: () -> Unit
     )
 
-    abstract fun putToFollowUser(castcleId: String): Completable
+    abstract fun putToFollowUser(castcleId: String, authorId: String = ""): Completable
 
     abstract val castcleId: String
 

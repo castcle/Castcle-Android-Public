@@ -108,7 +108,7 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
     fun updateStateItemFollowing(contentUiModel: ContentFeedUiModel) {
         snapshot().map {
             if (it?.userContent?.castcleId == contentUiModel.userContent.castcleId) {
-                it.userContent.followed = true
+                it.followed = true
             }
         }
         notifyDataSetChanged()

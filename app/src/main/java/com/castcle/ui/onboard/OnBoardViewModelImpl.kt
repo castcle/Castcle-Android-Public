@@ -324,11 +324,12 @@ class OnBoardViewModelImpl @Inject constructor(
         _onRefreshPositionRes.value = Unit
     }
 
-    override fun putToFollowUser(castcleId: String): Completable {
+    override fun putToFollowUser(castcleId: String, authorId: String): Completable {
         return putToFollowUserCompletableUseCase.execute(
             FollowRequest(
                 castcleIdFollower = this.castcleId,
-                targetCastcleId = castcleId
+                targetCastcleId = castcleId,
+                authorId = authorId
             )
         )
     }

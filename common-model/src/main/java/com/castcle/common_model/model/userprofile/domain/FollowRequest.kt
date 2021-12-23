@@ -27,8 +27,9 @@ import com.google.gson.annotations.SerializedName
 //  Created by sklim on 17/9/2021 AD at 14:51.
 
 data class FollowRequest(
-
     val castcleIdFollower: String = "",
+
+    val authorId: String = "",
 
     @SerializedName("targetCastcleId")
     val targetCastcleId: String = ""

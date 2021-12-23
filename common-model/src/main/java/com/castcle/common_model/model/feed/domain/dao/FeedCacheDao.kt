@@ -47,6 +47,10 @@ interface FeedCacheDao : BaseDao<FeedCacheModel> {
     fun updateLiked(feedCache: FeedCacheModel)
 
     @Transaction
+    @Query("UPDATE feedcache SET followed = 1 WHERE authorId LIKE :authorId")
+    fun updateFollowedContent(authorId: String)
+
+    @Transaction
     @Query("DELETE FROM feedcache")
     fun deleteFeedCache()
 

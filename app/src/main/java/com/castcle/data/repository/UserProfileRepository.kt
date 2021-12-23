@@ -3,6 +3,7 @@ package com.castcle.data.repository
 import androidx.paging.*
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
+import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.*
@@ -14,9 +15,11 @@ import com.castcle.networking.api.user.*
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -56,10 +59,10 @@ interface UserProfileRepository {
     ): Flow<PagingData<ContentFeedUiModel>>
 
     fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader):
-            Flow<PagingData<ContentFeedUiModel>>
+        Flow<PagingData<ContentFeedUiModel>>
 
     fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader):
-            Flow<PagingData<ContentFeedUiModel>>
+        Flow<PagingData<ContentFeedUiModel>>
 
     fun putToFollowUser(followRequest: FollowRequest): Completable
 
@@ -87,6 +90,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
     private val userPageDao: UserPageDao,
     private val userProfileMapper: UserProfileMapper,
+    private val feedCacheDao: FeedCacheDao,
     private val createContentMapper: CreateContentMapper,
     private val appPreferences: AppPreferences,
 ) : UserProfileRepository {
@@ -120,10 +124,21 @@ class UserProfileRepositoryImpl @Inject constructor(
             }.ignoreElements()
     }
 
+    val scope = CoroutineScope(Job() + Dispatchers.IO)
+
     override fun putToFollowUser(followRequest: FollowRequest): Completable {
+        scope.launch {
+            updateFollowedContent(followRequest.authorId)
+        }
         return userApi.createFollowUser(followRequest.castcleIdFollower, followRequest)
             .lift(ApiOperators.mobileApiError())
             .ignoreElements()
+    }
+
+    private suspend fun updateFollowedContent(authorId: String) {
+        withContext(Dispatchers.IO) {
+            feedCacheDao.updateFollowedContent(authorId)
+        }
     }
 
     override fun getUserProfileContent(
@@ -137,7 +152,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }).flow
 
     override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
-            : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
+        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
@@ -146,7 +161,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     }).flow
 
     override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
-            : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
+        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
         pageSize = DEFAULT_PAGE_SIZE_V1,
         prefetchDistance = DEFAULT_PREFETCH
@@ -238,9 +253,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     private fun GregorianCalendar.isSameDate(date: GregorianCalendar): Boolean {
         return get(Calendar.YEAR) == date.get(Calendar.YEAR)
-                && get(Calendar.MONTH) == date.get(Calendar.MONTH)
-                && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
-                && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
+            && get(Calendar.MONTH) == date.get(Calendar.MONTH)
+            && get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH)
+            && get(Calendar.MINUTE) == date.get(Calendar.MINUTE)
     }
 
     override fun onDeleteAccount(deleteUserPayload: DeleteUserPayload): Completable {

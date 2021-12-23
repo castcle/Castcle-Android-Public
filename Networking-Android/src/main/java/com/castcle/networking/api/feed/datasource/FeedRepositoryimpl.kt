@@ -120,27 +120,6 @@ class FeedRepositoryImpl @Inject constructor(
 
     val scope = CoroutineScope(Job() + Dispatchers.IO)
 
-    private fun ContentFeedUiModel.mapLinkContentPreview(): ContentFeedUiModel {
-        var urlContent = LinkContent()
-        val linkUiModel = LinkUiModel()
-        scope.launch(Dispatchers.IO) {
-            urlContent =
-                withContext(Dispatchers.Default) {
-                    getContentWebPreview(link?.url ?: "")
-                }
-            linkUiModel.linkDescription = urlContent.description
-            linkUiModel.linkTitle = urlContent.title
-            if (link?.imagePreview.isNullOrBlank()) {
-                linkUiModel.imagePreview = urlContent.imageUrl
-            } else {
-                linkUiModel.imagePreview = link?.imagePreview ?: ""
-            }
-            linkUiModel.url = link?.url ?: ""
-        }
-        this@mapLinkContentPreview.link = linkUiModel
-        return this@mapLinkContentPreview
-    }
-
     private val linkPreview = LinkPreview.Builder().build()
 
     private suspend fun getContentWebPreview(urlPreview: String): LinkContent {

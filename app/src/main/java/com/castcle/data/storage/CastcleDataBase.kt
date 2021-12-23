@@ -43,7 +43,7 @@ import com.castcle.data.model.dao.user.UserPageDao
         PageKey::class,
         UserPage::class,
         FeedCacheModel::class
-    ], version = 7
+    ], version = 8
 )
 abstract class CastcleDataBase : RoomDatabase() {
     abstract fun userDao(): UserDao

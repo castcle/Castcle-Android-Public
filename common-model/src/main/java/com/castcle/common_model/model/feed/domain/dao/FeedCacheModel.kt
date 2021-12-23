@@ -96,7 +96,9 @@ data class FeedCacheModel(
     @ColumnInfo(name = "reported")
     var reported: Boolean = false,
     @ColumnInfo(name = "isMindId")
-    var isMindId: Boolean = false
+    var isMindId: Boolean = false,
+    @ColumnInfo(name = "followed")
+    var followed: Boolean = false
 )
 
 fun List<ContentFeedUiModel>.toMapFeedCache(): List<FeedCacheModel> {
@@ -133,7 +135,8 @@ fun FeedCacheModel.toContentFeedUiModel(): ContentFeedUiModel {
         quoted = quoted,
         recastCount = recastCount,
         recasted = recasted,
-        isMindId = isMindId
+        isMindId = isMindId,
+        followed = followed
     )
 }
 
@@ -165,6 +168,7 @@ fun ContentFeedUiModel.toFeedCacheModel(): FeedCacheModel {
         quoted = quoted,
         recastCount = recastCount,
         recasted = recasted,
-        isMindId = isMindId
+        isMindId = isMindId,
+        followed = userContent.followed
     )
 }
