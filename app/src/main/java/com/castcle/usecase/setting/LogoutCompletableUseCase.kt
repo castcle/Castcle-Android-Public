@@ -5,7 +5,7 @@ import com.castcle.android.R
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.data.error.SettingsError.LogoutError
 import com.castcle.data.model.dao.feed.CommentDao
-import com.castcle.data.model.dao.user.UserDao
+import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.session_memory.SessionManagerRepository

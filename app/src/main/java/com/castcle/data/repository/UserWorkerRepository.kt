@@ -1,6 +1,5 @@
 package com.castcle.data.repository
 
-import androidx.paging.*
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.signin.ViewPageUiModel
@@ -8,13 +7,12 @@ import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.domain.*
 import com.castcle.common_model.model.userprofile.toUserProfile
-import com.castcle.data.model.dao.user.UserDao
+import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.*
 import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
 

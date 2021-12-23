@@ -4,7 +4,7 @@ import android.content.Context
 import com.castcle.authen_android.di.components.dependencies.AuthenticateStorageComponent
 import com.castcle.common_model.model.feed.domain.dao.*
 import com.castcle.data.model.dao.feed.CommentDao
-import com.castcle.data.model.dao.user.UserDao
+import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.*
 import com.castcle.di.storage.StorageModule

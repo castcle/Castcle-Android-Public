@@ -36,6 +36,7 @@ import retrofit2.HttpException
 @ExperimentalPagingApi
 class FeedRemoteMediator(
     private val feedApi: FeedApi,
+    private val userDao: UserDao,
     private val pageKeyDao: PageKeyDao,
     private val feedCacheDao: FeedCacheDao,
     private val feedRequestHeader: FeedRequestHeader

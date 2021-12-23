@@ -10,7 +10,7 @@ import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.UserPage
 import com.castcle.data.model.dao.feed.CommentDao
 import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
-import com.castcle.data.model.dao.user.UserDao
+import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

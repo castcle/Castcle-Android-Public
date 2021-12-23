@@ -146,6 +146,7 @@ class CreateAccountFragment : BaseFragment<CreateAccountFragmentViewModel>(),
                 onNavigateToChooseProfileEdit()
             }.addToDisposables()
 
+            itDisplatName.setRequestFocus()
             with(itDisplatName) {
                 primaryText = registerWithSocial.userName
                 if (registerWithSocial.userName.isNotBlank()) {

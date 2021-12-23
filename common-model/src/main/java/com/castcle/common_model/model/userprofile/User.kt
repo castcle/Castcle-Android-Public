@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.userprofile
 
 import androidx.room.*
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.setting.domain.CreatePageResponse
 import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
 import com.google.gson.Gson
@@ -52,10 +53,11 @@ data class User(
     @ColumnInfo(name = "medium_links") val mediumLinks: String = "",
     @ColumnInfo(name = "twitter_links") val twitterLinks: String = "",
     @ColumnInfo(name = "website_links") val websiteLinks: String = "",
-    @ColumnInfo(name = "youtube_links") val youtubeLinks: String = ""
+    @ColumnInfo(name = "youtube_links") val youtubeLinks: String = "",
+    @ColumnInfo(name = "user_type") val userType: String = ""
 )
 
-fun UserProfileResponse.toUserProfile(): User {
+fun UserProfileResponse.toUserProfile(userType: String = ProfileType.PROFILE_TYPE_ME.type): User {
     return User(
         castcleId = castcleId,
         displayName = displayName ?: "",
@@ -76,7 +78,8 @@ fun UserProfileResponse.toUserProfile(): User {
         twitterLinks = links?.twitter ?: "",
         websiteLinks = links?.website ?: "",
         youtubeLinks = links?.youtube ?: "",
-        verified = verified?.email ?: false
+        verified = verified?.email ?: false,
+        userType = userType
     )
 }
 

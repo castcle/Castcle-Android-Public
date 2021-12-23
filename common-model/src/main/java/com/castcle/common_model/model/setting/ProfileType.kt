@@ -29,6 +29,7 @@ enum class ProfileType(val type: String) {
     PROFILE_TYPE_ME("me"),
     PROFILE_TYPE_PEOPLE("people"),
     PROFILE_TYPE_PAGE("page"),
+    PROFILE_TYPE_PAGE_ME("page-me"),
     PROFILE_TYPE_PAGE_CREATE("page-create"),
     NON("")
 }

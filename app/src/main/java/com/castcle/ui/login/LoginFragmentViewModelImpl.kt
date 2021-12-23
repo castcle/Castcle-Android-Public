@@ -7,7 +7,6 @@ import com.castcle.common_model.model.login.domain.LoginRequest
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.PageResponse
 import com.castcle.common_model.model.userprofile.domain.UserProfileResponse
-import com.castcle.data.model.dao.user.UserDao
 import com.castcle.usecase.auth.RegisterFireBaseTokenCompleteUseCase
 import com.castcle.usecase.login.AuthenticationLoginWithEmailCompletableUseCase
 import com.castcle.usecase.login.AuthenticationRefreshTokenCompletableUseCase

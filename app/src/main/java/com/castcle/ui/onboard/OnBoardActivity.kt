@@ -147,7 +147,11 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                     setBottomNavVisibility(destination)
                 },
                 onNavigateNotiflyLogin = {
-                    onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+                    if (viewModel.isGuestMode) {
+                        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
+                    } else {
+                        onBoardNavigator.navigateCreateBlogFragment()
+                    }
                 },
                 onRefreshPosition = {
                     viewModel.onRefreshPosition()

@@ -1,8 +1,9 @@
-package com.castcle.data.model.dao.user
+package com.castcle.common_model.model.feed.domain.dao
 
 import androidx.room.*
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.BaseDao
+import com.castcle.common_model.model.setting.ProfileType
 import io.reactivex.Single
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -33,8 +34,12 @@ import io.reactivex.Single
 interface UserDao : BaseDao<User> {
 
     @Transaction
-    @Query("SELECT * FROM user LIMIT 1")
-    fun getUser(): Single<User>
+    @Query("SELECT * FROM user WHERE user_type =:userType")
+    fun getUser(userType: String = ProfileType.PROFILE_TYPE_ME.type): Single<User>
+
+    @Transaction
+    @Query("SELECT * FROM user WHERE castcle_id LIKE :castcleId LIMIT 1")
+    fun getUserById(castcleId: String): Single<User>
 
     @Transaction
     @Query("DELETE FROM user")

@@ -61,6 +61,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     }
 
     private fun navigatToHomeFeed() {
+        activityViewModel.onRegisterSuccess()
         onBoardNavigator.nvaigateToFeedFragment()
     }
 

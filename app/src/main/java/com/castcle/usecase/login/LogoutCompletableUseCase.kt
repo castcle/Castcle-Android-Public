@@ -8,7 +8,7 @@ import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
 import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.data.error.LoginError
-import com.castcle.data.model.dao.user.UserDao
+import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.data.storage.CastcleDataBase
 import com.castcle.session_memory.SessionManagerRepository

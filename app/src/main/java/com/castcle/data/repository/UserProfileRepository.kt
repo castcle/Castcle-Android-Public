@@ -7,7 +7,7 @@ import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.*
-import com.castcle.data.model.dao.user.UserDao
+import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.*
@@ -50,8 +50,6 @@ interface UserProfileRepository {
     val currentCachedUser: Flowable<Optional<User>>
 
     fun upDateUserProfile(userUpdateRequest: UserUpdateRequest): Completable
-
-    fun upDateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User>
 
     fun getUserProfileContent(
         contentRequestHeader: FeedRequestHeader
@@ -120,15 +118,6 @@ class UserProfileRepositoryImpl @Inject constructor(
             .doOnNext {
                 _onMemoryUser = it
             }.ignoreElements()
-    }
-
-    override fun upDateUserProfileWorker(userUpdateRequest: UserUpdateRequest): Single<User> {
-        return userApi.updateUserProfile(userUpdateRequest)
-            .map(userProfileMapper)
-            .map { it.toUserProfile() }
-            .doOnNext {
-                _onMemoryUser = it
-            }.firstOrError()
     }
 
     override fun putToFollowUser(followRequest: FollowRequest): Completable {

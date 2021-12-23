@@ -46,6 +46,7 @@ import kotlin.math.abs
 class FeedRepositoryImpl @Inject constructor(
     private val context: Context,
     private val feedApi: FeedApi,
+    private val userDao: UserDao,
     private val feedCacheDao: FeedCacheDao,
     private val pageKeyDao: PageKeyDao,
 ) : FeedRepository {
@@ -87,6 +88,7 @@ class FeedRepositoryImpl @Inject constructor(
                     ),
                     remoteMediator = FeedRemoteMediator(
                         feedApi,
+                        userDao,
                         pageKeyDao,
                         feedCacheDao,
                         it

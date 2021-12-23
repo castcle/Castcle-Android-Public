@@ -1,8 +1,7 @@
 package com.castcle.networking.api.feed
 
 import android.content.Context
-import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
-import com.castcle.common_model.model.feed.domain.dao.PageKeyDao
+import com.castcle.common_model.model.feed.domain.dao.*
 import com.castcle.networking.api.feed.datasource.FeedRepository
 import com.castcle.networking.api.feed.datasource.FeedRepositoryImpl
 import dagger.Module
@@ -48,11 +47,13 @@ class FeedNonAuthenticationDataSourceModule {
     fun feedRepositoryNonAuth(
         context: Context,
         feedApi: FeedApi,
+        userDao: UserDao,
         feedCacheDao: FeedCacheDao,
         pageKeyDao: PageKeyDao
     ): FeedRepository = FeedRepositoryImpl(
         context,
         feedApi,
+        userDao,
         feedCacheDao,
         pageKeyDao
     )
