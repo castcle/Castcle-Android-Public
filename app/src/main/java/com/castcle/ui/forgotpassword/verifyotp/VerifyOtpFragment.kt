@@ -100,8 +100,11 @@ class VerifyOtpFragment : BaseFragment<VerifyOtpFragmentViewModel>(),
 
     override fun bindViewEvents() {
         startCountDown()
-
+        val otpBundle = profileBundle as ProfileBundle.ProfileOtp
         with(binding) {
+            tvProfileType.text = localizedResources.getString(R.string.verify_otp_message).format(
+                otpBundle.email
+            )
             with(ptOtpInput) {
                 onPinEnteredListener = {
                     onVerifyOtpInput(it)
