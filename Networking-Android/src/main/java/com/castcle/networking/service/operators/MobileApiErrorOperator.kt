@@ -59,7 +59,7 @@ internal constructor() : FlowableOperator<T, Response<T>> {
                         message = apiError?.message,
                         code = apiError?.code ?: GENERIC_ERROR,
                         statusCode = apiError?.statusCode,
-                        error = apiError?.error
+                        error = apiError?.error ?: ""
                     )
                 )
             } else {
@@ -129,7 +129,7 @@ internal constructor() : FlowableOperator<T, Response<T>> {
                 val jsonObject = it.asJsonObject
                 val code = jsonObject.get(CODE)?.asString ?: GENERIC_ERROR
                 val message = jsonObject.get(MESSAGE)?.asString
-                val statusCode = jsonObject.get(STATUS_CODE)?.asInt
+                val statusCode = jsonObject.get(STATUS_CODE)?.asString
                 val error = jsonObject.get(ERROR)?.asString
                 return ApiErrorResponse(
                     code = code,
