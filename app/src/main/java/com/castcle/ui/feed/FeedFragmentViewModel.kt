@@ -67,8 +67,6 @@ abstract class FeedFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val trendsResponse: LiveData<List<SearchUiModel>>
 
-    abstract fun checkCastPostWithImageStatus(): Observable<Boolean>
-
     abstract val castPostResponse: SingleLiveEvent<ContentFeedUiModel>
 
     abstract fun checkContentIsMe(

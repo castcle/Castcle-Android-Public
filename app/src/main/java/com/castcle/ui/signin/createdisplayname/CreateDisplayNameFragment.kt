@@ -104,6 +104,7 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
 
     override fun bindViewEvents() {
         with(binding) {
+            itDisplatName.setRequestFocus()
             with(itDisplatName) {
                 onTextChanged = {
                     viewModel.input.displayName(it)
@@ -259,6 +260,7 @@ class CreateDisplayNameFragment : BaseFragment<CreateDisplayNameFragmentViewMode
             }
             VerifyProfileState.CASTCLE_ID_PASS -> {
                 endableButtomNext(true)
+                binding.itCastcleId.setDefaultBackground()
             }
             else -> {
                 endableButtomNext(false)

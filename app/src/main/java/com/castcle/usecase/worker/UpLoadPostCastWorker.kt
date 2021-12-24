@@ -53,12 +53,10 @@ class UpLoadPostCastWorker(
         return scaleImageSingleUseCase.execute(imageCast)
             .flatMap {
                 upLoadPostWithImage(it, createContentRequest)
-            }
-            .doOnError { error ->
+            }.doOnError { error ->
                 val outputData = buildErrorOutput(error as AppError)
                 Result.failure(outputData)
-            }
-            .map { userResponse ->
+            }.map { userResponse ->
                 val outputData = buildSuccessOutput(userResponse.toModelString())
                 Result.success(outputData)
             }.blockingGet()

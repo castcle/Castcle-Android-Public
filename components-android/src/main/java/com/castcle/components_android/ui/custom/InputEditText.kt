@@ -1,5 +1,6 @@
 package com.castcle.components_android.ui.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.castcle.android.components_android.R
 import com.castcle.android.components_android.databinding.InputEditTextBinding
 import com.castcle.extensions.*
 import com.google.android.material.textfield.TextInputLayout.END_ICON_PASSWORD_TOGGLE
+import com.jakewharton.rxbinding3.view.focusChanges
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -88,6 +90,7 @@ class InputEditText : ConstraintLayout {
     private var inputType: Int = android.text.InputType.TYPE_CLASS_TEXT
     private var endableTransform = false
 
+    @SuppressLint("CheckResult")
     private fun init(context: Context, attrs: AttributeSet?) {
 
         View.inflate(context, R.layout.input_edit_text, this)
@@ -266,6 +269,12 @@ class InputEditText : ConstraintLayout {
                 }
             }
         }
+    }
+
+    fun setDefaultBackground(){
+        binding.tilTextInputLayout.background =
+            context.getDrawableRes(R.drawable.bg_round_corner_input)
+        binding.tvTextInputError.gone()
     }
 
     private fun hideError() {

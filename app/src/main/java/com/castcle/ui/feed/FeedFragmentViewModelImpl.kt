@@ -57,7 +57,6 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private val feedNonAuthRepository: FeedRepository,
     private val likeContentCompletableUseCase: LikeContentCompletableUseCase,
     private val getTopTrendsSingleUseCase: GetTopTrendsSingleUseCase,
-    private val checkCastUpLoadingFlowableCase: CheckCastUpLoadingFlowableCase,
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val deleteContentCompletableUseCase: DeleteContentCompletableUseCase,
     private val recastContentSingleUseCase: RecastContentCompletableUseCase,
@@ -275,20 +274,6 @@ class FeedFragmentViewModelImpl @Inject constructor(
     private var _castPostResponse = SingleLiveEvent<ContentFeedUiModel>()
     override val castPostResponse: SingleLiveEvent<ContentFeedUiModel>
         get() = _castPostResponse
-
-    override fun checkCastPostWithImageStatus(): Observable<Boolean> {
-        return checkCastUpLoadingFlowableCase.execute(Unit)
-            .map { (status, userResponse) ->
-                userResponse.takeIf {
-                    it.isNotBlank()
-                }?.let {
-                    checkCastPostResponse(userResponse)
-                }
-                status
-            }.doOnError {
-                _error.onNext(it)
-            }.toObservable()
-    }
 
     private fun checkCastPostResponse(userResponse: String) {
         if (userResponse.isNotBlank()) {

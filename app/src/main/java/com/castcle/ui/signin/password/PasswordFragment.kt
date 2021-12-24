@@ -13,6 +13,7 @@ import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.signin.password.VerifyPassState.*
+import com.lyrebirdstudio.croppylib.util.extensions.hideKeyboard
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -133,6 +134,7 @@ class PasswordFragment : BaseFragment<PasswordFragmentViewModel>(),
                 onBoardNavigator.navigetToDisplayNameFragment(this)
             }
         }
+        binding.root.hideKeyboard()
     }
 
     private fun handlePasswordChecked() {

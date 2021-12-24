@@ -71,6 +71,16 @@
             app:popUpToInclusive="true" />
 
         <action
+            android:id="@+id/actionTrendFragmentToFeedFragment"
+            app:destination="@id/feedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="true" />
+
+        <action
             android:id="@+id/actionTrendFragmentToCreateQuoteFragment"
             app:destination="@id/createQuoteFragment" />
 
@@ -537,9 +547,9 @@
 
         tools:layout="@layout/dialog_fragment_user_choose">
 
-    <argument
-        android:name="userDisplay"
-        app:argType="string" />
+        <argument
+            android:name="userDisplay"
+            app:argType="string" />
 
     </dialog>
 
@@ -572,7 +582,7 @@
     <fragment
         android:id="@+id/reportFragment"
         android:name="com.castcle.ui.report.ReportFragment"
-        tools:layout="@layout/fragment_report" >
+        tools:layout="@layout/fragment_report">
 
         <argument
             android:name="id"

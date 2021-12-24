@@ -6,6 +6,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -109,8 +110,19 @@ class ProfileChooseFragment : BaseFragment<ProfileChooseFragmentViewModel>(),
             tvToolbarTitle.gone()
             ivToolbarLogoButton
                 .subscribeOnClick {
-                    findNavController().navigateUp()
+                    handleNavigateBack()
                 }.addToDisposables()
+        }
+    }
+
+    private fun handleNavigateBack() {
+        with(binding) {
+            if (cvCropImage.isVisible) {
+                cvCropImage.gone()
+                group.visible()
+            } else {
+                findNavController().navigateUp()
+            }
         }
     }
 

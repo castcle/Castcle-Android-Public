@@ -41,4 +41,4 @@ class LoginError(
 const val CODE_NOT_FOUND = "400"
 const val CODE_INVALID_ACCOUNT = "3003"
 const val CODE_INVALID_CHANNEL_LOGIN = "3002"
-const val STATUC_CODE_NOT_FOUND = 400
+const val STATUC_CODE_NOT_FOUND = "400"

@@ -32,7 +32,7 @@ class RecastError(
 ) {
     fun reCastNotFound() = CODE_CANNOT_CAST == code && statusCode == STATUS_CODE_NOT_FOUND
 
-    fun postCannotAccess() = CODE_CANNOT_ACCESS == code
+    fun postCannotAccess() = CODE_CANNOT_ACCESS == statusCode
 
     fun postNotFount() = CODE_POST_NOT_FOUND == code
 }
@@ -40,4 +40,4 @@ class RecastError(
 const val CODE_CANNOT_CAST = "404"
 const val CODE_CANNOT_ACCESS = "403"
 const val CODE_POST_NOT_FOUND = "400"
-const val STATUS_CODE_NOT_FOUND = 404
+const val STATUS_CODE_NOT_FOUND = "404"

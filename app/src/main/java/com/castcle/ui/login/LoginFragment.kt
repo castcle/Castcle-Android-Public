@@ -17,6 +17,7 @@ import com.castcle.extensions.*
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.lyrebirdstudio.croppylib.util.extensions.hideKeyboard
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
@@ -62,7 +63,11 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     private fun navigatToHomeFeed() {
         activityViewModel.onRegisterSuccess()
-        onBoardNavigator.nvaigateToFeedFragment()
+        navigateByDeepLink(requireContext().getString(R.string.nav_deep_link_feed))
+    }
+
+    private fun navigateByDeepLink(url: String) {
+        onBoardNavigator.navigateByDeepLink(url.toUri())
     }
 
     private fun setupToolBar() {
@@ -112,6 +117,9 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
             btLogin.subscribeOnClick {
                 viewModel.getAuthLoginWithEmail().subscribeBy(
+                    onComplete = {
+                        navigatToHomeFeed()
+                    },
                     onError = ::handlerError
                 ).addToDisposables()
             }
@@ -128,6 +136,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     }
 
     private fun handlerNavigateToForgotPassword() {
+        binding.root.hideKeyboard()
         onBoardNavigator.navigateToForgotPassword()
     }
 
@@ -153,12 +162,12 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-        viewModel.enableLogin.observe(this, {
+        viewModel.enableLogin.observe(viewLifecycleOwner, {
             binding.btLogin.isEnabled = it
         })
 
-        viewModel.userResponse.observe(this, {
-            navigatToHomeFeed()
+        viewModel.userResponse.observe(viewLifecycleOwner, {
+//            navigatToHomeFeed()
             activityViewModel.onRefreshProfile()
         })
 

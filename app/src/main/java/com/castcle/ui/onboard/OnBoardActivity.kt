@@ -18,6 +18,7 @@ import com.castcle.android.databinding.LayoutBottomMenuCustomBinding
 import com.castcle.data.staticmodel.BottomNavigateStatic
 import com.castcle.data.staticmodel.LanguageStatic
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.networking.service.interceptor.AppRefreshTokenFailedListener
 import com.castcle.networking.service.interceptor.AppTokenExpiredDelegate
 import com.castcle.ui.base.BaseActivity
@@ -26,6 +27,7 @@ import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import com.castcle.ui.profile.RC_CROP_IMAGE
 import com.castcle.ui.signin.createaccount.RC_CROP_IMAGE_ACCOUNT
 import com.castcle.usecase.OverrideLocaleAppImpl
+import com.castcle.usecase.userprofile.StateWorkLoading
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -39,6 +41,8 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
     @Inject lateinit var overrideLocaleApp: OverrideLocaleAppImpl
+
+    @Inject lateinit var localizedResources: LocalizedResources
 
     private var currentMenuItem = R.id.onboard_nav_graph
     private var currentNavController: LiveData<NavController>? = null
@@ -72,6 +76,18 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
         viewModel.onRegisterSuccess.observe(this, {
             setupBottomNavigationBar()
         })
+
+        viewModel.checkCastPostWithImageStatus().subscribe { isState ->
+            when (isState) {
+                StateWorkLoading.SUCCESS -> {
+                    displayMessage(localizedResources.getString(R.string.cast_post_status_success))
+                }
+                StateWorkLoading.ERROR -> {
+                    displayMessage(localizedResources.getString(R.string.cast_post_status_error))
+                }
+                else -> {}
+            }
+        }.addToDisposables()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -205,6 +221,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.createAccountCompleteFragment,
                 R.id.settingProfileFragment,
                 R.id.reportFragment,
+                R.id.addLinksFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

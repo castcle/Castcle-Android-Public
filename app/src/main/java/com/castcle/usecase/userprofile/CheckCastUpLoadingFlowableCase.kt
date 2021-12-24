@@ -36,20 +36,27 @@ import javax.inject.Inject
 class CheckCastUpLoadingFlowableCase @Inject constructor(
     private val castWithImageWorkerHelper: CastWithImageLoadWorkHelper,
     rxSchedulerProvider: RxSchedulerProvider
-) : FlowableUseCase<Unit, Pair<Boolean, String>>(
+) : FlowableUseCase<Unit, Pair<StateWorkLoading, String>>(
     rxSchedulerProvider.main(),
     rxSchedulerProvider.main(),
     ::Ignored
 ) {
 
-    override fun create(input: Unit): Flowable<Pair<Boolean, String>> {
+    override fun create(input: Unit): Flowable<Pair<StateWorkLoading, String>> {
         return castWithImageWorkerHelper
             .uploadStatus
             .map {
-                val status = if (it is CastWithImageLoadWorkHelper.Status.Error) {
-                    throw AppError(cause = null, readableMessageRes = it.error)
-                } else {
-                    it is CastWithImageLoadWorkHelper.Status.Success
+                val status = when (it) {
+                    is CastWithImageLoadWorkHelper.Status.Error -> {
+                        StateWorkLoading.ERROR
+                        throw AppError(cause = null, readableMessageRes = it.error)
+                    }
+                    is CastWithImageLoadWorkHelper.Status.Uploading -> {
+                        StateWorkLoading.NON
+                    }
+                    is CastWithImageLoadWorkHelper.Status.Success -> {
+                        StateWorkLoading.SUCCESS
+                    }
                 }
 
                 val profileImageUrl =
@@ -58,4 +65,10 @@ class CheckCastUpLoadingFlowableCase @Inject constructor(
             }
             .toFlowable(BackpressureStrategy.LATEST)
     }
+}
+
+enum class StateWorkLoading {
+    SUCCESS,
+    ERROR,
+    NON
 }

@@ -173,6 +173,11 @@ class OnBoardNavigatorImpl @Inject constructor(
                             R.id.actionLoginFragmentToFeedFragment
                         )
                     }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToFeedFragment
+                        )
+                    }
                     R.id.verifyEmailFragment -> {
                         navController.navigate(
                             R.id.verifyEmailFragmentToFeedFragment

@@ -246,12 +246,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun bindViewModel() {
-        viewModel.checkCastPostWithImageStatus().subscribe {
-            if (it) {
-                displayErrorMessage(localizedResources.getString(R.string.cast_post_status_success))
-            }
-        }.addToDisposables()
-
         viewModel.showLoading.subscribe {
             handlerShowLoading(it)
         }.addToDisposables()

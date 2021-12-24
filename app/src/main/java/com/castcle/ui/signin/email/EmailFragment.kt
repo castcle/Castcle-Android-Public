@@ -15,6 +15,7 @@ import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
+import com.lyrebirdstudio.croppylib.util.extensions.hideKeyboard
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
@@ -115,6 +116,7 @@ class EmailFragment : BaseFragment<EmailFragmentViewModel>(),
     }
 
     private fun navigateToPasswordFragment(authBundle: AuthBundle) {
+        binding.root.hideKeyboard()
         onBoardNavigator.navigateToPassword(authBundle)
     }
 

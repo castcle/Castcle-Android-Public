@@ -4,6 +4,7 @@ import com.castcle.common.lib.schedulers.RxSchedulerProvider
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.userprofile.domain.CreateContentRequest
 import com.castcle.data.error.CreateContentError
+import com.castcle.data.error.RecastError
 import com.castcle.data.repository.UserWorkerRepository
 import com.castcle.usecase.base.SingleUseCase
 import io.reactivex.Single
@@ -39,7 +40,7 @@ class CreateContentWorkerSingleUseCase @Inject constructor(
 ) : SingleUseCase<CreateContentRequest, ContentFeedUiModel>(
     rxSchedulerProvider.io(),
     rxSchedulerProvider.main(),
-    ::CreateContentError
+    ::RecastError
 ) {
     override fun create(input: CreateContentRequest): Single<ContentFeedUiModel> {
         return userWorkerRepository.createContent(input)

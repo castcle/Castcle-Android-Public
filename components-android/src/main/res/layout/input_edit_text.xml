@@ -29,8 +29,8 @@
                 android:id="@+id/etTextInputPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:cursorVisible="false"
                 android:focusableInTouchMode="true"
-                android:focusable="true"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:paddingBottom="@dimen/_8sdp" />
         </com.google.android.material.textfield.TextInputLayout>

@@ -58,7 +58,8 @@ class OnBoardViewModelImpl @Inject constructor(
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val putToFollowUserCompletableUseCase: PutToFollowUserCompletableUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
-    private val updateFireBaseTokenCompleteUseCase: UpdateFireBaseTokenCompleteUseCase
+    private val updateFireBaseTokenCompleteUseCase: UpdateFireBaseTokenCompleteUseCase,
+    private val checkCastUpLoadingFlowableCase: CheckCastUpLoadingFlowableCase,
 ) : OnBoardViewModel() {
 
     private val _userProfile = BehaviorSubject.create<User>()
@@ -344,5 +345,23 @@ class OnBoardViewModelImpl @Inject constructor(
 
     override fun onRegisterSuccess() {
         _onRegisterSuccess.value = Unit
+    }
+
+    override fun checkCastPostWithImageStatus(): Observable<StateWorkLoading> {
+        return checkCastUpLoadingFlowableCase.execute(Unit)
+            .map { (status, userResponse) ->
+                userResponse.takeIf {
+                    it.isNotBlank()
+                }?.let {
+                    checkCastPostResponse(userResponse)
+                }
+                status
+            }.doOnError {
+                _error.onNext(it)
+            }.toObservable()
+    }
+
+    private fun checkCastPostResponse(userResponse: String) {
+
     }
 }

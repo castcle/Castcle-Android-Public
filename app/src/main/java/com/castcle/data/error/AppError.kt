@@ -14,7 +14,7 @@ open class AppError(
     open val code: String?
         get() = (cause as? ApiException)?.code
 
-    open val statusCode: Int?
+    open val statusCode: String?
         get() = (cause as? ApiException)?.statusCode
 }
 

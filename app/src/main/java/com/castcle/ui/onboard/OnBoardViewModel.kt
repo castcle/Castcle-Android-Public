@@ -8,6 +8,7 @@ import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.ui.base.BaseViewModel
 import com.castcle.ui.util.SingleLiveEvent
+import com.castcle.usecase.userprofile.StateWorkLoading
 import io.reactivex.Completable
 import io.reactivex.Observable
 
@@ -119,4 +120,6 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract val castcleId: String
 
     abstract fun updateFireBaseToken(token: String): Completable
+
+    abstract fun checkCastPostWithImageStatus(): Observable<StateWorkLoading>
 }
