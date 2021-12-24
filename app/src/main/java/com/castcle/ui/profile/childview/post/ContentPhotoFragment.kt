@@ -255,7 +255,12 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
             authorId = viewModel.castcleId,
             likeStatus = contentUiModel.liked
         )
-        adapterPagingCommon.updateStateItemLike(contentUiModel)
+        if (!contentUiModel.liked) {
+            adapterPagingCommon.updateStateItemLike(contentUiModel)
+        } else {
+            adapterPagingCommon.updateStateItemUnLike(contentUiModel)
+        }
+
         viewModel.likedContent(
             likeContentRequest
         ).subscribeBy(onError = {

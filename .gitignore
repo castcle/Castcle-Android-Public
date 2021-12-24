@@ -28,3 +28,6 @@ proguard/
 local.properties
 /app/dev/release/
 /.idea/
+/app/production/release/
+/app/stg/debug/
+/app/stg/release/
