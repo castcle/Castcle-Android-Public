@@ -75,15 +75,27 @@ class FeedRemoteMediator(
                     Pair(remoteKey?.nextPage, remoteKey?.pageSize)
                 }
             }
-            val response = feedApi.getFeed(
-                featureSlug = feedRequestHeader.featureSlug,
-                circleSlug = feedRequestHeader.circleSlug,
-                hasTag = feedRequestHeader.hashtag,
-                unitId = remoteKey?.unitId ?: "",
-                pageNumber = loadKey ?: 0,
-                pageSize = DEFAULT_PAGE_SIZE,
-                mode = feedRequestHeader.mode
-            )
+            val response = if (remoteKey?.unitId.isNullOrBlank()) {
+                feedApi.getFeed(
+                    featureSlug = feedRequestHeader.featureSlug,
+                    circleSlug = feedRequestHeader.circleSlug,
+                    hasTag = feedRequestHeader.hashtag,
+                    pageNumber = loadKey ?: 0,
+                    pageSize = DEFAULT_PAGE_SIZE,
+                    mode = feedRequestHeader.mode
+                )
+            } else {
+                feedApi.getFeed(
+                    featureSlug = feedRequestHeader.featureSlug,
+                    circleSlug = feedRequestHeader.circleSlug,
+                    hasTag = feedRequestHeader.hashtag,
+                    unitId = remoteKey?.unitId ?: "",
+                    pageNumber = loadKey ?: 0,
+                    pageSize = DEFAULT_PAGE_SIZE,
+                    mode = feedRequestHeader.mode
+                )
+            }
+
             nextPage = loadKey?.plus(1) ?: 0
             oldestId = feedRequestHeader.oldestId
 

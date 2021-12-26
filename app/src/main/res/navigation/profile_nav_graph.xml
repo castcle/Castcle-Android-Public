@@ -90,6 +90,10 @@
             android:id="@+id/actionProfileFragmentToEditContentDialogFragment"
             app:destination="@id/editContentDialogFragment" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToNotiflyLoginDialoginDialogFragment"
+            app:destination="@id/dialog_login_nav_graph" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>

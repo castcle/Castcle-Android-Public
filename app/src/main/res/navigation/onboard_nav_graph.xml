@@ -571,6 +571,10 @@
             android:id="@+id/actionProfileFragmentToEditContentDialogFragment"
             app:destination="@id/editContentDialogFragment" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToNotiflyLoginDialoginDialogFragment"
+            app:destination="@id/dialog_login_nav_graph" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
@@ -649,7 +653,7 @@
     <fragment
         android:id="@+id/reportFragment"
         android:name="com.castcle.ui.report.ReportFragment"
-        tools:layout="@layout/fragment_report" >
+        tools:layout="@layout/fragment_report">
 
         <argument
             android:name="id"

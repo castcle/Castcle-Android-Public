@@ -48,9 +48,25 @@ interface FeedApi {
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<PayLoadList>
 
+    @GET("feeds/members/{feature_slug}/{circle_slug}")
+    suspend fun getFeed(
+        @Path("feature_slug") featureSlug: String,
+        @Path("circle_slug") circleSlug: String,
+        @Query(MODE) mode: String,
+        @Query(HAS_TAG) hasTag: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<PayLoadList>
+
     @GET("feeds/guests")
     suspend fun getFeedGuests(
         @Query(UNIT_ID) unitId: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<PayLoadList>
+
+    @GET("feeds/guests")
+    suspend fun getFeedGuests(
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<PayLoadList>
@@ -61,6 +77,15 @@ interface FeedApi {
         @Path("circle_slug") circleSlug: String,
         @Query(HAS_TAG) mode: String,
         @Query(UNIT_ID) unitId: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<PayLoadList>
+
+    @GET("feeds/members/{feature_slug}/{circle_slug}")
+    suspend fun getFeedByMode(
+        @Path("feature_slug") featureSlug: String,
+        @Path("circle_slug") circleSlug: String,
+        @Query(HAS_TAG) mode: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<PayLoadList>

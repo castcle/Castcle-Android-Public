@@ -47,11 +47,19 @@ class FeedGuestsPagingDataSource(
                 feedRequestHeader.oldestId = ""
             }
 
-            val response = feedApi.getFeedGuests(
-                unitId = feedRequestHeader.oldestId,
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-            )
+            val response = if (feedRequestHeader.oldestId.isBlank()) {
+                feedApi.getFeedGuests(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                )
+            } else {
+                feedApi.getFeedGuests(
+                    unitId = feedRequestHeader.oldestId,
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                )
+            }
+            
             nextPage = pageNumber
             oldestId = feedRequestHeader.oldestId
 
@@ -64,7 +72,7 @@ class FeedGuestsPagingDataSource(
                 pagedResponse.meta.oldestId?.isNotBlank() == true &&
                 pagedResponse.meta.oldestId != oldestId
             ) {
-                feedRequestHeader.oldestId = pagedResponse.meta.oldestId ?:""
+                feedRequestHeader.oldestId = pagedResponse.meta.oldestId ?: ""
                 nextPageNumber = nextPage.plus(1)
             }
             Log.d("NEXT-PAGE", "$nextPageNumber")

@@ -393,10 +393,15 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     private fun onGuestMode(enable: () -> Unit, disable: () -> Unit) {
         if (viewModel.isGuestMode) {
+            navigateToNotifyLoginDialog()
             disable.invoke()
         } else {
             enable.invoke()
         }
+    }
+
+    private fun navigateToNotifyLoginDialog() {
+        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
     }
 
     @SuppressLint("SetTextI18n")
@@ -558,7 +563,9 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 binding.wtWhatYouMind.gone()
                 followState = user.followed
                 btFollow.subscribeOnClick {
-                    handlerFollow(user.castcleId)
+                    onGuestMode(enable = {
+                        handlerFollow(user.castcleId)
+                    }, disable = {})
                 }.addToDisposables()
                 onBindStateFollowButton(user.followed)
             }

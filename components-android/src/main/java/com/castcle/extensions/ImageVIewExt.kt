@@ -90,7 +90,7 @@ fun ImageView.loadRoundedCornersImageUri(
         ).thumbnail(0.5f)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
         .transition(DrawableTransitionOptions.withCrossFade())
-        .error(R.drawable.ic_img_placeholder)
+        .placeholder(R.drawable.ic_img_placeholder)
         .into(this)
 }
 

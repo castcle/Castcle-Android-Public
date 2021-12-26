@@ -185,11 +185,19 @@ class FeedRepositoryImpl @Inject constructor(
     }
 
     override fun getCommentedPaging(commentRequest: CommentRequest): Single<CommentedModel> {
-        return feedApi.getCommented(
-            id = commentRequest.feedItemId,
-            pageSize = commentRequest.metaData.resultCount,
-            unitId = commentRequest.metaData.oldestId ?: "",
-        ).lift(ApiOperators.mobileApiError())
+        return if (commentRequest.metaData.oldestId.isNullOrBlank()) {
+            feedApi.getCommented(
+                id = commentRequest.feedItemId,
+                pageSize = commentRequest.metaData.resultCount,
+                unitId = commentRequest.metaData.oldestId ?: "",
+            )
+        } else {
+            feedApi.getCommented(
+                id = commentRequest.feedItemId,
+                pageSize = commentRequest.metaData.resultCount,
+                unitId = commentRequest.metaData.oldestId ?: "",
+            )
+        }.lift(ApiOperators.mobileApiError())
             .map {
                 it.toCommentModel()
             }.firstOrError()

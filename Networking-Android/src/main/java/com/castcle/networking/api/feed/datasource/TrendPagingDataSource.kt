@@ -43,14 +43,24 @@ class TrendPagingDataSource(
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
-            val response = feedApi.getFeedByMode(
-                unitId = feedRequestHeader.oldestId,
-                featureSlug = feedRequestHeader.featureSlug,
-                circleSlug = feedRequestHeader.circleSlug,
-                mode = feedRequestHeader.hashtag,
-                pageNumber = pageNumber,
-                pageSize = pageSize
-            )
+            val response = if (feedRequestHeader.oldestId.isBlank()) {
+                feedApi.getFeedByMode(
+                    featureSlug = feedRequestHeader.featureSlug,
+                    circleSlug = feedRequestHeader.circleSlug,
+                    mode = feedRequestHeader.hashtag,
+                    pageNumber = pageNumber,
+                    pageSize = pageSize
+                )
+            } else {
+                feedApi.getFeedByMode(
+                    unitId = feedRequestHeader.oldestId,
+                    featureSlug = feedRequestHeader.featureSlug,
+                    circleSlug = feedRequestHeader.circleSlug,
+                    mode = feedRequestHeader.hashtag,
+                    pageNumber = pageNumber,
+                    pageSize = pageSize
+                )
+            }
 
             nextPage = pageNumber
             oldestId = feedRequestHeader.oldestId

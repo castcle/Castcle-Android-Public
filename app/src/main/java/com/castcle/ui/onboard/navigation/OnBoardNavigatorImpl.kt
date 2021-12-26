@@ -82,6 +82,11 @@ class OnBoardNavigatorImpl @Inject constructor(
                             R.id.actionFeedFragmentToNotiflyLoginDialoginDialogFragment
                         )
                     }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToNotiflyLoginDialoginDialogFragment
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -97,6 +102,11 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.trendFragment -> {
                         navController.navigate(
                             R.id.actionTrendFragmentToNotiflyLoginDialoginDialogFragment
+                        )
+                    }
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToNotiflyLoginDialoginDialogFragment
                         )
                     }
                     else -> {

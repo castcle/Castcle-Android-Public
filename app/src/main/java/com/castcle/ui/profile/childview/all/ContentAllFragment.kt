@@ -184,27 +184,54 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
     private fun handleContentClick(click: Click) {
         when (click) {
             is FeedItemClick.FeedAvatarClick -> {
-                handleNavigateAvatarClick(click.contentUiModel)
+                onGuestMode(enable = {
+                    handleNavigateAvatarClick(click.contentUiModel)
+                }, disable = {})
             }
             is FeedItemClick.FeedLikeClick -> {
-                handleLikeClick(click.contentUiModel)
+                onGuestMode(enable = {
+                    handleLikeClick(click.contentUiModel)
+                }, disable = {})
             }
             is FeedItemClick.FeedRecasteClick -> {
-                handleRecastClick(click.contentUiModel)
+                onGuestMode(enable = {
+                    handleRecastClick(click.contentUiModel)
+                }, disable = {})
             }
             is FeedItemClick.FeedCommentClick -> {
-                handleCommentClick(click.contentUiModel)
+                onGuestMode(enable = {
+                    handleCommentClick(click.contentUiModel)
+                }, disable = {})
             }
             is FeedItemClick.WebContentClick -> {
-                handleWebContentClick(click.contentUiModel)
+                onGuestMode(enable = {
+                    handleWebContentClick(click.contentUiModel)
+                }, disable = {})
             }
             is FeedItemClick.WebContentMessageClick -> {
-                handleWebContentMessageClick(click)
+                onGuestMode(enable = {
+                    handleWebContentMessageClick(click)
+                }, disable = {})
             }
             is FeedItemClick.FeedImageClick -> {
-                handleImageItemClick(click.position, click.contentUiModel)
+                onGuestMode(enable = {
+                    handleImageItemClick(click.position, click.contentUiModel)
+                }, disable = {})
             }
         }
+    }
+
+    private fun onGuestMode(enable: () -> Unit, disable: () -> Unit) {
+        if (viewModel.isGuestMode) {
+            navigateToNotifyLoginDialog()
+            disable.invoke()
+        } else {
+            enable.invoke()
+        }
+    }
+
+    private fun navigateToNotifyLoginDialog() {
+        onBoardNavigator.navigateToNotiflyLoginDialogFragment()
     }
 
     private fun handleImageItemClick(position: Int, contentUiModel: ContentFeedUiModel) {

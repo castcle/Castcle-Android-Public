@@ -161,7 +161,7 @@ class FeedContentImageViewHolder(
                     })
                 }
 
-                icImageContent.bindImageContent(uiModel)
+                icImageContent.bindImageContent(uiModel,true)
                 ftFooter.bindUiModel(uiModel)
             }
         }
