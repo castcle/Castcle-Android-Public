@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        android_app_version_code = 25
-        android_app_version_name = "1.0.0"
+        android_app_version_code = 27
+        android_app_version_name = "1.0.1"
         android_app_target_sdk_version = 30
         android_app_compile_sdk_version = 31
         android_app_build_tools_version = "30.0.2"
