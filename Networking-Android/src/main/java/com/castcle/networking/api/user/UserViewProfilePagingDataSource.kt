@@ -42,13 +42,25 @@ class UserViewProfilePagingDataSource(
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
-            val response = userApi.getUserViewProfileContent(
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-                unitId = feedRequestHeader.oldestId,
-                filterType = feedRequestHeader.type,
-                castcleId = feedRequestHeader.castcleId
-            )
+            val response = if (pageNumber == 1) {
+                userApi.getUserViewProfileContent(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    userField = feedRequestHeader.userFields,
+                    filterType = feedRequestHeader.type,
+                    castcleId = feedRequestHeader.castcleId
+                )
+            } else {
+                userApi.getUserViewProfileContent(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    unitId = feedRequestHeader.oldestId,
+                    userField = feedRequestHeader.userFields,
+                    filterType = feedRequestHeader.type,
+                    castcleId = feedRequestHeader.castcleId
+                )
+            }
+
             nextPage = pageNumber
             oldestId = feedRequestHeader.oldestId
 

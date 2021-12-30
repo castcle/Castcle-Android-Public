@@ -28,11 +28,11 @@ class SplashScreenActivity : BaseActivity<SplashScreenViewModel>(), ViewBindingC
 
     override fun onStart() {
         super.onStart()
-        viewModel.onTackStartSession().subscribeBy(
-            onError = {
+//        viewModel.onTackStartSession().subscribeBy(
+//            onError = {
 //                displayError(it)
-            }
-        ).addToDisposables()
+//            }
+//        ).addToDisposables()
     }
 
     private fun requestLogin() {

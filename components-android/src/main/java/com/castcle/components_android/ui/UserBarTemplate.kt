@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.R
-import com.castcle.android.components_android.databinding.LayoutQuoteBarTemplateBinding
 import com.castcle.android.components_android.databinding.LayoutUserBarTemplateBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.feed.RECASTED_TYPE
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.extensions.*
@@ -46,12 +46,6 @@ class UserBarTemplate(
 
     private val binding: LayoutUserBarTemplateBinding by lazy {
         LayoutUserBarTemplateBinding.inflate(
-            LayoutInflater.from(context), this, true
-        )
-    }
-
-    private val bindingQute: LayoutQuoteBarTemplateBinding by lazy {
-        LayoutQuoteBarTemplateBinding.inflate(
             LayoutInflater.from(context), this, true
         )
     }
@@ -102,47 +96,34 @@ class UserBarTemplate(
 
     fun bindUiModel(itemUiModel: ContentFeedUiModel, onBindQuote: Boolean = false) {
         this.itemUiModel = itemUiModel
-        if (!onBindQuote) {
-            bindingQute.group.gone()
-            with(binding) {
-                with(itemUiModel) {
-                    userContent.avatar.let {
-                        ivAvatar.loadCircleImage(it)
-                    }
-                    tvUserName.text = userContent.displayName
+        with(binding) {
+            with(itemUiModel) {
+                userContent.avatar.let {
+                    ivAvatar.loadCircleImage(it)
+                }
+                tvUserName.text = userContent.displayName
+
+                if (itemUiModel.isMindId) {
+                    tvStatusFollow.gone()
+                    ivStatusFollow.gone()
+                } else {
                     with(tvStatusFollow) {
                         visibleOrGone(!itemUiModel.followed)
-                    }
-                    if (itemUiModel.isMindId) {
-                        tvStatusFollow.gone()
-                    }
-                    groupReCasted.visibleOrGone(
-                        referencedCastsId.isNotBlank() && referencedCastsType.isNotBlank()
-                    )
-
-                    if (referencedCastsId.isNotBlank() && authorReference.isNotEmpty()) {
-                        val youRecasted = mapRecasted(itemUiModel)
-                        tvReCasted.text = youRecasted
-                    }
-
-                    createdAt.toTime()?.let {
-                        tvDataTime.setTimeAgo(it)
+                        ivStatusFollow.gone()
                     }
                 }
-            }
-        } else {
-            binding.group.gone()
-            with(bindingQute) {
-                with(itemUiModel) {
-                    userContent.avatar.let {
-                        ivAvatar.loadCircleImage(it)
-                    }
-                    tvUserName.text = userContent.displayName
-                    ivStatusFollow.gone()
-                    if (createdAt.isNotBlank()) {
-                        createdAt.toTime()?.let {
-                            tvDataTime.setTimeAgo(it)
-                        }
+
+                if (itemUiModel.authorReference.isNotEmpty() &&
+                    referencedCastsType == RECASTED_TYPE
+                ) {
+                    groupReCasted.visible()
+                    val youRecasted = mapRecasted(itemUiModel)
+                    tvReCasted.text = youRecasted
+                }
+
+                if (createdAt.isNotBlank()) {
+                    createdAt.toTime()?.let {
+                        tvDataTime.setTimeAgo(it)
                     }
                 }
             }

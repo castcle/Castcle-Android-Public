@@ -41,25 +41,37 @@ class ViewPagePagingDataSource(
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
-            val response = userApi.getViewPageContent(
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-                unitId = feedRequestHeader.oldestId,
-                filterType = feedRequestHeader.type,
-                castcleId = feedRequestHeader.castcleId
-            )
+            val response = if (pageNumber == 1) {
+                userApi.getViewPageContent(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    userField = feedRequestHeader.userFields,
+                    filterType = feedRequestHeader.type,
+                    castcleId = feedRequestHeader.castcleId
+                )
+            } else {
+                userApi.getViewPageContent(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    unitId = feedRequestHeader.oldestId,
+                    userField = feedRequestHeader.userFields,
+                    filterType = feedRequestHeader.type,
+                    castcleId = feedRequestHeader.castcleId
+                )
+            }
+
             nextPage = pageNumber
             oldestId = feedRequestHeader.oldestId
 
             val pagedResponse = response.body()
-            val data = pagedResponse?.let { mapToContentFeedUiMode(feedRequestHeader.isMeId,it) }
+            val data = pagedResponse?.let { mapToContentFeedUiMode(feedRequestHeader.isMeId, it) }
             var nextPageNumber: Int? = null
 
             if (pagedResponse?.meta?.oldestId != null &&
                 pagedResponse.meta.oldestId?.isNotBlank() == true &&
                 pagedResponse.meta.oldestId != oldestId
             ) {
-                feedRequestHeader.oldestId = pagedResponse.meta.oldestId ?:""
+                feedRequestHeader.oldestId = pagedResponse.meta.oldestId ?: ""
                 nextPageNumber = nextPage.plus(1)
             }
             Log.d("NEXT-PAGE", "$nextPageNumber")

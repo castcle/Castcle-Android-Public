@@ -1,6 +1,7 @@
 package com.castcle.ui.search.trend.childview
 
 import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -20,6 +21,8 @@ import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST_UNRECAST
+import com.castcle.ui.common.dialog.user.KEY_USER_CHOOSE_REQUEST
+import com.castcle.ui.common.dialog.user.UserState
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -148,7 +151,119 @@ class LastestFragment : BaseFragment<TrendFragmentViewModel>(),
             is FeedItemClick.WebContentMessageClick -> {
                 handleWebContentMessageClick(click)
             }
+            is FeedItemClick.EditContentClick -> {
+                handleEditContentClick(click.contentUiModel)
+            }
         }
+    }
+
+    private fun handleEditContentClick(contentUiModel: ContentFeedUiModel) {
+        guestEnable(enable = {
+            getNavigationResult<UserState>(
+                onBoardNavigator,
+                R.id.feedFragment,
+                KEY_USER_CHOOSE_REQUEST,
+                onResult = {
+                    onHandlerUserChoose(it, contentUiModel)
+                })
+            onNavigateToChooseUserEdit(contentUiModel)
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
+    }
+
+    private fun onNavigateToChooseUserEdit(contentUiModel: ContentFeedUiModel) {
+        onBoardNavigator.navigateToUserChooseDialogFragment(contentUiModel.userContent.displayName)
+    }
+
+    private fun onHandlerUserChoose(state: UserState, contentFeedUiModel: ContentFeedUiModel) {
+        when (state) {
+            UserState.SHARE -> {
+                requireActivity().let {
+                    val intent = Intent()
+                    intent.action = Intent.ACTION_SEND
+                    intent.type = "text/plain"
+                    intent.putExtra(Intent.EXTRA_TEXT, "share something")
+                    it.startActivity(Intent.createChooser(intent, "share"))
+                }
+            }
+
+            UserState.BLOCK -> {
+                viewModel.blockUser(contentFeedUiModel.authorId).subscribeBy(
+                    onComplete = {
+                        var profileType = ""
+                        checkContentIsMe(contentFeedUiModel.userContent.castcleId,
+                            onPage = {
+                                profileType = ProfileType.PROFILE_TYPE_PAGE_ME.type
+                            }, onMe = {
+                                profileType = ProfileType.PROFILE_TYPE_ME.type
+                            }, onView = {
+                                profileType = ProfileType.PROFILE_TYPE_PEOPLE.type
+                            }
+                        )
+                        navigateToProfile(contentFeedUiModel.userContent.castcleId, profileType)
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+
+            UserState.REPORT -> {
+                viewModel.reportContent(contentFeedUiModel.contentId).subscribeBy(
+                    onComplete = {
+                        var profileType = ""
+                        checkContentIsMe(contentFeedUiModel.userContent.castcleId,
+                            onPage = {
+                                profileType = ProfileType.PROFILE_TYPE_PAGE_ME.type
+                            }, onMe = {
+                                profileType = ProfileType.PROFILE_TYPE_ME.type
+                            }, onView = {
+                                profileType = ProfileType.PROFILE_TYPE_PEOPLE.type
+                            }
+                        )
+                        onNavigateToReportProfile(
+                            contentFeedUiModel.userContent.castcleId,
+                            profileType,
+                            contentFeedUiModel.userContent.displayName
+                        )
+                    },
+                    onError = {
+                        displayError(it)
+                    }
+                ).addToDisposables()
+            }
+        }
+    }
+
+    private fun onNavigateToReportProfile(
+        castcleId: String,
+        profileType: String,
+        displayName: String
+    ) {
+        activity?.runOnUiThread {
+            onBoardNavigator.navigateToReportFragment(castcleId, profileType, displayName, true)
+        }
+    }
+
+    private fun checkContentIsMe(
+        castcleId: String,
+        onMe: () -> Unit,
+        onPage: () -> Unit,
+        onView: () -> Unit
+    ) {
+        activityViewModel.checkContentIsMe(castcleId,
+            onProfileMe = {
+                onMe.invoke()
+            }, onPageMe = {
+                onPage.invoke()
+            }, non = {
+                onView.invoke()
+            })
+    }
+
+    private fun navigateToProfile(castcleId: String, profileType: String) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, profileType)
     }
 
     private fun handleWebContentMessageClick(click: FeedItemClick.WebContentMessageClick) {
@@ -330,6 +445,12 @@ class LastestFragment : BaseFragment<TrendFragmentViewModel>(),
             }.addToDisposables()
         }
 
+        with(binding.swiperefresh) {
+            setOnRefreshListener {
+                adapterPagingCommon.refresh()
+            }
+        }
+
         with(viewModel) {
             launchOnLifecycleScope {
                 feedTrendResponse.collectLatest {
@@ -340,9 +461,7 @@ class LastestFragment : BaseFragment<TrendFragmentViewModel>(),
 
         viewLifecycleOwner.lifecycleScope.launch {
             adapterPagingCommon.loadStateFlow.collectLatest { loadStates ->
-                val refresher = loadStates.refresh
-                val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                val notItemOnScreen = adapterPagingCommon.itemCount == 0
                 val isError = loadStates.refresh is LoadState.Error
                 val isLoading = loadStates.refresh is LoadState.Loading
                 if (isError) {
@@ -350,9 +469,12 @@ class LastestFragment : BaseFragment<TrendFragmentViewModel>(),
                 }
                 if (!isLoading) {
                     stopLoadingShimmer()
+                    binding.swiperefresh.isRefreshing = false
                     activityViewModel.onProfileLoading(false)
                 } else {
-                    startLoadingShimmer()
+                    if (notItemOnScreen) {
+                        startLoadingShimmer()
+                    }
                 }
             }
         }

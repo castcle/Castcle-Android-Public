@@ -135,7 +135,15 @@ class FeedContentShortImageViewHolder(
 
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
-        contentFeedUiModel = uiModel
+        contentFeedUiModel = if (uiModel.type == ContentType.RECAST.type) {
+            uiModel.contentQuoteCast ?: ContentFeedUiModel()
+        } else {
+            uiModel
+        }
+        onBindContentItem()
+    }
+
+    private fun onBindContentItem() {
         with(binding) {
             startLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
@@ -143,11 +151,11 @@ class FeedContentShortImageViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel) {
-                ubUser.bindUiModel(uiModel)
+            with(contentFeedUiModel) {
+                ubUser.bindUiModel(this)
                 if (message.isNotBlank()) {
                     with(tvFeedContent) {
-                        if (uiModel.type == ContentType.SHORT.type) {
+                        if (type == ContentType.SHORT.type) {
                             appendLinkText(message)
                         } else {
                             setTextReadMore(message)
@@ -168,10 +176,10 @@ class FeedContentShortImageViewHolder(
                 } else {
                     tvFeedContent.gone()
                 }
-                ftFooter.bindUiModel(uiModel)
+                ftFooter.bindUiModel(this)
                 with(clPreviewContentImage) {
                     clInPreviewContentImage.visible()
-                    icImageContent.bindImageContent(uiModel, true)
+                    icImageContent.bindImageContent(contentFeedUiModel, true)
                 }
                 stopLoadingPreViewShimmer()
             }

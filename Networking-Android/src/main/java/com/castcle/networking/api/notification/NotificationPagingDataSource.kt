@@ -42,12 +42,20 @@ class NotificationPagingDataSource(
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
-            val response = notificationApi.getNotification(
-                source = source,
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-                unitId = oldestId
-            )
+            val response = if (pageNumber == 1) {
+                notificationApi.getNotification(
+                    source = source,
+                    pageNumber = pageNumber,
+                    pageSize = pageSize
+                )
+            } else {
+                notificationApi.getNotification(
+                    source = source,
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    unitId = oldestId
+                )
+            }
             nextPage = pageNumber
 
             val pagedResponse = response.body()

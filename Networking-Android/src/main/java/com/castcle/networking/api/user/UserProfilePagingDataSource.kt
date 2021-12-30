@@ -42,12 +42,22 @@ class UserProfilePagingDataSource(
         val pageNumber = params.key ?: 1
         val pageSize = params.loadSize
         return try {
-            val response = userApi.getUserProfileContent(
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-                unitId = oldestId,
-                filterType = contentRequestHeader.type
-            )
+            val response = if (pageNumber == 1) {
+                userApi.getUserProfileContent(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    userField = contentRequestHeader.userFields,
+                    filterType = contentRequestHeader.type
+                )
+            } else {
+                userApi.getUserProfileContent(
+                    pageNumber = pageNumber,
+                    pageSize = pageSize,
+                    unitId = oldestId,
+                    userField = contentRequestHeader.userFields,
+                    filterType = contentRequestHeader.type
+                )
+            }
 
             nextPage = pageNumber
             oldestId = contentRequestHeader.oldestId

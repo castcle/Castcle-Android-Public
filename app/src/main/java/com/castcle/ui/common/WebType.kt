@@ -1,4 +1,4 @@
-package com.castcle.data.staticmodel
+package com.castcle.ui.common
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,15 +22,14 @@ package com.castcle.data.staticmodel
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 15:53.
+//  Created by sklim on 29/12/2021 AD at 12:05.
 
-enum class ContentType(val type: String) {
-    CONTENT("Content"),
-    IMAGE("image"),
-    SHORT("short"),
-    LONG("long"),
-    BLOG("blog"),
-    FEED("feed"),
-    RECAST("recasted"),
-    QUOTE("quoted")
+enum class WebType(val type: String) {
+    RSS_FEED("rssfeed"),
+    TWITTER("twitter"),
+    FACEBOOK("facebook"),
+    YOUTUBE("youtube"),
+    MEDIUM("medium"),
+    WEB("web"),
+    REDDIT("reddit"),
 }

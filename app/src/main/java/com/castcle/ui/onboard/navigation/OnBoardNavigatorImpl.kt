@@ -971,13 +971,13 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.searchTrendFragment -> {
                         navController.navigate(
                             R.id.actionSearchTrendFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType).toBundle()
+                            ProfileFragmentArgs(castcle, profileType, isMe).toBundle()
                         )
                     }
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType).toBundle()
+                            ProfileFragmentArgs(castcle, profileType, isMe).toBundle()
                         )
                     }
                     R.id.settingFragment -> {
@@ -1014,13 +1014,13 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.feedFragment -> {
                         navController.navigate(
                             R.id.actionFeedFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType).toBundle()
+                            ProfileFragmentArgs(castcle, profileType, isMe).toBundle()
                         )
                     }
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType).toBundle()
+                            ProfileFragmentArgs(castcle, profileType, isMe).toBundle()
                         )
                     }
                     R.id.settingFragment -> {
@@ -1057,7 +1057,7 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToProfileFragment,
-                            ProfileFragmentArgs(castcle, profileType).toBundle()
+                            ProfileFragmentArgs(castcle, profileType, isMe).toBundle()
                         )
                     }
                     else -> {
@@ -1205,6 +1205,12 @@ class OnBoardNavigatorImpl @Inject constructor(
                             UserChooseDialogFragmentArgs(userDisplay).toBundle()
                         )
                     }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToUserChooseDialogFragment,
+                            UserChooseDialogFragmentArgs(userDisplay).toBundle()
+                        )
+                    }
                     else -> {
                         unsupportedNavigation()
                     }
@@ -1270,6 +1276,17 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.profileFragment -> {
                         navController.navigate(
                             R.id.actionProfileFragmentToReportFragment,
+                            ReportFragmentArgs(
+                                castcle,
+                                profileType,
+                                displayName,
+                                goToProfileFragment
+                            ).toBundle()
+                        )
+                    }
+                    R.id.trendFragment -> {
+                        navController.navigate(
+                            R.id.actionTrendFragmentToReportFragment,
                             ReportFragmentArgs(
                                 castcle,
                                 profileType,

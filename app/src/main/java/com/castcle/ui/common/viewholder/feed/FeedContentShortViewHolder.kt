@@ -124,7 +124,15 @@ class FeedContentShortViewHolder(
 
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
+        val contentItem = if (uiModel.type == ContentType.RECAST.type) {
+            uiModel.contentQuoteCast ?: ContentFeedUiModel()
+        } else {
+            uiModel
+        }
+        onBindContentItem(contentItem)
+    }
 
+    private fun onBindContentItem(contentItem: ContentFeedUiModel) {
         with(binding) {
             stopLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
@@ -132,10 +140,10 @@ class FeedContentShortViewHolder(
                 setShimmer(null)
                 gone()
             }
-            with(uiModel) {
-                ubUser.bindUiModel(uiModel)
+            with(contentItem) {
+                ubUser.bindUiModel(contentItem)
                 with(tvFeedContent) {
-                    if (uiModel.type == ContentType.SHORT.type) {
+                    if (contentItem.type == ContentType.SHORT.type) {
                         appendLinkText(message)
                     } else {
                         setTextReadMore(message)
@@ -153,7 +161,7 @@ class FeedContentShortViewHolder(
                         }
                     })
                 }
-                ftFooter.bindUiModel(uiModel)
+                ftFooter.bindUiModel(contentItem)
             }
         }
     }

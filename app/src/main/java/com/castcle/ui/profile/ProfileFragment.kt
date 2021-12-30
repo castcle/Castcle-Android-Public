@@ -139,9 +139,13 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             PROFILE_TYPE_ME -> {
                 onProfileMe.invoke()
                 activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_ME)
+                activityViewModel.setCacheProfileId(activityViewModel.castcleId)
             }
-            PROFILE_TYPE_PAGE -> {
+            PROFILE_TYPE_PAGE, ProfileType.PROFILE_TYPE_PAGE_ME.type -> {
                 onPage.invoke()
+                if (isMe) {
+                    activityViewModel.setCacheProfileId(profileId)
+                }
                 activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_PAGE)
             }
             else -> {
@@ -154,6 +158,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     override fun setupView() {
         setupToolBar()
+
         with(binding.vpPageContent) {
             adapter = ContentPageAdapter(requireParentFragment()).also {
                 contentPageAdapter = it
@@ -427,6 +432,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }.addToDisposables()
 
             ivAvatarProfile.loadCircleImage(user.avatar)
+            onLoadingAvatar()
 
             btViewProfile.subscribeOnClick {
                 onGuestMode(enable = {
@@ -450,6 +456,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }.addToDisposables()
 
             ivProfileCover.loadImageWithCache(user.cover)
+            onLoadingCoverPage()
+
             tbProfile.tvToolbarTitle.text = user.displayName
         }
     }
@@ -492,6 +500,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 }, disable = {})
             }.addToDisposables()
             ivProfileCover.loadImageWithCache(user.cover)
+            onLoadingCoverPage()
             tbProfile.tvToolbarTitle.text = user.castcleId
         }
     }
@@ -535,6 +544,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 tvProfileOverView.text = this
             }
             ivAvatarProfile.loadCircleImage(user.avatar)
+            onLoadingAvatar()
 
             btViewProfile.subscribeOnClick {
                 onGuestMode(enable = {
@@ -866,6 +876,14 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     private fun onHandlerUpLoadAvatar(image: Uri, uploadAvatar: UpLoadType) {
+        when (uploadAvatar) {
+            UpLoadType.UPLOAD_PAGE_COVER, UpLoadType.UPLOAD_COVER -> {
+                onLoadingCoverPage(true)
+            }
+            UpLoadType.UPLOAD_AVATAR, UpLoadType.UPLOAD_PAGE_AVATAR -> {
+                onLoadingAvatar(true)
+            }
+        }
         val imageRequest = when (uploadAvatar) {
             UpLoadType.UPLOAD_AVATAR -> {
                 ImagesRequest(
@@ -895,6 +913,27 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
         }
         viewModel.upLoadAvatar(imageRequest).subscribe().addToDisposables()
+    }
+
+    private fun onLoadingCoverPage(isLoading: Boolean = false) {
+        with(binding) {
+            vLoading.visibleOrGone(isLoading)
+            animationLoading.visibleOrGone(isLoading)
+            animationLoading.setAnimation(
+                R.raw.loading_animations
+            )
+        }
+    }
+
+    private fun onLoadingAvatar(isLoading: Boolean = false) {
+        with(binding.profileMe) {
+            groupAvatarLoading.visibleOrGone(isLoading)
+            if (isLoading) {
+                animationLoading.setAnimation(
+                    R.raw.loading_animations
+                )
+            }
+        }
     }
 
     private fun handlerCorpImage(mediaFile: MediaFile) {

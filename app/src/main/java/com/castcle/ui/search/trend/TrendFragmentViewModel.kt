@@ -55,4 +55,12 @@ abstract class TrendFragmentViewModel : BaseViewCoroutinesModel() {
     abstract fun recastContent(contentUiModel: ContentFeedUiModel): Completable
 
     abstract val castcleId: String
+
+    abstract fun reportContent(contentId: String): Completable
+
+    abstract fun blockUser(userId: String): Completable
+
+    abstract fun unblockUser(userId: String): Completable
+
+    abstract val showLoading: Observable<Boolean>
 }

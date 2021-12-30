@@ -51,7 +51,7 @@
         android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@id/tvUserName"
         app:layout_constraintStart_toEndOf="@id/ivStatusFollow"
-        app:layout_constraintTop_toTopOf="@id/tvUserName"
+        app:layout_constraintTop_toTopOf="@id/ivStatusFollow"
         tools:text="Follow" />
 
     <androidx.appcompat.widget.AppCompatImageView

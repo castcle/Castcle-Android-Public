@@ -36,10 +36,10 @@ data class PayLoadList(
 
 data class Payload(
     @SerializedName("id") var id: String? = null,
-    @SerializedName("feature") var feature: Feature,
+    @SerializedName("feature") var feature: Feature? = null,
     @SerializedName("circle") var circle: Circle? = null,
     @SerializedName("type") var type: String,
-    @SerializedName("payload") var payload: PayloadObjectContent,
+    @SerializedName("payload") var payload: PayloadObjectContent? = null,
     @SerializedName("aggregator") val aggregator: AggregatorContent? = null,
     @SerializedName("createdAt") var created: String,
     @SerializedName("updatedAt") var updated: String,

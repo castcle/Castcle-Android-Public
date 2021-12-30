@@ -81,6 +81,30 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
+        <View
+            android:id="@+id/vLoading"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
+            android:background="@drawable/bg_loading_avatar"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatarProfile"
+            app:layout_constraintEnd_toEndOf="@id/ivAvatarProfile"
+            app:layout_constraintStart_toStartOf="@id/ivAvatarProfile"
+            app:layout_constraintTop_toTopOf="@id/ivAvatarProfile" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationLoading"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/ivAvatarProfile"
+            app:layout_constraintEnd_toEndOf="@id/ivAvatarProfile"
+            app:layout_constraintStart_toStartOf="@id/ivAvatarProfile"
+            app:layout_constraintTop_toTopOf="@id/ivAvatarProfile"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivAddAvatar"
             android:layout_width="@dimen/_20sdp"
@@ -198,6 +222,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tvProfileOverView"
             app:layout_constraintStart_toStartOf="@id/tvProfileOverView" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupAvatarLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="animationLoading,vLoading" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

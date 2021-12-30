@@ -8,8 +8,7 @@ import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.networking.api.feed.datasource.FeedRepository
-import com.castcle.usecase.feed.LikeContentCompletableUseCase
-import com.castcle.usecase.feed.RecastContentCompletableUseCase
+import com.castcle.usecase.feed.*
 import com.castcle.usecase.userprofile.*
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -50,6 +49,9 @@ class TrendFragmentViewModelImpl @Inject constructor(
     private val cachedUserProfileSingleUseCase: GetCachedUserProfileSingleUseCase,
     private val recastContentSingleUseCase: RecastContentCompletableUseCase,
     private val getCastcleIdSingleUseCase: GetCastcleIdSingleUseCase,
+    private val reportContentUseCase: ReportContentUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
+    private val unBlockUserUseCase: UnBlockUserUseCase
 ) : TrendFragmentViewModel() {
 
     override val castcleId: String
@@ -65,6 +67,10 @@ class TrendFragmentViewModelImpl @Inject constructor(
     private var _onUpdateContentLike = BehaviorSubject.create<Unit>()
     override val onUpdateContentLike: Observable<Unit>
         get() = _onUpdateContentLike
+
+    private val _showLoading = BehaviorSubject.create<Boolean>()
+    override val showLoading: Observable<Boolean>
+        get() = _showLoading
 
     private val _error = PublishSubject.create<Throwable>()
     override val onError: Observable<Throwable>
@@ -126,5 +132,26 @@ class TrendFragmentViewModelImpl @Inject constructor(
             authorId = castcleId
         )
         return recastContentSingleUseCase.execute(recastRequest)
+    }
+
+    override fun reportContent(contentId: String): Completable {
+        return reportContentUseCase.execute(contentId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
+    }
+
+    override fun blockUser(userId: String): Completable {
+        return blockUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
+    }
+
+    override fun unblockUser(userId: String): Completable {
+        return unBlockUserUseCase.execute(userId)
+            .doOnSubscribe { _showLoading.onNext(true) }
+            .doOnError { _showLoading.onNext(false) }
+            .doFinally { _showLoading.onNext(false) }
     }
 }

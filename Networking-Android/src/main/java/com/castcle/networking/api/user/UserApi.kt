@@ -49,6 +49,15 @@ interface UserApi {
     suspend fun getUserProfileContent(
         @Query(FILTER_TYPE) filterType: String,
         @Query(UNIT_ID) unitId: String,
+        @Query(USER_FIELDS) userField: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<UserContentResponse>
+
+    @GET("users/me/contents")
+    suspend fun getUserProfileContent(
+        @Query(FILTER_TYPE) filterType: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<UserContentResponse>
@@ -57,7 +66,17 @@ interface UserApi {
     suspend fun getUserViewProfileContent(
         @Path("castcleId") castcleId: String,
         @Query(FILTER_TYPE) filterType: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(UNIT_ID) unitId: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<UserContentResponse>
+
+    @GET("users/{castcleId}/contents")
+    suspend fun getUserViewProfileContent(
+        @Path("castcleId") castcleId: String,
+        @Query(FILTER_TYPE) filterType: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<UserContentResponse>
@@ -121,7 +140,17 @@ interface UserApi {
     suspend fun getViewPageContent(
         @Path("castcleId") castcleId: String,
         @Query(FILTER_TYPE) filterType: String,
+        @Query(USER_FIELDS) userField: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<UserContentResponse>
+
+    @GET("pages/{castcleId}/contents")
+    suspend fun getViewPageContent(
+        @Path("castcleId") castcleId: String,
+        @Query(FILTER_TYPE) filterType: String,
         @Query(UNIT_ID) unitId: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<UserContentResponse>

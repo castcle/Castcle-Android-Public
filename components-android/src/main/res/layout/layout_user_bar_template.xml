@@ -47,22 +47,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
-        android:ellipsize="start"
+        android:ellipsize="end"
+        android:inputType="textMultiLine"
+        android:maxLength="15"
+        android:maxLines="1"
+        android:scrollHorizontally="false"
+        android:singleLine="true"
         android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/ivStatusFollow"
         app:layout_constraintStart_toEndOf="@id/ivAvatar"
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
         tools:text="DappRadar" />
 
-    <!--    <androidx.appcompat.widget.AppCompatImageView-->
-    <!--        android:id="@+id/ivStatusFollow"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="@dimen/_8sdp"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@id/tvUserName"-->
-    <!--        app:layout_constraintStart_toEndOf="@id/tvUserName"-->
-    <!--        app:layout_constraintTop_toTopOf="@id/ivAvatar"-->
-    <!--        app:srcCompat="@drawable/ic_bagde_follow" />-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivStatusFollow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tvUserName"
+        app:layout_constraintStart_toEndOf="@id/tvUserName"
+        app:layout_constraintTop_toTopOf="@id/ivAvatar"
+        app:srcCompat="@drawable/ic_bagde_follow" />
+
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/AppTextKanit.Small"
         android:id="@+id/tvStatusFollow"
@@ -71,9 +78,8 @@
         android:layout_marginStart="@dimen/_8sdp"
         android:text="@string/user_template_status_follow"
         android:textColor="@color/blue"
-        android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@id/tvUserName"
-        app:layout_constraintStart_toEndOf="@id/tvUserName"
+        app:layout_constraintStart_toEndOf="@id/ivStatusFollow"
         app:layout_constraintTop_toTopOf="@id/tvUserName" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -112,13 +118,6 @@
         app:layout_constraintStart_toEndOf="@id/ivStatusGlobe"
         app:layout_constraintTop_toTopOf="@id/ivStatusGlobe"
         tools:text="July 06, 2021" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ivAvatar,tvUserName,ivStatusFollow,ivStatusGlobe,tvDataTime"
-        tools:ignore="NotSibling" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupReCasted"

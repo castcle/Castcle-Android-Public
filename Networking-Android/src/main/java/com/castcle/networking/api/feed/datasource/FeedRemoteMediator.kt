@@ -79,6 +79,7 @@ class FeedRemoteMediator(
                 feedApi.getFeed(
                     featureSlug = feedRequestHeader.featureSlug,
                     circleSlug = feedRequestHeader.circleSlug,
+                    userField = feedRequestHeader.userFields,
                     hasTag = feedRequestHeader.hashtag,
                     pageNumber = loadKey ?: 0,
                     pageSize = DEFAULT_PAGE_SIZE,
@@ -88,6 +89,7 @@ class FeedRemoteMediator(
                 feedApi.getFeed(
                     featureSlug = feedRequestHeader.featureSlug,
                     circleSlug = feedRequestHeader.circleSlug,
+                    userField = feedRequestHeader.userFields,
                     hasTag = feedRequestHeader.hashtag,
                     unitId = remoteKey?.unitId ?: "",
                     pageNumber = loadKey ?: 0,
@@ -122,7 +124,7 @@ class FeedRemoteMediator(
             }
             MediatorResult.Success(endOfPaginationReached = response.body()?.meta?.oldestId == null)
         } catch (e: Exception) {
-            Log.d("REMOTE-ERROR", "$e")
+            Log.d("REMOTE-ERROR-Exception", "$e")
             MediatorResult.Error(e)
         } catch (e: HttpException) {
             Log.d("REMOTE-ERROR", "${e.message}")

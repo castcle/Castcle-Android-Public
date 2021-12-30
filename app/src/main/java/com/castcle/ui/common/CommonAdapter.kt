@@ -168,7 +168,8 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
     override fun getItemViewType(position: Int): Int {
         return when (getContentType(position)) {
             BLOG.type -> R.layout.layout_feed_template_blog
-            SHORT.type,LONG.type -> optionalTypeShort(position)
+            SHORT.type, LONG.type -> optionalTypeShort(position)
+            RECAST.type -> optionalTypeRecastShort(position)
             IMAGE.type -> R.layout.layout_feed_template_image
             QUOTE.type -> R.layout.layout_feed_template_quote
             else -> R.layout.layout_feed_template_short
@@ -184,6 +185,20 @@ class CommonAdapter : PagingDataAdapter<ContentFeedUiModel, ViewHolder<ContentFe
                 getItem(position)?.photo?.isNotEmpty() == true ->
                 R.layout.layout_feed_template_short_image
             getItem(position)?.link?.url?.isNotBlank() == true ->
+                R.layout.layout_feed_template_short_web
+            else -> R.layout.layout_feed_template_short
+        }
+    }
+
+    private fun optionalTypeRecastShort(position: Int): Int {
+        return when {
+            getItem(position)?.contentQuoteCast?.link == null &&
+                getItem(position)?.contentQuoteCast?.photo?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            getItem(position)?.contentQuoteCast?.link?.url.isNullOrBlank() &&
+                getItem(position)?.contentQuoteCast?.photo?.isNotEmpty() == true ->
+                R.layout.layout_feed_template_short_image
+            getItem(position)?.contentQuoteCast?.link?.url?.isNotBlank() == true ->
                 R.layout.layout_feed_template_short_web
             else -> R.layout.layout_feed_template_short
         }

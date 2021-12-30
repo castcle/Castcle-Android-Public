@@ -122,4 +122,8 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract fun updateFireBaseToken(token: String): Completable
 
     abstract fun checkCastPostWithImageStatus(): Observable<StateWorkLoading>
+
+    abstract val cacheProfileId: LiveData<String>
+
+    abstract fun setCacheProfileId(castcleId: String)
 }

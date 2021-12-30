@@ -139,7 +139,7 @@ class OnBoardViewModelImpl @Inject constructor(
         onPageMe: () -> Unit,
         non: () -> Unit
     ) {
-        if (_userProfile.value?.castcleId == castcleId) {
+        if (this.castcleId == castcleId) {
             onProfileMe.invoke()
             return
         }
@@ -363,5 +363,13 @@ class OnBoardViewModelImpl @Inject constructor(
 
     private fun checkCastPostResponse(userResponse: String) {
 
+    }
+
+    private var _cacheProfileId = MutableLiveData<String>()
+    override val cacheProfileId: LiveData<String>
+        get() = _cacheProfileId
+
+    override fun setCacheProfileId(castcleId: String) {
+        _cacheProfileId.value = castcleId
     }
 }

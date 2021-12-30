@@ -1,8 +1,6 @@
 package com.castcle.networking.api.feed
 
-import com.castcle.common_model.model.feed.RecastRequest
-import com.castcle.common_model.model.feed.ReplyCommentRequest
-import com.castcle.common_model.model.feed.ReportContentRequest
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.converter.LikeCommentRequest
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
@@ -43,6 +41,7 @@ interface FeedApi {
         @Path("circle_slug") circleSlug: String,
         @Query(MODE) mode: String,
         @Query(HAS_TAG) hasTag: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
@@ -54,6 +53,7 @@ interface FeedApi {
         @Path("circle_slug") circleSlug: String,
         @Query(MODE) mode: String,
         @Query(HAS_TAG) hasTag: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<PayLoadList>

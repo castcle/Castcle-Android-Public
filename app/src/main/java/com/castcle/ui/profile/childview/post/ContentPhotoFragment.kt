@@ -82,14 +82,27 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun initViewModel() {
+        var contentIsMe = false
+        with(activityViewModel) {
+            fetchUserProfile()
+            checkContentIsMe(viewModel.castcleId,
+                onPageMe = {
+                    contentIsMe = true
+                }, onProfileMe = {
+                    contentIsMe = true
+                }, non = {
+                    contentIsMe = false
+                })
+        }
+
         isProfileType(
             onPage = {
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
                         viewType = ProfileType.PROFILE_TYPE_PAGE.type,
-                        type = ContentType.IMAGE.type,
-                        isMeId = viewModel.castcleId
+                        isMeId = viewModel.castcleId,
+                        isMeContent = contentIsMe
                     )
                 )
             },
@@ -97,8 +110,9 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                 viewModel.fetachUserProfileContent(
                     FeedRequestHeader(
                         viewType = ProfileType.PROFILE_TYPE_ME.type,
-                        type = ContentType.IMAGE.type,
-                        isMeId = viewModel.castcleId
+                        type = ContentType.BLOG.type,
+                        isMeId = viewModel.castcleId,
+                        isMeContent = contentIsMe
                     )
                 )
             },
@@ -107,8 +121,8 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
                         viewType = ProfileType.PROFILE_TYPE_PEOPLE.type,
-                        type = ContentType.IMAGE.type,
-                        isMeId = viewModel.castcleId
+                        isMeId = viewModel.castcleId,
+                        isMeContent = contentIsMe
                     )
                 )
             })

@@ -29,10 +29,16 @@ data class FeedRequestHeader(
     val castcleId: String = "",
     val featureSlug: String = "",
     val circleSlug: String = "",
+    var userFields: String = UserFieldsType.RELATIONSHIP.type,
     val mode: String = "",
     val type: String = "",
     val viewType: String = "",
     val exclude: String = "",
     val hashtag: String = "",
-    val isMeId: String = ""
+    val isMeId: String = "",
+    val isMeContent: Boolean = false
 )
+
+enum class UserFieldsType(val type: String) {
+    RELATIONSHIP("relationships")
+}

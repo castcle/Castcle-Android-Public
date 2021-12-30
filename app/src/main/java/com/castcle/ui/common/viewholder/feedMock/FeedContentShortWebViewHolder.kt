@@ -15,9 +15,13 @@ import com.castcle.extensions.*
 import com.castcle.ui.common.CommonMockAdapter
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
+import com.castcle.ui.util.WebTypeIcon
+import com.chayangkoon.champ.linkpreview.LinkPreview
+import com.chayangkoon.champ.linkpreview.common.LinkContent
 import com.workfort.linkpreview.LinkData
 import com.workfort.linkpreview.callback.ParserCallback
 import com.workfort.linkpreview.util.LinkParser
+import kotlinx.coroutines.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -119,6 +123,8 @@ class FeedContentShortWebViewHolder(
         }
     }
 
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     @SuppressLint("SetTextI18n")
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
@@ -153,39 +159,47 @@ class FeedContentShortWebViewHolder(
                 ftFooter.bindUiModel(uiModel)
 
                 link?.let {
-                    LinkParser(it.url, object : ParserCallback {
-                        override fun onData(linkData: LinkData) {
-                            if (it.imagePreview.isBlank() && linkData.imageUrl?.isBlank() == true) {
-                                onBindContentIconWeb(linkData)
-                            } else {
-                                onBindContentImageWeb(linkData, uiModel.link)
+                    when {
+                        it.imagePreview.isBlank() -> {
+                            onBindContentIconWeb(uiModel.message, it)
+                        }
+                        it.linkTitle.isNotBlank() -> {
+                            onBindContentImageWeb(it)
+                        }
+                        else -> {
+                            scope.launch {
+                                val urlPreview = getContentWebPreview(it.url)
+                                onBindContentImageWeb(urlPreview, it)
                             }
                         }
-
-                        override fun onError(exception: Exception) {
-                            clPreviewIconContent.clInPreviewIconContent.gone()
-                            clPreviewContent.clInPreviewContent.gone()
-                        }
-                    }).parse()
+                    }
                 }
             }
         }
     }
 
-    private fun onBindContentIconWeb(linkUiModel: LinkData) {
-        stopLoadingPreViewShimmer()
-        with(binding.clPreviewIconContent) {
-            clInPreviewIconContent.visible()
-            with(linkUiModel) {
-                ivPerviewIconUrl.loadIconImage(favicon ?: "")
-                tvIconPreview.text = url
-                tvPreviewIconHeader.text = title
-                tvPreviewIconContent.text = description
-            }
+    private val linkPreview = LinkPreview.Builder().build()
+
+    private suspend fun getContentWebPreview(urlPreview: String): LinkContent {
+        if (urlPreview.isBlank()) {
+            return LinkContent()
+        }
+        return withContext(Dispatchers.IO) {
+            linkPreview.loadPreview(urlPreview)
         }
     }
 
-    private fun onBindContentImageWeb(linkUiModel: LinkData, link: LinkUiModel?) {
+    private fun onBindContentIconWeb(message: String, link: LinkUiModel) {
+        stopLoadingPreViewShimmer()
+        with(binding.clPreviewIconContent) {
+            clInPreviewIconContent.visible()
+            val iconWeb = WebTypeIcon.getIconFormLikeType(link.type)
+            ivPerviewIconUrl.loadImageResourceWithRadius(iconWeb)
+            tvPreviewIconMessage.text = message
+        }
+    }
+
+    private fun onBindContentImageWeb(linkUiModel: LinkContent, link: LinkUiModel?) {
         stopLoadingPreViewShimmer()
         with(binding.clPreviewContent) {
             clInPreviewContent.visible()
@@ -201,21 +215,28 @@ class FeedContentShortWebViewHolder(
         }
     }
 
+    private fun onBindContentImageWeb(link: LinkUiModel) {
+        stopLoadingPreViewShimmer()
+        with(binding.clPreviewContent) {
+            clInPreviewContent.visible()
+            with(link) {
+                ivPerviewUrl.loadGranularRoundedCornersImage(
+                    link.imagePreview ?: "",
+                    topLeft = 20f,
+                    topRight = 20f
+                )
+                tvPreviewHeader.text = linkTitle
+                tvPreviewContent.text = linkDescription
+            }
+        }
+    }
+
     private fun stopLoadingPreViewShimmer() {
         with(binding) {
             inShimmerContentLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
                 gone()
-            }
-        }
-    }
-
-    private fun startLoadingPreViewShimmer() {
-        with(binding) {
-            inShimmerContentLoading.shimmerLayoutLoading.run {
-                startShimmer()
-                visible()
             }
         }
     }

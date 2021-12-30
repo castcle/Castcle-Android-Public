@@ -38,7 +38,7 @@ data class ContentFeedUiModel(
     var authorReference: List<String> = emptyList(),
     var contentQuoteCast: ContentFeedUiModel? = null,
     val referencedCastsId: String = "",
-    val referencedCastsType: String = "",
+    var referencedCastsType: String = "",
     val message: String = "",
     val messageHeader: String = "",
     val messageContent: String = "",
@@ -89,7 +89,7 @@ fun mapToContentFeedUiMode(
     }
 
     val contentReference = payLoadList.includes?.casts?.map {
-        mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
+        mapItemContentFeedUiModelReference(isMindId, it, payLoadList.includes)
     }?.onEach { contentRef ->
         contentMainRef.filter {
             it.first == contentRef.id
@@ -108,41 +108,71 @@ fun mapToContentFeedUiMode(
     return contentList
 }
 
-private val contentList = mutableListOf<ContentFeedUiModel>()
-
-fun mapContentFeedReference(
-    referencedCastsId: String,
-    authorReferenceId: String,
-    contentReference: IncludesResponse
-): ContentFeedUiModel? {
-    val userRef = mutableListOf<String>()
-    contentReference.users.find {
-        it.id == authorReferenceId
-    }?.let {
-        userRef.add(it.castcleId)
-    }
-    return contentReference.casts.find {
-        it.id == referencedCastsId
-    }?.toContentFeedUiModel()?.apply {
-        authorReference = userRef
-        userContent =
-            contentReference.toAuthorContent(authorId) ?: UserContent()
-    }
-}
-
 fun mapContentFeedUiModelReference(
     isMindId: String?,
     payload: Payload,
+    includes: IncludesResponse?
+): ContentFeedUiModel {
+    val mainContent = payload.toContentFeedUiModel()
+    return mainContent.apply {
+        val userProfile = includes?.toAuthorContent(this.authorId) ?: UserContent()
+        if (referencedCastsType.isNotBlank()) {
+            type = referencedCastsType
+            if (referencedCastsType == QUOTECAST_TYPE || referencedCastsType == RECASTED_TYPE) {
+                contentQuoteCast =
+                    mapContentRefQuote(referencedCastsId, includes)?.apply {
+                        this.authorReference = includes?.users?.filter {
+                            it.id == payload.payload?.authorId ?: ""
+                        }?.map { it.castcleId } ?: emptyList()
+                        if (this.authorReference.isNotEmpty()) {
+                            this.isMindId = authorReference.firstOrNull() == isMindId
+                        }
+                        this.referencedCastsType = mainContent.referencedCastsType
+                        this.userContent =
+                            includes?.toAuthorContent(this.authorId) ?: UserContent()
+                    }
+            }
+        }
+        authorReference = includes?.users?.filter {
+            it.id == payload.payload?.authorId
+        }?.map {
+            it.displayName
+        } ?: emptyList()
+
+        userContent = userProfile
+        this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
+    }
+}
+
+fun mapItemContentFeedUiModelReference(
+    isMindId: String?,
+    payload: IncludesContentItemResponse,
     includes: IncludesResponse?
 ): ContentFeedUiModel {
     return payload.toContentFeedUiModel().apply {
         val userProfile = includes?.toAuthorContent(this.authorId) ?: UserContent()
         if (referencedCastsType.isNotBlank()) {
             type = referencedCastsType
-            if (referencedCastsType == QUOTECAST_TYPE) {
-                contentQuoteCast = mapContentRefQuote(id, includes)
+            if (referencedCastsType == QUOTECAST_TYPE || referencedCastsType == RECASTED_TYPE) {
+                contentQuoteCast = mapContentRefQuote(referencedCastsId, includes)?.apply {
+                    referencedCastsType = payload.type
+                    authorReference = includes?.users?.filter {
+                        it.id == payload.authorId
+                    }?.map { it.castcleId } ?: emptyList()
+                    if (authorReference.isNotEmpty()) {
+                        this.isMindId = authorReference.firstOrNull() == isMindId
+                    }
+                    userContent =
+                        includes?.toAuthorContent(authorId) ?: UserContent()
+                }
             }
         }
+        authorReference = includes?.users?.filter {
+            it.id == payload.authorId
+        }?.map {
+            it.displayName
+        } ?: emptyList()
+
         userContent = userProfile
         this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
     }
@@ -152,6 +182,32 @@ fun mapContentRefQuote(contentRefId: String, includes: IncludesResponse?): Conte
     return includes?.casts?.find {
         it.id == contentRefId
     }?.toContentFeedUiModel()
+}
+
+fun IncludesContentItemResponse.toContentFeedUiModel(): ContentFeedUiModel {
+    return ContentFeedUiModel(
+        id = id ?: "",
+        contentId = id ?: "",
+        authorId = authorId ?: "",
+        message = message ?: "",
+        type = type ?: "",
+        createdAt = created ?: "",
+        updatedAt = updated ?: "",
+        photo = photo?.contents?.map {
+            it.toImageContentUiModel()
+        },
+        referencedCastsId = referencedCasts?.id ?: "",
+        referencedCastsType = referencedCasts?.type ?: "",
+        link = links?.firstOrNull()?.toLinkUiModel() ?: LinkUiModel(),
+        liked = participate?.liked ?: false,
+        likeCount = metrics?.likeCount ?: 0,
+        commented = participate?.liked ?: false,
+        commentCount = metrics?.commentCount ?: 0,
+        recasted = participate?.liked ?: false,
+        recastCount = metrics?.recastCount ?: 0,
+        quoted = participate?.liked ?: false,
+        quoteCount = metrics?.quoteCount ?: 0,
+    )
 }
 
 fun mapContentRefQuote(
@@ -166,36 +222,28 @@ fun mapContentRefQuote(
 fun Payload.toContentFeedUiModel(): ContentFeedUiModel {
     return ContentFeedUiModel(
         id = id ?: "",
-        contentId = payload.id,
-        authorId = payload.authorId,
-        message = payload.message ?: "",
-        type = payload.type,
-        createdAt = payload.created,
-        updatedAt = payload.updated,
-        photo = payload.photo?.contents?.map {
+        contentId = payload?.id ?: "",
+        authorId = payload?.authorId ?: "",
+        message = payload?.message ?: "",
+        type = payload?.type ?: "non",
+        createdAt = payload?.created ?: "",
+        updatedAt = payload?.updated ?: "",
+        photo = payload?.photo?.contents?.map {
             it.toImageContentUiModel()
         },
-        referencedCastsId = payload.referencedCasts?.id ?: "",
-        referencedCastsType = payload.referencedCasts?.type ?: "",
-        featureUiModel = feature.toFeatureUiModel(),
+        referencedCastsId = payload?.referencedCasts?.id ?: "",
+        referencedCastsType = payload?.referencedCasts?.type ?: "",
+        featureUiModel = feature?.toFeatureUiModel() ?: FeatureUiModel(),
         circleUiModelUiModel = circle?.toCircleUiModel() ?: CircleUiModel(),
-        link = payload.links?.firstOrNull()?.toLinkUiModel(),
-        liked = payload.participate?.liked ?: false,
-        likeCount = payload.metrics?.likeCount ?: 0,
-        commented = payload.participate?.liked ?: false,
-        commentCount = payload.metrics?.commentCount ?: 0,
-        recasted = payload.participate?.liked ?: false,
-        recastCount = payload.metrics?.recastCount ?: 0,
-        quoted = payload.participate?.liked ?: false,
-        quoteCount = payload.metrics?.quoteCount ?: 0,
-    )
-}
-
-fun LinkResponse.toLinkContentUiModel(): LinkUiModel {
-    return LinkUiModel(
-        type = type,
-        url = url,
-        imagePreview = imagePreview ?: ""
+        link = payload?.links?.firstOrNull()?.toLinkUiModel() ?: LinkUiModel(),
+        liked = payload?.participate?.liked ?: false,
+        likeCount = payload?.metrics?.likeCount ?: 0,
+        commented = payload?.participate?.liked ?: false,
+        commentCount = payload?.metrics?.commentCount ?: 0,
+        recasted = payload?.participate?.liked ?: false,
+        recastCount = payload?.metrics?.recastCount ?: 0,
+        quoted = payload?.participate?.liked ?: false,
+        quoteCount = payload?.metrics?.quoteCount ?: 0,
     )
 }
 
@@ -307,16 +355,78 @@ fun mapContentFeedUiModelReference(
     payload: UserContentItemResponse,
     includes: IncludesUserContentResponse?
 ): ContentFeedUiModel {
+    val userProfile = includes?.toAuthorContent(payload.authorId) ?: UserContent()
+    return payload.toContentFeedUiModel().apply {
+        if (referencedCastsType.isNotBlank()) {
+            type = referencedCastsType
+            if (referencedCastsType == QUOTECAST_TYPE || referencedCastsType == RECASTED_TYPE) {
+                contentQuoteCast =
+                    mapContentRefQuote(referencedCastsId, includes)?.apply {
+                        referencedCastsType = payload.referencedCasts?.type ?: ""
+                        authorReference = includes?.users?.filter {
+                            it.id == payload.authorId
+                        }?.map { it.castcleId } ?: emptyList()
+                        if (authorReference.isNotEmpty()) {
+                            this.isMindId = authorReference.firstOrNull() == isMindId
+                        }
+                        contentQuoteCast?.userContent =
+                            includes?.toAuthorContent(authorId) ?: UserContent()
+                    }
+            }
+        }
+        userContent = userProfile
+        this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
+    }
+}
+
+fun mapToContentFeedUiMode(
+    isMindContent: Boolean,
+    payLoadList: UserContentResponse
+): List<ContentFeedUiModel> {
+    val contentList = mutableListOf<ContentFeedUiModel>()
+    val contentMain = payLoadList.payload.map {
+        mapContentFeedUiModelReference(isMindContent, it, payLoadList.includes)
+    }
+    val contentMainRef = contentMain.map {
+        Pair(it.id, it.userContent.castcleId)
+    }
+
+    val contentReference = payLoadList.includes?.casts?.map {
+        mapContentFeedUiModelReference(isMindContent, it, payLoadList.includes)
+    }?.onEach { contentRef ->
+        contentMainRef.filter {
+            it.first == contentRef.id
+        }.let { it ->
+            contentRef.authorReference = it.map {
+                it.second
+            }
+        }
+    } ?: emptyList()
+
+    contentList.apply {
+        addAll(contentMain)
+        addAll(contentReference)
+    }
+
+    return contentList
+}
+
+fun mapContentFeedUiModelReference(
+    isMindContent: Boolean,
+    payload: UserContentItemResponse,
+    includes: IncludesUserContentResponse?
+): ContentFeedUiModel {
     return payload.toContentFeedUiModel().apply {
         val userProfile = includes?.toAuthorContent(this.authorId) ?: UserContent()
         if (referencedCastsType.isNotBlank()) {
             type = referencedCastsType
             if (referencedCastsType == QUOTECAST_TYPE) {
-                contentQuoteCast = mapContentRefQuote(id, includes)
+                contentQuoteCast =
+                    mapContentRefQuote(referencedCastsId, includes)
             }
         }
         userContent = userProfile
-        this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
+        this.isMindId = isMindContent
     }
 }
 

@@ -100,6 +100,14 @@
             android:id="@+id/actionTrendFragmentToNotiflyLoginDialoginDialogFragment"
             app:destination="@id/dialog_login_nav_graph" />
 
+        <action
+            android:id="@+id/actionTrendFragmentToReportFragment"
+            app:destination="@id/reportFragment" />
+
+        <action
+            android:id="@+id/actionTrendFragmentToUserChooseDialogFragment"
+            app:destination="@id/userChooseDialogFragment" />
+
         <argument
             android:name="trendSlug"
             android:defaultValue=""

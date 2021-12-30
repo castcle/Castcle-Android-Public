@@ -145,6 +145,9 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
                 SettingMenuType.PRIVACY -> {
                     openWebView(STATIC_LINK_PRIVACY_POLICY)
                 }
+                SettingMenuType.ABOUT_US -> {
+                    openWebView(STATIC_LINK_ABOUT_US)
+                }
                 else -> {
 
                 }

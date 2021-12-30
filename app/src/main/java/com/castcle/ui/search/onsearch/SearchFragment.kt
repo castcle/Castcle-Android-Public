@@ -13,11 +13,13 @@ import com.castcle.android.databinding.ToolbarCastcleLanguageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.search.SearchUiModel
+import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.SearchItemClick
+import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import javax.inject.Inject
 
@@ -80,8 +82,13 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
         ViewModelProvider(this, viewModelFactory)
             .get(SearchFragmentViewModel::class.java)
 
-    override fun initViewModel() {
+    private val activityViewModel by lazy {
+        ViewModelProvider(requireActivity(), activityViewModelFactory)
+            .get(OnBoardViewModel::class.java)
+    }
 
+    override fun initViewModel() {
+        activityViewModel.fetchUserProfile().subscribe().addToDisposables()
     }
 
     override fun setupView() {
@@ -194,15 +201,41 @@ class SearchFragment : BaseFragment<SearchFragmentViewModel>(),
 
     private fun handlerPerson(itemClick: SearchItemClick.PersonItemClick) {
         if (itemClick.searchUiModel is SearchUiModel.SearchFollowUiModel) {
-            val profileType = itemClick.searchUiModel.type
-            val castcleId = itemClick.searchUiModel.castcleId
-
-            navigateToProfile(castcleId, profileType)
+            var profileType = ""
+            var isMe = false
+            checkContentIsMe(itemClick.searchUiModel.castcleId,
+                onPage = {
+                    profileType = ProfileType.PROFILE_TYPE_PAGE_ME.type
+                    isMe = true
+                }, onMe = {
+                    isMe = true
+                    profileType = ProfileType.PROFILE_TYPE_ME.type
+                }, onView = {
+                    profileType = itemClick.searchUiModel.type
+                }
+            )
+            navigateToProfile(itemClick.searchUiModel.castcleId, profileType, isMe)
         }
     }
 
-    private fun navigateToProfile(castcleId: String, type: String) {
-        onBoardNavigator.navigateToProfileFragment(castcleId, type)
+    private fun checkContentIsMe(
+        castcleId: String,
+        onMe: () -> Unit,
+        onPage: () -> Unit,
+        onView: () -> Unit
+    ) {
+        activityViewModel.checkContentIsMe(castcleId,
+            onProfileMe = {
+                onMe.invoke()
+            }, onPageMe = {
+                onPage.invoke()
+            }, non = {
+                onView.invoke()
+            })
+    }
+
+    private fun navigateToProfile(castcleId: String, type: String, isMe: Boolean = false) {
+        onBoardNavigator.navigateToProfileFragment(castcleId, type, isMe)
     }
 
     private fun handlerSuggested(itemClick: SearchItemClick.SuggestionItemClick) {

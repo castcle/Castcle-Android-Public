@@ -1,7 +1,5 @@
 package com.castcle.ui.profile
 
-import android.annotation.SuppressLint
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
@@ -60,8 +58,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     private val recastContentSingleUseCase: RecastContentCompletableUseCase,
     private val reportUserUseCase: ReportUserUseCase,
     private val blockUserUseCase: BlockUserUseCase,
-    private val unBlockUserUseCase: UnBlockUserUseCase,
-    private val preloadImageUseCase: PreloadImageUseCase
+    private val unBlockUserUseCase: UnBlockUserUseCase
 ) : ProfileFragmentViewModel() {
 
     override val isGuestMode: Boolean

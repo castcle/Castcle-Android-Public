@@ -1,4 +1,7 @@
-package com.castcle.data.staticmodel
+package com.castcle.ui.util
+
+import com.castcle.android.R
+import com.castcle.ui.common.WebType
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -22,15 +25,36 @@ package com.castcle.data.staticmodel
 //  or have any questions.
 //
 //
-//  Created by sklim on 25/8/2021 AD at 15:53.
+//  Created by sklim on 29/12/2021 AD at 12:27.
 
-enum class ContentType(val type: String) {
-    CONTENT("Content"),
-    IMAGE("image"),
-    SHORT("short"),
-    LONG("long"),
-    BLOG("blog"),
-    FEED("feed"),
-    RECAST("recasted"),
-    QUOTE("quoted")
+object WebTypeIcon {
+
+    fun getIconFormLikeType(type: String): Int {
+        return when (type) {
+            WebType.FACEBOOK.type -> {
+                R.drawable.web_icon_facebook
+            }
+            WebType.YOUTUBE.type -> {
+                R.drawable.web_icon_youtube
+            }
+            WebType.TWITTER.type -> {
+                R.drawable.web_icon_twitter
+            }
+            WebType.MEDIUM.type -> {
+                R.drawable.web_icon_medium
+            }
+            WebType.WEB.type -> {
+                R.drawable.web_icon_web
+            }
+            WebType.REDDIT.type -> {
+                R.drawable.web_icon_reddit
+            }
+            WebType.RSS_FEED.type -> {
+                R.drawable.web_icon_rssfeed
+            }
+            else -> {
+                R.drawable.web_icon_facebook
+            }
+        }
+    }
 }

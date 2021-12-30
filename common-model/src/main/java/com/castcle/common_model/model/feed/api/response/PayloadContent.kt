@@ -28,7 +28,7 @@ import com.google.gson.annotations.SerializedName
 //  Created by sklim on 22/11/2021 AD at 12:25.
 
 data class PayloadObjectContent(
-    @SerializedName("id") var id: String,
+    @SerializedName("id") var id: String? = null,
     @SerializedName("type") var type: String,
     @SerializedName("message") var message: String? = null,
     @SerializedName("photo") var photo: PhotoContents? = null,

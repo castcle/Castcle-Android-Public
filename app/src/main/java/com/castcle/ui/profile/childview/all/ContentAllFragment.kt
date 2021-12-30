@@ -87,7 +87,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
                         viewType = ProfileType.PROFILE_TYPE_PAGE.type,
-                        isMeId = viewModel.castcleId
+                        isMeId = activityViewModel.cacheProfileId.value ?: ""
                     )
                 )
             },
@@ -96,7 +96,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                     FeedRequestHeader(
                         viewType = ProfileType.PROFILE_TYPE_ME.type,
                         type = ContentType.BLOG.type,
-                        isMeId = viewModel.castcleId
+                        isMeId = activityViewModel.cacheProfileId.value ?: ""
                     )
                 )
             },
@@ -105,7 +105,7 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                     FeedRequestHeader(
                         castcleId = activityViewModel.isContentTypeYouId.value ?: "",
                         viewType = ProfileType.PROFILE_TYPE_PEOPLE.type,
-                        isMeId = viewModel.castcleId
+                        isMeId = activityViewModel.cacheProfileId.value ?: ""
                     )
                 )
             })

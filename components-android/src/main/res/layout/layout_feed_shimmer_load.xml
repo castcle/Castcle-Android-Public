@@ -18,7 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
-            app:shimmer_auto_start="true"
+            app:shimmer_auto_start="false"
             app:shimmer_direction="left_to_right"
             app:shimmer_dropoff="@integer/material_motion_duration_medium_1">
 

@@ -96,7 +96,6 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     override fun setupView() {
-        startLoadingShimmer()
         setupToolbar(viewModel.isGuestMode)
         with(binding) {
             wtWhatYouMind.visibleOrGone(!viewModel.isGuestMode)
@@ -185,32 +184,36 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                 val isLoading = loadStates.refresh is LoadState.Loading
                 val isLoadingRemote = loadStates.mediator?.refresh is LoadState.Loading
 
-                val displayEmpty = (refresher is LoadState.NotLoading &&
-                    !refresher.endOfPaginationReached && adapterPagingCommon.itemCount == 0)
+                val isNothingLoad = adapterPagingCommon.itemCount == 0
+
                 if (isError) {
                     handleEmptyState(isError)
                     stopLoadingShimmer()
                 }
 
                 if (viewModel.isGuestMode) {
-                    if (!isLoading) {
+                    if (isLoading) {
+                        binding.empState.gone()
+                        handleEmptyState(!isLoading)
+                        if (isNothingLoad) {
+                            startLoadingShimmer()
+                        }
+                    } else {
                         binding.swiperefresh.isRefreshing = false
                         handleEmptyState(isLoading)
                         stopLoadingShimmer()
-                    } else {
-                        binding.empState.gone()
-                        handleEmptyState(!isLoading)
-                        startLoadingShimmer()
                     }
                 } else {
-                    if (!isLoadingRemote) {
+                    if (isLoadingRemote) {
+                        binding.empState.gone()
+                        handleEmptyState(!isLoadingRemote)
+                        if (isNothingLoad) {
+                            startLoadingShimmer()
+                        }
+                    } else {
                         binding.swiperefresh.isRefreshing = false
                         handleEmptyState(isLoadingRemote)
                         stopLoadingShimmer()
-                    } else {
-                        binding.empState.gone()
-                        handleEmptyState(!isLoadingRemote)
-                        startLoadingShimmer()
                     }
                 }
             }
@@ -467,11 +470,11 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
         var profileType = ""
         checkContentIsMe(contentUiModel.userContent.castcleId,
             onPage = {
-                profileType = ProfileType.PROFILE_TYPE_PAGE.type
+                profileType = ProfileType.PROFILE_TYPE_PAGE_ME.type
             }, onMe = {
                 profileType = ProfileType.PROFILE_TYPE_ME.type
             }, onView = {
-                profileType = ProfileType.PROFILE_TYPE_PEOPLE.type
+                profileType = contentUiModel.userContent.type
             }
         )
 
@@ -707,7 +710,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                         var profileType = ""
                         checkContentIsMe(contentFeedUiModel.userContent.castcleId,
                             onPage = {
-                                profileType = ProfileType.PROFILE_TYPE_PAGE.type
+                                profileType = ProfileType.PROFILE_TYPE_PAGE_ME.type
                             }, onMe = {
                                 profileType = ProfileType.PROFILE_TYPE_ME.type
                             }, onView = {
@@ -728,7 +731,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                         var profileType = ""
                         checkContentIsMe(contentFeedUiModel.userContent.castcleId,
                             onPage = {
-                                profileType = ProfileType.PROFILE_TYPE_PAGE.type
+                                profileType = ProfileType.PROFILE_TYPE_PAGE_ME.type
                             }, onMe = {
                                 profileType = ProfileType.PROFILE_TYPE_ME.type
                             }, onView = {

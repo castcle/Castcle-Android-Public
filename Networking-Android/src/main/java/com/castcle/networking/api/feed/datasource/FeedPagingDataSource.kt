@@ -50,6 +50,7 @@ class FeedPagingDataSource(
             val response = feedApi.getFeed(
                 featureSlug = feedRequestHeader.featureSlug,
                 circleSlug = feedRequestHeader.circleSlug,
+                userField = feedRequestHeader.userFields,
                 hasTag = feedRequestHeader.hashtag,
                 unitId = feedRequestHeader.oldestId,
                 pageNumber = pageNumber,

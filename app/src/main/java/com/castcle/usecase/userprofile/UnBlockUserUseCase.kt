@@ -1,14 +1,10 @@
 package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.common_model.model.userprofile.User
 import com.castcle.data.error.Ignored
-import com.castcle.data.error.UserProfileError.GetUserProfileError
 import com.castcle.data.repository.UserProfileRepository
 import com.castcle.usecase.base.CompletableUseCase
-import com.castcle.usecase.base.FlowableUseCase
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -44,7 +40,7 @@ class UnBlockUserUseCase @Inject constructor(
     ::Ignored
 ) {
 
-    override fun create(userId: String): Completable {
-        return userRepository.blockUser(userId)
+    override fun create(input: String): Completable {
+        return userRepository.unBlockUser(input)
     }
 }

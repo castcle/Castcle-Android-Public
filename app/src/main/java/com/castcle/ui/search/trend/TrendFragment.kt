@@ -73,6 +73,8 @@ class TrendFragment : BaseFragment<TrendFragmentViewModel>(),
 
     override fun initViewModel() {
         activityViewModel.setTrendSlugData(trendSlug)
+
+        activityViewModel.fetchUserProfile()
     }
 
     override fun setupView() {

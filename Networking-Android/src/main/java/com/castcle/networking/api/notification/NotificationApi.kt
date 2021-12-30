@@ -41,6 +41,13 @@ interface NotificationApi {
         @Query(PAGE_SIZE) pageSize: Int
     ): Response<NotificationResponse>
 
+    @GET("/notifications")
+    suspend fun getNotification(
+        @Query(SOURCE) source: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int
+    ): Response<NotificationResponse>
+
     @GET("/notifications/badges")
     fun getNotificationBadges(): Flowable<Response<NotificationBadgesResponse>>
 

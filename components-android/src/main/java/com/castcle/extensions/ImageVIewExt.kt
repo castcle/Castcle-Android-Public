@@ -243,6 +243,27 @@ fun ImageView.loadImageResource(@DrawableRes resId: Int) {
         .into(this)
 }
 
+fun ImageView.loadImageResourceWithRadius(
+    @DrawableRes resId: Int,
+    topLeft: Float = 12f,
+    bottomLeft: Float = 12f,
+) {
+    Glide.with(context)
+        .load(resId)
+        .centerCrop()
+        .apply(
+            RequestOptions().transform(
+                CenterCrop(), GranularRoundedCorners(
+                    topLeft,
+                    0f,
+                    0f,
+                    bottomLeft
+                )
+            )
+        )
+        .into(this)
+}
+
 fun ImageView.loadImageWithCache(url: String) {
     Glide.with(context)
         .load(url)
