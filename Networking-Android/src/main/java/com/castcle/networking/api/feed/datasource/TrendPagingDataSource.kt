@@ -48,6 +48,7 @@ class TrendPagingDataSource(
                     featureSlug = feedRequestHeader.featureSlug,
                     circleSlug = feedRequestHeader.circleSlug,
                     mode = feedRequestHeader.hashtag,
+                    userField = feedRequestHeader.userFields,
                     pageNumber = pageNumber,
                     pageSize = pageSize
                 )
@@ -57,6 +58,7 @@ class TrendPagingDataSource(
                     featureSlug = feedRequestHeader.featureSlug,
                     circleSlug = feedRequestHeader.circleSlug,
                     mode = feedRequestHeader.hashtag,
+                    userField = feedRequestHeader.userFields,
                     pageNumber = pageNumber,
                     pageSize = pageSize
                 )

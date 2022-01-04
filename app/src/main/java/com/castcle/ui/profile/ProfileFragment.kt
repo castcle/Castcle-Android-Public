@@ -355,6 +355,10 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             handlerShowLoading(it)
         }.addToDisposables()
 
+        viewModel.showLoadingProfile.subscribe {
+            handlerShowLoadProfile(it)
+        }.addToDisposables()
+
         viewModel.viewPageRes.subscribe {
             onBindViewProfile(it)
         }.addToDisposables()
@@ -370,6 +374,11 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 stopLoadingShimmer()
             }
         }.addToDisposables()
+    }
+
+    private fun handlerShowLoadProfile(it: Boolean) {
+        onLoadingCoverPage(it)
+        onLoadingAvatar(it)
     }
 
     private fun startLoadingShimmer() {

@@ -89,6 +89,10 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override val showLoading: Observable<Boolean>
         get() = _showLoading
 
+    private val _showLoadingProfile = BehaviorSubject.create<Boolean>()
+    override val showLoadingProfile: Observable<Boolean>
+        get() = _showLoadingProfile
+
     private val _error = PublishSubject.create<Throwable>()
     override val onError: Observable<Throwable>
         get() = _error
@@ -100,9 +104,14 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         getUserProfileSingleUseCase
             .execute(Unit)
             .firstOrError()
-            .subscribeBy(onSuccess = {
+            .doOnSubscribe {
+                _showLoadingProfile.onNext(true)
+            }.doFinally {
+                _showLoadingProfile.onNext(false)
+            }.subscribeBy(onSuccess = {
                 setUserProfileData(it)
             }, onError = {
+                _showLoadingProfile.onNext(false)
                 _error.onNext(it)
             }).addToDisposables()
     }
@@ -178,9 +187,9 @@ class ProfileFragmentViewModelImpl @Inject constructor(
     override fun getViewPage(castcleId: String) {
         getViewPageSingleUseCase.execute(castcleId)
             .doOnSubscribe {
-                _showLoading.onNext(true)
+                _showLoadingProfile.onNext(true)
             }.doFinally {
-                _showLoading.onNext(false)
+                _showLoadingProfile.onNext(false)
             }.firstOrError()
             .subscribeBy(
                 onSuccess = {
@@ -188,6 +197,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
                 },
                 onError = {
                     _error.onNext(it)
+                    _showLoadingProfile.onNext(false)
                 }
             ).addToDisposables()
     }

@@ -76,9 +76,10 @@ interface FeedApi {
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
         @Query(HAS_TAG) mode: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(UNIT_ID) unitId: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE_SIZE) pageSize: Int
     ): Response<PayLoadList>
 
     @GET("feeds/members/{feature_slug}/{circle_slug}")
@@ -86,8 +87,9 @@ interface FeedApi {
         @Path("feature_slug") featureSlug: String,
         @Path("circle_slug") circleSlug: String,
         @Query(HAS_TAG) mode: String,
+        @Query(USER_FIELDS) userField: String,
         @Query(PAGE_NUMBER) pageNumber: Int,
-        @Query(PAGE_SIZE) pageSize: Int,
+        @Query(PAGE_SIZE) pageSize: Int
     ): Response<PayLoadList>
 
     @PUT("contents/{contentId}/{likeStatus}")

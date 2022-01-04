@@ -59,6 +59,8 @@ abstract class ProfileFragmentViewModel : BaseViewCoroutinesModel() {
 
     abstract val showLoading: Observable<Boolean>
 
+    abstract val showLoadingProfile: Observable<Boolean>
+
     abstract val onError: Observable<Throwable>
 
     abstract fun putToFollowUser(castcleId: String): Completable
