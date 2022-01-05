@@ -81,6 +81,14 @@ interface UserApi {
         @Query(PAGE_SIZE) pageSize: Int,
     ): Response<UserContentResponse>
 
+    @GET("users/{castcleId}/contents")
+    suspend fun getUserViewProfileContentGuest(
+        @Path("castcleId") castcleId: String,
+        @Query(FILTER_TYPE) filterType: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<UserContentResponse>
+
     @PUT("users/me")
     fun updateUserProfile(
         @Body userUpdateRequest: UserUpdateRequest
@@ -135,6 +143,14 @@ interface UserApi {
     fun getViewPage(
         @Path("castcleId") castcleId: String,
     ): Flowable<Response<UserProfileResponse>>
+
+    @GET("pages/{castcleId}/contents")
+    suspend fun getViewPageContentGuest(
+        @Path("castcleId") castcleId: String,
+        @Query(FILTER_TYPE) filterType: String,
+        @Query(PAGE_NUMBER) pageNumber: Int,
+        @Query(PAGE_SIZE) pageSize: Int,
+    ): Response<UserContentResponse>
 
     @GET("pages/{castcleId}/contents")
     suspend fun getViewPageContent(

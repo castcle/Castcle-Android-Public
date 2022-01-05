@@ -133,14 +133,29 @@ class ProfileFragmentViewModelImpl @Inject constructor(
                     userProfileDataSouce.getUserProfileContent(contentRequestHeader)
                 }
                 ProfileType.PROFILE_TYPE_PEOPLE.type -> {
-                    userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
+                    if (isGuestMode) {
+                        userProfileDataSouce.getUserViewProfileContentGuest(contentRequestHeader)
+                    } else {
+                        userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
+                    }
                 }
                 ProfileType.PROFILE_TYPE_PAGE.type -> {
-                    userProfileDataSouce.getViewPageProfileContent(contentRequestHeader)
+                    if (isGuestMode) {
+                        userProfileDataSouce.getViewPageProfileContentGuest(contentRequestHeader)
+                    } else {
+                        userProfileDataSouce.getViewPageProfileContent(contentRequestHeader)
+                    }
                 }
-                else -> userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
+                else -> {
+                    if (isGuestMode) {
+                        userProfileDataSouce.getUserViewProfileContentGuest(contentRequestHeader)
+                    } else {
+                        userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
+                    }
+                }
             }
-        }, onSuccess = {
+        }, onSuccess =
+        {
             _userProfileContentRes = it
         })
     }

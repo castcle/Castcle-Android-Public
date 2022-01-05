@@ -61,6 +61,9 @@ interface UserProfileRepository {
     fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentFeedUiModel>>
 
+    fun getUserViewProfileContentGuest(feedRequestHeader: FeedRequestHeader):
+        Flow<PagingData<ContentFeedUiModel>>
+
     fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader):
         Flow<PagingData<ContentFeedUiModel>>
 
@@ -83,6 +86,9 @@ interface UserProfileRepository {
     fun unBlockUser(castcleId: String): Completable
 
     fun reportUser(castcleId: String): Completable
+
+    fun getViewPageProfileContentGuest(feedRequestHeader: FeedRequestHeader):
+        Flow<PagingData<ContentFeedUiModel>>
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -160,6 +166,15 @@ class UserProfileRepositoryImpl @Inject constructor(
         UserViewProfilePagingDataSource(userApi, feedRequestHeader)
     }).flow
 
+    override fun getUserViewProfileContentGuest(feedRequestHeader: FeedRequestHeader)
+        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
+    PagingConfig(
+        pageSize = DEFAULT_PAGE_SIZE_V1,
+        prefetchDistance = DEFAULT_PREFETCH
+    ), pagingSourceFactory = {
+        UserViewProfilePagingGuestDataSource(userApi, feedRequestHeader)
+    }).flow
+
     override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
     PagingConfig(
@@ -167,6 +182,15 @@ class UserProfileRepositoryImpl @Inject constructor(
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         ViewPagePagingDataSource(userApi, feedRequestHeader)
+    }).flow
+
+    override fun getViewPageProfileContentGuest(feedRequestHeader: FeedRequestHeader)
+        : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
+    PagingConfig(
+        pageSize = DEFAULT_PAGE_SIZE_V1,
+        prefetchDistance = DEFAULT_PREFETCH
+    ), pagingSourceFactory = {
+        ViewPagePagingGuestDataSource(userApi, feedRequestHeader)
     }).flow
 
     private val _remoteUser = BehaviorSubject.create<User>()
