@@ -281,20 +281,24 @@ class PeopleFragment : BaseFragment<TrendFragmentViewModel>(),
     }
 
     private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {
-        activityViewModel.putToFollowUser(
-            contentUiModel.userContent.castcleId,
-            contentUiModel.authorId
-        ).subscribeBy(
-            onComplete = {
-                displayMessage(
-                    localizedResources.getString(R.string.feed_content_following_status)
-                        .format(contentUiModel.userContent.castcleId)
-                )
-                adapterPagingCommon.updateStateItemFollowing(contentUiModel)
-            }, onError = {
-                displayError(it)
-            }
-        ).addToDisposables()
+        guestEnable(enable = {
+            activityViewModel.putToFollowUser(
+                contentUiModel.userContent.castcleId,
+                contentUiModel.authorId
+            ).subscribeBy(
+                onComplete = {
+                    displayMessage(
+                        localizedResources.getString(R.string.feed_content_following_status)
+                            .format(contentUiModel.userContent.castcleId)
+                    )
+                    adapterPagingCommon.updateStateItemFollowing(contentUiModel)
+                }, onError = {
+                    displayError(it)
+                }
+            ).addToDisposables()
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
     }
 
     private fun handleCommentClick(contentUiModel: ContentFeedUiModel) {

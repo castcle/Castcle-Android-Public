@@ -15,6 +15,7 @@ import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
 import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.*
+import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.dialog.recast.KEY_REQUEST
@@ -61,6 +62,8 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     @Inject lateinit var onBoardNavigator: OnBoardNavigator
 
+    @Inject lateinit var localizedResources: LocalizedResources
+    
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) ->
     FragmentContentPostBinding
         get() = { inflater, container, attachToRoot ->
@@ -229,7 +232,31 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
                     handleImageItemClick(click.position, click.contentUiModel)
                 }, disable = {})
             }
+            is FeedItemClick.FeedFollowingClick -> {
+                handleFeedFollowingClick(click.contentUiModel)
+            }
         }
+    }
+
+    private fun handleFeedFollowingClick(contentUiModel: ContentFeedUiModel) {
+        onGuestMode(enable = {
+            activityViewModel.putToFollowUser(
+                contentUiModel.userContent.castcleId,
+                contentUiModel.authorId
+            ).subscribeBy(
+                onComplete = {
+                    displayMessage(
+                        localizedResources.getString(R.string.feed_content_following_status)
+                            .format(contentUiModel.userContent.castcleId)
+                    )
+                    adapterPagingCommon.updateStateItemFollowing(contentUiModel)
+                }, onError = {
+                    displayError(it)
+                }
+            ).addToDisposables()
+        }, disable = {
+            navigateToNotifyLoginDialog()
+        })
     }
 
     private fun onGuestMode(enable: () -> Unit, disable: () -> Unit) {
