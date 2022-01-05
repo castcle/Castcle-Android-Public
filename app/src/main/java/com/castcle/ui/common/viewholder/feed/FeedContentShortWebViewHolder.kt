@@ -229,6 +229,7 @@ class FeedContentShortWebViewHolder(
 
     private fun onBindContentImageWeb(link: LinkData) {
         stopLoadingPreViewShimmer()
+        binding.clPreviewIconContent.clInPreviewIconContent.gone()
         with(binding.clPreviewContent) {
             clInPreviewContent.visible()
             with(link) {
@@ -245,6 +246,7 @@ class FeedContentShortWebViewHolder(
 
     private fun onBindContentIconWeb(message: String, link: LinkUiModel) {
         stopLoadingPreViewShimmer()
+        binding.clPreviewContent.clInPreviewContent.gone()
         with(binding.clPreviewIconContent) {
             clInPreviewIconContent.visible()
             val iconWeb = getIconFormLikeType(link.type)

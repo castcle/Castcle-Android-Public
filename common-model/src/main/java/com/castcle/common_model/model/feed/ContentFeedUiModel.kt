@@ -370,7 +370,7 @@ fun mapContentFeedUiModelReference(
                             this.isMindId = authorReference.firstOrNull() == isMindId
                         }
                         contentQuoteCast?.userContent =
-                            includes?.toAuthorContent(authorId) ?: UserContent()
+                            includes?.toAuthorContent(this.authorId) ?: UserContent()
                     }
             }
         }

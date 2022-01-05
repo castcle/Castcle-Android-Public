@@ -218,6 +218,8 @@
         <entry key="components-android/src/main/res/drawable/ic_search_selected.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_search_selector.xml" value="0.14930555555555555" />
         <entry key="components-android/src/main/res/drawable/ic_selected.xml" value="0.20208333333333334" />
+        <entry key="components-android/src/main/res/drawable/ic_setting_facebook.xml" value="0.104296875" />
+        <entry key="components-android/src/main/res/drawable/ic_setting_medium.xml" value="0.104296875" />
         <entry key="components-android/src/main/res/drawable/ic_telegram.xml" value="0.20208333333333334" />
         <entry key="components-android/src/main/res/drawable/ic_twitter.xml" value="0.20208333333333334" />
         <entry key="components-android/src/main/res/drawable/ic_verifly_pass.xml" value="0.14305555555555555" />
