@@ -122,7 +122,7 @@ class UserBarTemplate(
                         ivStatusFollow.gone()
                     }
                 }
-
+                groupReCasted.gone()
                 if (itemUiModel.authorReference.isNotEmpty() &&
                     referencedCastsType == RECASTED_TYPE
                 ) {

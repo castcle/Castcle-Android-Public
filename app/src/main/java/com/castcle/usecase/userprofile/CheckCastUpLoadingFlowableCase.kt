@@ -1,8 +1,7 @@
 package com.castcle.usecase.userprofile
 
 import com.castcle.common.lib.schedulers.RxSchedulerProvider
-import com.castcle.data.error.AppError
-import com.castcle.data.error.Ignored
+import com.castcle.data.error.*
 import com.castcle.usecase.base.FlowableUseCase
 import com.castcle.usecase.worker.factory.CastWithImageLoadWorkHelper
 import io.reactivex.BackpressureStrategy
@@ -39,7 +38,7 @@ class CheckCastUpLoadingFlowableCase @Inject constructor(
 ) : FlowableUseCase<Unit, Pair<StateWorkLoading, String>>(
     rxSchedulerProvider.main(),
     rxSchedulerProvider.main(),
-    ::Ignored
+    ::RecastError
 ) {
 
     override fun create(input: Unit): Flowable<Pair<StateWorkLoading, String>> {
@@ -49,7 +48,6 @@ class CheckCastUpLoadingFlowableCase @Inject constructor(
                 val status = when (it) {
                     is CastWithImageLoadWorkHelper.Status.Error -> {
                         StateWorkLoading.ERROR
-                        throw AppError(cause = null, readableMessageRes = it.error)
                     }
                     is CastWithImageLoadWorkHelper.Status.Uploading -> {
                         StateWorkLoading.NON

@@ -17,7 +17,7 @@ interface CastWithImageLoadWorkHelper {
 
     companion object {
         const val UPLOAD_CAST_WITH_IMAGE_TAG = "UPLOAD_CAST_WITH_IMAGE_TAG"
-        const val EXTRA_UPLOAD_RESULT = "EXTRA_UPLOAD_RESULT"
+        const val EXTRA_UPLOAD_RESULT = "EXTRA_UPLOAD_RESULTS"
         const val EXTRA_UPLOAD_URL_RESULT = "EXTRA_UPLOAD_URL_RESULT"
         const val EXTRA_UPLOAD_ERROR_RESULT = "EXTRA_UPLOAD_ERROR_RESULT"
     }
@@ -60,7 +60,7 @@ class CastWithImageLoadWorkHelperImpl @Inject constructor(
                         val result = CastWithImageLoadWorkHelper.Result.values()[
                             info.outputData.getInt(
                                 EXTRA_UPLOAD_RESULT,
-                                CastWithImageLoadWorkHelper.Result.SUCCESS.ordinal
+                                CastWithImageLoadWorkHelper.Result.FAILURE.ordinal
                             )
                         ]
                         status = when (result) {

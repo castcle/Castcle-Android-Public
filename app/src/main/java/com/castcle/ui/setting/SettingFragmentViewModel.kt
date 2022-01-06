@@ -15,6 +15,7 @@ import com.castcle.usecase.feed.UpdateNotificationCountCompleteUseCase
 import com.castcle.usecase.notification.GetBadgesNotificationSingleUseCase
 import com.castcle.usecase.setting.*
 import com.castcle.usecase.userprofile.GetCachedUserProfileSingleUseCase
+import com.castcle.usecase.userprofile.GetUserProfileSingleUseCase
 import io.reactivex.Completable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.zipWith
@@ -72,7 +73,8 @@ class SettingFragmentViewModelImpl @Inject constructor(
     private val getCachePageDataCompletableUseCase: GetCachePageDataCompletableUseCase,
     private val getBadgesNotificationSingleUseCase: GetBadgesNotificationSingleUseCase,
     private val updateNotificationCountCompleteUseCase: UpdateNotificationCountCompleteUseCase,
-    private val getNotificationCountCompleteUseCase: GetNotificationCountCompleteUseCase
+    private val getNotificationCountCompleteUseCase: GetNotificationCountCompleteUseCase,
+    private val getUserProfileMe: GetUserProfileSingleUseCase
 ) : SettingFragmentViewModel() {
 
     private val _showLoading = BehaviorSubject.create<Boolean>()
@@ -113,6 +115,10 @@ class SettingFragmentViewModelImpl @Inject constructor(
 
     private fun onBindCacheUserPage(userOptional: Optional<User>, page: PageHeaderUiModel) {
         if (userOptional.isPresent) {
+            if (!userOptional.get().verified) {
+                getCurrentUserProfile()
+            }
+
             setUserProfileData(userOptional)
 
             val userPage = userOptional.get().toPageHeaderUiModel()
@@ -122,6 +128,18 @@ class SettingFragmentViewModelImpl @Inject constructor(
                 setUserPage(it)
             }
         }
+    }
+
+    private fun getCurrentUserProfile() {
+        getUserProfileMe.execute(Unit)
+            .firstOrError()
+            .subscribeBy(
+                onSuccess = {
+                    _userProfile.value = it
+                }, onError = {
+                    _error.onNext(it)
+                }
+            ).addToDisposables()
     }
 
     override fun fetchUserPage() {

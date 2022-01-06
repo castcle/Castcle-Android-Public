@@ -82,7 +82,6 @@ class ImageTemplateFloxBoxAdapter :
 
         fun onBindImage(item: ImageContentUiModel) {
             item.run(::bindOpenImage)
-//            bindOnClick()
         }
 
         private fun bindOnClick() {

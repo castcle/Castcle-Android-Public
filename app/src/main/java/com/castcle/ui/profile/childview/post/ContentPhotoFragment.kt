@@ -29,6 +29,7 @@ import com.castcle.ui.profile.ProfileFragmentViewModel
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -423,7 +424,7 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
     override fun bindViewModel() {
         with(viewModel) {
             launchOnLifecycleScope {
-                userProfileContentRes.collectLatest {
+                userProfileContentRes.distinctUntilChanged().collectLatest {
                     adapterPagingCommon.submitData(lifecycle, it)
                 }
             }

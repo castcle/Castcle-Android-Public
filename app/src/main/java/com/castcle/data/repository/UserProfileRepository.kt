@@ -1,14 +1,16 @@
 package com.castcle.data.repository
 
+import android.content.Context
 import androidx.paging.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.castcle.common.lib.common.Optional
 import com.castcle.common_model.model.feed.*
-import com.castcle.common_model.model.feed.domain.dao.FeedCacheDao
+import com.castcle.common_model.model.feed.domain.dao.*
 import com.castcle.common_model.model.signin.ViewPageUiModel
 import com.castcle.common_model.model.signin.toViewPageUiModel
 import com.castcle.common_model.model.userprofile.*
 import com.castcle.common_model.model.userprofile.domain.*
-import com.castcle.common_model.model.feed.domain.dao.UserDao
 import com.castcle.data.model.dao.user.UserPageDao
 import com.castcle.data.storage.AppPreferences
 import com.castcle.networking.api.user.*
@@ -16,7 +18,7 @@ import com.castcle.networking.service.operators.ApiOperators
 import io.reactivex.*
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -92,6 +94,7 @@ interface UserProfileRepository {
 }
 
 class UserProfileRepositoryImpl @Inject constructor(
+    private val context: Context,
     private val userDao: UserDao,
     private val userApi: UserApi,
     private val userPageDao: UserPageDao,
@@ -155,7 +158,14 @@ class UserProfileRepositoryImpl @Inject constructor(
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         UserProfilePagingDataSource(userApi, contentRequestHeader)
-    }).flow
+    }).flow.distinctUntilChanged().map { pagingData ->
+        pagingData.map { it ->
+            proLoadAllImage(it.photo?.map {
+                it.imageMedium
+            })
+        }
+        pagingData
+    }
 
     override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
@@ -164,7 +174,14 @@ class UserProfileRepositoryImpl @Inject constructor(
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         UserViewProfilePagingDataSource(userApi, feedRequestHeader)
-    }).flow
+    }).flow.map { pagingData ->
+        pagingData.map { it ->
+            proLoadAllImage(it.photo?.map {
+                it.imageMedium
+            })
+        }
+        pagingData
+    }
 
     override fun getUserViewProfileContentGuest(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
@@ -173,7 +190,14 @@ class UserProfileRepositoryImpl @Inject constructor(
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         UserViewProfilePagingGuestDataSource(userApi, feedRequestHeader)
-    }).flow
+    }).flow.map { pagingData ->
+        pagingData.map { it ->
+            proLoadAllImage(it.photo?.map {
+                it.imageMedium
+            })
+        }
+        pagingData
+    }
 
     override fun getViewPageProfileContent(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =
@@ -182,7 +206,25 @@ class UserProfileRepositoryImpl @Inject constructor(
         prefetchDistance = DEFAULT_PREFETCH
     ), pagingSourceFactory = {
         ViewPagePagingDataSource(userApi, feedRequestHeader)
-    }).flow
+    }).flow.map { pagingData ->
+        pagingData.map { it ->
+            proLoadAllImage(it.photo?.map {
+                it.imageMedium
+            })
+        }
+        pagingData
+    }
+
+    private suspend fun proLoadAllImage(imageList: List<String>?) {
+        withContext(Dispatchers.IO) {
+            imageList?.forEach { url ->
+                Glide.with(context)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .preload()
+            }
+        }
+    }
 
     override fun getViewPageProfileContentGuest(feedRequestHeader: FeedRequestHeader)
         : Flow<PagingData<ContentFeedUiModel>> = Pager(config =

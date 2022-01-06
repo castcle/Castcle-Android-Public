@@ -172,7 +172,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
 
         with(viewModel) {
             viewLifecycleOwner.lifecycleScope.launch {
-                feedContentPage.collectLatest {
+                feedContentPage.distinctUntilChanged().collectLatest {
                     adapterPagingCommon.submitData(lifecycle, it)
                 }
             }

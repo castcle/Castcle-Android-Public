@@ -63,6 +63,7 @@ class LoginFragment : BaseFragment<LoginFragmentViewModel>(),
 
     private fun navigatToHomeFeed() {
         activityViewModel.onRegisterSuccess()
+        binding.root.hideKeyboard()
         navigateByDeepLink(requireContext().getString(R.string.nav_deep_link_feed))
     }
 

@@ -1,8 +1,7 @@
 package com.castcle.networking.api.user
 
 import android.util.Log
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
+import androidx.paging.*
 import com.castcle.common_model.model.feed.*
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.

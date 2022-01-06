@@ -1,7 +1,6 @@
 package com.castcle.common_model.model.feed
 
 import android.os.Parcelable
-import android.util.Log
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.api.response.Payload
 import com.castcle.common_model.model.userprofile.domain.*
@@ -85,24 +84,9 @@ fun mapToContentFeedUiMode(
     val contentMain = payLoadList.payLoadLists.map {
         mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
     }
-    val contentMainRef = contentMain.map {
-        Pair(it.id, it.userContent.castcleId)
-    }
-    val contentReference = payLoadList.includes?.casts?.map {
-        mapItemContentFeedUiModelReference(isMindId, it, payLoadList.includes)
-    }?.onEach { contentRef ->
-        contentMainRef.filter {
-            it.first == contentRef.id
-        }.let { it ->
-            contentRef.authorReference = it.map {
-                it.second
-            }
-        }
-    } ?: emptyList()
 
     contentList.apply {
         addAll(contentMain)
-        addAll(contentReference)
     }
 
     return contentList
@@ -302,25 +286,9 @@ fun mapToContentFeedUiMode(
     val contentMain = payLoadList.payload.map {
         mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
     }
-    val contentMainRef = contentMain.map {
-        Pair(it.id, it.userContent.castcleId)
-    }
-
-    val contentReference = payLoadList.includes?.casts?.map {
-        mapContentFeedUiModelReference(isMindId, it, payLoadList.includes)
-    }?.onEach { contentRef ->
-        contentMainRef.filter {
-            it.first == contentRef.id
-        }.let { it ->
-            contentRef.authorReference = it.map {
-                it.second
-            }
-        }
-    } ?: emptyList()
 
     contentList.apply {
         addAll(contentMain)
-        addAll(contentReference)
     }
     return contentList
 }

@@ -3,6 +3,7 @@ package com.castcle.ui.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
@@ -17,8 +18,7 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -164,7 +164,7 @@ class ProfileFragmentViewModelImpl @Inject constructor(
         launchPagingAsync({
             userProfileDataSouce.getUserViewProfileContent(contentRequestHeader)
         }, onSuccess = {
-            _userProfileContentRes = it
+            _userProfileContentRes = it.distinctUntilChanged()
         })
     }
 

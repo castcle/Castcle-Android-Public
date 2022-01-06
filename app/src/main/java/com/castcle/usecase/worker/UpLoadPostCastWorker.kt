@@ -73,7 +73,7 @@ class UpLoadPostCastWorker(
     }
 
     private fun buildSuccessOutput(profileImageUrl: String): Data {
-        val status = ImageUploaderWorkHelper.Result.SUCCESS.ordinal
+        val status = CastWithImageLoadWorkHelper.Result.SUCCESS.ordinal
 
         return workDataOf(
             CastWithImageLoadWorkHelper.EXTRA_UPLOAD_RESULT to status,
@@ -82,7 +82,7 @@ class UpLoadPostCastWorker(
     }
 
     private fun buildErrorOutput(error: AppError): Data {
-        val status = ImageUploaderWorkHelper.Result.FAILURE.ordinal
+        val status = CastWithImageLoadWorkHelper.Result.FAILURE.ordinal
         val errorMessageRes = error.readableMessageRes
 
         return workDataOf(
