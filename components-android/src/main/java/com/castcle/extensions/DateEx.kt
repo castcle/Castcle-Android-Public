@@ -1,6 +1,7 @@
 package com.castcle.extensions
 
 import android.annotation.SuppressLint
+import android.os.Build
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.chrono.ChronoLocalDateTime
@@ -38,6 +39,35 @@ fun String.toTime(): Date? {
     val formatter = SimpleDateFormat(COMMON_DATE_FORMAT)
     formatter.timeZone = TimeZone.getTimeZone("UTC")
     return formatter.parse(this)
+}
+
+@SuppressLint("SimpleDateFormat")
+fun String.toTimeLong(): Long {
+    val format = SimpleDateFormat(COMMON_DATE_FORMAT, Locale.getDefault())
+    val formatter = SimpleDateFormat(COMMON_DATE_FORMAT)
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+    return try {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val date = format.parse(this)
+            date?.toInstant()?.toEpochMilli() ?: 0L
+        } else {
+            val date = LocalDateTime.parse(
+                this,
+                DateTimeFormatter.ofPattern(COMMON_DATE_FORMAT, Locale.getDefault())
+            )
+            date.atOffset(org.threeten.bp.ZoneOffset.UTC).toInstant().toEpochMilli()
+        }
+    } catch (e: ParseException) {
+        0L
+    }
+}
+
+@SuppressLint("SimpleDateFormat")
+fun convertLongToTime(time: Long): String {
+    val date = Date(time)
+    val format = SimpleDateFormat(SOURCE_DATE_FORMAT)
+    return format.format(date)
 }
 
 @SuppressLint("SimpleDateFormat")

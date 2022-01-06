@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.castcle.android.R
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.base.DiffUpdateAdapter
-import com.castcle.data.staticmodel.ContentType.*
+import com.castcle.common_model.model.webview.ContentType.*
 import com.castcle.ui.common.events.*
 import com.castcle.ui.common.viewholder.feedMock.*
 import io.reactivex.disposables.CompositeDisposable
@@ -109,6 +109,11 @@ class CommonMockAdapter : RecyclerView.Adapter<CommonMockAdapter.ViewHolder<Cont
 
     override fun getItemCount(): Int {
         return uiModels.size
+    }
+
+    override fun onViewRecycled(holder: ViewHolder<ContentFeedUiModel>) {
+        super.onViewRecycled(holder)
+        holder.setIsRecyclable(false)
     }
 
     override fun onCreateViewHolder(

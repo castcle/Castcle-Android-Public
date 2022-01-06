@@ -14,13 +14,13 @@ import com.castcle.common_model.model.notification.NotificationUiModel
 import com.castcle.common_model.model.setting.PageUiModel
 import com.castcle.common_model.model.setting.SettingMenuType
 import com.castcle.common_model.model.userprofile.User
+import com.castcle.common_model.model.webview.*
 import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.StaticSeetingMenu
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.networking.api.user.PROFILE_TYPE_ME
 import com.castcle.ui.base.*
-import com.castcle.ui.common.dialog.*
 import com.castcle.ui.onboard.OnBoardViewModel
 import com.castcle.ui.onboard.navigation.OnBoardNavigator
 import io.reactivex.rxkotlin.subscribeBy
@@ -178,40 +178,67 @@ class SettingFragment : BaseFragment<SettingFragmentViewModel>(),
     }
 
     override fun bindViewEvents() {
-        binding.btContinue.subscribeOnClick {
-            viewModel.onLogOut(requireActivity()).subscribeBy(
-                onError = {
-                    handleError(it)
-                }
-            ).addToDisposables()
+        with(binding) {
+            btContinue.subscribeOnClick {
+                viewModel.onLogOut(requireActivity()).subscribeBy(
+                    onError = {
+                        handleError(it)
+                    }
+                ).addToDisposables()
+            }
+
+            ptPageContentList.clickPage.subscribe {
+                handlerPageClick(it)
+            }.addToDisposables()
+
+            ptPageContentList.onNextPage.subscribe {
+                viewModel.fetchNextUserPage()
+            }.addToDisposables()
+
+            tvjoinUs.subscribeOnClick {
+                openWebView(STATIC_LINK_JOIN_US)
+            }.addToDisposables()
+
+            tvDocs.subscribeOnClick {
+                openWebView(STATIC_LINK_DOCS)
+            }.addToDisposables()
+
+            tvWhitepaper.subscribeOnClick {
+                openWebView(STATIC_OPEN_PDF + STATIC_LINK_WHITEPAPER)
+            }.addToDisposables()
+
+            tvTermsService.subscribeOnClick {
+                openWebView(STATIC_LINK_USER_AGREEMENT)
+            }.addToDisposables()
+
+            tvPrivacyPolicy.subscribeOnClick {
+                openWebView(STATIC_LINK_PRIVACY_POLICY)
+            }.addToDisposables()
+
+            ivFacebook.subscribeOnClick {
+                openWebView(STATIC_LINK_FACEBOOK)
+            }.addToDisposables()
+
+            ivDiscord.subscribeOnClick {
+                openWebView(STATIC_LINK_DISCORD)
+            }.addToDisposables()
+
+            ivGithub.subscribeOnClick {
+                openWebView(STATIC_LINK_GITHUB)
+            }.addToDisposables()
+
+            ivMedium.subscribeOnClick {
+                openWebView(STATIC_LINK_MEDIUM)
+            }.addToDisposables()
+
+            ivTwitter.subscribeOnClick {
+                openWebView(STATIC_LINK_TWITTER)
+            }.addToDisposables()
+
+            ivTelegram.subscribeOnClick {
+                openWebView(STATIC_LINK_TELEGRAM)
+            }.addToDisposables()
         }
-
-        binding.ptPageContentList.clickPage.subscribe {
-            handlerPageClick(it)
-        }.addToDisposables()
-
-        binding.ptPageContentList.onNextPage.subscribe {
-            viewModel.fetchNextUserPage()
-        }.addToDisposables()
-
-        binding.tvjoinUs.subscribeOnClick {
-            openWebView(STATIC_LINK_JOIN_US)
-        }.addToDisposables()
-
-        binding.tvManifesto.subscribeOnClick {
-            openWebView(STATIC_LINK_MENIFESTO)
-        }.addToDisposables()
-
-        binding.tvWhitepaper.subscribeOnClick {
-            openWebView(STATIC_OPEN_PDF + STATIC_LINK_WHITEPAPER)
-        }.addToDisposables()
-
-        binding.tvTermsService.subscribeOnClick {
-            openWebView(STATIC_LINK_USER_AGREEMENT)
-        }.addToDisposables()
-        binding.tvPrivacyPolicy.subscribeOnClick {
-            openWebView(STATIC_LINK_PRIVACY_POLICY)
-        }.addToDisposables()
     }
 
     private fun openWebView(url: String) {

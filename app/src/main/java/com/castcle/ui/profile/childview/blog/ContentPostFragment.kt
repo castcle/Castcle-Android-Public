@@ -13,7 +13,7 @@ import com.castcle.android.databinding.FragmentContentPostBinding
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
@@ -149,10 +149,13 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
     }
 
     override fun setupView() {
-//        startLoadingShimmer()
         with(binding) {
             rvContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
+            }
+
+            swiperefresh.setOnRefreshListener {
+                adapterPagingCommon.refresh()
             }
         }
 
@@ -174,16 +177,6 @@ class ContentPostFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
         }
     }
-
-    private fun startLoadingShimmer() {
-        with(binding) {
-            skeletonLoading.shimmerLayoutLoading.run {
-                startShimmer()
-                visible()
-            }
-        }
-    }
-
 
     private fun stopLoadingShimmer() {
         with(binding) {

@@ -56,7 +56,7 @@ class SocialTextView : AppCompatTextView {
             text = when (value) {
                 State.EXPANDED -> originalText
                 State.COLLAPSED -> collapseText
-                State.NON_EXPANDED -> text
+                State.NON_EXPANDED -> originalText
             }
             changeListener?.onStateChange(value)
         }
@@ -71,6 +71,11 @@ class SocialTextView : AppCompatTextView {
 
     private var originalText: CharSequence = ""
     private var collapseText: CharSequence = ""
+
+    fun onClearMessage() {
+        originalText = ""
+        collapseText = ""
+    }
 
     private val readMoreText = context.getString(R.string.social_text_see_more)
 
@@ -168,23 +173,23 @@ class SocialTextView : AppCompatTextView {
     }
 
     fun setTextReadMore(message: CharSequence?) {
-        text = ""
-        text = message
         doOnAttach {
-            post { setupReadMore() }
+            originalText = ""
+            collapseText = ""
+            post { setupReadMore(text) }
         }
     }
 
     private fun needSkipSetupReadMore(): Boolean =
-        isInvisible || lineCount <= DEFAULT_MAX_LINE || isExpanded || text == null || text == collapseText
+        isInvisible || lineCount <= DEFAULT_MAX_LINE || isExpanded ||
+            text == null || text == collapseText
 
-    private fun setupReadMore() {
+    private fun setupReadMore(message: CharSequence?) {
         if (needSkipSetupReadMore()) {
-            state = State.NON_EXPANDED
-            appendLinkText(text.toString())
+            appendLinkText(message.toString())
             return
         }
-        originalText = addSocialMediaSpan(text)
+        originalText = addSocialMediaSpan(message)
 
         val adjustCutCount = getAdjustCutCount(DEFAULT_MAX_LINE, readMoreText)
         val maxTextIndex = layout.getLineVisibleEnd(DEFAULT_MAX_LINE - 1)
@@ -493,4 +498,4 @@ class SocialTextView : AppCompatTextView {
     }
 }
 
-private const val DEFAULT_MAX_LINE = 5
+private const val DEFAULT_MAX_LINE = 4

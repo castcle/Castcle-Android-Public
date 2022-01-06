@@ -204,8 +204,8 @@ class ImageTemplateFloxBoxAdapter :
                     } else {
                         100f
                     }
-                    flexGrow = 1f
-                    alignSelf = AlignSelf.FLEX_END
+                    flexGrow = 10f
+                    alignSelf = AlignSelf.FLEX_START
                 }
             }
         }

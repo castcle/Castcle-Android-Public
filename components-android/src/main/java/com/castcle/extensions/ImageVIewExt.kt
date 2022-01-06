@@ -90,7 +90,7 @@ fun ImageView.loadRoundedCornersImageUri(
         ).thumbnail(0.5f)
         .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(roundRadius)))
         .transition(DrawableTransitionOptions.withCrossFade())
-        .placeholder(R.drawable.ic_img_placeholder)
+        .error(R.drawable.ic_img_placeholder)
         .into(this)
 }
 
@@ -132,11 +132,6 @@ fun ImageView.loadGranularRoundedCornersContentImage(
     Glide.with(context)
         .load(url)
         .diskCacheStrategy(DiskCacheStrategy.DATA)
-        .thumbnail(
-            Glide.with(context)
-                .load(thumbnailUrl)
-        ).thumbnail(0.05f)
-        .circleCrop()
         .error(R.drawable.ic_img_placeholder)
         .transition(DrawableTransitionOptions.withCrossFade())
         .apply(
@@ -150,6 +145,11 @@ fun ImageView.loadGranularRoundedCornersContentImage(
             )
         ).into(this)
 }
+
+//.thumbnail(
+//Glide.with(context)
+//.load(thumbnailUrl)
+//).thumbnail(0.05f)
 
 fun ImageView.loadRoundedCornersImageWithDefaultSize(
     url: String,
@@ -245,8 +245,8 @@ fun ImageView.loadImageResource(@DrawableRes resId: Int) {
 
 fun ImageView.loadImageResourceWithRadius(
     @DrawableRes resId: Int,
-    topLeft: Float = 12f,
-    bottomLeft: Float = 12f,
+    topLeft: Float = 20f,
+    bottomLeft: Float = 20f,
 ) {
     Glide.with(context)
         .load(resId)

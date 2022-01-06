@@ -2,14 +2,14 @@ package com.castcle.ui.common.viewholder.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.doOnAttach
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateImageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
-import com.castcle.common_model.model.feed.ContentUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.gone
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
@@ -134,6 +134,7 @@ class FeedContentImageViewHolder(
         super.bindUiModel(uiModel)
 
         with(binding) {
+            tvFeedContent.text = ""
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
@@ -142,26 +143,33 @@ class FeedContentImageViewHolder(
             with(uiModel) {
                 ubUser.bindUiModel(uiModel)
                 with(tvFeedContent) {
-                    if (uiModel.type == ContentType.SHORT.type) {
-                        appendLinkText(message)
-                    } else {
-                        setTextReadMore(message)
-                        subscribeOnClick {
-                            tvFeedContent.toggle()
-                        }.addToDisposables()
-                    }
-                    setLinkClickListener(object : SocialTextView.LinkClickListener {
-                        override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
-                            handleItemClick(
-                                TemplateEventClick.WebContentMessageClick(
-                                    matchedText
-                                )
-                            )
+                    onClearMessage()
+                    text = message
+                    doOnAttach {
+                        if (type == ContentType.SHORT.type) {
+                            appendLinkText(message)
+                        } else {
+                            setTextReadMore(text)
+                            subscribeOnClick {
+                                tvFeedContent.toggle()
+                            }.addToDisposables()
                         }
-                    })
+                        setLinkClickListener(object : SocialTextView.LinkClickListener {
+                            override fun onLinkClicked(
+                                linkType: LinkedType,
+                                matchedText: String
+                            ) {
+                                handleItemClick(
+                                    TemplateEventClick.WebContentMessageClick(
+                                        matchedText
+                                    )
+                                )
+                            }
+                        })
+                    }
                 }
 
-                icImageContent.bindImageContent(uiModel,true)
+                icImageContent.bindImageContent(uiModel, true)
                 ftFooter.bindUiModel(uiModel)
             }
         }

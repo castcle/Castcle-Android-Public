@@ -12,8 +12,8 @@ import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.RECASTED_TYPE
 import com.castcle.components_android.ui.base.addToDisposables
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
+import com.castcle.components_android.ui.custom.timeago.setTimeAgoCus
 import com.castcle.extensions.*
-import com.perfomer.blitz.setTimeAgo
 import io.reactivex.subjects.BehaviorSubject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
@@ -133,7 +133,7 @@ class UserBarTemplate(
 
                 if (createdAt.isNotBlank()) {
                     createdAt.toTime()?.let {
-                        tvDataTime.setTimeAgo(it)
+                        tvDataTime.setTimeAgoCus(it, showSeconds = true, autoUpdate = true)
                     }
                 }
             }

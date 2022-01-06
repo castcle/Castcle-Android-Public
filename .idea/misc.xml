@@ -273,6 +273,7 @@
         <entry key="components-android/src/main/res/layout/layout_item_shimmer_load.xml" value="0.13148907103825136" />
         <entry key="components-android/src/main/res/layout/layout_item_shimmer_page_load.xml" value="0.13900273224043716" />
         <entry key="components-android/src/main/res/layout/layout_menu_template.xml" value="0.30833333333333335" />
+        <entry key="components-android/src/main/res/layout/layout_message_content_template.xml" value="0.16290983606557377" />
         <entry key="components-android/src/main/res/layout/layout_page_header.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/layout_preview_content_image.xml" value="0.15027322404371585" />
         <entry key="components-android/src/main/res/layout/layout_preview_content_web.xml" value="0.15027322404371585" />

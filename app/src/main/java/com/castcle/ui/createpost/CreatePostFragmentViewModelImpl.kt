@@ -10,7 +10,7 @@ import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.domain.*
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.usecase.createblog.GetImagePathMapUseCase
 import com.castcle.usecase.createblog.ScaleImagesSingleUseCase
 import com.castcle.usecase.feed.QuoteCastContentSingleUseCase
@@ -259,14 +259,12 @@ class CreatePostFragmentViewModelImpl @Inject constructor(
                 item.uri == it.uri
             }?.apply {
                 isSelected = true
-            }?.let {
-                setMediaItem(updateImage.toList())
-                setImageSelected()
-                return
             }
         }
         updateImage?.apply {
             addAll(mediaItem)
+        }?.distinctBy {
+            it.uri
         }.run {
             this?.let { setMediaItem(it) }
             setImageSelected()

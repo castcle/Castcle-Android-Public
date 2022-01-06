@@ -8,14 +8,16 @@ import com.castcle.common_model.model.feed.LinkUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
+import com.castcle.ui.common.WebType
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.util.WebTypeIcon.getIconFormLikeType
 import com.chayangkoon.champ.linkpreview.LinkPreview
 import com.chayangkoon.champ.linkpreview.common.LinkContent
+import com.facebook.shimmer.Shimmer
 import com.workfort.linkpreview.LinkData
 import com.workfort.linkpreview.callback.ParserCallback
 import com.workfort.linkpreview.util.LinkParser
@@ -175,6 +177,7 @@ class FeedContentShortWebViewHolder(
             with(contentFeedUiModel) {
                 ubUser.bindUiModel(this)
                 with(tvFeedContent) {
+                    onClearMessage()
                     if (type == ContentType.SHORT.type) {
                         appendLinkText(message)
                     } else {
@@ -195,9 +198,12 @@ class FeedContentShortWebViewHolder(
                 }
                 ftFooter.bindUiModel(this)
 
+                clPreviewIconContent.clInPreviewIconContent.gone()
+                clPreviewContent.clInPreviewContent.gone()
                 link?.let { linkItem ->
+                    startLoadingPreViewShimmer()
                     when {
-                        linkItem.imagePreview.isBlank() -> {
+                        linkItem.imagePreview.isBlank() || linkItem.type == WebType.FACEBOOK.type -> {
                             onBindContentIconWeb(message, linkItem)
                         }
                         linkItem.imagePreview.isNotBlank() && linkItem.linkTitle.isNotBlank() -> {
@@ -298,6 +304,19 @@ class FeedContentShortWebViewHolder(
                 )
                 tvPreviewHeader.text = linkTitle
                 tvPreviewContent.text = linkDescription
+            }
+        }
+    }
+
+    private fun startLoadingPreViewShimmer() {
+        val shimmerBuilder = Shimmer.AlphaHighlightBuilder()
+        with(binding) {
+            inShimmerContentLoading.shimmerLayoutLoading.run {
+                setShimmer(
+                    shimmerBuilder.setDirection(Shimmer.Direction.LEFT_TO_RIGHT).setTilt(0f).build()
+                )
+                startShimmer()
+                visible()
             }
         }
     }

@@ -6,7 +6,7 @@ import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.gone
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
@@ -133,6 +133,7 @@ class FeedContentQuoteViewHolder(
                 ubUser.bindUiModel(uiModel)
                 tvFeedContent.text = message
                 with(tvFeedContent) {
+                    onClearMessage()
                     if (uiModel.type == ContentType.SHORT.type) {
                         appendLinkText(message)
                     } else {

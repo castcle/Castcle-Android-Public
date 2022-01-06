@@ -17,6 +17,7 @@ import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.login.domain.*
 import com.castcle.common_model.model.signin.AuthVerifyBaseUiModel
 import com.castcle.common_model.model.signin.domain.*
+import com.castcle.common_model.model.webview.*
 import com.castcle.extensions.openUri
 import com.castcle.networking.api.response.SocialTokenResponse
 import com.castcle.ui.base.*
@@ -300,20 +301,3 @@ class NotiflyLoginDialogFragment : BaseBottomSheetDialogFragment<NotiflyLoginDia
         (context as Activity).openUri(url)
     }
 }
-
-const val STATIC_LINK_USER_AGREEMENT =
-    "https://documents.castcle.com/terms-of-service.html"
-const val STATIC_LINK_PRIVACY_POLICY =
-    "https://documents.castcle.com/privacy-policy.html"
-const val STATIC_LINK_JOIN_US =
-    "https://jobs.blognone.com/company/castcle"
-private const val STATIC_LINK_DOCS =
-    "https://docs.castcle.com/"
-const val STATIC_LINK_ABOUT_US =
-    "https://documents.castcle.com/about-us.html"
-const val STATIC_LINK_MENIFESTO =
-    "https://docs.castcle.com/"
-const val STATIC_LINK_WHITEPAPER =
-    "https://castcle.com/whitepaper.pdf"
-const val STATIC_OPEN_PDF =
-    "https://drive.google.com/viewerng/viewer?embedded=true&url="

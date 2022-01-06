@@ -3,10 +3,10 @@ import android.view.ViewGroup
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.data.staticmodel.ContentType
 import com.castcle.extensions.gone
 import com.castcle.ui.common.CommonAdapter
 import com.castcle.ui.common.events.Click
@@ -143,6 +143,7 @@ class FeedContentShortViewHolder(
             with(contentItem) {
                 ubUser.bindUiModel(contentItem)
                 with(tvFeedContent) {
+                    onClearMessage()
                     if (contentItem.type == ContentType.SHORT.type) {
                         appendLinkText(message)
                     } else {

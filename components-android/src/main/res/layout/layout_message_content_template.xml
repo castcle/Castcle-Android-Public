@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.castcle.components_android.ui.custom.socialtextview.SocialTextView
+        style="@style/AppTextKanitExLight.xSmall"
+        android:id="@+id/tvFeedContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:bufferType="spannable"
+        android:paddingStart="@dimen/_12sdp"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        android:textColor="@color/white"
+        app:hashtagColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:linkTypes="mention|hashtag|email|url"
+        app:mentionColor="@color/blue"
+        app:urlColor="@color/blue"
+        tools:text="Win a legendary DappRadar x\b\n@MOBOX_Official #NFT.\b\nDon't miss your chance and register now:" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

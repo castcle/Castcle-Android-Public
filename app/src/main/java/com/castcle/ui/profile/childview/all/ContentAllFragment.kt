@@ -7,14 +7,13 @@ import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.castcle.android.R
 import com.castcle.android.databinding.FragmentContentAllBinding
 import com.castcle.common_model.model.empty.EmptyState
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*

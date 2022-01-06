@@ -36,7 +36,7 @@
     <string name="greeting_description">A Decentralized Social Media \b\n for Everyone</string>
     <string name="greeting_next">Next</string>
     <string name="greeting_tool_bar_title">Login</string>
-    <string name="email_title">What\'s Your \b\nEmail Address ?</string>
+    <string name="email_title">What\'s Your Email Address?</string>
     <string name="email_title_description">You\'ll use this email when you login and when \nyou lose your password.</string>
     <string name="email_error_message">Someone already has this email address.Try another name.</string>
     <string name="email_pass_message"> This email address is valid.</string>
@@ -263,7 +263,8 @@ account</string>
 
     <string name="profile_blocking_des1">We apologize but, you have been blocked by this user</string>
     <string name="profile_blocking_des2">You are unable to view or follow @%s</string>
-    <string name="social_text_see_more"> …See more</string>
+    <string name="social_text_see_more"> …Read more</string>
     <string name="cast_post_status_error">Can\'t create post please Verify your Email</string>
+    <string name="setting_docs">Docs</string>
 
 </resources>

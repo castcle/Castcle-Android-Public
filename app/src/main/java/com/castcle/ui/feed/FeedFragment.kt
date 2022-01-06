@@ -106,12 +106,13 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                     return false
                 }
             }
+
             rvFeedContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
                 adapterPagingCommon.withLoadStateFooter(adapterLoadState)
             }
             rvFeedContent.itemAnimator = itemAnimator
-
+            rvFeedContent.recycledViewPool.setMaxRecycledViews(0, 0)
             with(rcFeedFillter) {
                 adapter = adapterFilterAdapter
                 setupHorizontalSnapCarousel(
@@ -145,7 +146,7 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
     }
 
     private fun refreshPosition() {
-        binding.rvFeedContent.smoothScrollToPosition(0)
+        binding.rvFeedContent.scrollToPosition(0)
     }
 
     override fun bindViewEvents() {
@@ -209,6 +210,8 @@ class FeedFragment : BaseFragment<FeedFragmentViewModel>(),
                         handleEmptyState(!isLoadingRemote)
                         if (isNothingLoad) {
                             startLoadingShimmer()
+                        } else {
+                            stopLoadingShimmer()
                         }
                     } else {
                         binding.swiperefresh.isRefreshing = false

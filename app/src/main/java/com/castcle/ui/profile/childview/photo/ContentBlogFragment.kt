@@ -13,7 +13,7 @@ import com.castcle.android.databinding.FragmentContentBlogBinding
 import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.feed.converter.LikeContentRequest
 import com.castcle.common_model.model.setting.ProfileType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
 import com.castcle.ui.base.*
@@ -152,6 +152,9 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
         with(binding) {
             rvContent.adapter = CommonAdapter().also {
                 adapterPagingCommon = it
+            }
+            swiperefresh.setOnRefreshListener {
+                adapterPagingCommon.refresh()
             }
         }
 
@@ -421,5 +424,4 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
         }
     }
-
 }

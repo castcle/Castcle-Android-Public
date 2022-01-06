@@ -10,19 +10,16 @@ import com.castcle.common_model.model.feed.LinkUiModel
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.data.staticmodel.ContentType
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.createbloc.adapter.CommonQuoteCastAdapter
 import com.castcle.ui.util.WebTypeIcon
-import com.chayangkoon.champ.linkpreview.LinkPreview
 import com.chayangkoon.champ.linkpreview.common.LinkContent
 import com.workfort.linkpreview.LinkData
 import com.workfort.linkpreview.callback.ParserCallback
 import com.workfort.linkpreview.util.LinkParser
-import kotlinx.coroutines.*
-import java.io.IOException
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -113,6 +110,7 @@ class FeedContentShortViewHolder(
             with(uiModel) {
                 ubUser.bindUiModel(uiModel, true)
                 with(tvFeedContent) {
+                    onClearMessage()
                     if (uiModel.type == ContentType.SHORT.type) {
                         appendLinkText(message)
                     } else {

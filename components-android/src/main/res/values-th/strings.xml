@@ -260,6 +260,6 @@ account</string>
 
     <string name="profile_blocking_des1">We apologize but, you have been blocked by this user</string>
     <string name="profile_blocking_des2">You are unable to view or follow @%s</string>
-    <string name="social_text_see_more"> …See more</string>
+    <string name="social_text_see_more"> …Read more</string>
     <string name="cast_post_status_error">Can\'t create post please Verify your Email</string>
 </resources>
