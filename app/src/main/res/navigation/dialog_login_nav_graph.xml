@@ -14,18 +14,34 @@
 
         <action
             android:id="@+id/actionDialogLoginFragmentToLoginFragment"
-            app:destination="@id/loginNavGraph" />
+            app:destination="@id/loginNavGraph"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/actionDialogLoginFragmentToGreetingFragment"
-            app:destination="@id/greetingFragment" />
+            app:destination="@id/greetingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/actionDialogLoginFragmentToTwitterLoginFragment"
-            app:destination="@id/twitterLoginFragment" />
+            app:destination="@id/twitterLoginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <action
             android:id="@+id/actionDialogLoginFragmentToCreateAccountFragment"
-            app:destination="@id/createAccountFragment" />
+            app:destination="@id/createAccountFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </dialog>
 </navigation>

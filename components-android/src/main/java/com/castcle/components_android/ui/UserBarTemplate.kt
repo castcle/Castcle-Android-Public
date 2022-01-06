@@ -2,6 +2,7 @@ package com.castcle.components_android.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.R
@@ -101,8 +102,17 @@ class UserBarTemplate(
                 userContent.avatar.let {
                     ivAvatar.loadCircleImage(it)
                 }
-                tvUserName.text = userContent.displayName
-
+                tvUserName.text = userContent.displayName.run {
+                    if (userContent.displayName.length > 15) {
+                        userContent.displayName.replaceRange(
+                            15,
+                            userContent.displayName.length,
+                            "..."
+                        )
+                    } else {
+                        userContent.displayName
+                    }
+                }
                 if (itemUiModel.isMindId) {
                     tvStatusFollow.gone()
                     ivStatusFollow.gone()

@@ -51,7 +51,7 @@
         <entry key="app/src/main/res/layout/fragment_account_completed.xml" value="0.15095628415300547" />
         <entry key="app/src/main/res/layout/fragment_add_links.xml" value="0.14959016393442623" />
         <entry key="app/src/main/res/layout/fragment_app_language.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/fragment_change_password.xml" value="0.1407103825136612" />
+        <entry key="app/src/main/res/layout/fragment_change_password.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_completed.xml" value="0.1369535519125683" />
         <entry key="app/src/main/res/layout/fragment_content_all.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/fragment_content_blog.xml" value="0.14583333333333334" />
@@ -231,7 +231,7 @@
         <entry key="components-android/src/main/res/layout/input_edit_text.xml" value="0.25" />
         <entry key="components-android/src/main/res/layout/item_actionbar_profile.xml" value="0.18169398907103826" />
         <entry key="components-android/src/main/res/layout/item_comment_child_template.xml" value="0.16974043715846995" />
-        <entry key="components-android/src/main/res/layout/item_comment_header_template.xml" value="0.14316012725344646" />
+        <entry key="components-android/src/main/res/layout/item_comment_header_template.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/item_feed_fillter.xml" value="0.17349726775956284" />
         <entry key="components-android/src/main/res/layout/item_feed_filter.xml" value="0.45" />
         <entry key="components-android/src/main/res/layout/item_image_content.xml" value="0.1837431693989071" />
@@ -279,13 +279,13 @@
         <entry key="components-android/src/main/res/layout/layout_preview_content_web_binding.xml" value="0.15198087431693988" />
         <entry key="components-android/src/main/res/layout/layout_preview_content_web_icon.xml" value="0.15027322404371585" />
         <entry key="components-android/src/main/res/layout/layout_quote_bar_template.xml" value="0.25" />
-        <entry key="components-android/src/main/res/layout/layout_quote_template_blog.xml" value="0.335" />
+        <entry key="components-android/src/main/res/layout/layout_quote_template_blog.xml" value="0.3285302593659942" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_image.xml" value="0.11851092896174864" />
         <entry key="components-android/src/main/res/layout/layout_quote_template_short.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/layout_user_bar_content_template.xml" value="0.25" />
-        <entry key="components-android/src/main/res/layout/layout_user_bar_template.xml" value="0.2621359223300971" />
+        <entry key="components-android/src/main/res/layout/layout_user_bar_template.xml" value="0.1" />
         <entry key="components-android/src/main/res/layout/layout_user_footer_template.xml" value="0.335" />
-        <entry key="components-android/src/main/res/layout/layout_what_you_mind.xml" value="0.335" />
+        <entry key="components-android/src/main/res/layout/layout_what_you_mind.xml" value="0.24547101449275363" />
         <entry key="components-android/src/main/res/layout/layout_whay_you_mind.xml" value="0.335" />
         <entry key="components-android/src/main/res/layout/ui_shimmer_content_feed_loading.xml" value="0.1403688524590164" />
         <entry key="components-android/src/main/res/layout/ui_shimmer_content_image_loading.xml" value="0.1366120218579235" />

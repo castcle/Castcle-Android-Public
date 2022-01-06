@@ -1,6 +1,7 @@
 package com.castcle.common_model.model.feed
 
 import android.os.Parcelable
+import android.util.Log
 import com.castcle.common_model.model.feed.api.response.*
 import com.castcle.common_model.model.feed.api.response.Payload
 import com.castcle.common_model.model.userprofile.domain.*
@@ -87,7 +88,6 @@ fun mapToContentFeedUiMode(
     val contentMainRef = contentMain.map {
         Pair(it.id, it.userContent.castcleId)
     }
-
     val contentReference = payLoadList.includes?.casts?.map {
         mapItemContentFeedUiModelReference(isMindId, it, payLoadList.includes)
     }?.onEach { contentRef ->
@@ -133,6 +133,7 @@ fun mapContentFeedUiModelReference(
                     }
             }
         }
+        followed = userProfile.followed
         authorReference = includes?.users?.filter {
             it.id == payload.payload?.authorId
         }?.map {
@@ -167,6 +168,7 @@ fun mapItemContentFeedUiModelReference(
                 }
             }
         }
+        followed = userProfile.followed
         authorReference = includes?.users?.filter {
             it.id == payload.authorId
         }?.map {
@@ -320,7 +322,6 @@ fun mapToContentFeedUiMode(
         addAll(contentMain)
         addAll(contentReference)
     }
-
     return contentList
 }
 
@@ -375,6 +376,7 @@ fun mapContentFeedUiModelReference(
             }
         }
         userContent = userProfile
+        followed = userProfile.followed
         this.isMindId = userProfile.castcleId.equals(isMindId, ignoreCase = false)
     }
 }

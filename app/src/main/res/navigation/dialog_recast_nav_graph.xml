@@ -16,7 +16,11 @@
 
         <action
             android:id="@+id/actionDialogRecastFragmentToCreateQuoteFragment"
-            app:destination="@id/createQuoteFragment" />
+            app:destination="@id/createQuoteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
 
         <deepLink app:uri="@string/deep_link_path_https_recast_dialog" />
         <deepLink app:uri="@string/nav_deep_link_recast_dialog" />

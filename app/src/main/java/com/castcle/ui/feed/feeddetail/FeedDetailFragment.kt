@@ -459,7 +459,7 @@ class FeedDetailFragment : BaseFragment<FeedDetailFragmentViewModel>(),
             commentLikeStatus = it.contentUiModel.payLoadUiModel.likedUiModel.liked
 
             with(etInputMessages) {
-                setText(MENTION_CASTCLE_ID.format(castcleId))
+                setText("${MENTION_CASTCLE_ID.format(castcleId)} ")
                 setSelection(etInputMessages.text.length)
                 onReplyComment = true
             }
