@@ -12,11 +12,11 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Authen-Android" />
-            <option value="$PROJECT_DIR$/Networking-Android" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common-model" />
             <option value="$PROJECT_DIR$/common-rx" />
             <option value="$PROJECT_DIR$/components-android" />
+            <option value="$PROJECT_DIR$/networking-Android" />
             <option value="$PROJECT_DIR$/session-memory" />
           </set>
         </option>
