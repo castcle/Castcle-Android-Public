@@ -159,12 +159,18 @@ class UserProfileRepositoryImpl @Inject constructor(
     ), pagingSourceFactory = {
         UserProfilePagingDataSource(userApi, contentRequestHeader)
     }).flow.distinctUntilChanged().map { pagingData ->
-        pagingData.map { it ->
-            proLoadAllImage(it.photo?.map {
+        val contentIdList = mutableListOf<String>()
+        pagingData.filter { content ->
+            proLoadAllImage(content.photo?.map {
                 it.imageMedium
             })
+            if (contentIdList.contains(content.id)) {
+                false
+            } else {
+                contentIdList.add(content.id)
+                true
+            }
         }
-        pagingData
     }
 
     override fun getUserViewProfileContent(feedRequestHeader: FeedRequestHeader)
