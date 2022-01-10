@@ -126,4 +126,6 @@ abstract class OnBoardViewModel : BaseViewModel() {
     abstract val cacheProfileId: LiveData<String>
 
     abstract fun setCacheProfileId(castcleId: String)
+
+    abstract val onCreatePostSuccess: LiveData<Unit>
 }

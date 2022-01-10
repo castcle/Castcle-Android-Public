@@ -126,6 +126,10 @@ class ContentBlogFragment : BaseFragment<ProfileFragmentViewModel>(),
                     )
                 )
             })
+
+        activityViewModel.onCreatePostSuccess.observe(this, {
+            adapterPagingCommon.refresh()
+        })
     }
 
     private fun isProfileType(

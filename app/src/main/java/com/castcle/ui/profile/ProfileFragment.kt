@@ -18,6 +18,7 @@ import com.castcle.common_model.model.feed.toContentUiModel
 import com.castcle.common_model.model.login.domain.CreatePostBundle
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.setting.ProfileType
+import com.castcle.common_model.model.setting.ProfileType.*
 import com.castcle.common_model.model.setting.UpLoadType
 import com.castcle.common_model.model.userprofile.User
 import com.castcle.common_model.model.userprofile.domain.ImagesRequest
@@ -25,7 +26,6 @@ import com.castcle.components_android.ui.base.TemplateClicks
 import com.castcle.data.staticmodel.TabContentStatic.tabContent
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
-import com.castcle.networking.api.user.PROFILE_TYPE_PAGE
 import com.castcle.ui.base.*
 import com.castcle.ui.common.dialog.chooseimage.KEY_CHOOSE_REQUEST
 import com.castcle.ui.common.dialog.chooseimage.PhotoSelectedState
@@ -93,9 +93,12 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
     private val isMe: Boolean
         get() = argsBundle.isMe
 
+    private val type: String
+        get() = argsBundle.type ?: ""
+
     private var photoSelectedState: PhotoSelectedState = PhotoSelectedState.NON
 
-    private var profileTypeState: ProfileType = ProfileType.NON
+    private var profileTypeState: ProfileType = NON
 
     private lateinit var userProfile: User
 
@@ -136,21 +139,21 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
         onPage: () -> Unit
     ) {
         when (profileType) {
-            PROFILE_TYPE_ME -> {
+            ProfileType.PROFILE_TYPE_ME.type -> {
                 onProfileMe.invoke()
                 activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_ME)
                 activityViewModel.setCacheProfileId(activityViewModel.castcleId)
             }
-            PROFILE_TYPE_PAGE, ProfileType.PROFILE_TYPE_PAGE_ME.type -> {
+            PROFILE_TYPE_PAGE.type, PROFILE_TYPE_PAGE_ME.type -> {
                 onPage.invoke()
                 if (isMe) {
                     activityViewModel.setCacheProfileId(profileId)
                 }
-                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_PAGE)
+                activityViewModel.setProfileType(PROFILE_TYPE_PAGE)
             }
             else -> {
                 onProfileYou.invoke()
-                activityViewModel.setProfileType(ProfileType.PROFILE_TYPE_PEOPLE)
+                activityViewModel.setProfileType(PROFILE_TYPE_PEOPLE)
             }
         }
         activityViewModel.setContentTypeYouId(profileId)
@@ -165,12 +168,19 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }
         }
 
+        binding.tabs.gone()
+        /**
+         *
+         *
+         * Close Navigation Tab filter
         TabLayoutMediator(
-            binding.tabs,
-            binding.vpPageContent
+        binding.tabs,
+        binding.vpPageContent
         ) { Tab, position ->
-            Tab.text = requireContext().getString(tabContent[position].tabNameRes)
+        Tab.text = requireContext().getString(tabContent[position].tabNameRes)
         }.attach()
+         *
+         * **/
 
         profileType(
             onPage = {
@@ -323,16 +333,27 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             displayErrorMessage(it)
         })
 
-        profileType(
-            onProfileMe = {
-                viewModel.fetchUserProfile()
-            },
-            onProfileYou = {
-                viewModel.getUserViewProfile(profileId)
-            },
-            onPage = {
-                viewModel.getViewPage(profileId)
-            })
+        if (type.isNotBlank()) {
+            when (type) {
+                PROFILE_TYPE_PAGE_ME.type -> {
+                    viewModel.getViewPage(profileId)
+                }
+                ProfileType.PROFILE_TYPE_ME.type -> {
+                    viewModel.fetchUserProfile()
+                }
+            }
+        } else {
+            profileType(
+                onProfileMe = {
+                    viewModel.fetchUserProfile()
+                },
+                onProfileYou = {
+                    viewModel.getUserViewProfile(profileId)
+                },
+                onPage = {
+                    viewModel.getViewPage(profileId)
+                })
+        }
 
         viewModel.userProfileData.observe(this, {
             profileType(
@@ -562,7 +583,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             }.addToDisposables()
 
             if (isMe) {
-                profileTypeState = ProfileType.PROFILE_TYPE_PAGE
+                profileTypeState = PROFILE_TYPE_PAGE
                 ivEditProfile.subscribeOnClick {
                     onGuestMode(enable = {
                         onNavigateToChooseProfileEdit()
@@ -571,7 +592,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 onBindEditImagePage()
                 onBindWhatYouMind(user)
             } else {
-                profileTypeState = ProfileType.PROFILE_TYPE_PEOPLE
+                profileTypeState = PROFILE_TYPE_PEOPLE
                 ivEditProfile.subscribeOnClick {
                     onGuestMode(enable = {
                         onNavigateToChooseUserEdit()
@@ -702,21 +723,42 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
 
     private fun onNavigateToEditProfileOrPage() {
         val profileBundle = getProfileBundle()
-        onBoardNavigator.navigateToAboutYouFragment(profileBundle)
+        if (profileBundle is ProfileBundle.ViewProfile) {
+            onBoardNavigator.navigateToViewProfileFragment(profileBundle)
+        } else {
+            onBoardNavigator.navigateToAboutYouFragment(profileBundle)
+        }
     }
 
     private fun getProfileBundle(): ProfileBundle {
         profileType(onPage = {
-            profileBundle = ProfileBundle.PageEdit(
-                castcleId = userProfile.castcleId,
-                overview = userProfile.overview,
-                dob = userProfile.dob,
-                facebookLinks = userProfile.facebookLinks,
-                twitterLinks = userProfile.twitterLinks,
-                youtubeLinks = userProfile.youtubeLinks,
-                mediumLinks = userProfile.mediumLinks,
-                websiteLinks = userProfile.websiteLinks
-            )
+            profileBundle = if (isMe) {
+                ProfileBundle.PageEdit(
+                    castcleId = userProfile.castcleId,
+                    overview = userProfile.overview,
+                    dob = userProfile.dob,
+                    facebookLinks = userProfile.facebookLinks,
+                    twitterLinks = userProfile.twitterLinks,
+                    youtubeLinks = userProfile.youtubeLinks,
+                    mediumLinks = userProfile.mediumLinks,
+                    websiteLinks = userProfile.websiteLinks
+                )
+            } else {
+                ProfileBundle.ViewProfile(
+                    castcleId = userProfile.castcleId,
+                    overview = userProfile.overview,
+                    dob = userProfile.dob,
+                    castcleName = userProfile.displayName,
+                    avatar = userProfile.avatar,
+                    imageCover = userProfile.cover,
+                    facebookLinks = userProfile.facebookLinks,
+                    twitterLinks = userProfile.twitterLinks,
+                    youtubeLinks = userProfile.youtubeLinks,
+                    mediumLinks = userProfile.mediumLinks,
+                    websiteLinks = userProfile.websiteLinks
+                )
+            }
+
         }, onProfileMe = {
             profileBundle = ProfileBundle.ProfileEdit(
                 castcleId = userProfile.castcleId,
@@ -733,6 +775,8 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
                 castcleId = userProfile.castcleId,
                 overview = userProfile.overview,
                 dob = userProfile.dob,
+                castcleName = userProfile.displayName,
+                avatar = userProfile.avatar,
                 facebookLinks = userProfile.facebookLinks,
                 twitterLinks = userProfile.twitterLinks,
                 youtubeLinks = userProfile.youtubeLinks,

@@ -2,7 +2,6 @@ package com.castcle.components_android.ui
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.castcle.android.components_android.R
@@ -103,23 +102,29 @@ class UserBarTemplate(
                     ivAvatar.loadCircleImage(it)
                 }
                 tvUserName.text = userContent.displayName.run {
-                    if (userContent.displayName.length > 15) {
-                        userContent.displayName.replaceRange(
-                            15,
-                            userContent.displayName.length,
-                            "..."
-                        )
-                    } else {
-                        userContent.displayName
+                    when {
+                        userContent.displayName.length > 15 -> {
+                            userContent.displayName.replaceRange(
+                                15,
+                                userContent.displayName.length,
+                                "..."
+                            )
+                        }
+                        else -> {
+                            userContent.displayName
+                        }
                     }
                 }
-                if (itemUiModel.isMindId) {
-                    tvStatusFollow.gone()
-                    ivStatusFollow.gone()
-                } else {
-                    with(tvStatusFollow) {
-                        visibleOrGone(!itemUiModel.followed)
+                when {
+                    itemUiModel.isMindId -> {
+                        tvStatusFollow.gone()
                         ivStatusFollow.gone()
+                    }
+                    else -> {
+                        with(tvStatusFollow) {
+                            visibleOrGone(!itemUiModel.followed)
+                            ivStatusFollow.gone()
+                        }
                     }
                 }
                 groupReCasted.gone()
@@ -141,24 +146,28 @@ class UserBarTemplate(
     }
 
     private fun mapRecasted(itemUiModel: ContentFeedUiModel): String {
-        val recasted = if (itemUiModel.authorReference.size > LIMITE_RECASTED) {
-            val reCasted = if (itemUiModel.isMindId) {
-                binding.root.context.getString(R.string.feed_content_me_recasted)
-            } else {
-                itemUiModel.authorReference.first()
-            }
-            val youRecast = binding.root.context.getString(R.string.feed_content_template_recast)
-                .format(reCasted, itemUiModel.authorReference[2])
-            binding.root.context.getString(R.string.feed_content_you_recasted).format(
-                youRecast
-            )
-        } else {
-            if (itemUiModel.isMindId) {
-                binding.root.context.getString(R.string.feed_content_me_recasted)
-            } else {
-                binding.root.context.getString(R.string.feed_content_you_recasted).format(
+        val recasted = when {
+            itemUiModel.authorReference.size > LIMITE_RECASTED -> {
+                val reCasted = if (itemUiModel.isMindId) {
+                    binding.root.context.getString(R.string.feed_content_me_recasted)
+                } else {
                     itemUiModel.authorReference.first()
+                }
+                val youRecast =
+                    binding.root.context.getString(R.string.feed_content_template_recast)
+                        .format(reCasted, itemUiModel.authorReference[2])
+                binding.root.context.getString(R.string.feed_content_you_recasted).format(
+                    youRecast
                 )
+            }
+            else -> {
+                if (itemUiModel.isMindId) {
+                    binding.root.context.getString(R.string.feed_content_me_recasted)
+                } else {
+                    binding.root.context.getString(R.string.feed_content_you_recasted).format(
+                        itemUiModel.authorReference.first()
+                    )
+                }
             }
         }
 

@@ -130,6 +130,10 @@ class ContentPhotoFragment : BaseFragment<ProfileFragmentViewModel>(),
                     )
                 )
             })
+
+        activityViewModel.onCreatePostSuccess.observe(this, {
+            adapterPagingCommon.refresh()
+        })
     }
 
     private fun isProfileType(

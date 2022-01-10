@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_night"
+    tools:ignore="MissingDefaultResource">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_25sdp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivImageCover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                app:layout_constraintDimensionRatio="H,16:9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/ic_img_placeholder" />
+
+            <View
+                android:id="@+id/vLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_common_template"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                app:layout_constraintBottom_toBottomOf="@id/ivImageCover"
+                app:layout_constraintEnd_toEndOf="@id/ivImageCover"
+                app:layout_constraintHeight_percent="0.15"
+                app:layout_constraintStart_toStartOf="@id/ivImageCover" />
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/ivAvatarProfile"
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_70sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_25sdp"
+                android:src="@drawable/ic_avatar_placeholder"
+                app:civ_border="@color/white"
+                app:civ_border_width="@dimen/_1sdp"
+                app:layout_constraintEnd_toEndOf="@id/ivImageCover"
+                app:layout_constraintStart_toStartOf="@id/ivImageCover"
+                app:layout_constraintTop_toTopOf="@id/ivImageCover"
+                tools:ignore="MissingConstraints" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Regular"
+                android:id="@+id/tvCastcleName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingStart="@dimen/_4sdp"
+                android:paddingEnd="@dimen/_4sdp"
+                android:shadowColor="@color/gray_medium"
+                android:shadowRadius="12"
+                android:textColor="@color/white"
+                android:translationZ="@dimen/_12sdp"
+                app:layout_constraintEnd_toEndOf="@id/ivAvatarProfile"
+                app:layout_constraintStart_toStartOf="@id/ivAvatarProfile"
+                app:layout_constraintTop_toBottomOf="@id/ivAvatarProfile"
+                tools:text="Kasidej Daengdej" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanitLight.xSmall"
+                android:id="@+id/tvCastcleId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:paddingStart="@dimen/_4sdp"
+                android:paddingEnd="@dimen/_4sdp"
+                android:shadowColor="@color/gray_medium"
+                android:shadowRadius="12"
+                android:textColor="@color/white"
+                android:translationZ="@dimen/_12sdp"
+                app:layout_constraintEnd_toEndOf="@id/ivAvatarProfile"
+                app:layout_constraintStart_toStartOf="@id/ivAvatarProfile"
+                app:layout_constraintTop_toBottomOf="@id/tvCastcleName"
+                tools:text="\@KasidejDaengdej" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/tvOverView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/about_you_overview"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vLoading" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.xSmall"
+                android:id="@+id/tvOverViewDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:paddingBottom="@dimen/_12sdp"
+                android:textColor="@color/light_t01"
+                app:layout_constraintBottom_toBottomOf="@id/vLine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvOverView"
+                tools:text="Bitcoin is an open source censorship-resistant peer-to-peer immutable network. " />
+
+            <View
+                android:id="@+id/vLine"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/black_drak"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvOverViewDescription" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/tvBirthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/about_you_birthday"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vLine" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.xSmall"
+                android:id="@+id/tvBirthdayDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:paddingBottom="@dimen/_12sdp"
+                android:textColor="@color/light_t01"
+                app:layout_constraintBottom_toBottomOf="@id/vLine2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvBirthday"
+                tools:text="122 july 2024" />
+
+            <View
+                android:id="@+id/vLine2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/black_drak"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvBirthdayDescription" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/tvLinks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/view_profile_links"
+                android:textColor="@color/blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vLine2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/itLinkFacebook"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@drawable/bg_round_corner_input"
+                android:drawableStart="@drawable/ic_facebook"
+                android:drawablePadding="@dimen/_16sdp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:padding="@dimen/_12sdp"
+                android:textColor="@color/blue"
+                android:visibility="invisible"
+                app:hintText="@string/about_you_field_facebook"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLinks" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/itLinkTwitter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@drawable/bg_round_corner_input"
+                android:drawableStart="@drawable/ic_twitter"
+                android:drawablePadding="@dimen/_8sdp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:padding="@dimen/_12sdp"
+                android:textColor="@color/blue"
+                android:visibility="invisible"
+                app:hintText="@string/about_you_field_twitter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itLinkFacebook" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/itLinkYouTube"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@drawable/bg_round_corner_input"
+                android:drawableStart="@drawable/ic_youtube"
+                android:drawablePadding="@dimen/_8sdp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:padding="@dimen/_12sdp"
+                android:textColor="@color/blue"
+                android:visibility="invisible"
+                app:hintText="@string/about_you_field_youtube"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itLinkTwitter" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/itLinkMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@drawable/bg_round_corner_input"
+                android:drawableStart="@drawable/ic_setting_medium"
+                android:drawablePadding="@dimen/_8sdp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:padding="@dimen/_12sdp"
+                android:textColor="@color/blue"
+                android:visibility="invisible"
+                app:hintText="@string/about_you_field_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itLinkYouTube" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanit.Small"
+                android:id="@+id/itLinkWebSite"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:background="@drawable/bg_round_corner_input"
+                android:drawableStart="@drawable/ic_sync"
+                android:drawablePadding="@dimen/_8sdp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:padding="@dimen/_12sdp"
+                android:textColor="@color/blue"
+                android:visibility="invisible"
+                app:hintText="@string/about_you_field_website"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itLinkMedium" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

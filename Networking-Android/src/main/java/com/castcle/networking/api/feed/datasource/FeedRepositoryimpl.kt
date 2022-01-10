@@ -356,9 +356,9 @@ class FeedRepositoryImpl @Inject constructor(
     }
 }
 
-const val DEFAULT_PAGE_SIZE = 25
+const val DEFAULT_PAGE_SIZE = 10
 const val DEFAULT_PAGE_SIZE_V1 = 10
-const val DEFAULT_PREFETCH = 1
+const val DEFAULT_PREFETCH = 2
 const val DEFAULT_PREFETCH_V1 = 2
 private const val LIKE_STATUS_LIKE = "liked"
 private const val LIKE_STATUS_UNLIKE = "unliked"

@@ -2,13 +2,14 @@ package com.castcle.ui.common.viewholder.feedMock
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.doOnAttach
 import com.castcle.android.components_android.databinding.LayoutFeedTemplateShortImageBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.gone
 import com.castcle.extensions.visible
 import com.castcle.ui.common.CommonMockAdapter
@@ -55,6 +56,8 @@ class FeedContentShortImageViewHolder(
             handleItemClick(it)
         }.addToDisposables()
     }
+
+    private lateinit var contentFeedUiModel: ContentFeedUiModel
 
     private fun handleItemClick(it: TemplateEventClick?) {
         when (it) {
@@ -117,46 +120,63 @@ class FeedContentShortImageViewHolder(
             }
         }
     }
-    
+
     override fun bindUiModel(uiModel: ContentFeedUiModel) {
         super.bindUiModel(uiModel)
+        contentFeedUiModel = if (uiModel.type == ContentType.RECAST.type) {
+            uiModel.contentQuoteCast ?: ContentFeedUiModel()
+        } else {
+            uiModel
+        }
+        onBindContentItem()
+    }
+
+    private fun onBindContentItem() {
         with(binding) {
+            clShortImage.visible()
             startLoadingPreViewShimmer()
             skeletonLoading.shimmerLayoutLoading.run {
                 stopShimmer()
                 setShimmer(null)
                 gone()
             }
-            with(uiModel) {
-                ubUser.bindUiModel(uiModel)
+            with(contentFeedUiModel) {
+                ubUser.bindUiModel(this)
                 if (message.isNotBlank()) {
+                    tvFeedContent.text = ""
                     with(tvFeedContent) {
                         onClearMessage()
-                        if (uiModel.type == ContentType.SHORT.type) {
-                            appendLinkText(message)
-                        } else {
-                            setTextReadMore(message)
-                            subscribeOnClick {
-                                tvFeedContent.toggle()
-                            }.addToDisposables()
-                        }
-                        setLinkClickListener(object : SocialTextView.LinkClickListener {
-                            override fun onLinkClicked(linkType: LinkedType, matchedText: String) {
-                                handleItemClick(
-                                    TemplateEventClick.WebContentMessageClick(
-                                        matchedText
-                                    )
-                                )
+                        text = message
+                        doOnAttach {
+                            if (type == com.castcle.common_model.model.webview.ContentType.SHORT.type) {
+                                appendLinkText(message)
+                            } else {
+                                setTextReadMore(text)
+                                subscribeOnClick {
+                                    tvFeedContent.toggle()
+                                }.addToDisposables()
                             }
-                        })
+                            setLinkClickListener(object : SocialTextView.LinkClickListener {
+                                override fun onLinkClicked(
+                                    linkType: LinkedType,
+                                    matchedText: String
+                                ) {
+                                    handleItemClick(
+                                        TemplateEventClick.WebContentMessageClick(
+                                            matchedText
+                                        )
+                                    )
+                                }
+                            })
+                        }
                     }
                 } else {
                     tvFeedContent.gone()
                 }
-                ftFooter.bindUiModel(uiModel)
+                ftFooter.bindUiModel(this)
                 with(clPreviewContentImage) {
                     clInPreviewContentImage.visible()
-                    icImageContent.bindImageContent(uiModel, true)
+                    icImageContent.bindImageContent(contentFeedUiModel, true)
                 }
                 stopLoadingPreViewShimmer()
             }

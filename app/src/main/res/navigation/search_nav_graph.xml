@@ -530,6 +530,14 @@
             android:id="@+id/actionProfileFragmentToNotiflyLoginDialoginDialogFragment"
             app:destination="@id/dialog_login_nav_graph" />
 
+        <action
+            android:id="@+id/actionProfileFragmentToViewProfileFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
         <deepLink app:uri="@string/deep_link_path_https_profile" />
         <deepLink app:uri="@string/nav_deep_link_profile" />
     </fragment>
@@ -668,4 +676,15 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
+    <fragment
+        android:id="@+id/viewProfileFragment"
+        android:name="com.castcle.ui.profile.viewprofile.ViewProfileFragment"
+        tools:layout="@layout/fragment_view_profile">
+
+        <argument
+            android:name="profileBundle"
+            app:argType="com.castcle.common_model.model.login.domain.ProfileBundle" />
+    </fragment>
+
 </navigation>

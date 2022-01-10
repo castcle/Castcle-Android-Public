@@ -107,7 +107,7 @@ fun mapContentFeedUiModelReference(
                     mapContentRefQuote(referencedCastsId, includes)?.apply {
                         this.authorReference = includes?.users?.filter {
                             it.id == payload.payload?.authorId ?: ""
-                        }?.map { it.castcleId } ?: emptyList()
+                        }?.map { it.castcleId ?: "" } ?: emptyList()
                         if (this.authorReference.isNotEmpty()) {
                             this.isMindId = authorReference.firstOrNull() == isMindId
                         }
@@ -121,7 +121,7 @@ fun mapContentFeedUiModelReference(
         authorReference = includes?.users?.filter {
             it.id == payload.payload?.authorId
         }?.map {
-            it.displayName
+            it.displayName ?: ""
         } ?: emptyList()
 
         userContent = userProfile
@@ -143,7 +143,7 @@ fun mapItemContentFeedUiModelReference(
                     referencedCastsType = payload.type
                     authorReference = includes?.users?.filter {
                         it.id == payload.authorId
-                    }?.map { it.castcleId } ?: emptyList()
+                    }?.map { it.castcleId ?: "" } ?: emptyList()
                     if (authorReference.isNotEmpty()) {
                         this.isMindId = authorReference.firstOrNull() == isMindId
                     }
@@ -156,7 +156,7 @@ fun mapItemContentFeedUiModelReference(
         authorReference = includes?.users?.filter {
             it.id == payload.authorId
         }?.map {
-            it.displayName
+            it.displayName ?: ""
         } ?: emptyList()
 
         userContent = userProfile
@@ -174,9 +174,9 @@ fun IncludesContentItemResponse.toContentFeedUiModel(): ContentFeedUiModel {
     return ContentFeedUiModel(
         id = id ?: "",
         contentId = id ?: "",
-        authorId = authorId ?: "",
+        authorId = authorId,
         message = message ?: "",
-        type = type ?: "",
+        type = type,
         createdAt = created ?: "",
         updatedAt = updated ?: "",
         photo = photo?.contents?.map {
@@ -247,15 +247,15 @@ fun IncludesResponse.toAuthorContent(authorId: String): UserContent? {
         it.id == authorId
     }?.let {
         UserContent(
-            id = it.id,
-            type = it.type,
-            castcleId = it.castcleId,
+            id = it.id ?: "",
+            type = it.type ?: "",
+            castcleId = it.castcleId ?: "",
             avatar = it.avatar.thumbnail ?: "",
-            displayName = it.displayName,
+            displayName = it.displayName ?: "",
             followed = it.followed,
-            verifiedOfficial = it.verified.official ?: false,
-            verifiedMobile = it.verified.mobile ?: false,
-            verifiedEmail = it.verified.email ?: false
+            verifiedOfficial = it.verified?.official ?: false,
+            verifiedMobile = it.verified?.mobile ?: false,
+            verifiedEmail = it.verified?.email ?: false
         )
     }
 }
@@ -265,15 +265,15 @@ fun IncludesUserContentResponse.toAuthorContent(authorId: String): UserContent? 
         it.id == authorId
     }?.let {
         UserContent(
-            id = it.id,
-            type = it.type,
-            castcleId = it.castcleId,
+            id = it.id ?: "",
+            type = it.type ?: "",
+            castcleId = it.castcleId ?: "",
             avatar = it.avatar.thumbnail ?: "",
-            displayName = it.displayName,
+            displayName = it.displayName ?: "s",
             followed = it.followed,
-            verifiedOfficial = it.verified.official ?: false,
-            verifiedMobile = it.verified.mobile ?: false,
-            verifiedEmail = it.verified.email ?: false
+            verifiedOfficial = it.verified?.official ?: false,
+            verifiedMobile = it.verified?.mobile ?: false,
+            verifiedEmail = it.verified?.email ?: false
         )
     }
 }
@@ -334,7 +334,7 @@ fun mapContentFeedUiModelReference(
                         referencedCastsType = payload.referencedCasts?.type ?: ""
                         authorReference = includes?.users?.filter {
                             it.id == payload.authorId
-                        }?.map { it.castcleId } ?: emptyList()
+                        }?.map { it.castcleId ?: "" } ?: emptyList()
                         if (authorReference.isNotEmpty()) {
                             this.isMindId = authorReference.firstOrNull() == isMindId
                         }

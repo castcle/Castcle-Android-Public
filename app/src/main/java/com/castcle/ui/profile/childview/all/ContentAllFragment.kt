@@ -111,6 +111,10 @@ class ContentAllFragment : BaseFragment<ProfileFragmentViewModel>(),
                     )
                 )
             })
+
+        activityViewModel.onCreatePostSuccess.observe(this, {
+            adapterPagingCommon.refresh()
+        })
     }
 
     private fun isProfileType(

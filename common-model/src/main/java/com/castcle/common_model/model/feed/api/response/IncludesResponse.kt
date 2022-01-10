@@ -46,23 +46,27 @@ data class IncludesContentItemResponse(
     @SerializedName("participate") val participate: Participate? = null,
     @SerializedName("metrics") val metrics: Metrics? = null,
     @SerializedName("aggregator") val aggregator: AggregatorContent? = null,
-    @SerializedName("createdAt") var created: String,
-    @SerializedName("updatedAt") var updated: String,
+    @SerializedName("createdAt") var created: String? = null,
+    @SerializedName("updatedAt") var updated: String? = null,
 )
 
 data class IncludesUserdata(
     @SerializedName("castcleId")
-    val castcleId: String,
+    val castcleId: String? = null,
     @SerializedName("displayName")
-    val displayName: String,
+    val displayName: String? = null,
     @SerializedName("followed")
     val followed: Boolean,
+    @SerializedName("blocking")
+    val blocking: Boolean,
+    @SerializedName("blocked")
+    val blocked: Boolean,
     @SerializedName("id")
-    val id: String,
+    val id: String? = null,
     @SerializedName("type")
-    val type: String,
+    val type: String? = null,
     @SerializedName("avatar")
     val avatar: ImageResponse,
     @SerializedName("verified")
-    val verified: Verified
+    val verified: Verified? = null
 )

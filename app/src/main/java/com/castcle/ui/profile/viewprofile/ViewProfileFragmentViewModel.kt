@@ -1,6 +1,7 @@
-package com.castcle.common_model.model.feed.api.response
+package com.castcle.ui.profile.viewprofile
 
-import com.google.gson.annotations.SerializedName
+import com.castcle.ui.base.BaseViewModel
+import javax.inject.Inject
 
 //  Copyright (c) 2021, Castcle and/or its affiliates. All rights reserved.
 //  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -24,29 +25,8 @@ import com.google.gson.annotations.SerializedName
 //  or have any questions.
 //
 //
-//  Created by sklim on 22/11/2021 AD at 12:23.
-data class PayLoadList(
-    @SerializedName("payload")
-    val payLoadLists: List<Payload>,
-    @SerializedName("includes")
-    val includes: IncludesResponse? = null,
-    @SerializedName("meta")
-    var meta: Meta,
-)
+//  Created by sklim on 7/1/2022 AD at 09:46.
 
-data class Payload(
-    @SerializedName("id") var id: String? = null,
-    @SerializedName("feature") var feature: Feature? = null,
-    @SerializedName("circle") var circle: Circle? = null,
-    @SerializedName("type") var type: String,
-    @SerializedName("payload") var payload: PayloadObjectContent? = null,
-)
+abstract class ViewProfileFragmentViewModel : BaseViewModel()
 
-data class Meta(
-    @SerializedName("newestId")
-    val newestId: String,// ใส่ param untilId เพื่อขอ content ถัดไป (load more)
-    @SerializedName("oldestId")
-    val oldestId: String? = null,// ใส่ param sinceId เพื่อขอ content ล่าสุด
-    @SerializedName("resultCount")
-    val resultCount: Int //5..100 default 25
-)
+class ViewProfileFragmentViewModelImpl @Inject constructor() : ViewProfileFragmentViewModel()

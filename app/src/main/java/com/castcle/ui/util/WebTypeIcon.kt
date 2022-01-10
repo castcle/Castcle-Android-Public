@@ -53,7 +53,7 @@ object WebTypeIcon {
                 R.drawable.web_icon_rssfeed
             }
             else -> {
-                R.drawable.web_icon_facebook
+                R.drawable.web_icon_web
             }
         }
     }

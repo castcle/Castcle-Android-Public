@@ -1,5 +1,7 @@
 package com.castcle.ui.signin.verifyemail
 
+import android.os.Build
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
@@ -85,9 +87,19 @@ class ResentVerifyEmailFragment : BaseFragment<ResentVerifyEmailFragmentViewMode
     }
 
     override fun bindViewEvents() {
-        binding.tvWarning.text = context?.getString(
-            R.string.sent_verify_email_decscription_1
-        )?.format(args.email)
+        binding.tvWarning.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(
+                context?.getString(
+                    R.string.sent_verify_email_decscription_1
+                )?.format(args.email), 0
+            )
+        } else {
+            Html.fromHtml(
+                context?.getString(
+                    R.string.sent_verify_email_decscription_1
+                )?.format(args.email)
+            )
+        }
 
         binding.btResent.subscribeOnClick {
             viewModel.resentVerifyEmail()

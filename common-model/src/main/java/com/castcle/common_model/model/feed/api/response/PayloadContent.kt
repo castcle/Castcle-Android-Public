@@ -37,8 +37,8 @@ data class PayloadObjectContent(
     @SerializedName("referencedCasts") val referencedCasts: ReferencedCasts? = null,
     @SerializedName("metrics") val metrics: Metrics? = null,
     @SerializedName("participate") val participate: Participate? = null,
-    @SerializedName("createdAt") var created: String,
-    @SerializedName("updatedAt") var updated: String,
+    @SerializedName("createdAt") var created: String? = null,
+    @SerializedName("updatedAt") var updated: String? = null,
 )
 
 data class PhotoContents(

@@ -62,10 +62,10 @@
     <string name="verify_email_goto_setting">Go to Profile Setting</string>
     <string name="sent_verify_email_title">Haven\'t receive email yet.</string>
     <string name="sent_verify_email_sub_title">Make sure that</string>
-    <string name="sent_verify_email_resent">Resent Email</string>
-    <string name="sent_verify_email_decscription_1">1. Your email <font color="#01D2FF">"%s"</font> is correct and can be reached from the Internet.</string>
-    <string name="sent_verify_email_decscription_2">2. Please check your spam folder.</string>
-    <string name="sent_verify_email_decscription_3">3. Your inbox is not full. Otherwise, delete some of your emails from your inbox before clicking the resend button.</string>
+    <string name="sent_verify_email_resent">Resend Email</string>
+    <string name="sent_verify_email_decscription_1">1. Your email <![CDATA[<b>&quot;<font color="#01D2FF">%s</font>&quot;</b>]]> is correct and can be receive message.</string>
+    <string name="sent_verify_email_decscription_2">2. Your message wasn\'t sent to the spam folder.</string>
+    <string name="sent_verify_email_decscription_3">3. Your inbox is not full.</string>
     <string name="about_you_title">About you</string>
     <string name="about_you_overview">Overview</string>
     <string name="about_you_birthday">What is your birthday?</string>
@@ -266,5 +266,6 @@ account</string>
     <string name="social_text_see_more"> …Read more</string>
     <string name="cast_post_status_error">Can\'t create post please Verify your Email</string>
     <string name="setting_docs">Docs</string>
+    <string name="view_profile_links">Links</string>
 
 </resources>

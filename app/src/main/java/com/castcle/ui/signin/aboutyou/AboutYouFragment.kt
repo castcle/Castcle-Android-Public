@@ -20,7 +20,6 @@ import com.castcle.common_model.model.userprofile.domain.LinksRequest
 import com.castcle.common_model.model.userprofile.domain.UserUpdateRequest
 import com.castcle.extensions.*
 import com.castcle.localization.LocalizedResources
-import com.castcle.networking.api.user.PROFILE_TYPE_PAGE
 import com.castcle.ui.base.*
 import com.castcle.ui.common.dialog.DatePickerDialogFragment
 import com.castcle.ui.onboard.OnBoardViewModel
@@ -575,7 +574,7 @@ class AboutYouFragment : BaseFragment<AboutYouFragmentViewModel>(),
     private fun handleNavigateToProfileClick() {
         val deepLink = makeDeepLinkUrl(
             requireContext(), Input(
-                type = DeepLinkTarget.USER_PROFILE_PAGE,
+                type = DeepLinkTarget.USER_PROFILE_PAGE_ME,
                 contentData = castcleId
             )
         ).toString()

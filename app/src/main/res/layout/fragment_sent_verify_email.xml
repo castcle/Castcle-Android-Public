@@ -21,7 +21,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_18sdp"
+        android:layout_marginEnd="@dimen/_18sdp"
         android:layout_marginTop="@dimen/_18sdp"
+        android:textAlignment="center"
         android:text="@string/sent_verify_email_title"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@id/ivCreatePass"
@@ -35,52 +37,69 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_18sdp"
         android:layout_marginEnd="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_12sdp"
         android:text="@string/sent_verify_email_sub_title"
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/tvTitle"
-        app:layout_constraintStart_toStartOf="@+id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
-        android:id="@+id/tvWarning"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_18sdp"
-        android:layout_marginEnd="@dimen/_12sdp"
-        android:text="@string/sent_verify_email_decscription_1"
-        android:textAlignment="textStart"
-        android:textColor="@color/light"
-        app:layout_constraintEnd_toEndOf="@+id/tvWelcome"
-        app:layout_constraintStart_toStartOf="@+id/tvWelcome"
-        app:layout_constraintTop_toBottomOf="@id/tvWelcome" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/btResent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
-        android:id="@+id/tvDescription2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_18sdp"
-        android:text="@string/sent_verify_email_decscription_2"
-        android:textAlignment="textStart"
-        android:textColor="@color/light"
-        app:layout_constraintEnd_toEndOf="@+id/tvWarning"
-        app:layout_constraintStart_toStartOf="@+id/tvWarning"
-        app:layout_constraintTop_toBottomOf="@id/tvWarning" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/AppTextKanitLight.Regular"
-        android:id="@+id/tvDescription3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_18sdp"
-        android:text="@string/sent_verify_email_decscription_3"
-        android:textAlignment="textStart"
-        android:textColor="@color/light"
-        app:layout_constraintEnd_toEndOf="@+id/tvDescription2"
-        app:layout_constraintStart_toStartOf="@+id/tvDescription2"
-        app:layout_constraintTop_toBottomOf="@id/tvDescription2" />
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanitLight.Regular"
+                android:id="@+id/tvWarning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:textAlignment="textStart"
+                android:textColor="@color/light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanitLight.Regular"
+                android:id="@+id/tvDescription2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:text="@string/sent_verify_email_decscription_2"
+                android:textAlignment="textStart"
+                android:textColor="@color/light"
+                app:layout_constraintEnd_toEndOf="@+id/tvWarning"
+                app:layout_constraintStart_toStartOf="@+id/tvWarning"
+                app:layout_constraintTop_toBottomOf="@id/tvWarning" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/AppTextKanitLight.Regular"
+                android:id="@+id/tvDescription3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:text="@string/sent_verify_email_decscription_3"
+                android:textAlignment="textStart"
+                android:textColor="@color/light"
+                app:layout_constraintEnd_toEndOf="@+id/tvDescription2"
+                app:layout_constraintStart_toStartOf="@+id/tvDescription2"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/AppTextKanitLight.Medium"

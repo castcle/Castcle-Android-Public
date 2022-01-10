@@ -5,13 +5,12 @@ import com.castcle.android.components_android.databinding.LayoutFeedTemplateShor
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
 import com.castcle.common_model.model.feed.LinkUiModel
+import com.castcle.common_model.model.webview.ContentType
 import com.castcle.components_android.ui.custom.event.TemplateEventClick
 import com.castcle.components_android.ui.custom.socialtextview.SocialTextView
 import com.castcle.components_android.ui.custom.socialtextview.model.LinkedType
-import com.castcle.common_model.model.webview.ContentType
 import com.castcle.extensions.*
 import com.castcle.ui.common.CommonAdapter
-import com.castcle.ui.common.WebType
 import com.castcle.ui.common.events.Click
 import com.castcle.ui.common.events.FeedItemClick
 import com.castcle.ui.util.WebTypeIcon.getIconFormLikeType
@@ -19,8 +18,6 @@ import com.chayangkoon.champ.linkpreview.LinkPreview
 import com.chayangkoon.champ.linkpreview.common.LinkContent
 import com.facebook.shimmer.Shimmer
 import com.workfort.linkpreview.LinkData
-import com.workfort.linkpreview.callback.ParserCallback
-import com.workfort.linkpreview.util.LinkParser
 import kotlinx.coroutines.*
 import java.io.IOException
 
@@ -203,29 +200,11 @@ class FeedContentShortWebViewHolder(
                 link?.let { linkItem ->
                     startLoadingPreViewShimmer()
                     when {
-                        linkItem.imagePreview.isBlank() || linkItem.type == WebType.FACEBOOK.type -> {
-                            onBindContentIconWeb(message, linkItem)
-                        }
-                        linkItem.imagePreview.isNotBlank() && linkItem.linkTitle.isNotBlank() -> {
+                        linkItem.linkDescription.isNotBlank() && linkItem.linkTitle.isNotBlank() -> {
                             onBindContentImageWeb(linkItem)
                         }
                         else -> {
-                            link?.let {
-                                LinkParser(it.url, object : ParserCallback {
-                                    override fun onData(linkData: LinkData) {
-                                        if (linkData.imageUrl.isNullOrBlank()) {
-                                            onBindContentIconWeb(message, linkItem)
-                                        } else {
-                                            onBindContentImageWeb(linkData)
-                                        }
-                                    }
-
-                                    override fun onError(exception: Exception) {
-                                        clPreviewIconContent.clInPreviewIconContent.gone()
-                                        clPreviewContent.clInPreviewContent.gone()
-                                    }
-                                }).parse()
-                            }
+                            onBindContentIconWeb(message, linkItem)
                         }
                     }
                 }

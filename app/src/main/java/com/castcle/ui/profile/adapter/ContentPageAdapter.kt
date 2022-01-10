@@ -40,15 +40,15 @@ class ContentPageAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             ALL_FRAGMENT_POSITION -> ContentAllFragment()
-            POST_FRAGMENT_POSITION -> ContentPostFragment()
-            BLOG_FRAGMENT_POSITION -> ContentBlogFragment()
-            PHOTO_FRAGMENT_POSITION -> ContentPhotoFragment()
+//            POST_FRAGMENT_POSITION -> ContentPostFragment()
+//            BLOG_FRAGMENT_POSITION -> ContentBlogFragment()
+//            PHOTO_FRAGMENT_POSITION -> ContentPhotoFragment()
             else -> throw IllegalArgumentException("Position exceeds ${FRAGMENT_POSITION - 1}")
         }
     }
 }
 
-private const val FRAGMENT_POSITION = 4
+private const val FRAGMENT_POSITION = 1
 
 private const val ALL_FRAGMENT_POSITION = 0
 private const val POST_FRAGMENT_POSITION = 1

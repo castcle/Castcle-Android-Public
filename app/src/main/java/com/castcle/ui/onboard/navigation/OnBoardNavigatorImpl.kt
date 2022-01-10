@@ -24,6 +24,7 @@ import com.castcle.ui.createpost.CreatePostFragmentArgs
 import com.castcle.ui.feed.feeddetail.FeedDetailFragmentArgs
 import com.castcle.ui.profile.CropAvatarImageFragmentArgs
 import com.castcle.ui.profile.ProfileFragmentArgs
+import com.castcle.ui.profile.viewprofile.ViewProfileFragmentArgs
 import com.castcle.ui.report.ReportFragmentArgs
 import com.castcle.ui.search.trend.TrendFragmentArgs
 import com.castcle.ui.setting.applanguage.AppLanguageFragmentArgs
@@ -1464,6 +1465,29 @@ class OnBoardNavigatorImpl @Inject constructor(
                     R.id.feedFragment -> {
                         navController.navigate(
                             R.id.actionFeedFragmentToEditContentDialogFragment
+                        )
+                    }
+                    else -> {
+                        unsupportedNavigation()
+                    }
+                }
+            }
+            else -> {
+                unsupportedNavigation()
+            }
+        }
+    }
+
+    override fun navigateToViewProfileFragment(viewProfileBundle: ProfileBundle) {
+        val navController = findNavController()
+        when (navController.graph.id) {
+            R.id.onboard_nav_graph,
+            R.id.search_nav_graph -> {
+                when (navController.currentDestination?.id) {
+                    R.id.profileFragment -> {
+                        navController.navigate(
+                            R.id.actionProfileFragmentToViewProfileFragment,
+                            ViewProfileFragmentArgs(viewProfileBundle).toBundle()
                         )
                     }
                     else -> {

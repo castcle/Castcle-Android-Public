@@ -60,7 +60,7 @@
     <string name="sent_verify_email_title">ยังไม่ได้รับอีเมลใช่ไหม</string>
     <string name="sent_verify_email_sub_title">โปรดตรวจสอบให้แน่ใจว่าคุณทำรายละเอียดดังกล่าวครบถ้วนแล้ว</string>
     <string name="sent_verify_email_resent">กดปุ่มส่งอีกครั้ง</string>
-    <string name="sent_verify_email_decscription_1">1. อีเมลของคุณคือ <font color="#01D2FF">"%s"</font> และสามารถเข้าอีเมลผ่านระบบอินเตอร์เน็ตได้ปกติหรือไม่?</string>
+    <string name="sent_verify_email_decscription_1">1. อีเมลของคุณคือ <![CDATA[<b>&quot;<font color="#01D2FF">%s</font>&quot;</b>]]> และสามารถเข้าอีเมลผ่านระบบอินเตอร์เน็ตได้ปกติหรือไม่?</string>
     <string name="sent_verify_email_decscription_2">2.โปรดตรวจสอบอีเมลสแปม</string>
     <string name="sent_verify_email_decscription_3">3. โปรดตรวจสอบอีกครั้งว่ากล่องจดหมายของคุณไม่เต็มถ้าหากเต็มกรุณาลบอีเมลบางฉบับก่อนที่จะกดส่งอีกครั้ง</string>
     <string name="about_you_title">เกี่ยวกับ</string>

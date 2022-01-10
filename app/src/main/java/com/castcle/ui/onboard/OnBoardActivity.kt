@@ -222,6 +222,7 @@ class OnBoardActivity : BaseActivity<OnBoardViewModel>(),
                 R.id.settingProfileFragment,
                 R.id.reportFragment,
                 R.id.addLinksFragment,
+                R.id.viewProfileFragment,
                 R.id.loginFragment -> {
                     bottomNavView.gone()
                 }

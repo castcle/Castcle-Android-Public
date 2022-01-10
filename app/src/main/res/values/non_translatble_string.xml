@@ -21,7 +21,7 @@
     <string name="deep_link_path_https_verify_email" translatable="false">.*/verify-email</string>
     <string name="deep_link_path_https_resent_verify_email" translatable="false">.*/resentverify-email/{email}</string>
     <string name="deep_link_path_https_about_you" translatable="false">.*/about-you</string>
-    <string name="deep_link_path_https_profile" translatable="false">.*/profile/{me}/{id}</string>
+    <string name="deep_link_path_https_profile" translatable="false">.*/profile/{type}/{id}</string>
     <string name="deep_link_path_https_recast_dialog" translatable="false">.*/recast-dialog</string>
 
     <string name="twitter_app_id" translatable="false">K9p1iIR62T2l4jnnS2HXJ3eyI</string>

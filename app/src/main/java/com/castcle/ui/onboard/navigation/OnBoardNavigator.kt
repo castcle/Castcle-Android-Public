@@ -145,4 +145,6 @@ interface OnBoardNavigator : BaseNavigator {
     )
 
     fun navigateToEditContentDialogFragment()
+
+    fun navigateToViewProfileFragment(viewProfileBundle: ProfileBundle)
 }

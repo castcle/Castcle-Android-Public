@@ -67,19 +67,24 @@ class PageHeaderTemplateAdapter(listener: OnItemClickListener) :
 
         override fun onBind(item: PageUiModel) {
             with(binding.ivAvatar) {
+                visible()
+                binding.ivAddPage.gone()
+                borderColor = binding.root.context.getColorResource(R.color.white)
+                loadCircleImage(item.avatarUrl)
+                itemView.subscribeOnClick {
+                    onBindItemClick(item)
+
+                }.addToDisposables()
+            }
+            with(binding.ivAddPage) {
                 if (item.addPage) {
+                    visible()
+                    binding.ivAvatar.gone()
                     background = binding.root.context.getDrawableRes(R.drawable.ic_add_page)
                     itemView.subscribeOnClick {
                         listener?.onItemClick(
                             TemplateClicks.AddPageClick
                         )
-                    }.addToDisposables()
-                } else {
-                    borderColor = binding.root.context.getColorResource(R.color.white)
-                    loadCircleImage(item.avatarUrl)
-                    itemView.subscribeOnClick {
-                        onBindItemClick(item)
-
                     }.addToDisposables()
                 }
             }

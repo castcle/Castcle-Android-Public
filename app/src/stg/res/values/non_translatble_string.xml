@@ -13,6 +13,6 @@
     <string name="nav_deep_link_resent_verify_email" translatable="false">castcle-stg://resentverify-email</string>
     <string name="nav_deep_link_resent_verify_email_input" translatable="false">castcle-stg://resentverify-email/{email}</string>
     <string name="nav_deep_link_about_you" translatable="false">castcle-stg://about-you</string>
-    <string name="nav_deep_link_profile" translatable="false">castcle-stg://profile/{me}/{id}</string>
+    <string name="nav_deep_link_profile" translatable="false">castcle-stg://profile/{type}/{id}</string>
     <string name="nav_deep_link_recast_dialog" translatable="false">castcle-stg://recast-dialog</string>
 </resources>

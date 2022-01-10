@@ -347,6 +347,10 @@ class OnBoardViewModelImpl @Inject constructor(
         _onRegisterSuccess.value = Unit
     }
 
+    private var _onCreatePostSuccess = MutableLiveData<Unit>()
+    override val onCreatePostSuccess: LiveData<Unit>
+        get() = _onCreatePostSuccess
+
     override fun checkCastPostWithImageStatus(): Observable<StateWorkLoading> {
         return checkCastUpLoadingFlowableCase.execute(Unit)
             .map { (status, userResponse) ->
@@ -362,7 +366,9 @@ class OnBoardViewModelImpl @Inject constructor(
     }
 
     private fun checkCastPostResponse(userResponse: String) {
-
+        if (userResponse.isNotBlank()) {
+            _onCreatePostSuccess.value = Unit
+        }
     }
 
     private var _cacheProfileId = MutableLiveData<String>()

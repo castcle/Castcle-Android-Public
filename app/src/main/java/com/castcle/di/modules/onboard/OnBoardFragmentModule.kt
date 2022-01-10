@@ -35,6 +35,7 @@ import com.castcle.ui.profile.childview.all.ContentAllFragment
 import com.castcle.ui.profile.childview.blog.ContentPostFragment
 import com.castcle.ui.profile.childview.photo.ContentBlogFragment
 import com.castcle.ui.profile.childview.post.ContentPhotoFragment
+import com.castcle.ui.profile.viewprofile.ViewProfileFragment
 import com.castcle.ui.report.ReportFragment
 import com.castcle.ui.report.ReportFragmentViewModel
 import com.castcle.ui.search.TrendSearchFragment
@@ -316,4 +317,8 @@ interface OnBoardFragmentModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [ReportFragmentViewModelModule::class])
     fun reportFragment(): ReportFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [ViewProfileFragmentViewModelModule::class])
+    fun viewProfileFragment(): ViewProfileFragment
 }
