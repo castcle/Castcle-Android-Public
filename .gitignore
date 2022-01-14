@@ -31,3 +31,4 @@ local.properties
 /app/production/release/
 /app/stg/debug/
 /app/stg/release/
+/config/

@@ -28,12 +28,11 @@ import com.google.gson.annotations.SerializedName
 
 data class RecastRequest(
     val reCasted: Boolean = false,
-
     val contentId: String = "",
-
     @SerializedName("feedItemId")
     val feedItemId: String? = "",
-
     @SerializedName("castcleId")
-    val authorId: String
+    val authorId: String,
+    @SerializedName("message")
+    val message: String? = ""
 )

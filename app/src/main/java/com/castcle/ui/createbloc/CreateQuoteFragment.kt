@@ -10,6 +10,7 @@ import com.castcle.android.databinding.FragmentCreateQuoteBinding
 import com.castcle.android.databinding.ToolbarCastcleGreetingBinding
 import com.castcle.common.lib.extension.subscribeOnClick
 import com.castcle.common_model.model.feed.ContentFeedUiModel
+import com.castcle.common_model.model.feed.RecastRequest
 import com.castcle.common_model.model.login.domain.ProfileBundle
 import com.castcle.common_model.model.userprofile.CreateContentUiModel
 import com.castcle.common_model.model.userprofile.MentionUiModel
@@ -130,8 +131,12 @@ class CreateQuoteFragment : BaseFragment<CreateBlogFragmentViewModel>(),
         val currentUserPage = profileBundle as ProfileBundle.ReCastPage
         binding.btCast.subscribeOnClick {
             viewModel.input.quoteCasteContent(
-                currentContent,
-                currentUserPage.castcleId
+                RecastRequest(
+                    reCasted = currentContent.recasted,
+                    contentId = currentContent.contentId,
+                    authorId = currentUserPage.castcleId,
+                    message = binding.etInputMessage.text.toString()
+                )
             )
         }
     }

@@ -2,8 +2,7 @@ package com.castcle.ui.createbloc
 
 import androidx.lifecycle.LiveData
 import com.castcle.common_model.model.createblog.MediaItem
-import com.castcle.common_model.model.feed.ContentFeedUiModel
-import com.castcle.common_model.model.feed.ContentUiModel
+import com.castcle.common_model.model.feed.*
 import com.castcle.common_model.model.userprofile.MentionUiModel
 import com.castcle.ui.base.BaseViewModel
 import io.reactivex.*
@@ -79,6 +78,6 @@ abstract class CreateBlogFragmentViewModel : BaseViewModel() {
 
         fun removeMediaItem(mediaItem: MediaItem)
 
-        fun quoteCasteContent(contentUiModel: ContentFeedUiModel, castcleId: String)
+        fun quoteCasteContent(recastRequest: RecastRequest)
     }
 }

@@ -202,7 +202,9 @@ fun mapContentRefQuote(
 ): ContentFeedUiModel? {
     return includes?.casts?.find {
         it.id == contentRefId
-    }?.toContentFeedUiModel()
+    }?.let {
+        it.toContentFeedUiModel()
+    }
 }
 
 fun Payload.toContentFeedUiModel(): ContentFeedUiModel {
@@ -333,13 +335,12 @@ fun mapContentFeedUiModelReference(
                     mapContentRefQuote(referencedCastsId, includes)?.apply {
                         referencedCastsType = payload.referencedCasts?.type ?: ""
                         authorReference = includes?.users?.filter {
-                            it.id == payload.authorId
+                            it.id == authorId
                         }?.map { it.castcleId ?: "" } ?: emptyList()
                         if (authorReference.isNotEmpty()) {
                             this.isMindId = authorReference.firstOrNull() == isMindId
                         }
-                        contentQuoteCast?.userContent =
-                            includes?.toAuthorContent(this.authorId) ?: UserContent()
+                        userContent = includes?.toAuthorContent(authorId) ?: UserContent()
                     }
             }
         }

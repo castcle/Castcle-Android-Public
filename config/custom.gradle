@@ -1,16 +1,16 @@
-task beforePR(dependsOn: ['detekt', 'lintUatDebug', 'jacocoTestReport']) {
+task beforePR(dependsOn: ['detekt', 'lintStgDebug', 'jacocoTestReport']) {
     group 'Custom'
-    description '[THE 1] detekt + lint + unittest'
+    description '[Castcle] detekt + lint + unittest'
     doLast {
-        printOutputFile("uat", "debug")
+        printOutputFile("stg", "debug")
     }
 }
 
 task unittest(dependsOn: ['detekt', 'jacocoTestReport']) {
     group 'Custom'
-    description '[THE 1] detekt + unittest'
+    description '[Castcle] detekt + unittest'
     doLast {
-        printOutputFile("uat", "debug")
+        printOutputFile("stg", "debug")
     }
 }
 

@@ -560,7 +560,6 @@ class ProfileFragment : BaseFragment<ProfileFragmentViewModel>(),
             profileYou.clMainContent.visible()
             profileYouBlocked.clMainContent.gone()
             wtWhatYouMind.visible()
-            tabs.visible()
             layoutContent.visible()
             line.visible()
         }
