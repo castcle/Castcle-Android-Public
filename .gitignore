@@ -31,3 +31,7 @@ local.properties
 /app/production/release/
 /app/stg/debug/
 /app/stg/release/
+/config/
+/app/dev/java/google-service.json
+/app/stg/java/google-service.json
+/app/production/java/google-service.json
